@@ -27,7 +27,8 @@ const Item = ({ href, children }: { href: string; children: ReactNode }) => {
 
 const Navbar = () => {
   return (
-    <nav className="flex-1 relative flex items-center text-sm font-medium space-x-4">
+    <nav className="relative flex flex-1 items-center space-x-4 text-sm font-medium">
+      <Item href="/">Dashboard</Item>
       <Item href="/collections">Collections</Item>
       <Item href="/catalog">Catalog</Item>
       <Item href="/notebooks">Notebooks</Item>
