@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { CustomApolloClient } from "libs/apollo";
+import { CustomApolloClient } from "helpers/apollo";
 import type { ReactElement } from "react";
 import Header from "./Header";
 

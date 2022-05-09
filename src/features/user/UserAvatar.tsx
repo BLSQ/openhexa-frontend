@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import Avatar, { AvatarProps } from "components/Avatar";
-import { UserAvatar_UserFragment } from "libs/graphql";
+import { UserAvatar_UserFragment } from "helpers/graphql";
 import { useMemo } from "react";
 
 type Props = {

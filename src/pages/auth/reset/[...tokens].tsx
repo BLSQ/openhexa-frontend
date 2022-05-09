@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Field from "components/forms/Field";
 import useForm from "hooks/useForm";
-import { SetPasswordError, useSetPasswordMutation } from "libs/graphql";
-import { createGetServerSideProps } from "libs/page";
+import { SetPasswordError, useSetPasswordMutation } from "helpers/graphql";
+import { createGetServerSideProps } from "helpers/page";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -81,11 +81,11 @@ const SetPasswordPage = () => {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 min-h-screen">
+    <div className="flex min-h-screen flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md">
         {isDone ? (
           <>
-            <h2 className="text-center mb-6 text-3xl font-extrabold text-gray-900">
+            <h2 className="mb-6 text-center text-3xl font-extrabold text-gray-900">
               Password changed!
             </h2>
             <div className="text-center">

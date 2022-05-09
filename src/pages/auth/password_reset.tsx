@@ -2,9 +2,9 @@ import { gql } from "@apollo/client";
 import Button from "components/Button";
 import Field from "components/forms/Field";
 import useForm from "hooks/useForm";
-import { useResetPasswordMutation } from "libs/graphql";
-import { createGetServerSideProps } from "libs/page";
-import { NextPageWithLayout } from "libs/types";
+import { useResetPasswordMutation } from "helpers/graphql";
+import { createGetServerSideProps } from "helpers/page";
+import { NextPageWithLayout } from "helpers/types";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactElement, useState } from "react";
@@ -45,14 +45,14 @@ const PasswordResetPage: NextPageWithLayout = () => {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 min-h-screen">
+    <div className="flex min-h-screen flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md">
-        <div className="h-16 w-auto relative mb-6">
+        <div className="relative mb-6 h-16 w-auto">
           <Image
             priority
             src="/images/logo.svg"
             layout="fill"
-            className="block mx-auto h-16 w-auto"
+            className="mx-auto block h-16 w-auto"
             alt="OpenHexa logo"
           />
         </div>
