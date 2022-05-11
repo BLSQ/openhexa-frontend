@@ -1,4 +1,4 @@
-import { NextPageWithLayout } from "helpers/types";
+import { NextPageWithLayout } from "core/helpers/types";
 
 const ReadyPage: NextPageWithLayout = () => {
   return <span>ok</span>;

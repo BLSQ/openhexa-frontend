@@ -1,10 +1,9 @@
-import { gql } from "@apollo/client";
-import Button from "components/Button";
-import Field from "components/forms/Field";
-import useForm from "hooks/useForm";
-import { useResetPasswordMutation } from "helpers/graphql";
-import { createGetServerSideProps } from "helpers/page";
-import { NextPageWithLayout } from "helpers/types";
+import Field from "core/components/forms/Field";
+import Button from "core/components/Button";
+import { createGetServerSideProps } from "core/helpers/page";
+import { NextPageWithLayout } from "core/helpers/types";
+import useForm from "core/hooks/useForm";
+import { useResetPasswordMutation } from "identity/graphql/mutations.generated";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactElement, useState } from "react";
@@ -12,14 +11,6 @@ import { ReactElement, useState } from "react";
 interface ResetPasswordForm {
   email: string;
 }
-
-const RESET_PASSWORD_MUTATION = gql`
-  mutation ResetPassword($input: ResetPasswordInput!) {
-    resetPassword(input: $input) {
-      success
-    }
-  }
-`;
 
 const PasswordResetPage: NextPageWithLayout = () => {
   const [resetPassword] = useResetPasswordMutation();

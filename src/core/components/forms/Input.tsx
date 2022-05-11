@@ -29,7 +29,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   );
 
   return (
-    <div className="relative group">
+    <div className="group relative">
       <input
         id={name}
         name={name}

@@ -49,7 +49,7 @@ const Field = (props: CustomField | InputField) => {
   return (
     <div className={className}>
       {label && (
-        <div className="flex justify-between mb-1">
+        <div className="mb-1 flex justify-between">
           <Label color={labelColor} htmlFor={name} className="flex">
             {label}
             {help && (

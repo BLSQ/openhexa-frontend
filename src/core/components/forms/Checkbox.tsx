@@ -15,7 +15,7 @@ const Checkbox = (props: CheckboxProps) => {
   );
   return (
     <div className="relative flex items-start">
-      <div className="flex items-center h-5">
+      <div className="flex h-5 items-center">
         <input
           id={id ?? name}
           name={name}

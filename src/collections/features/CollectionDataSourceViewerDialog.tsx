@@ -1,8 +1,6 @@
-import { DocumentDownloadIcon } from "@heroicons/react/outline";
-import { ChevronRightIcon } from "@heroicons/react/solid";
-import Button from "components/Button";
-import Dialog from "components/Dialog";
-import { TableClasses } from "components/Table";
+import Button from "core/components/Button";
+import Dialog from "core/components/Dialog";
+import { TableClasses } from "core/components/Table";
 import { useTranslation } from "next-i18next";
 
 type CollectionDataSourceViewerDialogProps = {

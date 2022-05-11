@@ -1,8 +1,14 @@
-import Router from "next/router";
-import { getApolloClient } from "./apollo";
-import { gql } from "@apollo/client";
+import {
+  LogoutDocument,
+  LogoutMutation,
+} from "identity/graphql/mutations.generated";
+import {
+  GetUserDocument,
+  GetUserQuery,
+} from "identity/graphql/queries.generated";
 import { GetServerSidePropsContext } from "next";
-import { MeQueryQuery } from "./graphql";
+import Router from "next/router";
+import { getApolloClient } from "../../helpers/apollo";
 
 export type AuthenticatedUser = {
   id: string;
@@ -16,23 +22,8 @@ export async function getUser(
   ctx?: GetServerSidePropsContext
 ): Promise<AuthenticatedUser | null> {
   const client = getApolloClient({ headers: ctx?.req.headers });
-  const payload = await client.query<MeQueryQuery>({
-    query: gql`
-      query MeQuery {
-        me {
-          user {
-            email
-            id
-            firstName
-            lastName
-            avatar {
-              initials
-              color
-            }
-          }
-        }
-      }
-    `,
+  const payload = await client.query<GetUserQuery>({
+    query: GetUserDocument,
   });
 
   const user = payload?.data.me?.user;
@@ -50,14 +41,8 @@ export async function getUser(
 
 export async function logout(redirectTo: string = "/") {
   const client = getApolloClient();
-  const res: any = await client.mutate({
-    mutation: gql`
-      mutation Logout {
-        logout {
-          success
-        }
-      }
-    `,
+  const res: any = await client.mutate<LogoutMutation>({
+    mutation: LogoutDocument,
   });
   if (res?.data?.logout?.success) {
     Router.push(redirectTo);

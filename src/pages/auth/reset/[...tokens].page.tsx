@@ -1,9 +1,9 @@
-import { gql } from "@apollo/client";
-import Button from "components/Button";
-import Field from "components/forms/Field";
-import useForm from "hooks/useForm";
-import { SetPasswordError, useSetPasswordMutation } from "helpers/graphql";
-import { createGetServerSideProps } from "helpers/page";
+import Button from "core/components/Button";
+import Field from "core/components/forms/Field";
+import { createGetServerSideProps } from "core/helpers/page";
+import useForm from "core/hooks/useForm";
+import { SetPasswordError } from "graphql-types";
+import { useSetPasswordMutation } from "identity/graphql/mutations.generated";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -12,15 +12,6 @@ type Form = {
   password1: string;
   password2: string;
 };
-
-const MUTATION = gql`
-  mutation SetPassword($input: SetPasswordInput!) {
-    setPassword(input: $input) {
-      success
-      error
-    }
-  }
-`;
 
 function getErrorMessage(error: SetPasswordError) {
   switch (error) {

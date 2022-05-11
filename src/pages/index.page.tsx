@@ -1,11 +1,10 @@
-import { gql } from "@apollo/client";
-import Button from "components/Button";
-import Input from "components/forms/Input";
-import Spinner from "components/Spinner";
-import useForm from "hooks/useForm";
-import { useLoginMutation } from "helpers/graphql";
-import { createGetServerSideProps } from "helpers/page";
-import { NextPageWithLayout } from "helpers/types";
+import Input from "core/components/forms/Input";
+import Spinner from "core/components/Spinner";
+import Button from "core/components/Button";
+import { useLoginMutation } from "core/graphql/mutations.generated";
+import { createGetServerSideProps } from "core/helpers/page";
+import { NextPageWithLayout } from "core/helpers/types";
+import useForm from "core/hooks/useForm";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -15,14 +14,6 @@ interface LoginForm {
   email: string;
   password: string;
 }
-
-const LOGIN_MUTATION = gql`
-  mutation Login($input: LoginInput!) {
-    login(input: $input) {
-      success
-    }
-  }
-`;
 
 const LoginPage: NextPageWithLayout = () => {
   const router = useRouter();

@@ -24,7 +24,7 @@ const RadioGroup = ({ name, options, onChange, value }: RadioGroupProps) => {
             type="radio"
             name={name}
             className={clsx(
-              "form-radio focus:ring-transparent focus:outline-none text-gray-800"
+              "form-radio text-gray-800 focus:outline-none focus:ring-transparent"
             )}
             value={option.id}
             onChange={onChange}
@@ -32,7 +32,7 @@ const RadioGroup = ({ name, options, onChange, value }: RadioGroupProps) => {
           />
           <label
             htmlFor={`${name}-${option.id}`}
-            className="text-sm font-medium ml-2 text-gray-700"
+            className="ml-2 text-sm font-medium text-gray-700"
           >
             {option.label}
           </label>
