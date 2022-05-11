@@ -1,5 +1,5 @@
 .tooltip {
-  @apply shadow-md rounded bg-white text-gray-600 border z-50 px-2.5 py-1.5 flex flex-col text-xs max-w-sm;
+  @apply z-50 flex max-w-sm flex-col rounded border bg-white px-2.5 py-1.5 text-xs text-gray-600 shadow-md;
 }
 
 .tooltip[data-popper-interactive="false"] {
@@ -8,7 +8,7 @@
 
 .arrow,
 .arrow::before {
-  @apply absolute w-2 h-2 bg-inherit;
+  @apply absolute h-2 w-2 bg-inherit;
 }
 
 .arrow {
