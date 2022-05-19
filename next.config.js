@@ -17,6 +17,8 @@ const config = {
   trailingSlash: false,
   i18n,
 
+  swcMinify: true,
+
   async rewrites() {
     return {
       // After checking all Next.js pages (including dynamic routes)...
