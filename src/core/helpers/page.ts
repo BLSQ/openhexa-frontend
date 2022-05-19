@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
-import { AuthenticatedUser, getUser } from "../identity/helpers/auth";
+import { AuthenticatedUser, getUser } from "identity/helpers/auth";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { addApolloState, CustomApolloClient, getApolloClient } from "./apollo";
 

@@ -1,7 +1,7 @@
 import { Combobox as UICombobox } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import Spinner from "components/Spinner";
+import Spinner from "core/components/Spinner";
 import { usePopper } from "react-popper";
 import {
   ChangeEvent,
@@ -15,7 +15,7 @@ import {
   useState,
 } from "react";
 import Input from "./Input";
-import { sameWidthModifier } from "helpers/popper";
+import { sameWidthModifier } from "core/helpers/popper";
 import { createPortal } from "react-dom";
 import { Modifier } from "@popperjs/core";
 

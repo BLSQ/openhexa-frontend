@@ -1,7 +1,7 @@
 import { Dialog as BaseDialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
-import useEventListener from "hooks/useEventListener";
+import useEventListener from "core/hooks/useEventListener";
 import { Fragment, ReactElement, ReactNode, useRef } from "react";
 
 type DialogProps = {

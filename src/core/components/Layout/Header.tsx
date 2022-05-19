@@ -1,6 +1,6 @@
 import { SearchIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
-import Avatar from "components/Avatar";
+import Avatar from "core/components/Avatar";
 import Link from "next/link";
 import Navbar from "./Navbar";
 import { LayoutClasses } from "./styles";

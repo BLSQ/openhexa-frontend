@@ -1,4 +1,4 @@
-import { ensureArray } from "helpers/array";
+import { ensureArray } from "core/helpers/array";
 import { isEqual } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import { useEmitter, useListener } from "./useEmitter";

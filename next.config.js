@@ -12,8 +12,6 @@ const config = {
     SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT,
   },
 
-  pageExtensions: [".page.tsx"],
-
   poweredByHeader: false, // Disable 'x-powered-by' header
   reactStrictMode: true,
   trailingSlash: false,

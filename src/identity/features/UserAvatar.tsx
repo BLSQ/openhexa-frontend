@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import Avatar, { AvatarProps } from "components/Avatar";
+import Avatar, { AvatarProps } from "core/components/Avatar";
 
 import { useMemo } from "react";
 import { UserAvatar_UserFragment } from "./UserAvatar.generated";

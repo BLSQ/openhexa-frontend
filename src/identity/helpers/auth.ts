@@ -8,7 +8,7 @@ import {
 } from "identity/graphql/queries.generated";
 import { GetServerSidePropsContext } from "next";
 import Router from "next/router";
-import { getApolloClient } from "../../helpers/apollo";
+import { getApolloClient } from "core/helpers/apollo";
 
 export type AuthenticatedUser = {
   id: string;
