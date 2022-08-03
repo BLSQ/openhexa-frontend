@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client";
-import DataGrid, { Cell, Column } from "core/components/DataGrid";
-import filesize from "filesize";
+import { ChevronRightIcon } from "@heroicons/react/solid";
+import DataGrid, { Column } from "core/components/DataGrid";
+import Filesize from "core/components/Filesize";
+import Link from "core/components/Link";
 import Time from "core/components/Time";
 import { CollectionElementType } from "graphql-types";
 import { useTranslation } from "next-i18next";
-import Link from "core/components/Link";
 import { useMemo } from "react";
 import { CollectionElementsTable_ElementFragment } from "./CollectionElementsTable.generated";
-import { ChevronRightIcon } from "@heroicons/react/solid";
 
 type CollectionElementsTableProps = {
   renderAs: CollectionElementType;
@@ -18,7 +18,6 @@ const CollectionElementsTable = (props: CollectionElementsTableProps) => {
   const { renderAs, elements } = props;
   const { t } = useTranslation();
 
-  console.log(elements);
   const columns = useMemo<Column[]>(() => {
     switch (renderAs) {
       case CollectionElementType.DHIS2DataElement:
@@ -26,28 +25,29 @@ const CollectionElementsTable = (props: CollectionElementsTableProps) => {
           {
             Header: t("Name"),
             minWidth: 300,
-            accessor: "dhis2.name",
-            Cell: (cell) => <span className="text-gray-600">{cell.value}</span>,
+            accessor: "dhis2",
+            Cell: (cell) => (
+              <div className="text-gray-600">
+                {cell.value.name}
+                <div className="mt-1 text-xs">
+                  <Link
+                    color="text-gray-400"
+                    hoverColor="text-gray-500"
+                    href={{
+                      pathname: "/dhis2/[id]",
+                      query: { id: cell.value.id },
+                    }}
+                  >
+                    {cell.value.instance.name}
+                  </Link>
+                </div>
+              </div>
+            ),
           },
           {
             Header: t("Code"),
             accessor: "dhis2.code",
           },
-          {
-            Header: t("Instance"),
-            accessor: "dhis2.instance",
-            Cell: (cell) => (
-              <Link
-                href={{
-                  pathname: "/dhis2/[id]",
-                  query: { id: cell.value.id },
-                }}
-              >
-                {cell.value.name}
-              </Link>
-            ),
-          },
-
           {
             Header: t("Last extracted"),
             accessor: "updatedAt",
@@ -97,7 +97,7 @@ const CollectionElementsTable = (props: CollectionElementsTableProps) => {
           {
             Header: t("Size"),
             accessor: "s3.size",
-            Cell: (cell) => <span>filesize(cell.value)</span>,
+            Cell: (cell) => <Filesize size={cell.value} />,
           },
 
           {
@@ -143,8 +143,6 @@ const CollectionElementsTable = (props: CollectionElementsTableProps) => {
         ];
     }
   }, [renderAs, t]);
-
-  console.log(elements);
 
   return <DataGrid columns={columns} data={elements} />;
 };
