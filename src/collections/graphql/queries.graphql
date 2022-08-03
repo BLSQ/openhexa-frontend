@@ -1,0 +1,39 @@
+query CollectionsPage($page: Int = 1, $perPage: Int = 15) {
+  collections(page: $page, perPage: $perPage) {
+    ...CollectionsTable_page
+  }
+
+  me {
+    authorizedActions
+  }
+}
+
+query CollectionPage($id: String!) {
+  collection(id: $id) {
+    id
+    name
+    createdAt
+    updatedAt
+    description
+    author {
+      displayName
+    }
+    countries {
+      code
+      ...CountryBadge_country
+    }
+
+    tags {
+      id
+      ...Tag_tag
+    }
+
+    elements {
+      items {
+        ...CollectionElementsTable_element
+      }
+    }
+
+    ...CollectionActionsMenu_collection
+  }
+}
