@@ -34,6 +34,7 @@
     "@graphql-codegen/near-operation-file-preset": "^2.2.14",
     "@headlessui/react": "^1.6.1",
     "@heroicons/react": "^1.0.6",
+    "@ladle/react": "^2.0.2",
     "@popperjs/core": "^2.11.5",
     "@sentry/nextjs": "^7.1.1",
     "@tailwindcss/aspect-ratio": "^0.4.0",
