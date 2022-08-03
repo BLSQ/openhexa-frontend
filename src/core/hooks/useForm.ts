@@ -18,10 +18,20 @@ type UseFormResult<T> = {
   submitError: string | null;
   previousFormData: Partial<T> | undefined;
   errors: { [key in keyof T]?: FormFieldError };
-  handleInputChange: ChangeEventHandler<HTMLInputElement>;
-  setFieldValue: (fieldName: string, value: any, isTouched?: boolean) => void;
+  handleInputChange: ChangeEventHandler<
+    HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+  >;
+  setDebouncedFieldValue: (
+    fieldName: keyof T,
+    value: any,
+    delay?: number
+  ) => void;
+  setFieldValue: (fieldName: keyof T, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
-  handleSubmit: (event?: { preventDefault: Function }) => Promise<void> | void;
+  handleSubmit: (event?: {
+    preventDefault: Function;
+    stopPropagation: Function;
+  }) => Promise<void> | void;
   touched: { [key in keyof Partial<T>]: boolean };
   isValid: boolean;
   isDirty: boolean;
@@ -34,16 +44,18 @@ type UseFormOptions<T> = {
   initialState?: Partial<T>;
   getInitialState?: () => Partial<T>;
   onSubmit: (formData: T) => void | Promise<any>;
-  validate?: (values: Partial<T>) =>
-    | {
-        [key in keyof T]?: FormFieldError;
-      }
-    | void;
+  validate?: (values: Partial<T>) => {
+    [key in keyof T]: FormFieldError;
+  };
 };
 
 function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   const { t } = useTranslation();
   const { initialState = {}, getInitialState, validate, onSubmit } = options;
+  const [isSubmitting, setSubmitting] = useState(false);
+  const timeouts = useRef<{ [key in keyof T]?: any }>({});
+  const [hasBeenSubmitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [touched, setTouched] = useState<
     | {
         [key in keyof Partial<T>]: boolean;
@@ -51,39 +63,45 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     | {}
   >({});
 
-  const internalInitialState = useRef<Partial<T>>({});
+  const internalInitialState = useRef<Partial<T>>();
 
   const setInitialState = () => {
-    internalInitialState.current = (
-      getInitialState ? getInitialState() : initialState
-    ) as T;
+    if (getInitialState) {
+      internalInitialState.current = getInitialState() as T;
+    } else {
+      internalInitialState.current = initialState ?? {};
+    }
   };
   if (!internalInitialState.current) {
     setInitialState();
   }
-  const [isSubmitting, setSubmitting] = useState(false);
-  const [hasBeenSubmitted, setSubmitted] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<T>>(
-    internalInitialState.current
+    internalInitialState.current ?? {}
   );
   const previousFormData = usePrevious<Partial<T>>(formData);
 
   const resetForm = useCallback(() => {
     setSubmitted(false);
+    Object.values(timeouts).forEach((timeout) => clearTimeout(timeout));
+    timeouts.current = {};
     setTouched({});
     setSubmitError(null);
     setInitialState();
-    setFormData(internalInitialState.current);
+    setFormData(internalInitialState.current ?? {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getInitialState, initialState]);
 
-  const handleInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+  const handleInputChange: ChangeEventHandler<
+    HTMLInputElement | HTMLSelectElement
+  > = useCallback(
     (event) => {
-      if (event.target.type === "checkbox") {
-        setFieldValue(event.target.name, event.target.checked);
+      if (
+        event.target instanceof HTMLInputElement &&
+        event.target.type === "checkbox"
+      ) {
+        setFieldValue(event.target.name as keyof T, event.target.checked);
       } else {
-        setFieldValue(event.target.name, event.target.value);
+        setFieldValue(event.target.name as keyof T, event.target.value);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,7 +109,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
   );
 
   const setFieldValue = useCallback(
-    (field: string, value: any, isTouched = true) => {
+    (field: keyof T, value: any, isTouched = true) => {
       setFormData((formData) => ({
         ...formData,
         [field]: value,
@@ -104,6 +122,23 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     []
   );
 
+  const setDebouncedFieldValue = useCallback(
+    (field: keyof T, value: any, delay: number = 200) => {
+      clearTimeout(timeouts.current[field]);
+      timeouts.current = {
+        ...timeouts.current,
+        [field]: setTimeout(() => {
+          delete timeouts.current[field];
+          timeouts.current = {
+            ...timeouts.current,
+          };
+          setFieldValue(field, value);
+        }, delay),
+      };
+    },
+    [setFieldValue]
+  );
+
   const errors = useMemo(() => {
     if (!validate) {
       return {};
@@ -114,14 +149,23 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData]);
 
-  const isValid = useMemo(
-    () => Object.values(errors).filter(Boolean).length === 0, // Ignore {myField: null | undefined}
-    [errors]
-  );
+  const isValid = useMemo(() => {
+    if (Object.values(errors).filter(Boolean).length > 0) {
+      // Ignore {myField: null | undefined}
+      return false;
+    }
+    if (Object.keys(timeouts.current).length > 0) {
+      // Some changes are not processed yet
+      return false;
+    }
+    return true;
+  }, [errors, timeouts]);
 
   const handleSubmit = useCallback(
-    async (event?: { preventDefault: Function }) => {
+    async (event?: { preventDefault: Function; stopPropagation: Function }) => {
       event?.preventDefault();
+      event?.stopPropagation();
+
       if (isSubmitting) return;
 
       setSubmitError(null);
@@ -170,6 +214,7 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     touched: allTouched,
     handleInputChange,
     setFieldValue,
+    setDebouncedFieldValue,
     resetForm,
     isValid,
     isSubmitting,
