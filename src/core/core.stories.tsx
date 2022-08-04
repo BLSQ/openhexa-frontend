@@ -41,6 +41,6 @@ Button.argTypes = {
 };
 
 const defaults = {
-  title: "Core / To review",
+  title: "To review / Core",
 };
 export default defaults;
