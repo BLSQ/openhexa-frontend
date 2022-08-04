@@ -1,33 +1,25 @@
-import * as Types from "../../graphql-types";
+import * as Types from '../../graphql-types';
 
-import { gql } from "@apollo/client";
-import * as Apollo from "@apollo/client";
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type DeleteCollectionMutationVariables = Types.Exact<{
   input: Types.DeleteCollectionInput;
 }>;
 
-export type DeleteCollectionMutation = {
-  __typename?: "Mutation";
-  deleteCollection: {
-    __typename?: "DeleteCollectionResult";
-    success: boolean;
-    errors: Array<Types.DeleteCollectionError>;
-  };
-};
+
+export type DeleteCollectionMutation = { __typename?: 'Mutation', deleteCollection: { __typename?: 'DeleteCollectionResult', success: boolean, errors: Array<Types.DeleteCollectionError> } };
+
 
 export const DeleteCollectionDocument = gql`
-  mutation DeleteCollection($input: DeleteCollectionInput!) {
-    deleteCollection(input: $input) {
-      success
-      errors
-    }
+    mutation DeleteCollection($input: DeleteCollectionInput!) {
+  deleteCollection(input: $input) {
+    success
+    errors
   }
-`;
-export type DeleteCollectionMutationFn = Apollo.MutationFunction<
-  DeleteCollectionMutation,
-  DeleteCollectionMutationVariables
->;
+}
+    `;
+export type DeleteCollectionMutationFn = Apollo.MutationFunction<DeleteCollectionMutation, DeleteCollectionMutationVariables>;
 
 /**
  * __useDeleteCollectionMutation__
@@ -46,24 +38,10 @@ export type DeleteCollectionMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useDeleteCollectionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    DeleteCollectionMutation,
-    DeleteCollectionMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    DeleteCollectionMutation,
-    DeleteCollectionMutationVariables
-  >(DeleteCollectionDocument, options);
-}
-export type DeleteCollectionMutationHookResult = ReturnType<
-  typeof useDeleteCollectionMutation
->;
-export type DeleteCollectionMutationResult =
-  Apollo.MutationResult<DeleteCollectionMutation>;
-export type DeleteCollectionMutationOptions = Apollo.BaseMutationOptions<
-  DeleteCollectionMutation,
-  DeleteCollectionMutationVariables
->;
+export function useDeleteCollectionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCollectionMutation, DeleteCollectionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCollectionMutation, DeleteCollectionMutationVariables>(DeleteCollectionDocument, options);
+      }
+export type DeleteCollectionMutationHookResult = ReturnType<typeof useDeleteCollectionMutation>;
+export type DeleteCollectionMutationResult = Apollo.MutationResult<DeleteCollectionMutation>;
+export type DeleteCollectionMutationOptions = Apollo.BaseMutationOptions<DeleteCollectionMutation, DeleteCollectionMutationVariables>;
