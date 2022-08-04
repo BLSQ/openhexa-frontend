@@ -17,7 +17,8 @@
     "prepare": "husky install",
     "schema": "npx get-graphql-schema http://localhost:8000/graphql/ > schema.graphql",
     "codegen": "find . -name *.generated.tsx -delete && graphql-codegen --config codegen.yml",
-    "i18n:extract": "i18next"
+    "i18n:extract": "i18next",
+    "ladle": "npx ladle serve"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

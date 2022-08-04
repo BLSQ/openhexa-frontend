@@ -1,30 +1,46 @@
-import ButtonComponent from "./components/Button";
 import { Story } from "@ladle/react";
+import { DocumentDownloadIcon } from "@heroicons/react/outline";
 
-export const Button: Story<{
-  text: string;
-  variant: "primary" | "secondary" | "white" | "outlined" | "custom";
-  size: "sm" | "md" | "lg" | "xl" | "xxl";
-}> = ({ text, variant, size }) => {
+import ButtonComponent, { ButtonProps } from "./components/Button";
+
+interface ButtonStoryProps extends ButtonProps {
+  leading: boolean;
+}
+
+export const Button: Story<ButtonStoryProps> = ({
+  children,
+  variant,
+  size,
+  leading,
+}) => {
+  const leadingIcon = leading ? (
+    <DocumentDownloadIcon className="h-4" />
+  ) : undefined;
   return (
-    <ButtonComponent size={size} variant={variant}>
-      {text}
+    <ButtonComponent size={size} variant={variant} leadingIcon={leadingIcon}>
+      {children}
     </ButtonComponent>
   );
 };
-Button.storyName = "Button";
 
 Button.args = {
-  text: "Hello world",
+  children: "Hello world",
+  leading: false,
 };
 Button.argTypes = {
   variants: {
-    options: ["primary", "secondary", "white", "outlined", "custom"],
+    options: ButtonComponent.Variants,
     control: { type: "radio" },
     defaultValue: "primary",
   },
   size: {
-    options: ["sm", "md", "lg", "xl", "xxl"],
+    options: ButtonComponent.Sizes,
     control: { type: "select" },
+    defaultValue: "md",
   },
 };
+
+const defaults = {
+  title: "Core / To review",
+};
+export default defaults;
