@@ -85,7 +85,7 @@ Lint and format the code using the following command:
 npm run lint && npm run format
 ```
 
-### Component
+### Component library
 
 We use [Ladle](https://ladle.dev/) to develop our component library.
 
