@@ -23,14 +23,14 @@ const CollectionElementsTable = (props: CollectionElementsTableProps) => {
       return (
         <DataGrid data={elements}>
           <TextColumn
-            label="Name"
+            label={t("Name")}
             accessor="dhis2"
             textPath="name"
             subtextPath="instance.name"
             minWidth={300}
           />
-          <BaseColumn label="Code" accessor="dhis2.code" />
-          <DateColumn label="Last Extracted" accessor="updatedAt" />
+          <BaseColumn label={t("Code")} accessor="dhis2.code" />
+          <DateColumn label={t("Last Extracted")} accessor="updatedAt" />
           <ChevronLinkColumn
             hideLabel
             accessor="dhis2"
@@ -55,14 +55,13 @@ const CollectionElementsTable = (props: CollectionElementsTableProps) => {
             subtextPath="bucket.name"
             minWidth={300}
           />
-          <BaseColumn label="Type" accessor="s3.type" />
-          <BaseColumn label="Size" accessor="s3.size">
+          <BaseColumn label={t("Type")} accessor="s3.type" />
+          <BaseColumn label={t("Size")} accessor="s3.size">
             {(value) => <Filesize size={value} />}
           </BaseColumn>
           <DateColumn label={t("Created")} accessor="createdAt" />
           <ChevronLinkColumn
             accessor="s3"
-            className=""
             hideLabel
             url={(value: any) =>
               `/s3/${encodeURIComponent(value.bucket.id)}/object/${value.key}`
