@@ -4,41 +4,40 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
 import { useCheckboxColumn } from "core/hooks/useCheckboxColumn";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { uniqueId } from "lodash";
+import React, {
+  isValidElement,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   Column as ReactTableColumn,
   PluginHook,
-  useRowState,
-} from "react-table";
-import {
   SortingRule,
   useFlexLayout,
   usePagination,
   useRowSelect,
+  useRowState,
   useSortBy,
   useTable,
 } from "react-table";
-import Pagination from "./Pagination";
+import Pagination from "../Pagination";
+import { Table, TableBody, TableCell, TableHead, TableRow } from "../Table";
+import { BaseColumnProps } from "./BaseColumn";
+import { CellContextProvider } from "./helpers";
 export type { Cell, SortingRule } from "react-table";
 
 export type Column<D extends object = any> = ReactTableColumn<D> & {
   Header: string | null;
   [key: string]: any;
 };
-type DataGridTheme = {
-  table?: string;
-  thead?: string;
-  tbody?: string;
-  th?: string;
-  td?: string;
-  tr?: string;
-  pagination?: string;
-};
 
 interface IDataGridProps {
-  columns: ReadonlyArray<Column<any>>;
+  children: ReactElement | ReactElement[];
   data: object[];
-  theme?: DataGridTheme;
   manualSortBy?: boolean;
   extraTableProps?: object;
   onSelectionChange?: (
@@ -64,21 +63,10 @@ interface IDataGridProps {
 
 type DataGridProps = IDataGridProps;
 
-export const DATA_GRID_DEFAULT_THEME = {
-  table: "divide-y divide-gray-200 w-full",
-  thead: "bg-gray-50",
-  tbody: "divide-y divide-gray-200",
-  th: "text-xs font-medium text-gray-500 tracking-wider text-left uppercase items-end flex px-6 py-3",
-  td: "whitespace-wrap text-sm text-gray-500 px-6 py-1 md:py-5 flex items-center",
-  tr: "",
-  pagination: "px-6",
-};
-
-const DataGrid = (props: DataGridProps) => {
+function DataGrid(props: DataGridProps) {
   const {
-    columns,
+    children,
     data,
-    theme = DATA_GRID_DEFAULT_THEME,
     onSelectionChange,
     skipPageReset = false,
     fetchData,
@@ -107,6 +95,31 @@ const DataGrid = (props: DataGridProps) => {
     }
     return hooks;
   }, [onSelectionChange]);
+
+  const columns = useMemo(() => {
+    const cols: Column[] = [];
+    React.Children.map(children, (column) => {
+      if (!isValidElement<BaseColumnProps>(column)) {
+        throw new Error("Invalid column");
+      }
+      const def: any = {
+        id: column.props.id ?? uniqueId("col"),
+        Header: column.props.label ?? "",
+        accessor: column.props.accessor,
+        className: column.props.className,
+        hideLabel: column.props.hideLabel,
+        Cell: () => React.cloneElement(column),
+      };
+      ["minWidth", "width", "maxWidth"].forEach((field) => {
+        if (column.props[field]) {
+          def[field] = column.props[field];
+        }
+      });
+      cols.push(def);
+    });
+
+    return cols;
+  }, [children]);
 
   const {
     getTableProps,
@@ -201,65 +214,77 @@ const DataGrid = (props: DataGridProps) => {
   useEffect(() => {
     onFetchData({ pageIndex, pageSize, sortBy });
   }, [onFetchData, pageIndex, pageSize, sortBy]);
+
   return (
     <div className={className}>
       <div className="overflow-x-auto">
-        <table className={clsx(theme.table)} {...getTableProps()}>
-          <thead className={clsx(theme.thead)}>
+        <Table {...getTableProps()}>
+          <TableHead>
             {headerGroups.map((headerGroup, i) => (
-              <tr className={theme.tr} {...headerGroup.getHeaderGroupProps()}>
+              <TableRow {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <th
-                    className={clsx(theme.th, column.className)}
+                  <TableCell
+                    heading
+                    className={column.headerClassName}
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                   >
-                    {column.render("Header")}
-                    {column.isSorted && i === headerGroups.length - 1 && (
-                      <span
-                        className={clsx(
-                          "ml-2 inline-block w-4 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300"
+                    {column.hideLabel ? (
+                      <span className="sr-only">{column.render("Header")}</span>
+                    ) : (
+                      <>
+                        {column.render("Header")}
+                        {column.isSorted && i === headerGroups.length - 1 && (
+                          <span
+                            className={clsx(
+                              "ml-2 inline-block w-4 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300"
+                            )}
+                          >
+                            {column.isSortedDesc ? (
+                              <ChevronDownIcon
+                                className="h-4 w-4"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <ChevronUpIcon
+                                className="h-4 w-4"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </span>
                         )}
-                      >
-                        {column.isSortedDesc ? (
-                          <ChevronDownIcon
-                            className="h-4 w-4"
-                            aria-hidden="true"
-                          />
-                        ) : (
-                          <ChevronUpIcon
-                            className="h-4 w-4"
-                            aria-hidden="true"
-                          />
-                        )}
-                      </span>
+                      </>
                     )}
-                  </th>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody className={theme.tbody} {...getTableBodyProps()}>
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
             {page.map((row, i) => {
               prepareRow(row);
               return (
-                <tr className={theme.tr} {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return (
-                      <td className={theme.td} {...cell.getCellProps()}>
+                <TableRow {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <TableCell
+                      {...cell.getCellProps({
+                        className: cell.column.className,
+                      })}
+                    >
+                      <CellContextProvider cell={cell}>
                         {cell.render("Cell")}
-                      </td>
-                    );
-                  })}
-                </tr>
+                      </CellContextProvider>
+                    </TableCell>
+                  ))}
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       {totalItems !== undefined && (
         <Pagination
           onChange={onPaginationChange}
-          className={theme.pagination}
+          className="px-6"
           loading={loading}
           totalItems={totalItems}
           countItems={page.length}
@@ -270,6 +295,6 @@ const DataGrid = (props: DataGridProps) => {
       )}
     </div>
   );
-};
+}
 
 export default DataGrid;

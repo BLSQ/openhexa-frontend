@@ -11,7 +11,6 @@ import Button from "core/components/Button";
 import { PageContent } from "core/components/Layout/PageContent";
 import { createGetServerSideProps } from "core/helpers/page";
 import Toggle from "core/helpers/Toggle";
-import { MeAuthorizedActions } from "graphql-types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useCallback } from "react";

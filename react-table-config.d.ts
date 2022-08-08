@@ -108,6 +108,8 @@ declare module "react-table" {
       UseResizeColumnsColumnOptions<D>,
       UseSortByColumnOptions<D> {
     className?: string;
+    headerClassName?: string;
+    hideLabel?: boolean;
   }
 
   export interface ColumnInstance<
