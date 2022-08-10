@@ -1,6 +1,6 @@
 import { PlusIcon } from "@heroicons/react/outline";
 import CollectionsTable from "collections/features/CollectionsTable";
-import CreateCollectionDialog from "collections/features/CreateCollectionDialog";
+import CreateCollectionDialog from "collections/features/ManageCollectionItemDialog";
 import {
   CollectionsPageDocument,
   useCollectionsPageQuery,
