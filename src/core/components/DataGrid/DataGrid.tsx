@@ -4,7 +4,9 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import clsx from "clsx";
 import { useCheckboxColumn } from "core/hooks/useCheckboxColumn";
-import { uniqueId } from "lodash";
+import usePrevious from "core/hooks/usePrevious";
+import _, { uniqueId } from "lodash";
+import { useTranslation } from "next-i18next";
 import React, {
   isValidElement,
   ReactElement,
@@ -45,6 +47,7 @@ interface IDataGridProps {
     allIds: Record<string, boolean>
   ) => void;
   fetchData?: (params: {
+    page: number;
     pageSize: number;
     pageIndex: number;
     sortBy: SortingRule<object>[];
@@ -56,6 +59,7 @@ interface IDataGridProps {
   skipPageReset?: boolean;
   defaultPageSize?: number;
   className?: string;
+  emptyLabel?: string;
   defaultSortBy?: SortingRule<object>[];
   pageSizeOptions?: number[];
   wide?: boolean;
@@ -64,10 +68,12 @@ interface IDataGridProps {
 type DataGridProps = IDataGridProps;
 
 function DataGrid(props: DataGridProps) {
+  const { t } = useTranslation();
   const {
     children,
     data,
     onSelectionChange,
+    emptyLabel = t("No elements to display"),
     skipPageReset = false,
     fetchData,
     sortable = false,
@@ -174,6 +180,8 @@ function DataGrid(props: DataGridProps) {
     ...hooks
   );
 
+  const prevVariables = usePrevious({ pageIndex, sortBy, pageSize });
+
   useEffect(() => {
     if (onSelectionChange) {
       onSelectionChange(
@@ -212,13 +220,19 @@ function DataGrid(props: DataGridProps) {
   );
 
   useEffect(() => {
-    onFetchData({ pageIndex, pageSize, sortBy });
-  }, [onFetchData, pageIndex, pageSize, sortBy]);
+    if (
+      !prevVariables ||
+      _.isEqual(prevVariables, { pageIndex, sortBy, pageSize })
+    ) {
+      return;
+    }
+    onFetchData({ page: pageIndex + 1, pageIndex, pageSize, sortBy });
+  }, [onFetchData, pageIndex, pageSize, sortBy, prevVariables]);
 
   return (
     <div className={className}>
       <div className="overflow-x-auto">
-        <Table {...getTableProps()}>
+        <Table {...getTableProps()} className="table-fixed">
           <TableHead>
             {headerGroups.map((headerGroup, i) => (
               <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -280,6 +294,11 @@ function DataGrid(props: DataGridProps) {
             })}
           </TableBody>
         </Table>
+        {!page?.length && emptyLabel && (
+          <div className="px-6 py-4 text-center text-sm italic text-gray-500">
+            {emptyLabel}
+          </div>
+        )}
       </div>
       {totalItems !== undefined && (
         <Pagination

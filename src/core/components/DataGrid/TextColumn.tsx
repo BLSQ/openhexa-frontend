@@ -1,19 +1,20 @@
 import _ from "lodash";
-import { useMemo } from "react";
+import { ReactElement, useMemo } from "react";
 import { BaseColumnProps } from "./BaseColumn";
 import { useCellContext } from "./helpers";
 
 type TextColumnProps = BaseColumnProps & {
-  textPath: string;
+  textPath?: string;
+  defaultValue?: ReactElement | string;
   subtextPath?: string;
 };
 
 export function TextColumn(props: TextColumnProps) {
-  const { textPath, subtextPath } = props;
+  const { textPath, subtextPath, defaultValue } = props;
   const cell = useCellContext();
 
   const text = useMemo(
-    () => _.get(cell.value, textPath),
+    () => (textPath ? _.get(cell.value, textPath) : cell.value),
     [cell.value, textPath]
   );
   const subtext = useMemo(
@@ -23,8 +24,8 @@ export function TextColumn(props: TextColumnProps) {
 
   return (
     <div className="w-full">
-      <div title={text} className="truncate text-gray-600 lg:whitespace-nowrap">
-        {text}
+      <div title={text} className="truncate lg:whitespace-nowrap">
+        {text ?? defaultValue}
       </div>
       {subtextPath && (
         <div className="mt-1 text-xs text-gray-400">{subtext}</div>

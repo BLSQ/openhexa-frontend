@@ -54,7 +54,7 @@ const Tabs = (props: TabsProps) => {
 type TabProps = {
   label: string;
   className?: string;
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
 };
 
 function Tab(props: TabProps) {

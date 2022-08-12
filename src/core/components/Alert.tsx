@@ -34,7 +34,7 @@ const Alert = (props: AlertProps) => {
           <InformationCircleIcon className="text-picton-blue h-16 w-16" />
         )}
         <div className="flex-1">{children}</div>
-        <Button variant="outlined" onClick={onClose}>
+        <Button variant="white" onClick={onClose}>
           {t("Close")}
         </Button>
       </Dialog.Content>

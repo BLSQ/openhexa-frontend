@@ -1,9 +1,4 @@
-import {
-  ChevronRightIcon,
-  DocumentDownloadIcon,
-  ExternalLinkIcon,
-  PencilIcon,
-} from "@heroicons/react/outline";
+import { PencilIcon } from "@heroicons/react/outline";
 import CollectionActionsMenu from "collections/features/CollectionActionsMenu";
 import CollectionDataSourceViewerDialog from "collections/features/CollectionDataSourceViewerDialog";
 import CollectionElementsTable from "collections/features/CollectionElementsTable";
@@ -14,10 +9,8 @@ import {
 } from "collections/graphql/queries.generated";
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import Button from "core/components/Button";
 import DescriptionList from "core/components/DescriptionList";
 import { PageContent } from "core/components/Layout/PageContent";
-import { TableClasses } from "core/components/Table";
 import Time from "core/components/Time";
 import CountryBadge from "core/features/CountryBadge";
 import Tag from "core/features/Tag";

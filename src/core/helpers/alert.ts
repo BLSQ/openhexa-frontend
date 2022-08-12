@@ -1,7 +1,10 @@
-export function displayAlert(
-  message: string,
-  type: "error" | "info" | "warning" = "info"
-) {
+export enum AlertType {
+  error,
+  info,
+  warning,
+}
+
+export function displayAlert(message: string, type?: AlertType) {
   if (!window) {
     console.warn("displayAlert cannot be called on the server.");
     return;
@@ -9,7 +12,7 @@ export function displayAlert(
   const event = new CustomEvent("displayAlert", {
     detail: {
       message,
-      type,
+      type: type ?? AlertType.info,
     },
   });
 

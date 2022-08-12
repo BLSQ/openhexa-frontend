@@ -1,6 +1,4 @@
 import { PlusIcon } from "@heroicons/react/outline";
-import CollectionsTable from "collections/features/CollectionsTable";
-import CreateCollectionDialog from "collections/features/ManageCollectionItemDialog";
 import {
   CollectionsPageDocument,
   useCollectionsPageQuery,
@@ -8,12 +6,18 @@ import {
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
+import DataGrid from "core/components/DataGrid";
+import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
+import CountryColumn from "core/components/DataGrid/CountryColumn";
+import DateColumn from "core/components/DataGrid/DateColumn";
+import TagColumn from "core/components/DataGrid/TagColumn";
+import CreateCollectionDialog from "collections/features/CreateCollectionDialog";
+import { TextColumn } from "core/components/DataGrid/TextColumn";
 import { PageContent } from "core/components/Layout/PageContent";
 import { createGetServerSideProps } from "core/helpers/page";
 import Toggle from "core/helpers/Toggle";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
 
 type Props = {
   page: number;
@@ -30,11 +34,9 @@ const CollectionsPage = (props: Props) => {
   });
   const router = useRouter();
 
-  const onChangePage = useCallback(
-    (page: number) =>
-      router.push({ pathname: router.pathname, query: { page } }),
-    [router]
-  );
+  const onChangePage = ({ page }: { page: number }) => {
+    router.push({ pathname: router.pathname, query: { page } });
+  };
 
   if (!data) {
     return null;
@@ -49,26 +51,58 @@ const CollectionsPage = (props: Props) => {
       </Breadcrumbs>
       <div className="space-y-4">
         <div className="flex justify-end">
-          {true && (
-            <Toggle>
-              {({ isToggled, toggle }) => (
-                <>
-                  <Button onClick={toggle}>
-                    <PlusIcon className="mr-1 h-4" />
-                    {t("Create")}
-                  </Button>
-                  <CreateCollectionDialog open={isToggled} onClose={toggle} />
-                </>
-              )}
-            </Toggle>
-          )}
+          <Toggle>
+            {({ isToggled, toggle }) => (
+              <>
+                <Button onClick={toggle}>
+                  <PlusIcon className="mr-1 h-4" />
+                  {t("Create")}
+                </Button>
+                <CreateCollectionDialog open={isToggled} onClose={toggle} />
+              </>
+            )}
+          </Toggle>
         </div>
         <Block>
-          <CollectionsTable
-            page={data.collections}
-            perPage={props.perPage}
-            onChangePage={onChangePage}
-          />
+          <DataGrid
+            defaultPageSize={15}
+            data={data.collections.items}
+            totalItems={data.collections.totalItems}
+            totalPages={data.collections.totalPages}
+            fetchData={onChangePage}
+          >
+            <TextColumn
+              label={t("Name")}
+              accessor="name"
+              className="text-gray-700"
+              minWidth={240}
+            />
+            <CountryColumn
+              max={2}
+              defaultValue="-"
+              label={t("Locations")}
+              accessor="countries"
+            />
+            <TagColumn
+              max={2}
+              defaultValue="-"
+              label={t("Tags")}
+              accessor="tags"
+            />
+            <DateColumn label={t("Created")} accessor={"createdAt"} />
+            <TextColumn
+              defaultValue="-"
+              accessor="author.displayName"
+              label={t("Author")}
+            />
+            <ChevronLinkColumn
+              accessor="id"
+              url={(value) => ({
+                pathname: "/collections/[collectionId]",
+                query: { collectionId: value },
+              })}
+            />
+          </DataGrid>
         </Block>
       </div>
     </PageContent>

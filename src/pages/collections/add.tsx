@@ -6,12 +6,7 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
-type Props = {
-  page: number;
-  perPage: number;
-};
-
-const AddToCollectionsPage = (props: Props) => {
+const AddToCollectionsPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -20,7 +15,9 @@ const AddToCollectionsPage = (props: Props) => {
     id: router.query.id as string,
   };
 
-  console.log(element);
+  const onClose = () => {
+    router.push((router.query.redirect as string) || "/");
+  };
 
   return (
     <PageContent>
@@ -34,7 +31,7 @@ const AddToCollectionsPage = (props: Props) => {
           <ManageCollectionItemDialog
             element={element}
             open
-            onClose={() => {}}
+            onClose={onClose}
           />
         </Block>
       </div>
