@@ -3,6 +3,7 @@ import { useTranslation } from "next-i18next";
 import {
   ChangeEventHandler,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -13,7 +14,7 @@ type FormData = {
   string?: string;
 };
 
-type UseFormResult<T> = {
+type UseFormResult<T, TData = void> = {
   formData: Partial<T>;
   submitError: string | null;
   previousFormData: Partial<T> | undefined;
@@ -28,10 +29,10 @@ type UseFormResult<T> = {
   ) => void;
   setFieldValue: (fieldName: keyof T, value: any, isTouched?: boolean) => void;
   resetForm: () => void;
-  handleSubmit: (event?: {
+  handleSubmit(event?: {
     preventDefault: Function;
     stopPropagation: Function;
-  }) => Promise<void> | void;
+  }): Promise<TData | void> | TData | void;
   touched: { [key in keyof Partial<T>]: boolean };
   isValid: boolean;
   isDirty: boolean;
@@ -49,7 +50,9 @@ type UseFormOptions<T> = {
   };
 };
 
-function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
+function useForm<T = FormData, TData = void>(
+  options: UseFormOptions<T>
+): UseFormResult<T, TData> {
   const { t } = useTranslation();
   const { initialState = {}, getInitialState, validate, onSubmit } = options;
   const [isSubmitting, setSubmitting] = useState(false);
@@ -63,6 +66,8 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     | {}
   >({});
 
+  // This is intended to always return the same object to avoid to have side-effect in useEffect because of a object ref change
+  const uniqueRef = useRef<{}>({});
   const internalInitialState = useRef<Partial<T>>();
 
   const setInitialState = () => {
@@ -174,8 +179,9 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
 
       if (isValid) {
         try {
-          await onSubmit(formData as T);
+          const result = await onSubmit(formData as T);
           setInitialState();
+          return result;
         } catch (err: any) {
           setSubmitError(
             err.message ?? (t("An unexpected error ocurred.") as string)
@@ -205,21 +211,41 @@ function useForm<T = FormData>(options: UseFormOptions<T>): UseFormResult<T> {
     [formData, internalInitialState]
   );
 
-  return {
-    formData,
-    previousFormData,
-    errors,
-    submitError,
-    isDirty,
-    touched: allTouched,
-    handleInputChange,
-    setFieldValue,
-    setDebouncedFieldValue,
-    resetForm,
-    isValid,
-    isSubmitting,
-    handleSubmit,
-  };
+  const result = useMemo(
+    () =>
+      Object.assign(uniqueRef.current, {
+        formData,
+        previousFormData,
+        errors,
+        submitError,
+        isDirty,
+        touched: allTouched,
+        handleInputChange,
+        setFieldValue,
+        setDebouncedFieldValue,
+        resetForm,
+        isValid,
+        isSubmitting,
+        handleSubmit,
+      }),
+    [
+      formData,
+      previousFormData,
+      errors,
+      submitError,
+      isDirty,
+      allTouched,
+      handleInputChange,
+      setFieldValue,
+      setDebouncedFieldValue,
+      resetForm,
+      isValid,
+      isSubmitting,
+      handleSubmit,
+    ]
+  );
+
+  return result;
 }
 
 export default useForm;
