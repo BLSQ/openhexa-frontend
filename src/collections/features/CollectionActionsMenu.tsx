@@ -40,6 +40,7 @@ CollectionActionsMenu.fragments = {
       }
       ...CollectionDeleteTrigger_collection
     }
+    ${CollectionDeleteTrigger.fragments.collection}
   `,
 };
 

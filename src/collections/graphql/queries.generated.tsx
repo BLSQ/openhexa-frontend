@@ -1,11 +1,10 @@
 import * as Types from '../../graphql-types';
 
 import { gql } from '@apollo/client';
-import { CollectionsTable_PageFragmentDoc } from '../features/CollectionsTable.generated';
-import { CountryBadge_CountryFragmentDoc } from '../../core/features/CountryBadge.generated';
 import { Tag_TagFragmentDoc } from '../../core/features/Tag.generated';
-import { CollectionActionsMenu_CollectionFragmentDoc } from '../features/CollectionActionsMenu.generated';
+import { CountryBadge_CountryFragmentDoc } from '../../core/features/CountryBadge.generated';
 import { CollectionElementsTable_ElementFragmentDoc } from '../features/CollectionElementsTable.generated';
+import { CollectionActionsMenu_CollectionFragmentDoc } from '../features/CollectionActionsMenu.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type CollectionsPageQueryVariables = Types.Exact<{
@@ -14,7 +13,7 @@ export type CollectionsPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type CollectionsPageQuery = { __typename?: 'Query', collections: { __typename?: 'CollectionPage', totalPages: number, totalItems: number, pageNumber: number, items: Array<{ __typename?: 'Collection', id: string, name: string, createdAt: any, updatedAt: any, description?: string | null, author?: { __typename?: 'User', displayName: string } | null, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }>, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, authorizedActions: { __typename?: 'CollectionAuthorizedActions', canDelete: boolean, canUpdate: boolean } }> }, me: { __typename?: 'Me', authorizedActions: Array<Types.MeAuthorizedActions> } };
+export type CollectionsPageQuery = { __typename?: 'Query', collections: { __typename?: 'CollectionPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'Collection', id: string, name: string, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }>, author?: { __typename?: 'User', displayName: string } | null }> } };
 
 export type CollectionPageQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -27,13 +26,28 @@ export type CollectionPageQuery = { __typename?: 'Query', collection?: { __typen
 export const CollectionsPageDocument = gql`
     query CollectionsPage($page: Int = 1, $perPage: Int = 15) {
   collections(page: $page, perPage: $perPage) {
-    ...CollectionsTable_page
-  }
-  me {
-    authorizedActions
+    pageNumber
+    totalPages
+    totalItems
+    items {
+      id
+      name
+      tags {
+        ...Tag_tag
+        id
+      }
+      countries {
+        ...CountryBadge_country
+        code
+      }
+      author {
+        displayName
+      }
+    }
   }
 }
-    ${CollectionsTable_PageFragmentDoc}`;
+    ${Tag_TagFragmentDoc}
+${CountryBadge_CountryFragmentDoc}`;
 
 /**
  * __useCollectionsPageQuery__

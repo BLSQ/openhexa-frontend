@@ -1,4 +1,5 @@
 import CountryBadge from "core/features/CountryBadge";
+import { CountryBadge_CountryFragment } from "core/features/CountryBadge.generated";
 import { ReactElement, useMemo } from "react";
 import { BaseColumnProps } from "./BaseColumn";
 import { useCellContext } from "./helpers";
@@ -10,7 +11,7 @@ type CountryColumnProps = {
 
 const CountryColumn = (props: CountryColumnProps) => {
   const { max, defaultValue } = props;
-  const cell = useCellContext();
+  const cell = useCellContext<CountryBadge_CountryFragment>();
   const allCountries = useMemo(() => {
     if (!cell.value) return [];
 

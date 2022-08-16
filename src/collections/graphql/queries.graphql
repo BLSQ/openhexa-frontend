@@ -1,10 +1,23 @@
 query CollectionsPage($page: Int = 1, $perPage: Int = 15) {
   collections(page: $page, perPage: $perPage) {
-    ...CollectionsTable_page
-  }
-
-  me {
-    authorizedActions
+    pageNumber
+    totalPages
+    totalItems
+    items {
+      id
+      name
+      tags {
+        ...Tag_tag
+        id
+      }
+      countries {
+        ...CountryBadge_country
+        code
+      }
+      author {
+        displayName
+      }
+    }
   }
 }
 

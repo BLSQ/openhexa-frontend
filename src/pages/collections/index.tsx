@@ -97,7 +97,7 @@ const CollectionsPage = (props: Props) => {
             />
             <ChevronLinkColumn
               accessor="id"
-              url={(value) => ({
+              url={(value: any) => ({
                 pathname: "/collections/[collectionId]",
                 query: { collectionId: value },
               })}
