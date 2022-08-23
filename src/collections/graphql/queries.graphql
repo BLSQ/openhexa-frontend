@@ -29,20 +29,13 @@ query CollectionPage($id: String!) {
     updatedAt
     description
     author {
-<<<<<<< HEAD
       id
       ...User_user
-=======
-      displayName
->>>>>>> origin/main
     }
     countries {
       code
       ...CountryBadge_country
-<<<<<<< HEAD
       ...CountryPicker_country
-=======
->>>>>>> origin/main
     }
 
     tags {
