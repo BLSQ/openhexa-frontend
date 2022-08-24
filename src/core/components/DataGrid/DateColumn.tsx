@@ -16,7 +16,7 @@ const DateColumn = ({
   const cell = useCellContext();
 
   if (!cell.value) {
-    return defaultValue ?? null;
+    return defaultValue ? <span>{defaultValue}</span> : null;
   }
   return <Time className={className} datetime={cell.value} format={format} />;
 };
