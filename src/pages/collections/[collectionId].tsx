@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import CollectionActionsMenu from "collections/features/CollectionActionsMenu";
 import CollectionDataSourceViewerDialog from "collections/features/CollectionDataSourceViewerDialog";
 import CollectionElementsTable from "collections/features/CollectionElementsTable";
+import { useUpdateCollectionMutation } from "collections/graphql/mutations.generated";
 import {
   CollectionPageDocument,
   CollectionPageQuery,
@@ -35,17 +36,7 @@ const CollectionPage = ({ collectionId }: Props) => {
     variables: { id: collectionId },
   });
 
-  const [mutate] = useMutation(gql`
-    mutation updateCollection($input: UpdateCollectionInput!) {
-      updateCollection(input: $input) {
-        collection {
-          id
-        }
-        success
-        errors
-      }
-    }
-  `);
+  const [mutate] = useUpdateCollectionMutation();
 
   if (!data?.collection) {
     return null;
