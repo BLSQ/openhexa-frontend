@@ -29,6 +29,7 @@ function useCollectionForm(onAfterSubmit?: AfterSubmitFn) {
       if (onAfterSubmit) {
         onAfterSubmit(collection);
       }
+      return collection;
     },
     initialState: {
       countries: [],
