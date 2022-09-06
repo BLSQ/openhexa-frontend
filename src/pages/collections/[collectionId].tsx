@@ -49,6 +49,7 @@ const CollectionPage = ({ collectionId }: Props) => {
           id: collection.id,
           name: values.name ?? collection.name,
           description: values.description ?? collection.description ?? "",
+          summary: values.summary,
           tagIds: (values.tags || collection.tags)?.map(
             (t: { id: string }) => t.id
           ),
@@ -95,6 +96,12 @@ const CollectionPage = ({ collectionId }: Props) => {
                 accessor="name"
                 required
                 label={t("Name")}
+                defaultValue="-"
+              />
+              <TextProperty
+                id="summary"
+                accessor="summary"
+                label={t("Summary")}
                 defaultValue="-"
               />
               <UserProperty
