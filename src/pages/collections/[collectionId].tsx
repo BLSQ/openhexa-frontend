@@ -86,6 +86,7 @@ const CollectionPage = ({ collectionId }: Props) => {
           <DataCard item={collection}>
             <DataCard.Heading<typeof collection>
               titleAccessor="name"
+              subtitleAccessor="summary"
               renderActions={(item) => (
                 <CollectionActionsMenu collection={item} />
               )}
