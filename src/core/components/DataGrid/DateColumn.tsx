@@ -18,7 +18,7 @@ const DateColumn = ({
   if (!cell.value) {
     return defaultValue ? <span>{defaultValue}</span> : null;
   }
-  return <Time className={className} datetime={cell.value} format={format} />;
+  return <Time className="truncate" datetime={cell.value} format={format} />;
 };
 
 export default DateColumn;
