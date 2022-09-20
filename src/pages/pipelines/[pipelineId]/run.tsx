@@ -1,17 +1,13 @@
-import { PlayIcon } from "@heroicons/react/outline";
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import Button from "core/components/Button";
-import Field from "core/components/forms/Field";
-import CodeEditor from "core/components/CodeEditor";
 import Page from "core/components/Layout/Page";
 import { PageContent } from "core/components/Layout/PageContent";
 import Title from "core/components/Title";
 import { AlertType, displayAlert } from "core/helpers/alert";
 import { createGetServerSideProps } from "core/helpers/page";
-import useForm from "core/hooks/useForm";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import PipelineRunForm from "pipelines/features/PipelineRunForm/PipelineRunForm";
 import {
   PipelineConfigureRunPageDocument,
   usePipelineConfigureRunPageQuery,
@@ -19,7 +15,6 @@ import {
 import { runPipeline } from "pipelines/helpers/pipeline";
 import { getPipelineRun } from "pipelines/helpers/runs";
 import ReactMarkdown from "react-markdown";
-import PipelineRunForm from "pipelines/features/PipelineRunForm/PipelineRunForm";
 
 type Props = {
   run: Awaited<ReturnType<typeof getPipelineRun>>;

@@ -81,8 +81,8 @@ const PipelinesPage = (props: Props) => {
                 minWidth={240}
               />
               <DateColumn
-                label={t("Last executed on")}
-                format={DateTime.DATETIME_MED}
+                label={t("Last run")}
+                relative
                 accessor="lastRun.executionDate"
               />
               <TextColumn

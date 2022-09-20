@@ -12,7 +12,6 @@ import UserProperty from "core/components/DataCard/UserProperty";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
 import DateColumn from "core/components/DataGrid/DateColumn";
-import { TextColumn } from "core/components/DataGrid/TextColumn";
 import UserColumn from "core/components/DataGrid/UserColumn";
 import Page from "core/components/Layout/Page";
 import { PageContent } from "core/components/Layout/PageContent";
@@ -24,16 +23,12 @@ import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
-import {
-  PipelineRunStatusBadge_DagRunFragment,
-  PipelineRunStatusBadge_DagRunFragmentDoc,
-} from "pipelines/features/PipelineRunStatusBadge.generated";
+import { PipelineRunStatusBadge_DagRunFragment } from "pipelines/features/PipelineRunStatusBadge.generated";
 import {
   PipelinePageDocument,
   PipelinePageQuery,
   usePipelinePageQuery,
 } from "pipelines/graphql/queries.generated";
-import { formatDAGRunStatus } from "pipelines/helpers/format";
 
 type Props = {
   page: number;
@@ -185,7 +180,9 @@ const PipelinePage = (props: Props) => {
                   {(item) => <PipelineRunStatusBadge dagRun={item} />}
                 </BaseColumn>
                 <BaseColumn label={t("Duration")} accessor="duration">
-                  {(value) => <span>{formatDuration(value)}</span>}
+                  {(value) => (
+                    <span>{value ? formatDuration(value) : "-"}</span>
+                  )}
                 </BaseColumn>
                 <UserColumn label={t("User")} accessor="user" />
                 <ChevronLinkColumn

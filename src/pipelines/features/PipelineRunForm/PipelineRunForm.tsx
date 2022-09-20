@@ -84,7 +84,10 @@ function PipelineRunForm(props: PipelineRunFormProps) {
             onChange={(e) => setConfigFieldValue("start_date", e.target.value)}
             id="start_date"
             label={t("From date")}
-            error={(form.errors as any).start_date}
+            error={
+              (form.touched as any).start_date &&
+              (form.errors as any).start_date
+            }
           />
           <Field
             name="end_date"
@@ -94,7 +97,9 @@ function PipelineRunForm(props: PipelineRunFormProps) {
             onChange={(e) => setConfigFieldValue("end_date", e.target.value)}
             id="end_date"
             label={t("To date")}
-            error={(form.errors as any).end_date}
+            error={
+              (form.touched as any).end_date && (form.errors as any).end_date
+            }
           />
           <Checkbox
             value={form.formData.config?.reuse_existing_extract}
