@@ -50,7 +50,7 @@
   "ID": "ID",
   "Identifier": "Identifier",
   "Invalid configuration. This is not a valid JSON.": "Invalid configuration. This is not a valid JSON.",
-  "Last executed on": "Last executed on",
+  "Last run": "Last run",
   "Last status": "Last status",
   "Loading...": "Loading...",
   "Locations": "Locations",
