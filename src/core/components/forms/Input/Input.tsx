@@ -11,9 +11,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     type,
     name,
     error,
+    defaultValue,
     className,
     trailingIcon,
-    value = "",
+    value,
     ...delegated
   } = props;
 
@@ -22,7 +23,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
     "px-3 py-2 border rounded-md focus:outline-none focus:z-10 sm:text-sm",
     "disabled:opacity-50 disabled:cursor-not-allowed",
     error
-      ? "border-red-300  placeholder-red-300  text-red-900  focus:ring-red-500  focus:border-red-500"
+      ? "border-red-300 placeholder-red-300  text-red-900  focus:ring-red-500  focus:border-red-500"
       : "border-gray-300 placeholder-gray-500 text-gray-900 focus:ring-blue-500 focus:border-blue-500",
     trailingIcon && "pr-4",
     className
@@ -37,7 +38,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         aria-invalid={Boolean(error)}
         aria-describedby={`${name}-description`}
         className={inputClassName}
-        value={value}
+        value={defaultValue ? undefined : value ?? ""}
+        defaultValue={defaultValue}
         {...delegated}
         ref={ref}
       />
