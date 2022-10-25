@@ -2,6 +2,7 @@ import { Combobox as UICombobox, Portal } from "@headlessui/react";
 import { ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Modifier } from "@popperjs/core";
 import clsx from "clsx";
+import Badge from "core/components/Badge";
 import Spinner from "core/components/Spinner";
 import { sameWidthModifier } from "core/helpers/popper";
 import {
@@ -20,8 +21,8 @@ import CheckOption from "./CheckOption";
 import OptionsWrapper from "./OptionsWrapper";
 
 export type ComboboxProps<T = {}> = {
-  value: T | null;
-  onChange: (value: T | null) => void;
+  value: T[] | null;
+  onChange: (value: T[] | null) => void;
   onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   name?: string;
@@ -39,12 +40,12 @@ export type ComboboxProps<T = {}> = {
   renderIcon?: ({
     value,
   }: {
-    value: T | null;
+    value: T[] | null;
   }) => ReactElement | undefined | null;
   onOpen?: () => void;
+  displayValue(value: T): ReactNode;
   onClose?: () => void;
   placeholder?: string;
-  displayValue: (value: T) => string;
   withPortal?: boolean;
   className?: string;
 };
@@ -65,12 +66,13 @@ function Combobox<T>(props: ComboboxProps<T>) {
     onOpen,
     onClose,
     onInputChange,
-    displayValue,
     className,
     renderIcon,
     value,
+    displayValue,
     placeholder,
     onChange,
+    disabled,
     ...delegated
   } = props;
 
@@ -94,6 +96,12 @@ function Combobox<T>(props: ComboboxProps<T>) {
 
   const onClear = useCallback(() => onChange(null), [onChange]);
   const close = useCallback(() => btnRef.current?.click(), [btnRef]);
+  const onRemoveItem = useCallback(
+    (item: T) => {
+      value && onChange(value.filter((x) => x !== item));
+    },
+    [onChange, value]
+  );
 
   const optionsElement = (
     <UICombobox.Options
@@ -108,7 +116,7 @@ function Combobox<T>(props: ComboboxProps<T>) {
           {children}
         </OptionsWrapper>
       </div>
-      {footer && footer({ close, clear: () => onClear })}
+      {footer && footer({ close, clear: onClear })}
     </UICombobox.Options>
   );
 
@@ -118,7 +126,8 @@ function Combobox<T>(props: ComboboxProps<T>) {
       onChange={onChange}
       value={value}
       nullable={!required}
-      multiple={false}
+      disabled={disabled}
+      multiple
     >
       {({ open }) => (
         <div className="relative" ref={setReferenceElement}>
@@ -130,7 +139,18 @@ function Combobox<T>(props: ComboboxProps<T>) {
               open ? "border-blue-500" : "hover:border-gray-400"
             )}
           >
-            <div className="mr-1 flex flex-1 items-center truncate">
+            <div className="mr-1 flex flex-1 flex-wrap items-center gap-2 truncate">
+              {value?.map((val, i) => (
+                <Badge className="bg-gray-100 hover:bg-gray-50" key={i}>
+                  {displayValue(val)}
+                  {!disabled && (
+                    <XMarkIcon
+                      className="ml-1 h-3 w-3 cursor-pointer"
+                      onClick={() => onRemoveItem(val)}
+                    />
+                  )}
+                </Badge>
+              ))}
               <UICombobox.Input as={Fragment} onChange={onInputChange}>
                 <input
                   data-testid="combobox-input"
@@ -143,9 +163,9 @@ function Combobox<T>(props: ComboboxProps<T>) {
             {renderIcon && renderIcon({ value })}
             <UICombobox.Button ref={btnRef} data-testid="combobox-button">
               <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-none">
-                {value && (
+                {(Array.isArray(value) ? value?.length > 0 : value) && (
                   <XMarkIcon
-                    onClick={() => onChange(null)}
+                    onClick={() => onChange([])}
                     className="h-4 w-4 cursor-pointer hover:text-gray-500"
                     aria-hidden="true"
                   />
