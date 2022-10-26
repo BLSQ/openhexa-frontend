@@ -903,6 +903,27 @@ export type DenyAccessmodAccessRequestResult = {
   success: Scalars['Boolean'];
 };
 
+export type ExternalDashboard = {
+  __typename?: 'ExternalDashboard';
+  countries: Array<Country>;
+  createdAt: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name: Scalars['String'];
+  pictureUrl: Scalars['URL'];
+  tags: Array<Tag>;
+  updatedAt: Scalars['DateTime'];
+  url: Scalars['URL'];
+};
+
+export type ExternalDashboardPage = {
+  __typename?: 'ExternalDashboardPage';
+  items: Array<ExternalDashboard>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
 export type FeatureFlag = {
   __typename?: 'FeatureFlag';
   code: Scalars['String'];
@@ -1314,6 +1335,8 @@ export type Query = {
   dag?: Maybe<Dag>;
   dagRun?: Maybe<DagRun>;
   dags: DagPage;
+  externalDashboard?: Maybe<ExternalDashboard>;
+  externalDashboards: ExternalDashboardPage;
   me: Me;
   organizations: Array<Organization>;
   search: SearchQueryResult;
@@ -1416,6 +1439,17 @@ export type QueryDagRunArgs = {
 
 
 export type QueryDagsArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryExternalDashboardArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryExternalDashboardsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
 };
