@@ -823,6 +823,25 @@ type DHIS2Instance {
   url: String
 }
 
+type ExternalDashboard {
+  id: String!
+  name: String!
+  url: URL!
+  pictureUrl: URL!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  description: String
+  countries: [Country!]!
+  tags: [Tag!]!
+}
+
+type ExternalDashboardPage {
+  items: [ExternalDashboard!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
 type FeatureFlag {
   code: String!
   config: JSON!
@@ -1029,6 +1048,8 @@ type Query {
   country(code: String, alpha3: String): Country
   boundaries(country_code: String!, level: String!): [WHOBoundary!]!
   countries: [Country!]!
+  externalDashboards(page: Int, perPage: Int): ExternalDashboardPage!
+  externalDashboard(id: String!): ExternalDashboard
 }
 
 enum RequestAccessmodAccessError {
