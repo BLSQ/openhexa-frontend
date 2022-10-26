@@ -10,7 +10,6 @@ import {
   ReactElement,
   ReactNode,
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -19,9 +18,8 @@ import { usePopper } from "react-popper";
 import CheckOption from "./CheckOption";
 import OptionsWrapper from "./OptionsWrapper";
 
-export type ComboboxProps<T = {}> = {
-  value: T | null;
-  onChange: (value: T | null) => void;
+export type ComboboxProps<T> = {
+  renderIcon?(value?: T): ReactElement;
   onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   name?: string;
@@ -35,18 +33,15 @@ export type ComboboxProps<T = {}> = {
     clear: () => void;
   }) => ReactNode;
   loading?: boolean;
-  by?: string;
-  renderIcon?: ({
-    value,
-  }: {
-    value: T | null;
-  }) => ReactElement | undefined | null;
+  by?: keyof T & string;
   onOpen?: () => void;
+  displayValue(value: T): string;
   onClose?: () => void;
   placeholder?: string;
-  displayValue: (value: T) => string;
   withPortal?: boolean;
   className?: string;
+  value?: T;
+  onChange(value?: T): void;
 };
 
 const Classes = {
@@ -55,10 +50,9 @@ const Classes = {
   OptionsList: "overflow-auto flex-1",
 };
 
-function Combobox<T>(props: ComboboxProps<T>) {
+function Combobox<T extends { [key: string]: any }>(props: ComboboxProps<T>) {
   const {
     loading = false,
-    required = false,
     withPortal = false,
     children,
     footer,
@@ -66,11 +60,13 @@ function Combobox<T>(props: ComboboxProps<T>) {
     onClose,
     onInputChange,
     displayValue,
-    className,
     renderIcon,
     value,
     placeholder,
     onChange,
+    by,
+    required,
+    disabled,
     ...delegated
   } = props;
 
@@ -92,7 +88,7 @@ function Combobox<T>(props: ComboboxProps<T>) {
     modifiers,
   });
 
-  const onClear = useCallback(() => onChange(null), [onChange]);
+  const onClear = useCallback(() => onChange(), [onChange]);
   const close = useCallback(() => btnRef.current?.click(), [btnRef]);
 
   const optionsElement = (
@@ -114,11 +110,12 @@ function Combobox<T>(props: ComboboxProps<T>) {
 
   return (
     <UICombobox
-      {...delegated}
       onChange={onChange}
       value={value}
-      nullable={!required}
       multiple={false}
+      disabled={disabled}
+      by={by as any /* Otherwise tyepscript is not happy */}
+      {...delegated}
     >
       {({ open }) => (
         <div className="relative" ref={setReferenceElement}>
@@ -131,7 +128,11 @@ function Combobox<T>(props: ComboboxProps<T>) {
             )}
           >
             <div className="mr-1 flex flex-1 items-center truncate">
-              <UICombobox.Input as={Fragment} onChange={onInputChange}>
+              <UICombobox.Input
+                as={Fragment}
+                onChange={onInputChange}
+                displayValue={displayValue}
+              >
                 <input
                   data-testid="combobox-input"
                   className="flex-1 placeholder-gray-600 placeholder-opacity-70 outline-none"
@@ -140,12 +141,12 @@ function Combobox<T>(props: ComboboxProps<T>) {
                 />
               </UICombobox.Input>
             </div>
-            {renderIcon && renderIcon({ value })}
+            {renderIcon && renderIcon(value)}
             <UICombobox.Button ref={btnRef} data-testid="combobox-button">
               <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-none">
-                {value && (
+                {value && !required && !disabled && (
                   <XMarkIcon
-                    onClick={() => onChange(null)}
+                    onClick={() => onChange()}
                     className="h-4 w-4 cursor-pointer hover:text-gray-500"
                     aria-hidden="true"
                   />

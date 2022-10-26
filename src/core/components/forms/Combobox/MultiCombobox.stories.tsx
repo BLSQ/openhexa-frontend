@@ -1,11 +1,11 @@
-import { Story, action } from "@ladle/react";
+import { Story } from "@ladle/react";
 import React, { useState } from "react";
 import MultiCombobox from "./MultiCombobox";
 
 export const MultiComboboxStory: Story<
   React.ComponentProps<typeof MultiCombobox> & { options: any[] }
 > = ({ options, ...delegated }) => {
-  const [value, setValue] = useState<any[] | null>([]);
+  const [value, setValue] = useState<any[]>([options[0]]);
 
   const onChange = (value: any) => {
     setValue(value);

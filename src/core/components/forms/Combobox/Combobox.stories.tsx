@@ -11,7 +11,7 @@ export const ComboboxStory: Story<
     setValue(value);
   };
   return (
-    <Combobox
+    <Combobox<any>
       {...delegated}
       onChange={onChange}
       value={value}
