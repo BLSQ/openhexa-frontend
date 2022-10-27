@@ -1046,6 +1046,7 @@ export type Mutation = {
   updateAccessmodZonalStatistics: UpdateAccessmodZonalStatisticsResult;
   updateCollection: UpdateCollectionResult;
   updateDAG: UpdateDagResult;
+  updateExternalDashboard: UpdateExternalDashboardResult;
   updateMembership: UpdateMembershipResult;
   updateTeam: UpdateTeamResult;
 };
@@ -1238,6 +1239,11 @@ export type MutationUpdateCollectionArgs = {
 
 export type MutationUpdateDagArgs = {
   input: UpdateDagInput;
+};
+
+
+export type MutationUpdateExternalDashboardArgs = {
+  input: UpdateExternalDashboardInput;
 };
 
 
@@ -1796,6 +1802,25 @@ export type UpdateDagResult = {
   __typename?: 'UpdateDAGResult';
   dag?: Maybe<Dag>;
   errors: Array<UpdateDagError>;
+  success: Scalars['Boolean'];
+};
+
+export enum UpdateExternalDashboardError {
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND'
+}
+
+export type UpdateExternalDashboardInput = {
+  countries?: InputMaybe<Array<CountryInput>>;
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateExternalDashboardResult = {
+  __typename?: 'UpdateExternalDashboardResult';
+  errors: Array<UpdateExternalDashboardError>;
+  externalDashboard?: Maybe<ExternalDashboard>;
   success: Scalars['Boolean'];
 };
 
