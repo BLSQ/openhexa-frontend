@@ -962,6 +962,7 @@ type Mutation {
   requestAccessmodAccess(input: RequestAccessmodAccessInput!): RequestAccessmodAccessInputResult!
   approveAccessmodAccessRequest(input: ApproveAccessmodAccessRequestInput!): ApproveAccessmodAccessRequestResult!
   denyAccessmodAccessRequest(input: DenyAccessmodAccessRequestInput!): DenyAccessmodAccessRequestResult!
+  updateExternalDashboard(input: UpdateExternalDashboardInput!): UpdateExternalDashboardResult!
 }
 
 type Organization {
@@ -1353,6 +1354,24 @@ type UpdateDAGResult {
   success: Boolean!
   errors: [UpdateDAGError!]!
   dag: DAG
+}
+
+enum UpdateExternalDashboardError {
+  INVALID
+  NOT_FOUND
+}
+
+input UpdateExternalDashboardInput {
+  id: String!
+  description: String
+  name: String
+  countries: [CountryInput!]
+}
+
+type UpdateExternalDashboardResult {
+  success: Boolean!
+  errors: [UpdateExternalDashboardError!]!
+  externalDashboard: ExternalDashboard
 }
 
 enum UpdateMembershipError {

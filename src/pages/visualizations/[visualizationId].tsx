@@ -20,6 +20,7 @@ import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import VisualizationPicture from "visualizations/features/VisualizationPicture";
 import { VisualizationPicture_VisualizationFragment } from "visualizations/features/VisualizationPicture.generated";
+import { useUpdateExternalDashboardMutation } from "visualizations/graphql/mutations.generated";
 import {
   useVisualizationQuery,
   VisualizationDocument,
@@ -37,6 +38,27 @@ const VisualizationPage = ({ visualizationId }: Props) => {
   const { data, refetch } = useVisualizationQuery({
     variables: { id: visualizationId },
   });
+
+  const [mutate] = useUpdateExternalDashboardMutation();
+
+  const onSectionSave: OnSaveFn = async (values) => {
+    await mutate({
+      variables: {
+        input: {
+          id: externalDashboard.id,
+          name: values.name ?? externalDashboard.name,
+          description:
+            values.description ?? externalDashboard.description ?? "",
+          countries: ensureArray(
+            values.countries || externalDashboard.countries
+          ).map(({ code }) => ({
+            code,
+          })),
+        },
+      },
+    });
+    await refetch();
+  };
 
   if (!data?.externalDashboard) {
     return null;
@@ -63,16 +85,16 @@ const VisualizationPage = ({ visualizationId }: Props) => {
         <div className="space-y-10">
           <DataCard item={externalDashboard}>
             <DataCard.Heading<typeof externalDashboard> titleAccessor="name">
-              {() => (
+              {(item) => (
                 <div>
                   <div className="flex items-center">
-                    <VisualizationPicture visualization={externalDashboard} />
+                    <VisualizationPicture visualization={item} />
                     <div className="ml-4 w-full truncate">
                       <div
                         className="truncate text-sm font-medium text-gray-900"
-                        title={externalDashboard.name}
+                        title={item.name}
                       >
-                        {externalDashboard.name}
+                        {item.name}
                       </div>
                       <div className="truncate text-sm text-gray-500">
                         <span>External Dashboard</span>
@@ -86,15 +108,18 @@ const VisualizationPage = ({ visualizationId }: Props) => {
               <RenderProperty id="url" label={t("Url")}>
                 {(item) => (
                   <a
-                    href={externalDashboard.url}
+                    href={item.url}
                     className="block flex items-center text-blue-600 hover:text-blue-500 focus:outline-none"
                   >
-                    {externalDashboard.url}
+                    {item.url}
                   </a>
                 )}
               </RenderProperty>
             </DataCard.Section>
-            <DataCard.Section title={t("OpenHexa Metadata")} onSave={() => {}}>
+            <DataCard.Section
+              title={t("OpenHexa Metadata")}
+              onSave={onSectionSave}
+            >
               <TextProperty
                 required
                 id="name"
