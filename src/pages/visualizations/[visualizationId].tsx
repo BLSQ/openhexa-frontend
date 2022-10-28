@@ -16,6 +16,7 @@ import { ensureArray } from "core/helpers/array";
 import { createGetServerSideProps } from "core/helpers/page";
 import useCacheKey from "core/hooks/useCacheKey";
 import useToggle from "core/hooks/useToggle";
+import { ExternalDashboard, ExternalDashboardPage } from "graphql-types";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import VisualizationPicture from "visualizations/features/VisualizationPicture";
@@ -106,12 +107,12 @@ const VisualizationPage = ({ visualizationId }: Props) => {
             </DataCard.Heading>
             <DataCard.Section title={t("Information")}>
               <RenderProperty id="url" label={t("Url")}>
-                {(item) => (
+                {() => (
                   <a
-                    href={item.url}
+                    href={externalDashboard.url}
                     className="block flex items-center text-blue-600 hover:text-blue-500 focus:outline-none"
                   >
-                    {item.url}
+                    {externalDashboard.url}
                   </a>
                 )}
               </RenderProperty>

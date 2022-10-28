@@ -6,6 +6,7 @@ query VisualizationsPage($page: Int, $perPage: Int = 15) {
       id
       name
       url
+      description
       ...VisualizationPicture_visualization
       createdAt
       updatedAt
@@ -25,6 +26,7 @@ query Visualization($id: String!) {
       id
       name
       url
+      description
       ...VisualizationPicture_visualization
       createdAt
       updatedAt
