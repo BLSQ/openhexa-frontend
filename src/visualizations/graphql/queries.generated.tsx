@@ -12,14 +12,14 @@ export type VisualizationsPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type VisualizationsPageQuery = { __typename?: 'Query', externalDashboards: { __typename?: 'ExternalDashboardPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'ExternalDashboard', id: string, name: string, url: any, createdAt: any, updatedAt: any, pictureUrl: any, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }>, tags: Array<{ __typename?: 'Tag', id: string, name: string }> }> } };
+export type VisualizationsPageQuery = { __typename?: 'Query', externalDashboards: { __typename?: 'ExternalDashboardPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'ExternalDashboard', id: string, name: string, url: any, description?: string | null, createdAt: any, updatedAt: any, pictureUrl: any, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }>, tags: Array<{ __typename?: 'Tag', id: string, name: string }> }> } };
 
 export type VisualizationQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
 
 
-export type VisualizationQuery = { __typename?: 'Query', externalDashboard?: { __typename?: 'ExternalDashboard', id: string, name: string, url: any, createdAt: any, updatedAt: any, pictureUrl: any, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }>, tags: Array<{ __typename?: 'Tag', id: string, name: string }> } | null };
+export type VisualizationQuery = { __typename?: 'Query', externalDashboard?: { __typename?: 'ExternalDashboard', id: string, name: string, url: any, description?: string | null, createdAt: any, updatedAt: any, pictureUrl: any, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }>, tags: Array<{ __typename?: 'Tag', id: string, name: string }> } | null };
 
 
 export const VisualizationsPageDocument = gql`
@@ -31,6 +31,7 @@ export const VisualizationsPageDocument = gql`
       id
       name
       url
+      description
       ...VisualizationPicture_visualization
       createdAt
       updatedAt
@@ -81,6 +82,7 @@ export const VisualizationDocument = gql`
     id
     name
     url
+    description
     ...VisualizationPicture_visualization
     createdAt
     updatedAt
