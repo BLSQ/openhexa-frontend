@@ -28,7 +28,7 @@ window.confirm = jest.fn();
 jest.mock("react-i18next", () => ({
   I18nextProvider: jest.fn(),
   useTranslation: () => ({ t: (key) => key }),
-  __esmodule: true,
+  __esModule: true,
 }));
 
 jest.mock("next/router", () => require("next-router-mock"));
