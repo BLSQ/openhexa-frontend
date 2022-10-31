@@ -85,7 +85,7 @@ const VisualizationPage = ({ visualizationId }: Props) => {
         </Breadcrumbs>
         <div className="space-y-10">
           <DataCard item={externalDashboard}>
-            <DataCard.Heading<typeof externalDashboard> titleAccessor="name">
+            <DataCard.Heading<typeof externalDashboard>>
               {(item) => (
                 <div>
                   <div className="flex items-center">
@@ -98,7 +98,7 @@ const VisualizationPage = ({ visualizationId }: Props) => {
                         {item.name}
                       </div>
                       <div className="truncate text-sm text-gray-500">
-                        <span>External Dashboard</span>
+                        <span>{t("External Dashboard")}</span>
                       </div>
                     </div>
                   </div>
