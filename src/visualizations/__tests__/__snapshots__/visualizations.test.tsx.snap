@@ -298,7 +298,7 @@ exports[`Visualization renders a visualization info page  1`] = `
                     <div
                       class="prose text-sm"
                     >
-                      -
+                      Untitled Dashboard
                     </div>
                   </dd>
                 </div>
@@ -793,7 +793,7 @@ exports[`Visualization renders the visualizations' page with data 2`] = `
                           datetime="2022-10-21T13:35:42.716+02:00"
                           title="2022-10-21T13:35:42.716+02:00"
                         >
-                          11 days ago
+                          12 days ago
                         </time>
                       </div>
                     </td>

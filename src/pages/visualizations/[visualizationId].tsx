@@ -124,7 +124,7 @@ const VisualizationPage = ({ visualizationId }: Props) => {
               <TextProperty
                 required
                 id="name"
-                accessor="label"
+                accessor="name"
                 label={t("Label")}
                 defaultValue="-"
               />
@@ -133,6 +133,7 @@ const VisualizationPage = ({ visualizationId }: Props) => {
                 accessor="description"
                 label={t("Description")}
                 defaultValue="-"
+                markdown
               />
               <UserProperty id="owner" accessor="owner" label={t("Owner")} />
               <TagProperty

@@ -26,7 +26,7 @@ app.prepare().then(async () => {
           req.url === "/" ||
           req.url.startsWith("/ready");
 
-        const isLegacy = req.url.search('/^\/visualizations\/[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}\b\/image/')
+        const isLegacy = req.url.search(/^\/visualizations\/[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}\b\/image/)
         return !isNext || !isLegacy
       },
     })
