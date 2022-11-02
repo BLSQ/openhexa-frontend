@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 
 import { TestApp } from "core/helpers/testutils";
 import VisualizationsPage from "pages/visualizations";
@@ -125,7 +125,10 @@ describe("Visualization", () => {
 
     const elm = await screen.findByText("https://coronavirus.data.gov.uk/");
     expect(elm).toBeInTheDocument();
-    expect(container).toMatchSnapshot();
+
+    waitFor(() => {
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it("renders null as the visualization does not exist", async () => {
