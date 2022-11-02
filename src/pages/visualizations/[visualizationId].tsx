@@ -1,9 +1,6 @@
-import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import Button from "core/components/Button";
 import DataCard from "core/components/DataCard";
 import CountryProperty from "core/components/DataCard/CountryProperty";
-import DateProperty from "core/components/DataCard/DateProperty";
 import RenderProperty from "core/components/DataCard/RenderProperty";
 import { OnSaveFn } from "core/components/DataCard/Section";
 import TagProperty from "core/components/DataCard/TagProperty";
@@ -11,22 +8,15 @@ import TextProperty from "core/components/DataCard/TextProperty";
 import UserProperty from "core/components/DataCard/UserProperty";
 import Page from "core/components/Layout/Page";
 import { PageContent } from "core/components/Layout/PageContent";
-import Spinner from "core/components/Spinner";
 import { ensureArray } from "core/helpers/array";
 import { createGetServerSideProps } from "core/helpers/page";
-import useCacheKey from "core/hooks/useCacheKey";
-import useToggle from "core/hooks/useToggle";
-import { ExternalDashboard, ExternalDashboardPage } from "graphql-types";
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
 import VisualizationPicture from "visualizations/features/VisualizationPicture";
-import { VisualizationPicture_VisualizationFragment } from "visualizations/features/VisualizationPicture.generated";
 import { useUpdateExternalDashboardMutation } from "visualizations/graphql/mutations.generated";
 import {
   useVisualizationQuery,
   VisualizationDocument,
   VisualizationQuery,
-  VisualizationsPageQuery,
 } from "visualizations/graphql/queries.generated";
 
 type Props = {
@@ -110,7 +100,7 @@ const VisualizationPage = ({ visualizationId }: Props) => {
                 {() => (
                   <a
                     href={externalDashboard.url}
-                    className="block flex items-center text-blue-600 hover:text-blue-500 focus:outline-none"
+                    className="flex items-center text-blue-600 hover:text-blue-500 focus:outline-none"
                   >
                     {externalDashboard.url}
                   </a>

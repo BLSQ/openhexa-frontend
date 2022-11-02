@@ -201,7 +201,7 @@ exports[`Visualization renders a visualization info page  1`] = `
                     class="col-span-4 text-sm text-gray-900"
                   >
                     <a
-                      class="block flex items-center text-blue-600 hover:text-blue-500 focus:outline-none"
+                      class="flex items-center text-blue-600 hover:text-blue-500 focus:outline-none"
                       href="https://coronavirus.data.gov.uk/"
                     >
                       https://coronavirus.data.gov.uk/
