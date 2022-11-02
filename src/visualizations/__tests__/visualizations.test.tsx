@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-
+import { DateTime, Settings } from "luxon";
 import { TestApp } from "core/helpers/testutils";
 import VisualizationsPage from "pages/visualizations";
 import VisualizationPage from "pages/visualizations/[visualizationId]";
@@ -10,6 +10,9 @@ import {
 
 describe("Visualization", () => {
   it("renders the visualizations' page", async () => {
+    Settings.now = () => new Date().valueOf();
+    DateTime.local().toISO();
+
     const graphqlMocks = [
       {
         request: {
