@@ -786,10 +786,10 @@ exports[`Visualization render visualizations page with data 2`] = `
                       >
                         <time
                           class="whitespace-nowrap truncate"
-                          datetime="2022-10-21T11:35:42.716+00:00"
-                          title="2022-10-21T11:35:42.716+00:00"
+                          datetime="2022-10-21T13:35:42.716+02:00"
+                          title="2022-10-21T13:35:42.716+02:00"
                         >
-                          il y a 11 jours
+                          11 days ago
                         </time>
                       </div>
                     </td>
