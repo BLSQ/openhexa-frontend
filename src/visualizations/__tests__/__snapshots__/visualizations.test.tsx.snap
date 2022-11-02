@@ -143,10 +143,11 @@ exports[`Visualization renders a visualization info page  1`] = `
           class="px-4 py-5 sm:px-6"
         >
           <div
-            aria-controls="headlessui-disclosure-panel-:r1:"
+            aria-controls="headlessui-disclosure-panel-e67862f3-ccbf-4c51-b8ed-ed1d0420ea19"
             aria-expanded="true"
             class="-my-7 flex items-center py-7"
-            id="headlessui-disclosure-button-:r0:"
+            data-headlessui-state="open"
+            id="headlessui-disclosure-button-6fbe024f-2316-4265-a6e8-d65a837e308a"
           >
             <h4
               class="font-medium"
@@ -180,7 +181,8 @@ exports[`Visualization renders a visualization info page  1`] = `
           <div>
             <div
               class="mt-6"
-              id="headlessui-disclosure-panel-:r1:"
+              data-headlessui-state="open"
+              id="headlessui-disclosure-panel-e67862f3-ccbf-4c51-b8ed-ed1d0420ea19"
             >
               <dl
                 class="space-y-6"
@@ -214,10 +216,11 @@ exports[`Visualization renders a visualization info page  1`] = `
           class="px-4 py-5 sm:px-6"
         >
           <div
-            aria-controls="headlessui-disclosure-panel-:r4:"
+            aria-controls="headlessui-disclosure-panel-14e41280-1ae3-4e44-b909-992f94b3186f"
             aria-expanded="true"
             class="-my-7 flex items-center py-7"
-            id="headlessui-disclosure-button-:r3:"
+            data-headlessui-state="open"
+            id="headlessui-disclosure-button-6af683b4-52ac-4d60-8c9f-ab447c31177e"
           >
             <h4
               class="font-medium"
@@ -273,7 +276,8 @@ exports[`Visualization renders a visualization info page  1`] = `
           <div>
             <div
               class="mt-6"
-              id="headlessui-disclosure-panel-:r4:"
+              data-headlessui-state="open"
+              id="headlessui-disclosure-panel-14e41280-1ae3-4e44-b909-992f94b3186f"
             >
               <dl
                 class="space-y-6"

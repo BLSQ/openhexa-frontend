@@ -30,6 +30,17 @@ beforeEach(() => {
 // Mock browser confirm
 window.confirm = jest.fn();
 
+jest.mock("react", () => {
+  const actualReact = jest.requireActual("react");
+  return {
+    ...actualReact,
+    useId() {
+      const ref = actualReact.useRef(faker.datatype.uuid());
+      return ref.current;
+    },
+  };
+});
+
 jest.mock("react-i18next", () => ({
   I18nextProvider: jest.fn(),
   useTranslation: () => ({ t: (key) => key }),
