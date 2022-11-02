@@ -6,6 +6,11 @@
 import "@testing-library/jest-dom/extend-expect";
 import { faker } from "@faker-js/faker";
 import { setConfig } from "next/config";
+import { Settings } from "luxon";
+
+Settings.defaultLocale = "en";
+Settings.defaultZone = "Europe/Brussels";
+
 // @ts-ignore
 import { publicRuntimeConfig } from "./next.config";
 
