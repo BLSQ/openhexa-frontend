@@ -10,6 +10,7 @@ import { Settings } from "luxon";
 
 Settings.defaultLocale = "en";
 Settings.defaultZone = "Europe/Brussels";
+Settings.now = jest.fn().mockImplementation(() => Date.now());
 
 // @ts-ignore
 import { publicRuntimeConfig } from "./next.config";
