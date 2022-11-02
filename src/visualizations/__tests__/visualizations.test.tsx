@@ -9,7 +9,7 @@ import {
 } from "visualizations/graphql/queries.generated";
 
 describe("Visualization", () => {
-  it("render visualizations page", async () => {
+  it("renders the visualizations' page", async () => {
     const graphqlMocks = [
       {
         request: {
@@ -41,7 +41,7 @@ describe("Visualization", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("render visualizations page with data", async () => {
+  it("renders the visualizations' page with data", async () => {
     const visualizationMock = [
       {
         request: {
@@ -89,7 +89,7 @@ describe("Visualization", () => {
     expect(await screen.findByText("Untitled Dashboard")).toBeInTheDocument();
   });
 
-  it("Render Visualization  given id", async () => {
+  it("renders a visualization info page ", async () => {
     const visualizationMock = [
       {
         request: {
@@ -128,7 +128,7 @@ describe("Visualization", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("Render Visualization  Not found", async () => {
+  it("renders null as the visualization does not exist", async () => {
     const visualizationMock = [
       {
         request: {

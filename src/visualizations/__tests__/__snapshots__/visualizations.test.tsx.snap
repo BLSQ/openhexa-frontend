@@ -1,8 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Visualization Render Visualization  Not found 1`] = `<div />`;
-
-exports[`Visualization Render Visualization  given id 1`] = `
+exports[`Visualization renders a visualization info page  1`] = `
 <div>
   <main
     class="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-6"
@@ -386,7 +384,9 @@ exports[`Visualization Render Visualization  given id 1`] = `
 </div>
 `;
 
-exports[`Visualization render visualizations page 1`] = `
+exports[`Visualization renders null as the visualization does not exist 1`] = `<div />`;
+
+exports[`Visualization renders the visualizations' page 1`] = `
 <div>
   <main
     class="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-6"
@@ -558,9 +558,9 @@ exports[`Visualization render visualizations page 1`] = `
 </div>
 `;
 
-exports[`Visualization render visualizations page with data 1`] = `<div />`;
+exports[`Visualization renders the visualizations' page with data 1`] = `<div />`;
 
-exports[`Visualization render visualizations page with data 2`] = `
+exports[`Visualization renders the visualizations' page with data 2`] = `
 <div>
   <main
     class="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-6"
