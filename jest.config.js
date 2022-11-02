@@ -14,10 +14,6 @@ const customJestConfig = {
       "<rootDir>/node_modules/react-markdown/react-markdown.min.js",
   },
   testEnvironment: "jest-environment-jsdom",
-  moduleNameMapper: {
-    "react-markdown":
-      "<rootDir>/node_modules/react-markdown/react-markdown.min.js",
-  },
   reporters: ["default", process.env.CI ? "github-actions" : null].filter(
     Boolean
   ),
