@@ -10,9 +10,6 @@ import {
 
 describe("Visualization", () => {
   it("renders the visualizations' page", async () => {
-    Settings.now = () => new Date().valueOf();
-    DateTime.local().toISO();
-
     const graphqlMocks = [
       {
         request: {
@@ -45,6 +42,10 @@ describe("Visualization", () => {
   });
 
   it("renders the visualizations' page with data", async () => {
+    (Settings.now as jest.Mock).mockReturnValue(
+      DateTime.fromObject({ year: 2022, month: 10, day: 22 }).toMillis()
+    );
+
     const visualizationMock = [
       {
         request: {
@@ -83,7 +84,6 @@ describe("Visualization", () => {
         <VisualizationsPage page={1} perPage={1} />
       </TestApp>
     );
-    expect(container).toMatchSnapshot();
 
     const elm = await screen.findByText("Visualizations", { selector: "h2" });
     expect(elm).toBeInTheDocument();

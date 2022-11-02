@@ -562,9 +562,7 @@ exports[`Visualization renders the visualizations' page 1`] = `
 </div>
 `;
 
-exports[`Visualization renders the visualizations' page with data 1`] = `<div />`;
-
-exports[`Visualization renders the visualizations' page with data 2`] = `
+exports[`Visualization renders the visualizations' page with data 1`] = `
 <div>
   <main
     class="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-6"
@@ -793,7 +791,7 @@ exports[`Visualization renders the visualizations' page with data 2`] = `
                           datetime="2022-10-21T13:35:42.716+02:00"
                           title="2022-10-21T13:35:42.716+02:00"
                         >
-                          12 days ago
+                          10 hours ago
                         </time>
                       </div>
                     </td>
