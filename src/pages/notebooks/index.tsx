@@ -1,23 +1,10 @@
-import { useCollectionsPageQuery } from "collections/graphql/queries.generated";
-import { PageContent } from "core/components/Layout/PageContent";
 import { createGetServerSideProps } from "core/helpers/page";
-import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
-import Page from "core/components/Layout/Page";
 import {
   NotebooksUrlDocument,
   useNotebooksUrlQuery,
 } from "notebooks/graphql/queries.generated";
 
-type Props = {
-  page: number;
-  perPage: number;
-};
-
-// Refresh list on deletion
-
-const NoteBooksPage = (props: Props) => {
-  const { t } = useTranslation();
+const NoteBooksPage = () => {
   const { data } = useNotebooksUrlQuery();
 
   if (!data) {
