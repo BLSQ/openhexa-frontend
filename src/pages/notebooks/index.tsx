@@ -4,7 +4,7 @@ import {
   useNotebooksUrlQuery,
 } from "notebooks/graphql/queries.generated";
 
-const NoteBooksPage = () => {
+const NotebooksPage = () => {
   const { data } = useNotebooksUrlQuery();
 
   if (!data) {
