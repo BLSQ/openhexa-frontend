@@ -3,41 +3,41 @@ import * as Types from '../../graphql-types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type NoteBooksPageQueryVariables = Types.Exact<{ [key: string]: never; }>;
+export type NotebooksPageQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type NoteBooksPageQuery = { __typename?: 'Query', notebooksUrl: any };
+export type NotebooksPageQuery = { __typename?: 'Query', notebooksUrl: any };
 
 
-export const NoteBooksPageDocument = gql`
-    query noteBooksPage {
+export const NotebooksPageDocument = gql`
+    query notebooksPage {
   notebooksUrl
 }
     `;
 
 /**
- * __useNoteBooksPageQuery__
+ * __useNotebooksPageQuery__
  *
- * To run a query within a React component, call `useNoteBooksPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useNoteBooksPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useNotebooksPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotebooksPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useNoteBooksPageQuery({
+ * const { data, loading, error } = useNotebooksPageQuery({
  *   variables: {
  *   },
  * });
  */
-export function useNoteBooksPageQuery(baseOptions?: Apollo.QueryHookOptions<NoteBooksPageQuery, NoteBooksPageQueryVariables>) {
+export function useNotebooksPageQuery(baseOptions?: Apollo.QueryHookOptions<NotebooksPageQuery, NotebooksPageQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<NoteBooksPageQuery, NoteBooksPageQueryVariables>(NoteBooksPageDocument, options);
+        return Apollo.useQuery<NotebooksPageQuery, NotebooksPageQueryVariables>(NotebooksPageDocument, options);
       }
-export function useNoteBooksPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NoteBooksPageQuery, NoteBooksPageQueryVariables>) {
+export function useNotebooksPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotebooksPageQuery, NotebooksPageQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<NoteBooksPageQuery, NoteBooksPageQueryVariables>(NoteBooksPageDocument, options);
+          return Apollo.useLazyQuery<NotebooksPageQuery, NotebooksPageQueryVariables>(NotebooksPageDocument, options);
         }
-export type NoteBooksPageQueryHookResult = ReturnType<typeof useNoteBooksPageQuery>;
-export type NoteBooksPageLazyQueryHookResult = ReturnType<typeof useNoteBooksPageLazyQuery>;
-export type NoteBooksPageQueryResult = Apollo.QueryResult<NoteBooksPageQuery, NoteBooksPageQueryVariables>;
+export type NotebooksPageQueryHookResult = ReturnType<typeof useNotebooksPageQuery>;
+export type NotebooksPageLazyQueryHookResult = ReturnType<typeof useNotebooksPageLazyQuery>;
+export type NotebooksPageQueryResult = Apollo.QueryResult<NotebooksPageQuery, NotebooksPageQueryVariables>;
