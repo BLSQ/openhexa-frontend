@@ -1,11 +1,11 @@
 import { createGetServerSideProps } from "core/helpers/page";
 import {
-  NotebooksUrlDocument,
-  useNotebooksUrlQuery,
+  NoteBooksPageDocument,
+  useNoteBooksPageQuery,
 } from "notebooks/graphql/queries.generated";
 
-const NoteBooksPage = () => {
-  const { data } = useNotebooksUrlQuery();
+const NotebooksPage = () => {
+  const { data } = useNoteBooksPageQuery();
 
   if (!data) {
     return null;
@@ -22,10 +22,9 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
   getServerSideProps: async (ctx, client) => {
     await client.query({
-      query: NotebooksUrlDocument,
+      query: NoteBooksPageDocument,
     });
-    return { props: {} };
   },
 });
 
-export default NoteBooksPage;
+export default NotebooksPage;
