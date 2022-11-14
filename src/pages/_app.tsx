@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "core/helpers/apollo";
-import Layout from "core/components/Layout";
+import CurrentLayout from "core/layouts";
 import { AppPropsWithLayout } from "core/helpers/types";
 import { appWithTranslation } from "next-i18next";
 import NavigationProgress from "nextjs-progressbar";
@@ -23,7 +23,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   const { me } = pageProps;
   const getLayout =
     Component.getLayout ??
-    ((page) => <Layout pageProps={pageProps}>{page}</Layout>);
+    ((page) => <CurrentLayout pageProps={pageProps}>{page}</CurrentLayout>);
 
   useEffect(() => {
     Sentry.setUser(me?.user ? { email: me.user.email, id: me.user.id } : null);

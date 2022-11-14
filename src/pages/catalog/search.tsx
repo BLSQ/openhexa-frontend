@@ -7,7 +7,7 @@ import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import Field from "core/components/forms/Field";
 import Select from "core/components/forms/Select";
-import { PageContent } from "core/components/Layout/PageContent";
+import CurrentLayout from "core/layouts";
 import { createGetServerSideProps } from "core/helpers/page";
 import useForm from "core/hooks/useForm";
 import { useTranslation } from "next-i18next";
@@ -42,7 +42,7 @@ const SearchPage = () => {
   const { results, types, loading } = useSearch(searchOptions);
 
   return (
-    <PageContent>
+    <CurrentLayout.PageContent>
       <Breadcrumbs className="my-8 px-2">
         <Breadcrumbs.Part href="/catalog">{t("Catalog")}</Breadcrumbs.Part>
         <Breadcrumbs.Part href="/catalog/search">
@@ -126,7 +126,7 @@ const SearchPage = () => {
           </div>
         </Block>
       </div>
-    </PageContent>
+    </CurrentLayout.PageContent>
   );
 };
 

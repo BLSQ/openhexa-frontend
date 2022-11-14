@@ -15,8 +15,8 @@ import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import UserColumn from "core/components/DataGrid/UserColumn";
-import Page from "core/components/Layout/Page";
-import { PageContent } from "core/components/Layout/PageContent";
+import Page from "core/layouts/Page";
+import CurrentLayout from "core/layouts";
 import Link from "core/components/Link";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
@@ -85,7 +85,7 @@ const PipelinePage = (props: Props) => {
 
   return (
     <Page title={t("Pipelines")}>
-      <PageContent>
+      <CurrentLayout.PageContent>
         <Breadcrumbs className="my-8 px-2">
           <Breadcrumbs.Part href="/pipelines">
             {t("Data Pipelines")}
@@ -262,7 +262,7 @@ const PipelinePage = (props: Props) => {
             </Block>
           </div>
         </div>
-      </PageContent>
+      </CurrentLayout.PageContent>
     </Page>
   );
 };
