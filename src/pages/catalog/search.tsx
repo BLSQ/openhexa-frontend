@@ -7,8 +7,7 @@ import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import Field from "core/components/forms/Field";
 import Select from "core/components/forms/Select";
-import Page from "core/components/Layout/Page";
-import { PageContent } from "core/components/Layout/PageContent";
+import CurrentLayout from "core/layouts";
 import { createGetServerSideProps } from "core/helpers/page";
 import useForm from "core/hooks/useForm";
 import { useTranslation } from "next-i18next";
@@ -43,21 +42,35 @@ const SearchPage = () => {
   const { results, types, loading } = useSearch(searchOptions);
 
   return (
-    <Page title={t("Search")}>
-      <PageContent>
-        <Breadcrumbs className="my-8 px-2">
-          <Breadcrumbs.Part href="/catalog">{t("Catalog")}</Breadcrumbs.Part>
-          <Breadcrumbs.Part href="/catalog/search">
-            {t("Search")}
-          </Breadcrumbs.Part>
-        </Breadcrumbs>
-        <div className="space-y-4">
-          <Block className="">
-            <Block.Content className="border-b  border-b-gray-200 bg-gray-50">
-              <form onSubmit={form.handleSubmit} className="space-y-4">
-                <SearchInput
-                  value={form.formData.query}
-                  loading={loading}
+    <CurrentLayout.PageContent>
+      <Breadcrumbs className="my-8 px-2">
+        <Breadcrumbs.Part href="/catalog">{t("Catalog")}</Breadcrumbs.Part>
+        <Breadcrumbs.Part href="/catalog/search">
+          {t("Search")}
+        </Breadcrumbs.Part>
+      </Breadcrumbs>
+      <div className="space-y-4">
+        <Block className="">
+          <Block.Content className="border-b  border-b-gray-200 bg-gray-50">
+            <form onSubmit={form.handleSubmit} className="space-y-4">
+              <SearchInput
+                value={form.formData.query}
+                loading={loading}
+                required
+                className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2.5"
+                name="query"
+                onChange={form.handleInputChange}
+              />
+              <div className="mt-1 text-sm text-gray-500">
+                {t(
+                  'Enter one or more search terms separated by spaces. Use "quotes" for exact matches.'
+                )}
+              </div>
+              <h4 className="text-sm font-medium">{t("Additional Filters")}</h4>
+              <div className="grid grid-cols-5 gap-4">
+                <Field
+                  name="datasources"
+                  label={t("By source")}
                   required
                   className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2.5"
                   name="query"
@@ -119,20 +132,19 @@ const SearchPage = () => {
                 </div>
               )}
 
-              {results && results.length !== 0 && (
-                <div className="divide-y divide-gray-100 overflow-y-auto ">
-                  {results.map((result) => (
-                    <div className="h-20" key={result.object.id}>
-                      <SearchResult className="h-full px-6" result={result} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </Block>
-        </div>
-      </PageContent>
-    </Page>
+            {results && results.length !== 0 && (
+              <div className="divide-y divide-gray-100 overflow-y-auto ">
+                {results.map((result) => (
+                  <div className="h-20" key={result.object.id}>
+                    <SearchResult className="h-full px-6" result={result} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </Block>
+      </div>
+    </CurrentLayout.PageContent>
   );
 };
 

@@ -3,14 +3,13 @@ import Quicksearch from "catalog/features/Quicksearch";
 import clsx from "clsx";
 import Avatar from "core/components/Avatar";
 import useToggle from "core/hooks/useToggle";
-import { MeAuthorizedActions } from "graphql-types";
 import { logout } from "identity/helpers/auth";
 import useMe from "identity/hooks/useMe";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useHotkeys } from "react-hotkeys-hook";
-import Menu from "../Menu";
+import Menu from "core/components/Menu";
 import Navbar from "./Navbar";
 import { LayoutClasses } from "./styles";
 
