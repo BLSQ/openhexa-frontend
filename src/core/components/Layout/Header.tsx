@@ -69,9 +69,9 @@ const Header = () => {
             />
           }
         >
-          <Menu.Item linkTo="/user/account">{t("Your account")}</Menu.Item>
+          <Menu.Item href="/user/account">{t("Your account")}</Menu.Item>
           {me.permissions.adminPanel && (
-            <Menu.Item linkTo="/admin">{t("Admin")}</Menu.Item>
+            <Menu.Item href="/admin">{t("Admin")}</Menu.Item>
           )}
 
           <Menu.Item onClick={() => logout()}>{t("Sign out")}</Menu.Item>

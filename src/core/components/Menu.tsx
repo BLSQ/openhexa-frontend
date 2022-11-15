@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { Classes as ButtonClasses } from "./Button/Button";
 import { Fragment, ReactNode } from "react";
 import { ReactElement } from "react-markdown/lib/react-markdown";
+import Link from "next/link";
 
 export const MenuClasses = {
   Menu: "relative",
@@ -63,13 +64,13 @@ const Item = ({
   activeClassName = MenuClasses.ActiveItem,
   onClick,
   className = MenuClasses.Item,
-  linkTo,
+  href,
 }: {
   children: ReactNode;
   onClick?: ((event: { preventDefault: Function }) => void) | undefined;
   className?: string;
   activeClassName?: string;
-  linkTo?: string;
+  href?: string;
 }) => (
   <HeadlessMenu.Item>
     {({ active }) =>
@@ -81,9 +82,12 @@ const Item = ({
           {children}
         </button>
       ) : (
-        <a href={linkTo} className={clsx(className, active && activeClassName)}>
+        <Link
+          href={href || ""}
+          className={clsx(className, active && activeClassName)}
+        >
           {children}
-        </a>
+        </Link>
       )
     }
   </HeadlessMenu.Item>
