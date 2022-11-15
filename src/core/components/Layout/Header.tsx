@@ -69,13 +69,9 @@ const Header = () => {
             />
           }
         >
-          <Menu.Item onClick={() => router.push("/user/account")}>
-            {t("Your account")}
-          </Menu.Item>
+          <Menu.Item linkTo="/user/account">{t("Your account")}</Menu.Item>
           {me.permissions.adminPanel && (
-            <Menu.Item onClick={() => router.push("/admin")}>
-              {t("Admin")}
-            </Menu.Item>
+            <Menu.Item linkTo="/admin">{t("Admin")}</Menu.Item>
           )}
 
           <Menu.Item onClick={() => logout()}>{t("Sign out")}</Menu.Item>

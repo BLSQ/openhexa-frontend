@@ -63,21 +63,29 @@ const Item = ({
   activeClassName = MenuClasses.ActiveItem,
   onClick,
   className = MenuClasses.Item,
+  linkTo,
 }: {
   children: ReactNode;
   onClick?: ((event: { preventDefault: Function }) => void) | undefined;
   className?: string;
   activeClassName?: string;
+  linkTo?: string;
 }) => (
   <HeadlessMenu.Item>
-    {({ active }) => (
-      <button
-        onClick={onClick}
-        className={clsx(className, active && activeClassName)}
-      >
-        {children}
-      </button>
-    )}
+    {({ active }) =>
+      onClick ? (
+        <button
+          onClick={onClick}
+          className={clsx(className, active && activeClassName)}
+        >
+          {children}
+        </button>
+      ) : (
+        <a href={linkTo} className={clsx(className, active && activeClassName)}>
+          {children}
+        </a>
+      )
+    }
   </HeadlessMenu.Item>
 );
 
