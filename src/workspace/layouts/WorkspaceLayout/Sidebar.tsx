@@ -1,6 +1,7 @@
 import {
   BookOpenIcon,
   CircleStackIcon,
+  Cog6ToothIcon,
   FolderOpenIcon,
   HomeIcon,
   SwatchIcon,
@@ -138,8 +139,8 @@ const Sidebar = (props: SidebarProps) => {
             <NavItem
               href={`/workspaces/${encodeURIComponent(workspaceId)}/members`}
             >
-              <UserGroupIcon className="h-5 w-5" />
-              {t("Members")}
+              <Cog6ToothIcon className="h-5 w-5" />
+              {t("Settings")}
             </NavItem>
           </nav>
         </div>
