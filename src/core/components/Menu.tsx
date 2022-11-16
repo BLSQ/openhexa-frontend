@@ -68,7 +68,7 @@ type ItemProps = {
       onClick: (event: { preventDefault: Function }) => void;
       href?: never;
     }
-  | { onClick?: never; href: string }
+  | { onClick?: never; href: React.ComponentProps<typeof Link>["href"] }
 );
 
 const Item = ({

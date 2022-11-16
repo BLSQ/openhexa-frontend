@@ -1,6 +1,6 @@
 import Breadcrumbs from "core/components/Breadcrumbs";
-import Page from "core/layouts/Page";
-import CurrentLayout from "core/layouts";
+import Page from "core/components/Page";
+import DefaultLayout from "core/layouts/default";
 import { createGetServerSideProps } from "core/helpers/page";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -35,7 +35,7 @@ const PipelineRunPage = (props: Props) => {
 
   return (
     <Page title={t("Pipeline Run")}>
-      <CurrentLayout.PageContent>
+      <DefaultLayout.PageContent>
         <Breadcrumbs className="my-8 px-2">
           <Breadcrumbs.Part href="/pipelines">
             {t("Data Pipelines")}
@@ -60,7 +60,7 @@ const PipelineRunPage = (props: Props) => {
         <div className="space-y-12">
           <PipelineRunDataCard dag={dag} dagRun={dagRun} onRefresh={refetch} />
         </div>
-      </CurrentLayout.PageContent>
+      </DefaultLayout.PageContent>
     </Page>
   );
 };

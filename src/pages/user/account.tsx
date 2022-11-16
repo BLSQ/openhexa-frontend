@@ -4,8 +4,8 @@ import DataCard from "core/components/DataCard";
 import DateProperty from "core/components/DataCard/DateProperty";
 import TextProperty from "core/components/DataCard/TextProperty";
 import { DescriptionListDisplayMode } from "core/components/DescriptionList";
-import Page from "core/layouts/Page";
-import CurrentLayout from "core/layouts";
+import Page from "core/components/Page";
+import DefaultLayout from "core/layouts/default";
 import User from "core/features/User";
 import { User_UserFragment } from "core/features/User/User.generated";
 import { createGetServerSideProps } from "core/helpers/page";
@@ -27,7 +27,7 @@ function AccountPage() {
 
   return (
     <Page title={t("Account")}>
-      <CurrentLayout.PageContent className="my-6">
+      <DefaultLayout.PageContent className="my-6">
         <DataCard item={data.me.user}>
           <DataCard.Heading<User_UserFragment>
             renderActions={(item) => (
@@ -65,7 +65,7 @@ function AccountPage() {
             />
           </DataCard.FormSection>
         </DataCard>
-      </CurrentLayout.PageContent>
+      </DefaultLayout.PageContent>
     </Page>
   );
 }

@@ -12,6 +12,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import Menu from "core/components/Menu";
 import Navbar from "./Navbar";
 import { LayoutClasses } from "./styles";
+import { WORKSPACES } from "workspaces/helpers/fixtures";
+import useFeature from "identity/hooks/useFeature";
 
 const Header = () => {
   const me = useMe();
@@ -19,6 +21,8 @@ const Header = () => {
   const { t } = useTranslation();
   const [isSearchOpen, { toggle: toggleSearch }] = useToggle(false);
   useHotkeys("cmd+k,ctrl+k", toggleSearch);
+
+  const [hasWorkspacesEnabled] = useFeature("workspaces");
 
   if (!me.user) {
     return null;
@@ -70,7 +74,17 @@ const Header = () => {
         >
           <Menu.Item href="/user/account">{t("Your account")}</Menu.Item>
           {me.permissions.adminPanel && (
-            <Menu.Item href="/admin">{t("Admin")}</Menu.Item>
+            <Menu.Item href="/admin">{t("Administration")}</Menu.Item>
+          )}
+          {hasWorkspacesEnabled && (
+            <Menu.Item
+              href={{
+                pathname: `/workspaces/[workspaceId]`,
+                query: { workspaceId: WORKSPACES[0].id },
+              }}
+            >
+              {t("Your workspaces")}
+            </Menu.Item>
           )}
 
           <Menu.Item onClick={() => logout()}>{t("Sign out")}</Menu.Item>

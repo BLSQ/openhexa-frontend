@@ -11,8 +11,8 @@ import Breadcrumbs from "core/components/Breadcrumbs";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
 import DateColumn from "core/components/DataGrid/DateColumn";
-import Page from "core/layouts/Page";
-import CurrentLayout from "core/layouts";
+import Page from "core/components/Page";
+import DefaultLayout from "core/layouts/default";
 import Stats from "core/components/Stats";
 import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
@@ -66,7 +66,7 @@ const DashboardPage = () => {
 
   return (
     <Page title={t("Dashboard")}>
-      <CurrentLayout.PageContent>
+      <DefaultLayout.PageContent>
         <Breadcrumbs className="my-8 px-2">
           <Breadcrumbs.Part href="/dashboard">
             {t("Dashboard")}
@@ -136,7 +136,7 @@ const DashboardPage = () => {
             </DataGrid>
           </Block>
         </div>
-      </CurrentLayout.PageContent>
+      </DefaultLayout.PageContent>
     </Page>
   );
 };
