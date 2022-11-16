@@ -14,7 +14,7 @@ export const MenuClasses = {
     ButtonClasses.white,
     ButtonClasses.md
   ),
-  Item: "group flex px-2 py-2 items-center w-full text-sm rounded",
+  Item: "group flex px-2 py-2 items-center w-full text-sm rounded hover:bg-blue-500 hover:text-white",
   ActiveItem: "bg-blue-500 text-white",
   Items:
     "origin-top-right absolute right-0 mt-2 w-36 ring-1 ring-black ring-opacity-5 rounded shadow-lg bg-white text-gray-900 focus:outline-none text-right z-40 divide-y divide-gray-200 ",
@@ -59,37 +59,47 @@ const Menu = ({ label, trigger, className, children }: MenuProps) => {
   );
 };
 
+type ItemProps = {
+  children: ReactNode;
+  className?: string;
+  activeClassName?: string;
+} & (
+  | {
+      onClick: ((event: { preventDefault: Function }) => void) | undefined;
+      href?: never;
+    }
+  | { onClick?: never; href: string }
+);
+
 const Item = ({
   children,
   activeClassName = MenuClasses.ActiveItem,
   onClick,
   className = MenuClasses.Item,
-  href = "",
-}: {
-  children: ReactNode;
-  onClick?: ((event: { preventDefault: Function }) => void) | undefined;
-  className?: string;
-  activeClassName?: string;
-  href?: string;
-}) => (
+  href,
+}: ItemProps) => (
   <HeadlessMenu.Item>
-    {({ active }) =>
-      onClick ? (
-        <button
-          onClick={onClick}
-          className={clsx(className, active && activeClassName)}
-        >
-          {children}
-        </button>
-      ) : (
-        <Link
-          href={href}
-          className={clsx(className, active && activeClassName)}
-        >
-          {children}
-        </Link>
-      )
-    }
+    {({ active }) => (
+      <>
+        {onClick && (
+          <button
+            onClick={onClick}
+            className={clsx(className, active && activeClassName)}
+          >
+            {children}
+          </button>
+        )}
+
+        {href && (
+          <Link
+            href={href}
+            className={clsx(className, active && activeClassName)}
+          >
+            {children}
+          </Link>
+        )}
+      </>
+    )}
   </HeadlessMenu.Item>
 );
 
