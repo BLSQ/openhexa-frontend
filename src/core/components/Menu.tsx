@@ -64,7 +64,7 @@ const Item = ({
   activeClassName = MenuClasses.ActiveItem,
   onClick,
   className = MenuClasses.Item,
-  href,
+  href = "",
 }: {
   children: ReactNode;
   onClick?: ((event: { preventDefault: Function }) => void) | undefined;
@@ -83,7 +83,7 @@ const Item = ({
         </button>
       ) : (
         <Link
-          href={href || ""}
+          href={href}
           className={clsx(className, active && activeClassName)}
         >
           {children}
