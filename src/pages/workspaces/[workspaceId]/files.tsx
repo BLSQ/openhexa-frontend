@@ -58,7 +58,7 @@ const WorkspaceFilesPage: NextPageWithLayout = (props: Props) => {
         <div>
           <Title level={5}>Workspace files</Title>
           <DataGrid
-            className="bg-white  shadow"
+            className="bg-white shadow"
             data={workspace.files}
             defaultPageSize={5}
             sortable

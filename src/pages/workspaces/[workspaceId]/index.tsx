@@ -6,6 +6,7 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import ReactMarkdown from "react-markdown";
 import { WORKSPACES } from "workspace/helpers/fixtures";
 import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
 
@@ -36,7 +37,9 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <Title level={2}>Hey</Title>
+        <ReactMarkdown className="prose-xl text-sm">
+          {workspace.description}
+        </ReactMarkdown>
       </WorkspaceLayout.PageContent>
     </Page>
   );
