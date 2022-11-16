@@ -2,10 +2,10 @@ import clsx from "clsx";
 import { HTMLAttributes } from "react";
 
 export default function PageContent(props: HTMLAttributes<HTMLDivElement>) {
-  const { children, className, ...delegated } = props;
+  const { children, className } = props;
   return (
-    <main className={clsx("pb-6", className)} {...delegated}>
-      {children}
-    </main>
+    <div className="py-6">
+      <div className="mx-auto max-w-7xl px-4 md:px-6">{children}</div>
+    </div>
   );
 }

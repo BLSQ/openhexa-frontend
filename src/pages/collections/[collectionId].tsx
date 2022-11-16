@@ -25,8 +25,8 @@ import { OnSaveFn } from "core/components/DataCard/Section";
 import TagProperty from "core/components/DataCard/TagProperty";
 import TextProperty from "core/components/DataCard/TextProperty";
 import UserProperty from "core/components/DataCard/UserProperty";
-import Page from "core/layouts/Page";
-import CurrentLayout from "core/layouts";
+import Page from "core/components/Page";
+import DefaultLayout from "core/layouts/default";
 import Spinner from "core/components/Spinner";
 import { ensureArray } from "core/helpers/array";
 import { createGetServerSideProps } from "core/helpers/page";
@@ -125,7 +125,7 @@ const CollectionPage = ({ collectionId }: Props) => {
 
   return (
     <Page title={collection.name}>
-      <CurrentLayout.PageContent>
+      <DefaultLayout.PageContent>
         <Breadcrumbs className="my-8 px-2">
           <Breadcrumbs.Part href="/collections">
             {t("Collections")}
@@ -237,7 +237,7 @@ const CollectionPage = ({ collectionId }: Props) => {
             </Block>
           </section>
         </div>
-      </CurrentLayout.PageContent>
+      </DefaultLayout.PageContent>
 
       <Quicksearch
         renderActions={(element) => (
