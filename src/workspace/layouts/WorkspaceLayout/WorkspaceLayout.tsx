@@ -22,7 +22,7 @@ const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
   return (
     <>
       <Sidebar workspaceId={workspaceId} />
-      <main className="flex  flex-col pl-64">{children}</main>
+      <main className="flex flex-col pl-64">{children}</main>
     </>
   );
 };

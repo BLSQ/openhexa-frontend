@@ -89,7 +89,7 @@ const Header = () => {
           )}
           {me.permissions.adminPanel && (
             <Menu.Item onClick={() => router.push("/admin")}>
-              {t("Admin")}
+              {t("Administration")}
             </Menu.Item>
           )}
 

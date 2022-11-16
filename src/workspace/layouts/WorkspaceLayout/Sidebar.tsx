@@ -133,7 +133,7 @@ const Sidebar = (props: SidebarProps) => {
               href={`/workspaces/${encodeURIComponent(workspaceId)}/notebooks`}
             >
               <BookOpenIcon className="h-5 w-5" />
-              {t("Notebooks")}
+              {t("JupyterHub")}
             </NavItem>
             <NavItem
               href={`/workspaces/${encodeURIComponent(workspaceId)}/members`}
