@@ -126,7 +126,16 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
             <TextColumn
               className="max-w-[50ch] py-3 "
               textClassName="font-medium text-gray-600"
-              accessor="name"
+              accessor={(value) => (
+                <>
+                  <div className="h-center flex space-x-2">
+                    <TableCellsIcon className="h-6 w-6" />
+                    <span className="font-medium text-gray-800">
+                      {value.name}
+                    </span>
+                  </div>
+                </>
+              )}
               id="name"
               label="Name"
             />
