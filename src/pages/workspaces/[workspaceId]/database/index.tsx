@@ -6,6 +6,7 @@ import Breadcrumbs from "core/components/Breadcrumbs";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
+import Link from "core/components/Link";
 import Page from "core/components/Page";
 import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
@@ -96,11 +97,17 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
               label="Last modified"
             />
             <BaseColumn className="cursor-pointer py-3">
-              {() => (
-                <div className="flex space-x-16">
+              {(item) => (
+                <Link
+                  href={{
+                    pathname: "/database/[tableId]",
+                    query: { tableId: item.id },
+                  }}
+                  className="flex space-x-16"
+                >
                   <span className="font-medium text-gray-800">Explorer</span>
                   <MagnifyingGlassIcon className="h-6 w-6" />
-                </div>
+                </Link>
               )}
             </BaseColumn>
           </DataGrid>
@@ -138,18 +145,18 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
               id="updatedAt"
               label="Last modified"
             />
-            <BaseColumn
-              className="py-3"
-              url={(value: any) => ({
-                pathname: "/database/[databaseId]",
-                query: { databas: value.id },
-              })}
-            >
-              {() => (
-                <div className="flex space-x-16">
-                  <div className="font-medium text-gray-800">Explorer</div>
+            <BaseColumn className="cursor-pointer py-3">
+              {(item) => (
+                <Link
+                  href={{
+                    pathname: "/database/[tableId]",
+                    query: { tableId: item.id },
+                  }}
+                  className="flex space-x-16"
+                >
+                  <span className="font-medium text-gray-800">Explorer</span>
                   <MagnifyingGlassIcon className="h-6 w-6" />
-                </div>
+                </Link>
               )}
             </BaseColumn>
           </DataGrid>
