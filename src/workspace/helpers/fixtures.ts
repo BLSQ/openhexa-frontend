@@ -62,4 +62,34 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
       })
       .toISOString(),
   })),
+  database: {
+    workspaceTables: Array.from({ length: 10 }, () => ({
+      id: faker.datatype.uuid(),
+      name: faker.word.noun({
+        length: { min: 15, max: 30 },
+        strategy: "longest",
+      }),
+      content: faker.datatype.number(),
+      updatedAt: faker.datatype
+        .datetime({
+          min: DateTime.now().minus({ days: 28 }).toMillis(),
+          max: DateTime.now().toMillis(),
+        })
+        .toISOString(),
+    })),
+    sharedTables: Array.from({ length: 4 }, () => ({
+      id: faker.datatype.uuid(),
+      name: faker.word.noun({
+        length: { min: 15, max: 30 },
+        strategy: "longest",
+      }),
+      content: faker.datatype.number(),
+      updatedAt: faker.datatype
+        .datetime({
+          min: DateTime.now().minus({ days: 28 }).toMillis(),
+          max: DateTime.now().toMillis(),
+        })
+        .toISOString(),
+    })),
+  },
 }));
