@@ -119,10 +119,10 @@ const Sidebar = (props: SidebarProps) => {
               {t("Files")}
             </NavItem>
             <NavItem
-              href={`/workspaces/${encodeURIComponent(workspaceId)}/database`}
+              href={`/workspaces/${encodeURIComponent(workspaceId)}/databases`}
             >
               <CircleStackIcon className="h-5 w-5" />
-              {t("Database")}
+              {t("Databases")}
             </NavItem>
             <NavItem
               href={`/workspaces/${encodeURIComponent(workspaceId)}/connectors`}
