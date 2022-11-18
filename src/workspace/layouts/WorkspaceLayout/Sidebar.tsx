@@ -1,4 +1,5 @@
 import {
+  ArrowPathIcon,
   BookOpenIcon,
   CircleStackIcon,
   Cog6ToothIcon,
@@ -129,6 +130,12 @@ const Sidebar = (props: SidebarProps) => {
             >
               <SwatchIcon className="h-5 w-5" />
               {t("Connectors")}
+            </NavItem>
+            <NavItem
+              href={`/workspaces/${encodeURIComponent(workspaceId)}/pipelines`}
+            >
+              <ArrowPathIcon className="h-5 w-5" />
+              {t("Pipelines")}
             </NavItem>
             <NavItem
               href={`/workspaces/${encodeURIComponent(workspaceId)}/notebooks`}

@@ -1,4 +1,5 @@
-import { faker } from "@faker-js/faker";
+import { Faker, faker } from "@faker-js/faker";
+import { DagRunStatus, DagRunTrigger } from "graphql-types";
 import { DateTime } from "luxon";
 
 faker.seed(0);
@@ -92,4 +93,25 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
         .toISOString(),
     })),
   },
+  dags: Array.from({ length: 4 }, () => ({
+    id: faker.datatype.uuid(),
+    label: faker.word.noun({
+      length: { min: 15, max: 30 },
+      strategy: "longest",
+    }),
+    description: faker.lorem.paragraph(4),
+    runs: [
+      {
+        id: faker.datatype.uuid(),
+        triggerMode: faker.helpers.arrayElement(Object.values(DagRunTrigger)),
+        status: faker.helpers.arrayElement(Object.values(DagRunStatus)),
+        executionDate: faker.datatype
+          .datetime({
+            min: DateTime.now().minus({ days: 28 }).toMillis(),
+            max: DateTime.now().toMillis(),
+          })
+          .toISOString(),
+      },
+    ],
+  })),
 }));
