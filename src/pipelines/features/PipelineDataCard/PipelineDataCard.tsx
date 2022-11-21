@@ -62,8 +62,8 @@ const PipelineDataCardStatus = ({
 
 const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
   return (
-    <Block className="p-4">
-      <section>
+    <Block className="grid grid-cols-3 gap-3 p-4">
+      <section className="col-span-3">
         <div className="flex items-end justify-between">
           <div className="truncate">
             <div
@@ -88,12 +88,12 @@ const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
           </div>
         </div>
       </section>
-      <section className="mt-4">
-        <div className="text-sm font-normal text-gray-900">
+      <section className="col-span-3 h-24">
+        <div className="break-all text-sm font-normal text-gray-900 line-clamp-4">
           {dag.description}
         </div>
       </section>
-      <section className="mt-5">
+      <section className="col-span-3">
         <div className="flex justify-end space-x-4">
           <Link
             className="flex items-end space-x-2 text-blue-500 text-blue-500"
