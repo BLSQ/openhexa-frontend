@@ -24,7 +24,7 @@ type Props = {
   perPage: number;
 };
 
-const PipelinesDatabasePage: NextPageWithLayout = (props: Props) => {
+const PipelinesPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const workspace = WORKSPACES.find((w) => w.id === router.query.workspaceId);
@@ -70,7 +70,7 @@ const PipelinesDatabasePage: NextPageWithLayout = (props: Props) => {
   );
 };
 
-PipelinesDatabasePage.getLayout = (page, pageProps) => {
+PipelinesPage.getLayout = (page, pageProps) => {
   return <WorkspaceLayout pageProps={pageProps}>{page}</WorkspaceLayout>;
 };
 
@@ -78,4 +78,4 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
 });
 
-export default PipelinesDatabasePage;
+export default PipelinesPage;
