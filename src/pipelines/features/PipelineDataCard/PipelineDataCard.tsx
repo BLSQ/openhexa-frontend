@@ -9,6 +9,7 @@ import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useMemo } from "react";
+import { useRouter } from "next/router";
 
 interface PipelineDataCardProps {
   dag: Pick<Dag, "id" | "label" | "description"> & {
@@ -18,7 +19,7 @@ interface PipelineDataCardProps {
   };
 }
 
-const PipelineDataCardStatus = ({
+export const PipelineDataCardStatus = ({
   status,
   date,
 }: {
@@ -61,6 +62,7 @@ const PipelineDataCardStatus = ({
 };
 
 const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
+  const { asPath } = useRouter();
   return (
     <Block className="grid grid-cols-3 gap-3 p-4">
       <section className="col-span-3">
@@ -98,8 +100,8 @@ const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
           <Link
             className="flex items-end space-x-2 text-blue-500 text-blue-500"
             href={{
-              pathname: "/pipelines/[pipelineId]/run/[runId]",
-              query: { pipelineId: dag.id, runId: dag.runs[0].id },
+              pathname: `${asPath}/[pipelineId]`,
+              query: { pipelineId: dag.id },
             }}
           >
             <PlayIcon className="w-6" />
