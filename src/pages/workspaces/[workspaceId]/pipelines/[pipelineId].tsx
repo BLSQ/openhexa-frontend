@@ -5,9 +5,11 @@ import {
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
+import CodeEditor from "core/components/CodeEditor";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
+import Input from "core/components/forms/Input";
 import Link from "core/components/Link";
 import Page from "core/components/Page";
 import Tabs from "core/components/Tabs";
@@ -123,7 +125,24 @@ const PipelinePage: NextPageWithLayout = (props: Props) => {
               </DataGrid>
             </Tabs.Tab>
             <Tabs.Tab className="mt-4" label={t("Settings")}>
-              <p>Coming soon...</p>
+              <div>
+                <Title level={5}>{t("Api Endpoint")}</Title>
+                <p>You can trigger this pipeline with a simple HTTP POST : </p>
+                <div className="mt-5">
+                  <CodeEditor
+                    height="auto"
+                    minHeight="auto"
+                    lang="json"
+                    readonly
+                    editable={false}
+                    value={dag.config}
+                  />
+                </div>
+              </div>
+              <div className="mt-5">
+                <Title level={6}> {t("Schedule")} </Title>
+                <Input type="text" className="w-32" placeholder="Schedule" />
+              </div>
             </Tabs.Tab>
           </Tabs>
         </Block>

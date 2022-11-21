@@ -100,6 +100,8 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
       strategy: "longest",
     }),
     description: faker.lorem.paragraph(4),
+    config:
+      'curl -d "param1=value1&param2=value2" -X POST -H "Authorization: Bearer mytoken123" http://api.openhexa.org/workspaces/12fe/pipelines/32gf',
     runs: [
       {
         id: faker.datatype.uuid(),
