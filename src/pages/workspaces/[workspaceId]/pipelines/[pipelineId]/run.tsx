@@ -19,7 +19,7 @@ const SELECT_OPTIONS = [
   { label: "Option 1", id: "1" },
   { label: "Option 2", id: "2" },
 ];
-const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
+const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const workspace = WORKSPACES.find((w) => w.id === router.query.workspaceId);
@@ -86,7 +86,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   );
 };
 
-WorkspacePipelinePage.getLayout = (page, pageProps) => {
+WorkspacePipelineRunPage.getLayout = (page, pageProps) => {
   return <WorkspaceLayout pageProps={pageProps}>{page}</WorkspaceLayout>;
 };
 
@@ -94,4 +94,4 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
 });
 
-export default WorkspacePipelinePage;
+export default WorkspacePipelineRunPage;

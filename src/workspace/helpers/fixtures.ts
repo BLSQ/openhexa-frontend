@@ -100,6 +100,10 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
       strategy: "longest",
     }),
     description: faker.lorem.paragraph(4),
+    externalId: faker.word.noun({
+      length: { min: 15, max: 30 },
+      strategy: "longest",
+    }),
     config:
       'curl -d "param1=value1&param2=value2" -X POST -H "Authorization: Bearer mytoken123" http://api.openhexa.org/workspaces/12fe/pipelines/32gf',
     runs: [
@@ -113,6 +117,12 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
             max: DateTime.now().toMillis(),
           })
           .toISOString(),
+        duration: faker.datatype.bigInt(),
+        output: Array.from({ length: 2 }, () => ({
+          title: faker.system.fileName(),
+          uri: faker.internet.url(),
+        })),
+        logs: faker.lorem.paragraph(10),
       },
     ],
   })),

@@ -107,11 +107,16 @@ const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
             <PlayIcon className="w-6" />
             <span>Run</span>
           </Link>
-
-          <div className="flex items-end space-x-2 text-blue-500 text-blue-500 hover:cursor-pointer">
+          <Link
+            className="flex items-end space-x-2 text-blue-500 text-blue-500"
+            href={{
+              pathname: `${asPath}/[pipelineId]/runs/[runId]`,
+              query: { pipelineId: dag.id, runId: dag.runs[0].id },
+            }}
+          >
             <InformationCircleIcon className="w-6" />
             <span>Usage & details</span>
-          </div>
+          </Link>
         </div>
       </section>
     </Block>
