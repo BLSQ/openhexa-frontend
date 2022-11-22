@@ -1,11 +1,14 @@
+import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Page from "core/components/Page";
-import Tabs from "core/components/Tabs";
+import Title from "core/components/Title";
+import Link from "core/components/Link";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
+
 import { useRouter } from "next/router";
-import PipelineDataCard from "pipelines/features/PipelineDataCard/PipelineDataCard";
+import ReactMarkdown from "react-markdown";
 import { WORKSPACES } from "workspace/helpers/fixtures";
 import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
 
@@ -14,7 +17,7 @@ type Props = {
   perPage: number;
 };
 
-const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
+const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const workspace = WORKSPACES.find((w) => w.id === router.query.workspaceId);
@@ -33,34 +36,28 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
           >
             {workspace.name}
           </Breadcrumbs.Part>
-          <Breadcrumbs.Part
-            href={`/workspaces/${encodeURIComponent(workspace.id)}/pipelines`}
-          >
-            {t("Pipelines")}
-          </Breadcrumbs.Part>
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <div>
-          <Tabs defaultIndex={0}>
-            <Tabs.Tab
-              className="mt-4 grid grid-cols-2 gap-5 sm:grid-cols-3"
-              label={t("All pipelines")}
-            >
-              {workspace.dags.map((dag, index) => (
-                <PipelineDataCard key={index} dag={dag} />
-              ))}
-            </Tabs.Tab>
-          </Tabs>
-        </div>
-
-        <div></div>
+        <ReactMarkdown
+          className="prose-xl text-sm"
+          components={{
+            a: ({ node, ...props }) => (
+              <Link href={props.href || ""}>{props.children}</Link>
+            ),
+            ul: ({ node, ...props }) => (
+              <ul className="list-disc">{props.children}</ul>
+            ),
+          }}
+        >
+          {workspace.description}
+        </ReactMarkdown>
       </WorkspaceLayout.PageContent>
     </Page>
   );
 };
 
-WorkspacePipelinesPage.getLayout = (page, pageProps) => {
+WorkspaceNotebooksPage.getLayout = (page, pageProps) => {
   return <WorkspaceLayout pageProps={pageProps}>{page}</WorkspaceLayout>;
 };
 
@@ -68,4 +65,4 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
 });
 
-export default WorkspacePipelinesPage;
+export default WorkspaceNotebooksPage;

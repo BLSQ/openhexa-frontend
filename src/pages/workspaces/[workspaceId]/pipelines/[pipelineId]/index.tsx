@@ -1,16 +1,9 @@
-import {
-  MagnifyingGlassIcon,
-  TableCellsIcon,
-} from "@heroicons/react/24/outline";
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
-import CodeEditor from "core/components/CodeEditor";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
-import DateColumn from "core/components/DataGrid/DateColumn";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import Input from "core/components/forms/Input";
-import Link from "core/components/Link";
 import Page from "core/components/Page";
 import Tabs from "core/components/Tabs";
 import Title from "core/components/Title";
@@ -18,10 +11,9 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { capitalize } from "lodash";
 import { useTranslation } from "next-i18next";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import PipelineDataCard, {
-  PipelineDataCardStatus,
-} from "pipelines/features/PipelineDataCard/PipelineDataCard";
+import { PipelineDataCardStatus } from "pipelines/features/PipelineDataCard/PipelineDataCard";
 import { WORKSPACES } from "workspace/helpers/fixtures";
 import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
 
@@ -30,7 +22,7 @@ type Props = {
   perPage: number;
 };
 
-const PipelinePage: NextPageWithLayout = (props: Props) => {
+const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const workspace = WORKSPACES.find((w) => w.id === router.query.workspaceId);
@@ -74,10 +66,20 @@ const PipelinePage: NextPageWithLayout = (props: Props) => {
           <Title level={2}>{dag.label}</Title>
           <div className="flex items-end justify-between">
             <p className="truncate text-sm text-gray-700">{dag.description}</p>
-            <Button className="w-20"> {t("Run")} </Button>
+            <Link
+              className="flex items-end space-x-2 text-blue-500 text-blue-500"
+              href={{
+                pathname: `/workspaces/${encodeURIComponent(
+                  workspace.id
+                )}/pipelines/[pipelineId]/run`,
+                query: { pipelineId: dag.id },
+              }}
+            >
+              <Button className="w-20"> {t("Run")} </Button>
+            </Link>
           </div>
         </div>
-        <Block className="mt-6 p-4">
+        <Block className="mt-5 p-4">
           <Tabs defaultIndex={0}>
             <Tabs.Tab className="mt-4" label={t("Description")}>
               <div>
@@ -86,6 +88,8 @@ const PipelinePage: NextPageWithLayout = (props: Props) => {
               </div>
               <div className="mt-5">
                 <Title level={5}>{t("Parameters")}</Title>
+                <p>Parameter 1 : value 1</p>
+                <p>Parameter 2 : value 2</p>
               </div>
             </Tabs.Tab>
             <Tabs.Tab className="mt-4 " label={t("Runs")}>
@@ -128,20 +132,19 @@ const PipelinePage: NextPageWithLayout = (props: Props) => {
               <div>
                 <Title level={5}>{t("Api Endpoint")}</Title>
                 <p>You can trigger this pipeline with a simple HTTP POST : </p>
-                <div className="mt-5">
-                  <CodeEditor
-                    height="auto"
-                    minHeight="auto"
-                    lang="json"
-                    readonly
-                    editable={false}
-                    value={dag.config}
-                  />
+                <div className="mt-5 w-2/3">
+                  <div className="bg-slate-100 ">
+                    <p>{dag.config}</p>
+                  </div>
                 </div>
               </div>
               <div className="mt-5">
                 <Title level={6}> {t("Schedule")} </Title>
-                <Input type="text" className="w-32" placeholder="Schedule" />
+                <Input
+                  type="text"
+                  className="w-1/4"
+                  placeholder="23 0-20/2 * * *"
+                />
               </div>
             </Tabs.Tab>
           </Tabs>
@@ -151,7 +154,7 @@ const PipelinePage: NextPageWithLayout = (props: Props) => {
   );
 };
 
-PipelinePage.getLayout = (page, pageProps) => {
+WorkspacePipelinePage.getLayout = (page, pageProps) => {
   return <WorkspaceLayout pageProps={pageProps}>{page}</WorkspaceLayout>;
 };
 
@@ -159,4 +162,4 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
 });
 
-export default PipelinePage;
+export default WorkspacePipelinePage;
