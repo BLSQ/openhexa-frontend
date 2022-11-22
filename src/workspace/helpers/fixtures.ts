@@ -126,4 +126,19 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
       },
     ],
   })),
+  notebooksUrl: faker.internet.url(),
+  members: Array.from({ length: 5 }, () => ({
+    name: faker.name.fullName(),
+    email: faker.internet.email(),
+    role: faker.word.noun({
+      length: { min: 15, max: 30 },
+      strategy: "longest",
+    }),
+    createdAt: faker.datatype
+      .datetime({
+        min: DateTime.now().minus({ days: 28 }).toMillis(),
+        max: DateTime.now().toMillis(),
+      })
+      .toISOString(),
+  })),
 }));
