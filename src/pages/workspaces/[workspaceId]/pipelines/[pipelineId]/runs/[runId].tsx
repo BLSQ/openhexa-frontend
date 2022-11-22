@@ -82,7 +82,7 @@ const WorkspacePipelineRunDetailsPage: NextPageWithLayout = (props: Props) => {
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <Block className=" grid grid-cols-3 gap-6 p-4">
+        <Block className="grid grid-cols-3 gap-6 p-4">
           <div className="col-span-3">
             <Title level={2}>
               {t("Run details of {{label}}", { label: dag.label })}

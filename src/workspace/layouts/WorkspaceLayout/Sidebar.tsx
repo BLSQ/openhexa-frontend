@@ -144,7 +144,7 @@ const Sidebar = (props: SidebarProps) => {
               {t("JupyterHub")}
             </NavItem>
             <NavItem
-              href={`/workspaces/${encodeURIComponent(workspaceId)}/members`}
+              href={`/workspaces/${encodeURIComponent(workspaceId)}/settings`}
             >
               <Cog6ToothIcon className="h-5 w-5" />
               {t("Settings")}
