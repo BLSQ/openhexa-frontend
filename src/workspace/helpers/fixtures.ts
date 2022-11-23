@@ -70,6 +70,12 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
         length: { min: 15, max: 30 },
         strategy: "longest",
       }),
+      description: faker.lorem.paragraph(2),
+      schema: Array.from({ length: 4 }, () => ({
+        fieldName: faker.database.column(),
+        type: faker.database.type(),
+        sample: faker.hacker.noun(),
+      })),
       content: faker.datatype.number(),
       updatedAt: faker.datatype
         .datetime({
@@ -77,6 +83,38 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
           max: DateTime.now().toMillis(),
         })
         .toISOString(),
+      codeSample: [
+        `
+        import os
+        import pandas as pd
+        from sqlalchemy import create_engine
+        
+        engine = create_engine(os.environ["POSTGRESQL_HEXA_EXPLORE_DEMO_URL"])
+        
+        # Create sample dataframe
+        df = pd.DataFrame({"name": ["Jane", "John", "Tyler"], "age": [19, 17, 22]})
+        
+        # Write data
+        df.to_sql("database_tutorial", con=engine, if_exists="replace")
+        
+        # Read data
+        pd.read_sql("SELECT * FROM database_tutorial", con=engine)
+        `,
+        `
+        library(DBI)
+
+        con <- dbConnect(
+            RPostgres::Postgres(),
+            dbname = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_DATABASE"),
+            host = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_HOSTNAME"),
+            port = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PORT"),
+            user = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_USERNAME"),
+            password = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PASSWORD")
+        )
+        
+        dbWriteTable(con, "some_table_name", Data_fin, overwrite=TRUE)
+        `,
+      ],
     })),
     sharedTables: Array.from({ length: 4 }, () => ({
       id: faker.datatype.uuid(),
@@ -84,6 +122,12 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
         length: { min: 15, max: 30 },
         strategy: "longest",
       }),
+      description: faker.lorem.paragraph(2),
+      schema: Array.from({ length: 4 }, () => ({
+        fieldName: faker.database.column(),
+        type: faker.database.type(),
+        sample: faker.hacker.noun(),
+      })),
       content: faker.datatype.number(),
       updatedAt: faker.datatype
         .datetime({
@@ -91,6 +135,38 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
           max: DateTime.now().toMillis(),
         })
         .toISOString(),
+      codeSample: [
+        `
+      import os
+      import pandas as pd
+      from sqlalchemy import create_engine
+      
+      engine = create_engine(os.environ["POSTGRESQL_HEXA_EXPLORE_DEMO_URL"])
+      
+      # Create sample dataframe
+      df = pd.DataFrame({"name": ["Jane", "John", "Tyler"], "age": [19, 17, 22]})
+      
+      # Write data
+      df.to_sql("database_tutorial", con=engine, if_exists="replace")
+      
+      # Read data
+      pd.read_sql("SELECT * FROM database_tutorial", con=engine)
+      `,
+        `
+        library(DBI)
+
+        con <- dbConnect(
+            RPostgres::Postgres(),
+            dbname = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_DATABASE"),
+            host = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_HOSTNAME"),
+            port = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PORT"),
+            user = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_USERNAME"),
+            password = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PASSWORD")
+        )
+        
+        dbWriteTable(con, "some_table_name", Data_fin, overwrite=TRUE)
+      `,
+      ],
     })),
   },
   dags: Array.from({ length: 4 }, () => ({

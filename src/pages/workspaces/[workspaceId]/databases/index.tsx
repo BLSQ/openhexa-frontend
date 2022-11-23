@@ -4,6 +4,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
+import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import Link from "core/components/Link";
@@ -21,7 +22,7 @@ type Props = {
   perPage: number;
 };
 
-const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
+const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const workspace = WORKSPACES.find((w) => w.id === router.query.workspaceId);
@@ -41,7 +42,7 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
             {workspace.name}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
-            href={`/workspaces/${encodeURIComponent(workspace.id)}/Database`}
+            href={`/workspaces/${encodeURIComponent(workspace.id)}/databases`}
           >
             {t("Database")}
           </Breadcrumbs.Part>
@@ -49,9 +50,7 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent className="space-y-8">
         <div className="flex flex-1 items-center justify-between">
-          <Title level={2} className="mb-0">
-            {t("Database")}
-          </Title>
+          <Title level={2}>{t("Database")}</Title>
         </div>
         <div>
           <Title level={5}> {t("Workspace tables")}</Title>
@@ -64,7 +63,7 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
             fixedLayout={false}
           >
             <TextColumn
-              className="max-w-[50ch] py-3 "
+              className="max-w-[50ch] py-3"
               textClassName="font-medium text-gray-600"
               accessor={(value) => (
                 <>
@@ -96,20 +95,14 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
               id="updatedAt"
               label="Last modified"
             />
-            <BaseColumn className="cursor-pointer py-3">
-              {(item) => (
-                <Link
-                  href={{
-                    pathname: "/database/[tableId]",
-                    query: { tableId: item.id },
-                  }}
-                  className="flex space-x-16"
-                >
-                  <span className="font-medium text-gray-800">Explorer</span>
-                  <MagnifyingGlassIcon className="h-6 w-6" />
-                </Link>
-              )}
-            </BaseColumn>
+            <ChevronLinkColumn
+              maxWidth="100"
+              accessor="id"
+              url={(value: any) => ({
+                pathname: `${router.asPath}/[tableId]`,
+                query: { tableId: value },
+              })}
+            />
           </DataGrid>
         </div>
 
@@ -154,20 +147,14 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
               id="updatedAt"
               label="Last modified"
             />
-            <BaseColumn className="cursor-pointer py-3">
-              {(item) => (
-                <Link
-                  href={{
-                    pathname: "/database/[tableId]",
-                    query: { tableId: item.id },
-                  }}
-                  className="flex space-x-16"
-                >
-                  <span className="font-medium text-gray-800">Explorer</span>
-                  <MagnifyingGlassIcon className="h-6 w-6" />
-                </Link>
-              )}
-            </BaseColumn>
+            <ChevronLinkColumn
+              maxWidth="100"
+              accessor="id"
+              url={(value: any) => ({
+                pathname: "/databases/[tableId]",
+                query: { tableId: value },
+              })}
+            />
           </DataGrid>
         </div>
       </WorkspaceLayout.PageContent>
@@ -175,7 +162,7 @@ const WorkspaceDatabasePage: NextPageWithLayout = (props: Props) => {
   );
 };
 
-WorkspaceDatabasePage.getLayout = (page, pageProps) => {
+WorkspaceDatabasesPage.getLayout = (page, pageProps) => {
   return <WorkspaceLayout pageProps={pageProps}>{page}</WorkspaceLayout>;
 };
 
@@ -183,4 +170,4 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
 });
 
-export default WorkspaceDatabasePage;
+export default WorkspaceDatabasesPage;
