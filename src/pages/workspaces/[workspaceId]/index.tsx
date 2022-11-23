@@ -1,5 +1,6 @@
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
+import Link from "core/components/Link";
 import Page from "core/components/Page";
 import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
@@ -37,7 +38,17 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <ReactMarkdown className="prose-xl text-sm">
+        <ReactMarkdown
+          className="prose-xl text-sm"
+          components={{
+            a: ({ node, ...props }) => (
+              <Link href={props.href || ""}>{props.children}</Link>
+            ),
+            ul: ({ node, ...props }) => (
+              <ul className="list-disc">{props.children}</ul>
+            ),
+          }}
+        >
           {workspace.description}
         </ReactMarkdown>
       </WorkspaceLayout.PageContent>
