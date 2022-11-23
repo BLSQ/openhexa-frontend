@@ -15,10 +15,6 @@ type Props = {
   perPage: number;
 };
 
-const SELECT_OPTIONS = [
-  { label: "Option 1", id: "1" },
-  { label: "Option 2", id: "2" },
-];
 const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();

@@ -48,7 +48,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             {workspace.name}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
-            href={`/workspaces/${encodeURIComponent(workspace.id)}/pipelines}`}
+            href={`/workspaces/${encodeURIComponent(workspace.id)}/pipelines`}
           >
             {t("Pipelines")}
           </Breadcrumbs.Part>
@@ -65,7 +65,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
         <div>
           <Title level={2}>{dag.label}</Title>
           <div className="flex items-end justify-between">
-            <p className="truncate text-sm text-gray-700">{dag.description}</p>
+            <p className="w-2/4 truncate text-sm text-gray-700">
+              {dag.description}
+            </p>
             <Link
               className="flex items-end space-x-2 text-blue-500 text-blue-500"
               href={{
