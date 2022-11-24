@@ -62,6 +62,7 @@ export const PipelineDataCardStatus = ({
 };
 
 const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
+  const { t } = useTranslation();
   const { asPath } = useRouter();
   return (
     <Block className="grid grid-cols-3 gap-3 p-4">
@@ -105,7 +106,7 @@ const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
             }}
           >
             <PlayIcon className="w-6" />
-            <span>Run</span>
+            <span>{t("Run")}</span>
           </Link>
           <Link
             className="flex items-end space-x-2 text-blue-500 text-blue-500"
@@ -115,7 +116,7 @@ const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
             }}
           >
             <InformationCircleIcon className="w-6" />
-            <span>Usage & details</span>
+            <span>{t("Usage & details")}</span>
           </Link>
         </div>
       </section>

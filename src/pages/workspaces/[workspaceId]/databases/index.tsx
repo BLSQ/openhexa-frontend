@@ -1,13 +1,9 @@
-import {
-  MagnifyingGlassIcon,
-  TableCellsIcon,
-} from "@heroicons/react/24/outline";
+import { TableCellsIcon } from "@heroicons/react/24/outline";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
-import Link from "core/components/Link";
 import Page from "core/components/Page";
 import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";

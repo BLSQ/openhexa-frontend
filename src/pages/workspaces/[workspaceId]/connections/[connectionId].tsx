@@ -1,20 +1,13 @@
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import Button from "core/components/Button";
 import CodeEditor from "core/components/CodeEditor";
-import DataGrid, { BaseColumn } from "core/components/DataGrid";
-import { TextColumn } from "core/components/DataGrid/TextColumn";
-import Input from "core/components/forms/Input";
 import Page from "core/components/Page";
 import Tabs from "core/components/Tabs";
 import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
-import { capitalize } from "lodash";
 import { useTranslation } from "next-i18next";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { PipelineDataCardStatus } from "workspace/features/PipelineDataCard/PipelineDataCard";
 import { WORKSPACES } from "workspace/helpers/fixtures";
 import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
 

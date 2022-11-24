@@ -1,17 +1,13 @@
-import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Page from "core/components/Page";
 import Title from "core/components/Title";
-import Link from "core/components/Link";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 
 import { useRouter } from "next/router";
-import ReactMarkdown from "react-markdown";
 import { WORKSPACES } from "workspace/helpers/fixtures";
 import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
-import { Tab } from "@headlessui/react";
 import Tabs from "core/components/Tabs";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import { TextColumn } from "core/components/DataGrid/TextColumn";

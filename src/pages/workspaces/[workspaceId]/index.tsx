@@ -1,8 +1,6 @@
-import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Link from "core/components/Link";
 import Page from "core/components/Page";
-import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
