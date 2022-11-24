@@ -11,11 +11,7 @@ const NotebooksPage = () => {
     return null;
   }
 
-  return (
-    <div className="flex flex-1 flex-col">
-      <iframe className="flex-1" src={data.notebooksUrl}></iframe>
-    </div>
-  );
+  return <div></div>;
 };
 
 export const getServerSideProps = createGetServerSideProps({

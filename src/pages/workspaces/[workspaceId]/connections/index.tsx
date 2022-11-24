@@ -37,10 +37,9 @@ const WorkspaceConnectionsPage: NextPageWithLayout = (props: Props) => {
             {workspace.name}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
-            isFirst
             href={`/workspaces/${encodeURIComponent(workspace.id)}/Connections`}
           >
-            {workspace.name}
+            {t("Connections")}
           </Breadcrumbs.Part>
         </Breadcrumbs>
       </WorkspaceLayout.Header>

@@ -1,11 +1,20 @@
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import CodeEditor from "core/components/CodeEditor";
+import DataGrid from "core/components/DataGrid";
 import Page from "core/components/Page";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "core/components/Table";
 import Tabs from "core/components/Tabs";
 import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
+import { capitalize } from "lodash";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { WORKSPACES } from "workspace/helpers/fixtures";
@@ -45,7 +54,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
           <Breadcrumbs.Part
             href={`/workspaces/${encodeURIComponent(workspace.id)}/connections`}
           >
-            {t("Pipelines")}
+            {t("Connections")}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
             href={`/workspaces/${encodeURIComponent(
@@ -57,29 +66,33 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <Block className="mt-5 p-4">
-          <div>
-            <div
-              className="text-sm font-medium text-gray-900"
-              title={connection.name}
-            >
-              {connection.name}
-            </div>
-            <div className="text-sm text-gray-700">
-              <span>{connection.type}</span>
-            </div>
-            <div className="h-10 text-sm italic text-gray-600">
-              <span>
-                {t("This Data source is owned by ")}
-                {connection.owner}
-              </span>
-            </div>
+        <div className="space-y-1">
+          <div
+            className="text-lg font-medium text-gray-900"
+            title={connection.name}
+          >
+            {capitalize(connection.name)}
           </div>
+          <div className="text-sm text-gray-700">
+            <span>{connection.type}</span>
+          </div>
+          <div className="h-10 text-sm italic text-gray-600">
+            <span>
+              {t("This Data source is owned by ")}
+              {connection.owner}
+            </span>
+          </div>
+        </div>
+        <Block className="mt-2 p-4">
           <Tabs defaultIndex={0}>
             <Tabs.Tab className="mt-4" label={t("Information")}>
               <div>
-                <Title level={5}>{t("Usage")}</Title>
-                <p>{connection.description}</p>
+                <Title level={5} className="font-medium ">
+                  {t("Usage")}
+                </Title>
+                <p className="text-sm text-gray-600">
+                  {connection.description}
+                </p>
               </div>
             </Tabs.Tab>
             <Tabs.Tab className="mt-4 " label={t("Code samples")}>
@@ -91,10 +104,28 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 />
               </div>
             </Tabs.Tab>
-            <Tabs.Tab className="mt-4" label={t("Credentials")}>
+            <Tabs.Tab className="mt-4" label={t("Variables")}>
               <div className="mt-5">
-                <p>Creds 1 : Value 1</p>
-                <p>Creds 2 : Value 2</p>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> {t("Name")} </TableCell>
+                      <TableCell>{t("Value")}</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {Object.entries(connection.credentials).map(
+                      ([key, value]) => (
+                        <TableRow key={key}>
+                          <TableCell className="font-medium text-gray-800">
+                            {key}
+                          </TableCell>
+                          <TableCell>{value}</TableCell>
+                        </TableRow>
+                      )
+                    )}
+                  </TableBody>
+                </Table>
               </div>
             </Tabs.Tab>
           </Tabs>

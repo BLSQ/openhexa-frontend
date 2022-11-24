@@ -10,7 +10,7 @@ describe("DefaultLayout", () => {
 
   it("renders the layout for an unauthenticated user", async () => {
     const { container, debug } = render(
-      <TestApp me={{ user: null }}>
+      <TestApp me={{ user: null, features: [] }}>
         <DefaultLayout pageProps={{}}>
           <span data-testid="page" />
         </DefaultLayout>

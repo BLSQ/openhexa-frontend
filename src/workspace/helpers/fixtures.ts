@@ -226,5 +226,10 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
     description: faker.lorem.paragraph(4),
     type: faker.helpers.arrayElement(["DHSI2", "PostgreSQL", "GCP"]),
     owner: faker.company.name(),
+    credentials: {
+      url: faker.internet.url(),
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
+    },
   })),
 }));

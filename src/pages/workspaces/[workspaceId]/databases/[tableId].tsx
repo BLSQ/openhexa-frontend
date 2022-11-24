@@ -67,16 +67,16 @@ const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent className="space-y-8">
+        <div>
+          <Title level={2}>{capitalize(table.name)}</Title>
+        </div>
         <Block className="p-4">
-          <div>
-            <Title level={2}>{capitalize(table.name)}</Title>
-          </div>
           <div className="text-gray-600">
             <p>{t("Database table")}</p>
           </div>
           <Tabs defaultIndex={0}>
             <Tabs.Tab className="mt-4" label={t("Information")}>
-              <div className="mt-5">
+              <div className="mt-5 text-sm text-gray-600">
                 <p>{table.description}</p>
               </div>
               <DataGrid
@@ -111,15 +111,10 @@ const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
           </Tabs>
         </Block>
         <Block className="p-4">
-          <Title level={2}>{capitalize(table.name)}</Title>
           <div className="text-gray-600">
             <p>{t("Data preview")}</p>
           </div>
-          <DataGrid
-            data={table.schema}
-            fixedLayout={false}
-            className="mt-4 w-2/4 border-2 border-solid"
-          >
+          <DataGrid data={table.schema} fixedLayout={false} className="mt-4">
             {table.schema.map((s, index) => (
               <TextColumn
                 key={index}

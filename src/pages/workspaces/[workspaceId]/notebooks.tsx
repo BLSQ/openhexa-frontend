@@ -22,9 +22,13 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
 
   return (
     <Page title={t("Workspace")}>
-      <WorkspaceLayout.PageContent>
-        <div className=" flex flex-1 flex-col">
-          <iframe className="flex-1" src={workspace.notebooksUrl}></iframe>
+      <WorkspaceLayout.Header></WorkspaceLayout.Header>
+      <WorkspaceLayout.PageContent className="">
+        <div>
+          <iframe
+            className="h-full w-full"
+            src={workspace.notebooksUrl}
+          ></iframe>
         </div>
       </WorkspaceLayout.PageContent>
     </Page>

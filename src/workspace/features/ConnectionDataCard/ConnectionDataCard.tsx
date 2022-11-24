@@ -4,6 +4,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Block from "core/components/Block";
 import Link from "core/components/Link";
+import { capitalize } from "lodash";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
@@ -28,7 +29,7 @@ const ConnectionDataCard = ({ connection }: ConnectionDataCardProps) => {
             className="text-sm font-medium text-gray-900"
             title={connection.name}
           >
-            {connection.name}
+            {capitalize(connection.name)}
           </div>
           <div className="text-sm text-gray-700">
             <span>{connection.type}</span>
