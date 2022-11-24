@@ -1,11 +1,13 @@
 import Breadcrumbs from "core/components/Breadcrumbs";
+import Button from "core/components/Button";
 import Page from "core/components/Page";
-import Tabs from "core/components/Tabs";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import PipelineDataCard from "workspace/features/PipelineDataCard";
+import { useState } from "react";
+import ConnectionDataCard from "workspace/features/ConnectionDataCard";
+import CreateConnectionDialog from "workspace/features/CreateConnectionDialog";
 import { WORKSPACES } from "workspace/helpers/fixtures";
 import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
 
@@ -14,10 +16,11 @@ type Props = {
   perPage: number;
 };
 
-const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
+const WorkspaceConnectionsPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const workspace = WORKSPACES.find((w) => w.id === router.query.workspaceId);
+  const [openModal, setOpenModal] = useState(false);
 
   if (!workspace) {
     return null;
@@ -34,33 +37,38 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
             {workspace.name}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
-            href={`/workspaces/${encodeURIComponent(workspace.id)}/pipelines`}
+            isFirst
+            href={`/workspaces/${encodeURIComponent(workspace.id)}/Connections`}
           >
-            {t("Pipelines")}
+            {workspace.name}
           </Breadcrumbs.Part>
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <div>
-          <Tabs defaultIndex={0}>
-            <Tabs.Tab
-              className="mt-4 grid grid-cols-2 gap-5 sm:grid-cols-3"
-              label={t("All pipelines")}
-            >
-              {workspace.dags.map((dag, index) => (
-                <PipelineDataCard key={index} dag={dag} />
-              ))}
-            </Tabs.Tab>
-          </Tabs>
+        <div className="grid grid-cols-3 gap-5 sm:grid-cols-3">
+          <div className="col-start-1 col-end-4 flex justify-end">
+            <div>
+              <Button onClick={() => setOpenModal(true)}>
+                {t("Add connection")}
+              </Button>
+            </div>
+          </div>
+          {workspace.connections.map((connection, index) => (
+            <div key={index} className="col-start-1 col-end-4">
+              <ConnectionDataCard connection={connection} />
+            </div>
+          ))}
         </div>
-
-        <div></div>
+        <CreateConnectionDialog
+          open={openModal}
+          onClose={() => setOpenModal(!openModal)}
+        />
       </WorkspaceLayout.PageContent>
     </Page>
   );
 };
 
-WorkspacePipelinesPage.getLayout = (page, pageProps) => {
+WorkspaceConnectionsPage.getLayout = (page, pageProps) => {
   return <WorkspaceLayout pageProps={pageProps}>{page}</WorkspaceLayout>;
 };
 
@@ -68,4 +76,4 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
 });
 
-export default WorkspacePipelinesPage;
+export default WorkspaceConnectionsPage;

@@ -15,7 +15,7 @@ import { capitalize } from "lodash";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { PipelineDataCardStatus } from "pipelines/features/PipelineDataCard/PipelineDataCard";
+import { PipelineDataCardStatus } from "workspace/features/PipelineDataCard/PipelineDataCard";
 import IHPForm from "pipelines/features/PipelineRunForm/IHPForm";
 import PipelineRunOutputEntry from "pipelines/features/PipelineRunOutputEntry";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";

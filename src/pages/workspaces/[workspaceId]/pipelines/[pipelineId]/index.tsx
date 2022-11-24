@@ -13,7 +13,7 @@ import { capitalize } from "lodash";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { PipelineDataCardStatus } from "pipelines/features/PipelineDataCard/PipelineDataCard";
+import { PipelineDataCardStatus } from "workspace/features/PipelineDataCard/PipelineDataCard";
 import { WORKSPACES } from "workspace/helpers/fixtures";
 import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
 

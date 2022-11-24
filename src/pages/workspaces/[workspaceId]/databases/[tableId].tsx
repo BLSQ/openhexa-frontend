@@ -76,7 +76,7 @@ const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
           </div>
           <Tabs defaultIndex={0}>
             <Tabs.Tab className="mt-4" label={t("Information")}>
-              <div className="mt-5 w-96">
+              <div className="mt-5">
                 <p>{table.description}</p>
               </div>
               <DataGrid

@@ -67,7 +67,7 @@ const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
     <Block className="grid grid-cols-3 gap-3 p-4">
       <section className="col-span-3">
         <div className="flex items-end justify-between">
-          <div className="truncate">
+          <div>
             <div
               className="truncate text-sm font-medium text-gray-900"
               title={dag.label}

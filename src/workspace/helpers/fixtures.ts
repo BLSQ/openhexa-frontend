@@ -217,4 +217,14 @@ export const WORKSPACES = Array.from({ length: 8 }, () => ({
       })
       .toISOString(),
   })),
+  connections: Array.from({ length: 3 }, () => ({
+    id: faker.datatype.uuid(),
+    name: faker.word.noun({
+      length: { min: 15, max: 30 },
+      strategy: "longest",
+    }),
+    description: faker.lorem.paragraph(4),
+    type: faker.helpers.arrayElement(["DHSI2", "PostgreSQL", "GCP"]),
+    owner: faker.company.name(),
+  })),
 }));

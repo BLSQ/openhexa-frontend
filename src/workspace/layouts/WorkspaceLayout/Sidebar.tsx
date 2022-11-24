@@ -126,10 +126,12 @@ const Sidebar = (props: SidebarProps) => {
               {t("Database")}
             </NavItem>
             <NavItem
-              href={`/workspaces/${encodeURIComponent(workspaceId)}/connectors`}
+              href={`/workspaces/${encodeURIComponent(
+                workspaceId
+              )}/connections`}
             >
               <SwatchIcon className="h-5 w-5" />
-              {t("Connectors")}
+              {t("Connections")}
             </NavItem>
             <NavItem
               href={`/workspaces/${encodeURIComponent(workspaceId)}/pipelines`}
