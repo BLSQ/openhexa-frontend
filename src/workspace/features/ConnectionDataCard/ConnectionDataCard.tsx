@@ -3,10 +3,7 @@ import {
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import Block from "core/components/Block";
-import Button from "core/components/Button";
 import Link from "core/components/Link";
-import Title from "core/components/Title";
-import { connect } from "http2";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
@@ -59,7 +56,7 @@ const ConnectionDataCard = ({ connection }: ConnectionDataCardProps) => {
             }}
           >
             <Cog8ToothIcon className="h-6 w-6" />
-            Settings
+            {t("Settings")}
           </Link>
           <Link
             className="flex items-end space-x-2 text-blue-500 text-blue-500"
@@ -69,7 +66,7 @@ const ConnectionDataCard = ({ connection }: ConnectionDataCardProps) => {
             }}
           >
             <InformationCircleIcon className="w-6" />
-            <span>Usage & details</span>
+            <span>{t("Usage & details")} </span>
           </Link>
         </div>
       </div>

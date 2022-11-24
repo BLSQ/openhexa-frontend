@@ -1,20 +1,15 @@
-import { Listbox } from "@headlessui/react";
-import { ArrowRightIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
-import SearchInput from "catalog/features/SearchInput";
-import SearchResult from "catalog/features/SearchResult";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
 import SimpleSelect from "core/components/forms/SimpleSelect";
 import Title from "core/components/Title";
 import { useTranslation } from "next-i18next";
-import Link from "next/link";
 import { useState } from "react";
 
 export enum ConnectionType {
   DHSI2 = "DHSI2",
   POSTGRESQL = "POSTGRESQL",
-  GCP = "GCP",
 }
 
 interface CreateConnectionDialogProps {
@@ -22,13 +17,85 @@ interface CreateConnectionDialogProps {
   onClose: () => void;
 }
 
+const DHSI2Form = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-5">
+      <Field
+        onChange={() => {}}
+        type="text"
+        name="server_url"
+        label={t("Server Url")}
+        required
+      />
+      <Field
+        onChange={() => {}}
+        type="text"
+        name="username"
+        label={t("Username")}
+        required
+      />
+      <Field
+        onChange={() => {}}
+        type="password"
+        name="password"
+        label={t("Password")}
+        required
+      />
+    </div>
+  );
+};
+
+const PostgresForm = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-5">
+      <Field
+        onChange={() => {}}
+        type="text"
+        name="hostname"
+        label={t("Hostname")}
+        required
+      />
+      <Field
+        onChange={() => {}}
+        type="text"
+        name="username"
+        label={t("Username")}
+        required
+      />
+      <Field
+        onChange={() => {}}
+        type="password"
+        name="password"
+        label={t("Password")}
+        required
+      />
+      <Field
+        onChange={() => {}}
+        type="text"
+        name="port"
+        label={t("Port")}
+        required
+      />
+      <Field
+        onChange={() => {}}
+        type="text"
+        name="database"
+        label={t("Database")}
+        required
+      />
+    </div>
+  );
+};
+
 export default function CreateCollectionDialog({
   open,
   onClose,
 }: CreateConnectionDialogProps) {
   const { t } = useTranslation();
-  const [selectedType, setSelectedType] = useState();
-  console.log(Object.values(ConnectionType));
+  const [selectedType, setSelectedType] = useState<ConnectionType>();
+
   return (
     <Dialog
       open={open}
@@ -54,7 +121,15 @@ export default function CreateCollectionDialog({
             </label>
             <SimpleSelect
               id="type"
-              className="form-select w-full rounded-md border border-gray-300 focus:border-blue-500  focus:ring-blue-500 sm:text-sm"
+              className="form-select w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              onChange={(event) =>
+                setSelectedType(
+                  ConnectionType[
+                    event.currentTarget.value as keyof typeof ConnectionType
+                  ]
+                )
+              }
+              required
             >
               {Object.values(ConnectionType).map((type, index) => (
                 <option key={index} value={type}>
@@ -63,6 +138,12 @@ export default function CreateCollectionDialog({
               ))}
             </SimpleSelect>
           </div>
+          {selectedType && selectedType === ConnectionType.POSTGRESQL && (
+            <PostgresForm />
+          )}
+          {selectedType && selectedType === ConnectionType.DHSI2 && (
+            <DHSI2Form />
+          )}
           <Field
             onChange={() => {}}
             name="excerpt"
