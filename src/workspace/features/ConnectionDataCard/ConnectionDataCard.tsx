@@ -2,6 +2,7 @@ import {
   Cog8ToothIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
+import { PlayIcon } from "@heroicons/react/24/solid";
 import Block from "core/components/Block";
 import Link from "core/components/Link";
 import { capitalize } from "lodash";
@@ -47,7 +48,7 @@ const ConnectionDataCard = ({ connection }: ConnectionDataCardProps) => {
           </div>
         </section>
       </div>
-      <div className="col-span-1 flex items-center justify-end">
+      <section className="col-span-3">
         <div className="flex justify-end space-x-4">
           <Link
             className="flex items-end space-x-2 text-blue-500 text-blue-500"
@@ -70,7 +71,7 @@ const ConnectionDataCard = ({ connection }: ConnectionDataCardProps) => {
             <span>{t("Usage & details")} </span>
           </Link>
         </div>
-      </div>
+      </section>
     </Block>
   );
 };
