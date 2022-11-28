@@ -67,14 +67,26 @@ const ConnectionDataCard = ({
           <div className="flex justify-end space-x-4">
             <Link
               className="flex items-end space-x-2 text-blue-500 text-blue-500"
-              href=""
+              href={{
+                pathname: `/workspaces/[workspaceId]/connections/[connectionId]`,
+                query: {
+                  workspaceId: workspaceId,
+                  connectionId: connection.id,
+                },
+              }}
             >
               <Cog8ToothIcon className="h-6 w-6" />
               <span>{t("Settings")}</span>
             </Link>
             <Link
               className="flex items-end space-x-2 text-blue-500 text-blue-500"
-              href=""
+              href={{
+                pathname: `/workspaces/[workspaceId]/connections/[connectionId]`,
+                query: {
+                  workspaceId: workspaceId,
+                  connectionId: connection.id,
+                },
+              }}
             >
               <InformationCircleIcon className="w-6" />
               <span>{t("Usage & details")} </span>
