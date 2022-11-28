@@ -10,6 +10,7 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 
 interface ConnectionDataCardProps {
+  workspaceId: string;
   connection: {
     id: string;
     name: string;
@@ -19,9 +20,11 @@ interface ConnectionDataCardProps {
   };
 }
 
-const ConnectionDataCard = ({ connection }: ConnectionDataCardProps) => {
+const ConnectionDataCard = ({
+  connection,
+  workspaceId,
+}: ConnectionDataCardProps) => {
   const { t } = useTranslation();
-  const { asPath } = useRouter();
   return (
     <Block className="p-4">
       <div className="grid grid-rows-3 gap-4">
@@ -34,8 +37,11 @@ const ConnectionDataCard = ({ connection }: ConnectionDataCardProps) => {
               <Link
                 className="flex items-end space-x-2 text-blue-500 text-blue-500"
                 href={{
-                  pathname: `${asPath}/[connectionId]`,
-                  query: { connectionId: connection.id },
+                  pathname: `/workspaces/[workspaceId]/connections/[connectionId]`,
+                  query: {
+                    workspaceId: workspaceId,
+                    connectionId: connection.id,
+                  },
                 }}
               >
                 <span> {capitalize(connection.name)} </span>
@@ -64,7 +70,7 @@ const ConnectionDataCard = ({ connection }: ConnectionDataCardProps) => {
               href=""
             >
               <Cog8ToothIcon className="h-6 w-6" />
-              {t("Settings")}
+              <span>{t("Settings")}</span>
             </Link>
             <Link
               className="flex items-end space-x-2 text-blue-500 text-blue-500"

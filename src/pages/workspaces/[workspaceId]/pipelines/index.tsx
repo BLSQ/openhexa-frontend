@@ -48,7 +48,11 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
               label={t("All pipelines")}
             >
               {workspace.dags.map((dag, index) => (
-                <PipelineDataCard key={index} dag={dag} />
+                <PipelineDataCard
+                  workspaceId={workspace.id}
+                  key={index}
+                  dag={dag}
+                />
               ))}
             </Tabs.Tab>
           </Tabs>

@@ -63,7 +63,7 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
               textClassName="font-medium text-gray-600"
               accessor={(value) => (
                 <>
-                  <div className="h-center flex space-x-2">
+                  <div className="flex space-x-2">
                     <TableCellsIcon className="h-6 w-6" />
                     <span className="font-medium text-gray-800">
                       {value.name}
@@ -117,7 +117,7 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
               textClassName="font-medium text-gray-600"
               accessor={(value) => (
                 <>
-                  <div className="h-center flex space-x-2">
+                  <div className="flex space-x-2">
                     <TableCellsIcon className="h-6 w-6" />
                     <span className="font-medium text-gray-800">
                       {value.name}

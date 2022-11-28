@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import { useRouter } from "next/router";
 
 interface PipelineDataCardProps {
+  workspaceId: string;
   dag: Pick<Dag, "id" | "label" | "description"> & {
     runs: Array<
       Pick<DagRun, "id" | "triggerMode" | "status" | "executionDate">
@@ -61,7 +62,7 @@ export const PipelineDataCardStatus = ({
   );
 };
 
-const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
+const PipelineDataCard = ({ dag, workspaceId }: PipelineDataCardProps) => {
   const { t } = useTranslation();
   const { asPath } = useRouter();
   return (
@@ -101,8 +102,8 @@ const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
           <Link
             className="flex items-end space-x-2 text-blue-500 text-blue-500"
             href={{
-              pathname: `${asPath}/[pipelineId]`,
-              query: { pipelineId: dag.id },
+              pathname: `/workspaces/[workspaceId]/pipelines/[pipelineId]`,
+              query: { workspaceId: workspaceId, pipelineId: dag.id },
             }}
           >
             <PlayIcon className="w-6" />
@@ -111,8 +112,12 @@ const PipelineDataCard = ({ dag }: PipelineDataCardProps) => {
           <Link
             className="flex items-end space-x-2 text-blue-500 text-blue-500"
             href={{
-              pathname: `${asPath}/[pipelineId]/runs/[runId]`,
-              query: { pipelineId: dag.id, runId: dag.runs[0].id },
+              pathname: `/workspaces/[workspaceId]/pipelines/[pipelineId]/runs/[runId]`,
+              query: {
+                workspaceId: workspaceId,
+                pipelineId: dag.id,
+                runId: dag.runs[0].id,
+              },
             }}
           >
             <InformationCircleIcon className="w-6" />

@@ -109,12 +109,13 @@ export default function CreateCollectionDialog({
       maxWidth="max-w-2xl"
       centered={false}
       padding="py-2 px-2"
+      className="h-2/3"
     >
       <Dialog.Description className="p-4">
         {t("Create a connection")}
       </Dialog.Description>
-      <Dialog.Content className="h-96 overflow-y-scroll p-4">
-        <form className="space-y-4">
+      <Dialog.Content className="h-[80%] overflow-y-auto px-2">
+        <form className="space-y-2 ">
           <Field
             onChange={() => {}}
             type="text"
@@ -159,7 +160,7 @@ export default function CreateCollectionDialog({
             label={t("Description")}
             required
           />
-          <div className="space-y-5">
+          <div className="space-y-3">
             <Title level={5}>{t("Fields")}</Title>
             <div className="flex flex-row items-center space-x-5">
               <Field

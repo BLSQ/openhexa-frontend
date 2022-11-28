@@ -1,3 +1,4 @@
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import Page from "core/components/Page";
@@ -37,24 +38,28 @@ const WorkspaceConnectionsPage: NextPageWithLayout = (props: Props) => {
             {workspace.name}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
-            href={`/workspaces/${encodeURIComponent(workspace.id)}/Connections`}
+            href={`/workspaces/${encodeURIComponent(workspace.id)}/connections`}
           >
             {t("Connections")}
           </Breadcrumbs.Part>
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <div className="grid grid-cols-3 gap-5 sm:grid-cols-3">
-          <div className="col-start-1 col-end-4 flex justify-end">
-            <div>
-              <Button onClick={() => setOpenModal(true)}>
-                {t("Add connection")}
-              </Button>
-            </div>
-          </div>
+        <div className="flex w-full justify-end">
+          <Button
+            leadingIcon={<PlusCircleIcon className="w-6" />}
+            onClick={() => setOpenModal(true)}
+          >
+            {t("Add connection")}
+          </Button>
+        </div>
+        <div className="mt-4 grid grid-cols-3 gap-5 sm:grid-cols-3">
           {workspace.connections.map((connection, index) => (
             <div key={index} className="col-start-1 col-end-4">
-              <ConnectionDataCard connection={connection} />
+              <ConnectionDataCard
+                workspaceId={workspace.id}
+                connection={connection}
+              />
             </div>
           ))}
         </div>
