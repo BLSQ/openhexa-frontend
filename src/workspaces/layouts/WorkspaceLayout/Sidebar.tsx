@@ -15,7 +15,7 @@ import Menu from "core/components/Menu";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { ReactNode, useMemo } from "react";
-import { WORKSPACES } from "workspace/helpers/fixtures";
+import { WORKSPACES } from "workspaces/helpers/fixtures";
 
 type SidebarProps = {
   workspaceId: string;

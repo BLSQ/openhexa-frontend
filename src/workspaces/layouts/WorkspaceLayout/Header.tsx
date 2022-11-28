@@ -6,7 +6,7 @@ import useMe from "identity/hooks/useMe";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
-import { WORKSPACES } from "workspace/helpers/fixtures";
+import { WORKSPACES } from "workspaces/helpers/fixtures";
 
 type HeaderProps = {
   children?: ReactNode;

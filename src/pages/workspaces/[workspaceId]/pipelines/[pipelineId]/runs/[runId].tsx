@@ -9,8 +9,8 @@ import { useRouter } from "next/router";
 import PipelineRunOutputEntry from "pipelines/features/PipelineRunOutputEntry";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
 import { getPipelineRunLabel } from "pipelines/helpers/runs";
-import { WORKSPACES } from "workspace/helpers/fixtures";
-import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
+import { WORKSPACES } from "workspaces/helpers/fixtures";
+import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
   page: number;

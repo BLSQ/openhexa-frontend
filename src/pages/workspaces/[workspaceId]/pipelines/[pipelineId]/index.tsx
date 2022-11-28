@@ -13,9 +13,9 @@ import { capitalize } from "lodash";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { PipelineDataCardStatus } from "workspace/features/PipelineDataCard/PipelineDataCard";
-import { WORKSPACES } from "workspace/helpers/fixtures";
-import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
+import { PipelineDataCardStatus } from "workspaces/features/PipelineDataCard/PipelineDataCard";
+import { WORKSPACES } from "workspaces/helpers/fixtures";
+import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
   page: number;

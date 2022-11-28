@@ -12,7 +12,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import Menu from "core/components/Menu";
 import Navbar from "./Navbar";
 import { LayoutClasses } from "./styles";
-import { WORKSPACES } from "workspace/helpers/fixtures";
+import { WORKSPACES } from "workspaces/helpers/fixtures";
 import useFeature from "identity/hooks/useFeature";
 
 const Header = () => {

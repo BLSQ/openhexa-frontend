@@ -10,8 +10,8 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { WORKSPACES } from "workspace/helpers/fixtures";
-import WorkspaceLayout from "workspace/layouts/WorkspaceLayout";
+import { WORKSPACES } from "workspaces/helpers/fixtures";
+import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
   page: number;
