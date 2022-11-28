@@ -1,6 +1,7 @@
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
+import Checkbox from "core/components/forms/Checkbox";
 import Field from "core/components/forms/Field";
 import SimpleSelect from "core/components/forms/SimpleSelect";
 import Title from "core/components/Title";
@@ -96,17 +97,24 @@ export default function CreateCollectionDialog({
   const { t } = useTranslation();
   const [selectedType, setSelectedType] = useState<ConnectionType>();
 
+  const handleClose = () => {
+    setSelectedType(undefined);
+    onClose();
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       maxWidth="max-w-2xl"
       centered={false}
-      padding="py-2"
-      className="p-4"
+      padding="py-2 px-2"
     >
-      <Dialog.Content className="h-1/2">
-        <form className="space-y-5">
+      <Dialog.Description className="p-4">
+        {t("Create a connection")}
+      </Dialog.Description>
+      <Dialog.Content className="h-96 overflow-y-scroll p-4">
+        <form className="space-y-4">
           <Field
             onChange={() => {}}
             type="text"
@@ -117,7 +125,7 @@ export default function CreateCollectionDialog({
           <Field onChange={() => {}} name="slug" label={t("Slug")} required />
           <div>
             <label className="text-sm font-medium text-gray-600" htmlFor="type">
-              Connection Type
+              {t("Connection Type")}
             </label>
             <SimpleSelect
               id="type"
@@ -130,6 +138,7 @@ export default function CreateCollectionDialog({
                 )
               }
               required
+              value={selectedType}
             >
               {Object.values(ConnectionType).map((type, index) => (
                 <option key={index} value={type}>
@@ -150,6 +159,32 @@ export default function CreateCollectionDialog({
             label={t("Description")}
             required
           />
+          <div className="space-y-5">
+            <Title level={5}>{t("Fields")}</Title>
+            <div className="flex flex-row items-center space-x-5">
+              <Field
+                className="w-1/2"
+                onChange={() => {}}
+                name="key"
+                label={t("Key")}
+                required
+              />
+              <Field
+                onChange={() => {}}
+                name="value"
+                label={t("Value")}
+                required
+                className="w-1/2"
+              />
+              <Checkbox name="secret" label={t("Secret")} />
+            </div>
+            <Button
+              variant="white"
+              leadingIcon={<PlusCircleIcon className="w-6" />}
+            >
+              {t("Add")}
+            </Button>
+          </div>
           {selectedType && selectedType === ConnectionType.POSTGRESQL && (
             <PostgresForm />
           )}
@@ -159,10 +194,10 @@ export default function CreateCollectionDialog({
         </form>
       </Dialog.Content>
       <Dialog.Actions>
-        <Button>
-          <PlusCircleIcon />
-          {t("Add")}
+        <Button variant="white" onClick={handleClose}>
+          {t("Cancel")}
         </Button>
+        <Button>{t("Save")}</Button>
       </Dialog.Actions>
     </Dialog>
   );
