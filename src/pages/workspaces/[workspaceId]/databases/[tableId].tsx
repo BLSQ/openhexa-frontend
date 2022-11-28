@@ -53,12 +53,12 @@ const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
             {workspace.name}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
-            href={`/workspaces/${encodeURIComponent(workspace.id)}/Database`}
+            href={`/workspaces/${encodeURIComponent(workspace.id)}/database`}
           >
             {t("Database")}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
-            href={`/workspaces/${encodeURIComponent(workspace.id)}/Database/${
+            href={`/workspaces/${encodeURIComponent(workspace.id)}/databases/${
               router.query.tableId
             }`}
           >
