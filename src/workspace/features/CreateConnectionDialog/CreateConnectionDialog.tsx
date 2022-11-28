@@ -138,12 +138,6 @@ export default function CreateCollectionDialog({
               ))}
             </SimpleSelect>
           </div>
-          {selectedType && selectedType === ConnectionType.POSTGRESQL && (
-            <PostgresForm />
-          )}
-          {selectedType && selectedType === ConnectionType.DHSI2 && (
-            <DHSI2Form />
-          )}
           <Field
             onChange={() => {}}
             name="excerpt"
@@ -156,30 +150,20 @@ export default function CreateCollectionDialog({
             label={t("Description")}
             required
           />
-          <div className="space-y-5">
-            <Title level={5}>Fields</Title>
-            <div className="flex flex-row  space-x-5">
-              <Field
-                className="w-1/2"
-                onChange={() => {}}
-                name="key"
-                label={t("Key")}
-                required
-              />
-              <Field
-                onChange={() => {}}
-                name="value"
-                label={t("Value")}
-                required
-                className="w-1/2"
-              />
-            </div>
-            <Button>
-              Add <PlusCircleIcon />
-            </Button>
-          </div>
+          {selectedType && selectedType === ConnectionType.POSTGRESQL && (
+            <PostgresForm />
+          )}
+          {selectedType && selectedType === ConnectionType.DHSI2 && (
+            <DHSI2Form />
+          )}
         </form>
       </Dialog.Content>
+      <Dialog.Actions>
+        <Button>
+          <PlusCircleIcon />
+          {t("Add")}
+        </Button>
+      </Dialog.Actions>
     </Dialog>
   );
 }
