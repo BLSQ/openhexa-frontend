@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import type { ReactElement } from "react";
 import Header from "./Header";
@@ -6,11 +7,12 @@ import Sidebar from "./Sidebar";
 
 type WorkspaceLayoutProps = {
   children: ReactElement;
+  mainClassName?: string;
   pageProps: any;
 };
 
 const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
-  const { children } = props;
+  const { children, mainClassName } = props;
   const router = useRouter();
 
   const workspaceId = router.query.workspaceId as string;
@@ -22,7 +24,9 @@ const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
   return (
     <>
       <Sidebar workspaceId={workspaceId} />
-      <main className="flex flex-col pl-64">{children}</main>
+      <main className={clsx("flex flex-col pl-64", mainClassName)}>
+        {children}
+      </main>
     </>
   );
 };
