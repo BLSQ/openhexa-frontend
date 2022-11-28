@@ -1,4 +1,6 @@
+import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
+import { useTranslation } from "next-i18next";
 import {
   NotebooksPageDocument,
   useNotebooksPageQuery,
@@ -6,12 +8,18 @@ import {
 
 const NotebooksPage = () => {
   const { data } = useNotebooksPageQuery();
-
+  const { t } = useTranslation();
   if (!data) {
     return null;
   }
 
-  return <div></div>;
+  return (
+    <Page title={t("Notebooks")}>
+      <div className="flex flex-1 flex-col">
+        <iframe className="flex-1" src={data.notebooksUrl}></iframe>
+      </div>
+    </Page>
+  );
 };
 
 export const getServerSideProps = createGetServerSideProps({
