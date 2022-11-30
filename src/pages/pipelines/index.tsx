@@ -41,14 +41,20 @@ const PipelinesPage = (props: Props) => {
   };
 
   const items = useMemo(() => {
-    return (
+    const dags =
       data?.dags.items.map((dag) => {
         return {
           ...dag,
           lastRun: dag.runs.items?.length > 0 ? dag.runs.items[0] : null,
         };
-      }) ?? []
-    );
+      }) ?? [];
+
+    return dags.sort((d1, d2) => {
+      if (d1.label && d1.label) {
+        return d1.label.localeCompare(d2.label);
+      }
+      return d1.externalId.localeCompare(d2.externalId);
+    });
   }, [data]);
 
   if (!data) {
