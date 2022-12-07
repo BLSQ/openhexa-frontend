@@ -1,4 +1,7 @@
+import { PencilIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
+import Button from "core/components/Button";
 import Link from "core/components/Link";
 import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
@@ -36,19 +39,28 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <ReactMarkdown
-          className="prose-xl text-sm"
-          components={{
-            a: ({ node, ...props }) => (
-              <Link href={props.href || ""}>{props.children}</Link>
-            ),
-            ul: ({ node, ...props }) => (
-              <ul className="list-disc">{props.children}</ul>
-            ),
-          }}
-        >
-          {workspace.description}
-        </ReactMarkdown>
+        <Block>
+          <Block.Content>
+            <div className="">
+              <Button leadingIcon={<PencilIcon className="h-4 w-4" />}>
+                {t("Edit")}
+              </Button>
+            </div>
+            <ReactMarkdown
+              className="prose max-w-3xl text-base"
+              components={{
+                a: ({ node, ...props }) => (
+                  <Link href={props.href || ""}>{props.children}</Link>
+                ),
+                ul: ({ node, ...props }) => (
+                  <ul className="list-disc">{props.children}</ul>
+                ),
+              }}
+            >
+              {workspace.description}
+            </ReactMarkdown>
+          </Block.Content>
+        </Block>
       </WorkspaceLayout.PageContent>
     </Page>
   );
