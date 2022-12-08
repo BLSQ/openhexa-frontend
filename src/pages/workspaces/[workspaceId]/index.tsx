@@ -41,7 +41,7 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
       <WorkspaceLayout.PageContent>
         <Block>
           <Block.Content>
-            <div className="">
+            <div className="float-right">
               <Button leadingIcon={<PencilIcon className="h-4 w-4" />}>
                 {t("Edit")}
               </Button>
