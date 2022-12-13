@@ -45,6 +45,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
         </Breadcrumbs>
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
+        <Title level={2}>{t("Settings")}</Title>
         <Tabs defaultIndex={0}>
           <Tabs.Tab className="mt-4" label={t("Members")}>
             <div className="mb-4 flex justify-end">

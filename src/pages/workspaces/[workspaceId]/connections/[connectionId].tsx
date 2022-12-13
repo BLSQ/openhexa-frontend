@@ -75,7 +75,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
           <Block.Content title={t("Information")} className="space-y-4">
             <DescriptionList>
               <DescriptionList.Item label={t("Type")}>
-                <Badge className="bg-gray-100">
+                <Badge className={connection.type.color}>
                   {connection.type?.label ?? "custom"}
                 </Badge>
               </DescriptionList.Item>
@@ -92,26 +92,28 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             />
           </Block.Section>
           <Block.Section title={t("Variables")}>
-            <Table className="overflow-hidden rounded">
-              <TableHead>
-                <TableRow>
-                  <TableCell className="py-3">{t("Name")}</TableCell>
-                  <TableCell className="py-3">{t("Value")}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {connection.credentials.map((creds, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="py-3 font-medium">
-                      {creds.label}
-                    </TableCell>
-                    <TableCell className="py-3">
-                      {creds.secret ? "***********" : creds.value}
-                    </TableCell>
+            <div className="overflow-hidden rounded border border-gray-100">
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell className="py-3">{t("Name")}</TableCell>
+                    <TableCell className="py-3">{t("Value")}</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHead>
+                <TableBody>
+                  {connection.credentials.map((creds, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="py-3 font-medium">
+                        {creds.label}
+                      </TableCell>
+                      <TableCell className="py-3">
+                        {creds.secret ? "***********" : creds.value}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </Block.Section>
         </Block>
       </WorkspaceLayout.PageContent>
