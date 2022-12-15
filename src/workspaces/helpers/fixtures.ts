@@ -5,11 +5,11 @@ import { DateTime } from "luxon";
 faker.seed(0);
 
 const SAMPLE_PROJECTS = [
-  "CMR PNLP",
-  "BFA Malaria Data Repository",
-  "SEN Master Facility List",
-  "NER Malaria Risk Modelling",
-  "COD Accessibility to Health Services",
+  { name: "CMR PNLP", country: { code: "cm" } },
+  { name: "BFA Malaria Data Repository", country: { code: "bf" } },
+  { name: "SEN Master Facility List", country: null },
+  { name: "NER Malaria Risk Modelling", country: null },
+  { name: "COD Accessibility to Health Services", country: { code: "cd" } },
 ];
 
 function searchForFile(files: any, searchId: any) {
@@ -102,13 +102,8 @@ Paths:
 
 export const WORKSPACES = SAMPLE_PROJECTS.map((project, i) => ({
   id: faker.datatype.uuid(),
-  name: project,
-  country:
-    i % 3 === 0
-      ? null
-      : {
-          code: faker.address.countryCode().toLowerCase(),
-        },
+  name: project.name,
+  country: project.country,
   description: `# Cameroon PNLP
 
   Welcome to the Cameroon PNLP workspace !
