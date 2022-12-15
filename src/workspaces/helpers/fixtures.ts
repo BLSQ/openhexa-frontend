@@ -73,6 +73,16 @@ function generateDagRuns() {
   ];
 }
 
+export const SAMPLE_README_CONTENT = `
+## Directory structure
+
+Here are a few tips about how to organize file and directories in this project:
+
+- Don't put data or code at the top level of the file system, only directories
+- Use meaningful names for your directories
+- You can create a README.md file in any directory, it will be displayed when browsing the directory, and it is a good way to document parts of the filesystem (you are currently reading a README.md file!)
+`;
+
 const SAMPLE_DAG_DESCRIPTION = `Compute an accessibility analysis for a given set of tile, barrier information, walk speed etc
 
 #### Parameter reference
@@ -99,41 +109,78 @@ export const WORKSPACES = SAMPLE_PROJECTS.map((project, i) => ({
       : {
           code: faker.address.countryCode().toLowerCase(),
         },
-  description: `# Malaria Data Repository for Cameroon
+  description: `# Cameroon PNLP
 
-
-  Welcome to the Cameroon Malaria Data Repository workspace !
-  
+  Welcome to the Cameroon PNLP workspace !
   
   This workspace contains :
   
-  
   - The data produced by Bluesquare in the context of this project
   - The different notebooks used for exploration and visualisation purposes
-  - The data pipelines that we use to process the Malaria Data
-  
-  
-  ## Quick links
-  
-  
-  - [Annex A reports → lien vers le dossier](https://google.com)
-  - [Link to pipeline ](https://google.com)
-  
+  - The DHIS2 extraction pipelines
+  - The pipeline used to update the PNLP dashboard
+  - The risk-based verification pipelines
   
   ## Overview of the data in the repository
   
-  
   Nunc fringilla, nisi eu hendrerit ornare, lacus massa accumsan eros, quis auctor nibh lorem sed ligula. Praesent ac rhoncus mi. Cras fermentum ultrices pellentesque. Maecenas odio ex, euismod sit amet odio ut, tristique cursus massa. 
-  
   
   Nam congue mi eu metus sagittis rutrum sit amet suscipit nisi. Donec a consectetur orci, nec tempus dui. Proin tristique ex nec magna porttitor feugiat ut vel est. Pellentesque feugiat aliquet augue. Pellentesque a risus id dolor interdum convallis. Suspendisse condimentum in diam tempus dapibus. Mauris blandit dolor non felis dignissim, et tincidunt justo efficitur.
   
+  ## External links
   
+  - [PNLP Tableau dashboard](https://google.com)
   `,
   files: [
     {
       type: "folder",
-      name: "Output",
+      name: "pnlp",
+      id: faker.datatype.uuid(),
+      updatedAt: faker.datatype
+        .datetime({
+          min: DateTime.now().minus({ days: 28 }).toMillis(),
+          max: DateTime.now().toMillis(),
+        })
+        .toISOString(),
+      children: Array.from({ length: 13 }, () => ({
+        id: faker.datatype.uuid(),
+        name: faker.system.fileName(),
+        type: faker.system.fileType(),
+        size: faker.datatype.number(1000 * 10 * 10 * 10),
+        updatedAt: faker.datatype
+          .datetime({
+            min: DateTime.now().minus({ days: 28 }).toMillis(),
+            max: DateTime.now().toMillis(),
+          })
+          .toISOString(),
+      })),
+    },
+    {
+      type: "folder",
+      name: "exploration",
+      id: faker.datatype.uuid(),
+      updatedAt: faker.datatype
+        .datetime({
+          min: DateTime.now().minus({ days: 28 }).toMillis(),
+          max: DateTime.now().toMillis(),
+        })
+        .toISOString(),
+      children: Array.from({ length: 13 }, () => ({
+        id: faker.datatype.uuid(),
+        name: faker.system.fileName(),
+        type: faker.system.fileType(),
+        size: faker.datatype.number(1000 * 10 * 10 * 10),
+        updatedAt: faker.datatype
+          .datetime({
+            min: DateTime.now().minus({ days: 28 }).toMillis(),
+            max: DateTime.now().toMillis(),
+          })
+          .toISOString(),
+      })),
+    },
+    {
+      type: "folder",
+      name: "rbv",
       id: faker.datatype.uuid(),
       updatedAt: faker.datatype
         .datetime({
@@ -165,6 +212,7 @@ export const WORKSPACES = SAMPLE_PROJECTS.map((project, i) => ({
           max: DateTime.now().toMillis(),
         })
         .toISOString(),
+      content: "Yolo",
     },
   ],
 
