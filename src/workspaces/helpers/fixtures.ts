@@ -80,7 +80,7 @@ Here are a few tips about how to organize file and directories in this project:
 
 - Don't put data or code at the top level of the file system, only directories
 - Use meaningful names for your directories
-- You can create a README.md file in any directory, it will be displayed when browsing the directory, and it is a good way to document parts of the filesystem (you are currently reading a README.md file!)
+- You can create a \`README.md\` file in any directory, it will be displayed when browsing the directory, and it is a good way to document parts of the filesystem (you are currently reading a README.md file!)
 `;
 
 const SAMPLE_DAG_DESCRIPTION = `Compute an accessibility analysis for a given set of tile, barrier information, walk speed etc
