@@ -32,6 +32,64 @@ export const getWorkspaceFile = (workspaceId: any, fileId: any) => {
   return searchForFile(workspace.files, fileId);
 };
 
+function generateDagRuns() {
+  return [
+    {
+      id: faker.datatype.uuid(),
+      externalId: "Manual",
+      isFavorite: faker.datatype.boolean(),
+      progress: faker.datatype.float(),
+      triggerMode: faker.helpers.arrayElement(Object.values(DagRunTrigger)),
+      status: faker.helpers.arrayElement(Object.values(DagRunStatus)),
+      executionDate: faker.datatype
+        .datetime({
+          min: DateTime.now().minus({ days: 28 }).toMillis(),
+          max: DateTime.now().toMillis(),
+        })
+        .toISOString(),
+      duration: faker.datatype.number(),
+      outputs: Array.from({ length: 2 }, () => ({
+        title: faker.system.fileName(),
+        uri: faker.internet.url(),
+      })),
+      logs: faker.lorem.paragraph(20),
+      config: {
+        parameters: {
+          country: "be",
+          quarter: "2020-01",
+        },
+        in_notebook: "s3://hexa-bucket/project/notebook.ipynb",
+        limit_memory: "2000M",
+        out_notebook:
+          "s3://hexa-bucket/project/output/2020-01-01_notebook_output.ipynb",
+        request_memory: "1500M",
+      },
+      messages: Array.from({ length: 2 }, () => ({
+        message: faker.lorem.sentence(1),
+
+        priority: faker.helpers.arrayElement(["INFO", "ERROR", "WARNING"]),
+      })),
+    },
+  ];
+}
+
+const SAMPLE_DAG_DESCRIPTION = `Compute an accessibility analysis for a given set of tile, barrier information, walk speed etc
+
+#### Parameter reference
+
+Paths:
+
+- \`output-dir\`: a valid S3 path to put the result
+- \`health-facilities\`: a valid s3 path to put the destination point layer
+- \`dem\`: a valid s3 path to download the DEM
+- \`slope\`: a valid s3 path to download the slope raster
+- \`land-cover\`: a valid s3 path to download the landcover raster
+- \`transport-network\`: a valid s3 path to download the transport network layer
+- \`barrier\`: a valid s3 path to download the barrier layer
+- \`water\`: a valid s3 path to download the  water layer
+- \`moving-speeds\`: a valid s3 path to download the scenario file
+`;
+
 export const WORKSPACES = SAMPLE_PROJECTS.map((project, i) => ({
   id: faker.datatype.uuid(),
   name: project,
@@ -111,9 +169,15 @@ export const WORKSPACES = SAMPLE_PROJECTS.map((project, i) => ({
   ],
 
   database: {
-    workspaceTables: Array.from({ length: 10 }, () => ({
+    workspaceTables: Array.from({ length: 5 }, (e, i) => ({
       id: faker.datatype.uuid(),
-      name: faker.science.chemicalElement().name,
+      name: [
+        "precipitations",
+        "temperatures",
+        "risk_based_data",
+        "pnlp_dashboard",
+        "snis_exploration",
+      ][i],
       description: faker.lorem.paragraph(2),
       schema: Array.from({ length: 4 }, () => ({
         fieldName: faker.database.column(),
@@ -161,85 +225,93 @@ export const WORKSPACES = SAMPLE_PROJECTS.map((project, i) => ({
       ],
     })),
   },
-  dags: Array.from({ length: 4 }, () => ({
-    id: faker.datatype.uuid(),
-    label: faker.science.chemicalElement().name,
-    formCode: faker.helpers.arrayElement(["papermill", "ihp"]),
-    externalUrl: "https://airflow.demo.openhexa.org/graph?dag_id=ihp-update",
-    template: {
-      sampleConfig: faker.lorem.paragraph(2),
-      code: faker.helpers.arrayElement(["papermill", "ihp"]),
-    },
-    description: `
-Compute an accessibility analysis for a given set of tile, barrier information, walk speed etc
-
-#### Parameter reference
-
-Paths:
-
-- \`output-dir\`: a valid S3 path to put the result
-- \`health-facilities\`: a valid s3 path to put the destination point layer
-- \`dem\`: a valid s3 path to download the DEM
-- \`slope\`: a valid s3 path to download the slope raster
-- \`land-cover\`: a valid s3 path to download the landcover raster
-- \`transport-network\`: a valid s3 path to download the transport network layer
-- \`barrier\`: a valid s3 path to download the barrier layer
-- \`water\`: a valid s3 path to download the  water layer
-- \`moving-speeds\`: a valid s3 path to download the scenario file
-`,
-    externalId: faker.word.noun({
-      length: { min: 15, max: 30 },
-      strategy: "longest",
-    }),
-    config:
-      'curl -d "param1=value1&param2=value2" -X POST -H "Authorization: Bearer mytoken123" http://api.openhexa.org/workspaces/12fe/pipelines/32gf',
-    runs: [
-      {
-        id: faker.datatype.uuid(),
-        externalId: "Manual",
-        isFavorite: faker.datatype.boolean(),
-        progress: faker.datatype.float(),
-        triggerMode: faker.helpers.arrayElement(Object.values(DagRunTrigger)),
-        status: faker.helpers.arrayElement(Object.values(DagRunStatus)),
-        executionDate: faker.datatype
-          .datetime({
-            min: DateTime.now().minus({ days: 28 }).toMillis(),
-            max: DateTime.now().toMillis(),
-          })
-          .toISOString(),
-        duration: faker.datatype.number(),
-        outputs: Array.from({ length: 2 }, () => ({
-          title: faker.system.fileName(),
-          uri: faker.internet.url(),
-        })),
-        logs: faker.lorem.paragraph(20),
-        config: {
-          parameters: {
-            country: "be",
-            quarter: "2020-01",
-          },
-          in_notebook: "s3://hexa-bucket/project/notebook.ipynb",
-          limit_memory: "2000M",
-          out_notebook:
-            "s3://hexa-bucket/project/output/2020-01-01_notebook_output.ipynb",
-          request_memory: "1500M",
-        },
-        messages: Array.from({ length: 2 }, () => ({
-          message: faker.lorem.sentence(1),
-
-          priority: faker.helpers.arrayElement(["INFO", "ERROR", "WARNING"]),
-        })),
+  dags: [
+    {
+      id: faker.datatype.uuid(),
+      label: "DHIS2 metadata extract",
+      formCode: faker.helpers.arrayElement(["papermill", "ihp"]),
+      template: {
+        sampleConfig: faker.lorem.paragraph(2),
+        code: faker.helpers.arrayElement(["papermill", "ihp"]),
       },
-    ],
-  })),
+      description: SAMPLE_DAG_DESCRIPTION,
+      triggerInfo: "Manual",
+      shortDescription:
+        "Extract all metadata (organisation units, data elements, indicators, etc...) from the DHIS2 instance.",
+      externalId: faker.word.noun({
+        length: { min: 15, max: 30 },
+        strategy: "longest",
+      }),
+      config:
+        'curl -d "param1=value1&param2=value2" -X POST -H "Authorization: Bearer mytoken123" http://api.openhexa.org/workspaces/12fe/pipelines/32gf',
+      runs: generateDagRuns(),
+    },
+    {
+      id: faker.datatype.uuid(),
+      label: "DHIS2 routine extract",
+      formCode: faker.helpers.arrayElement(["papermill", "ihp"]),
+      template: {
+        sampleConfig: faker.lorem.paragraph(2),
+        code: faker.helpers.arrayElement(["papermill", "ihp"]),
+      },
+      description: SAMPLE_DAG_DESCRIPTION,
+      triggerInfo: "Manual",
+      shortDescription:
+        "Extract routine data for a specific period and for a specific set of data from the DHIS2 instance.",
+      externalId: faker.word.noun({
+        length: { min: 15, max: 30 },
+        strategy: "longest",
+      }),
+      config:
+        'curl -d "param1=value1&param2=value2" -X POST -H "Authorization: Bearer mytoken123" http://api.openhexa.org/workspaces/12fe/pipelines/32gf',
+      runs: generateDagRuns(),
+    },
+    {
+      id: faker.datatype.uuid(),
+      label: "PNLP dashboard update",
+      formCode: faker.helpers.arrayElement(["papermill", "ihp"]),
+      template: {
+        sampleConfig: faker.lorem.paragraph(2),
+        code: faker.helpers.arrayElement(["papermill", "ihp"]),
+      },
+      description: SAMPLE_DAG_DESCRIPTION,
+      triggerInfo: "Runs every Sunday at 10:00 AM",
+      shortDescription:
+        "Extract the data required by the PNLP dashboard and update the underlying database.",
+      externalId: faker.word.noun({
+        length: { min: 15, max: 30 },
+        strategy: "longest",
+      }),
+      config:
+        'curl -d "param1=value1&param2=value2" -X POST -H "Authorization: Bearer mytoken123" http://api.openhexa.org/workspaces/12fe/pipelines/32gf',
+      runs: generateDagRuns(),
+    },
+    {
+      id: faker.datatype.uuid(),
+      label: "Risk-based verification",
+      formCode: faker.helpers.arrayElement(["papermill", "ihp"]),
+      template: {
+        sampleConfig: faker.lorem.paragraph(2),
+        code: faker.helpers.arrayElement(["papermill", "ihp"]),
+      },
+      description: SAMPLE_DAG_DESCRIPTION,
+      triggerInfo: "Manual",
+      shortDescription:
+        "Run the risk-based verification algorithm for the chosen date range and data element group.",
+      externalId: faker.word.noun({
+        length: { min: 15, max: 30 },
+        strategy: "longest",
+      }),
+      config:
+        'curl -d "param1=value1&param2=value2" -X POST -H "Authorization: Bearer mytoken123" http://api.openhexa.org/workspaces/12fe/pipelines/32gf',
+      runs: generateDagRuns(),
+    },
+  ],
   notebooksUrl: faker.internet.url(),
   members: Array.from({ length: 5 }, () => ({
     name: faker.name.fullName(),
     email: faker.internet.email(),
-    role: faker.word.noun({
-      length: { min: 15, max: 30 },
-      strategy: "longest",
-    }),
+    role: faker.helpers.arrayElement(["Administrator", "Editor", "Viewer"]),
     createdAt: faker.datatype
       .datetime({
         min: DateTime.now().minus({ days: 28 }).toMillis(),
@@ -247,7 +319,69 @@ Paths:
       })
       .toISOString(),
   })),
-  connections: Array.from({ length: 7 }, () => ({
+  connections: [
+    {
+      id: faker.datatype.uuid(),
+      name: "SNIS",
+      shortDescription:
+        "DHIS2 server of the Système National d'Information Sanitaire.",
+      description: faker.lorem.paragraph(3),
+      type: {
+        label: "DHIS2",
+        color: "bg-teal-100 text-teal-400",
+        value: "dhis2",
+      },
+      owner: faker.company.name(),
+      credentials: [
+        {
+          label: "url",
+          value: faker.internet.url(),
+          secret: false,
+        },
+        {
+          label: "username",
+          value: faker.internet.userName(),
+          secret: false,
+        },
+        {
+          label: "password",
+          value: faker.internet.password(),
+          secret: true,
+        },
+      ],
+    },
+    {
+      id: faker.datatype.uuid(),
+      name: "Epidemiological data",
+      shortDescription:
+        "A relational database containing important epidemiological data.",
+      description: faker.lorem.paragraph(3),
+      type: {
+        label: "PostgreSQL",
+        color: "bg-blue-50 text-blue-400",
+        value: "postgresql",
+      },
+      owner: faker.company.name(),
+      credentials: [
+        {
+          label: "url",
+          value: faker.internet.url(),
+          secret: false,
+        },
+        {
+          label: "username",
+          value: faker.internet.userName(),
+          secret: false,
+        },
+        {
+          label: "password",
+          value: faker.internet.password(),
+          secret: true,
+        },
+      ],
+    },
+  ],
+  oldConnections: Array.from({ length: 7 }, () => ({
     id: faker.datatype.uuid(),
     name: faker.word.noun({
       length: { min: 15, max: 30 },
