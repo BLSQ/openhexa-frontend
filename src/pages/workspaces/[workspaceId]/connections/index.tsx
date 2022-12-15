@@ -99,7 +99,7 @@ const WorkspaceConnectionsPage: NextPageWithLayout = (props: Props) => {
                   },
                 }}
               >
-                <Card.Content className="text-gray-600 line-clamp-3">
+                <Card.Content className="line-clamp-3">
                   {connection.shortDescription}
                 </Card.Content>
               </Card>
