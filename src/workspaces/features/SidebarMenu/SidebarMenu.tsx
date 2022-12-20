@@ -9,6 +9,7 @@ import { ChevronDownIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import Link from "core/components/Link";
 import User from "core/features/User";
+import Toggle from "core/helpers/Toggle";
 import useToggle from "core/hooks/useToggle";
 import useFeature from "identity/hooks/useFeature";
 import useMe from "identity/hooks/useMe";
@@ -19,6 +20,7 @@ import { usePopper } from "react-popper";
 import useOnClickOutside from "use-onclickoutside";
 
 import { WORKSPACES } from "workspaces/helpers/fixtures";
+import CreateWorkspaceDialog from "../CreateWorkspaceDialog";
 
 type SidebarMenuProps = {
   workspace: typeof WORKSPACES[0];
@@ -30,6 +32,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   const { workspace } = props;
   const { t } = useTranslation();
   const me = useMe();
+  const [isDialogOpen, setDialogOpen] = useState(false);
   const isAdmin = useFeature("adminPanel");
 
   const [isOpen, { toggle, setFalse }] = useToggle();
@@ -44,9 +47,14 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     modifiers: POPPER_MODIFIERS,
   });
   const innerMenuRef = useRef<HTMLDivElement>(null);
+
   useOnClickOutside(innerMenuRef, () => {
-    setFalse();
+    if (!isDialogOpen) {
+      // Do not close the menu if the user click in the dialog
+      setFalse();
+    }
   });
+
   useEffect(() => {
     if (isOpen) {
       setFalse();
@@ -65,7 +73,8 @@ const SidebarMenu = (props: SidebarMenuProps) => {
           <div className="mr-2.5 flex h-full items-center">
             <img
               alt="Country flag"
-              className="w-5 flex-shrink rounded-sm"
+              loading="lazy"
+              className="w-5 rounded-sm"
               src={`/static/flags/${workspace.country.code}.gif`}
             />
           </div>
@@ -106,13 +115,19 @@ const SidebarMenu = (props: SidebarMenuProps) => {
           <section>
             <div className="flex w-full items-center justify-between px-4 py-2 text-sm font-medium tracking-wide text-gray-500 opacity-90">
               {t("Your workspaces")}
+
               <button
                 type="button"
+                onClick={() => setDialogOpen(true)}
                 title={t("Create a new workspace")}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <PlusCircleIcon className="h-5 w-5 " />
               </button>
+              <CreateWorkspaceDialog
+                open={isDialogOpen}
+                onClose={() => setDialogOpen(false)}
+              />
             </div>
 
             {WORKSPACES.map((item) => (
