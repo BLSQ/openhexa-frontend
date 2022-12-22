@@ -7,6 +7,8 @@ import { CountryPicker_CountryFragment } from "core/features/CountryPicker/Count
 import useForm from "core/hooks/useForm";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useCreateWorkspaceMutation } from "workspaces/graphql/mutation.generated";
+import { ensureArray } from "core/helpers/array";
 
 type CreateWorkspaceDialogProps = {
   onClose(): void;
@@ -15,14 +17,28 @@ type CreateWorkspaceDialogProps = {
 
 type Form = {
   name: string;
-  country?: CountryPicker_CountryFragment;
+  countries: Array<CountryPicker_CountryFragment>;
 };
 
 const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
+  const [mutate] = useCreateWorkspaceMutation();
+
   const { t } = useTranslation();
   const { open, onClose } = props;
   const form = useForm<Form>({
-    onSubmit(values) {},
+    onSubmit: async (values) => {
+      await mutate({
+        variables: {
+          input: {
+            name: values.name,
+            countries: ensureArray(values.countries).map(({ code }) => ({
+              code,
+            })),
+          },
+        },
+      });
+      onClose();
+    },
     validate: (values) => {
       const errors = {} as any;
 
@@ -63,8 +79,8 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             <CountryPicker
               withPortal
               multiple
-              value={form.formData.country ?? undefined}
-              onChange={(value) => form.setFieldValue("country", value)}
+              value={form.formData.countries ?? []}
+              onChange={(value) => form.setFieldValue("countries", value)}
             />
           </Field>
         </Dialog.Content>
