@@ -611,6 +611,18 @@ type CreateMembershipResult {
   errors: [CreateMembershipError!]!
 }
 
+input createPipelineInput {
+  name: String!
+  entrypoint: String!
+  parameters: JSON!
+}
+
+type createPipelineResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+  pipeline: Pipeline
+}
+
 enum CreateTeamError {
   PERMISSION_DENIED
   NAME_DUPLICATE
@@ -624,6 +636,22 @@ type CreateTeamResult {
   team: Team
   success: Boolean!
   errors: [CreateTeamError!]!
+}
+
+enum CreateWorkspaceError {
+  PERMISSION_DENIED
+}
+
+input CreateWorkspaceInput {
+  name: String!
+  description: String
+  countries: [CountryInput!]
+}
+
+type CreateWorkspaceResult {
+  success: Boolean!
+  errors: [CreateWorkspaceError!]!
+  workspace: Workspace
 }
 
 type DAG {
@@ -816,6 +844,15 @@ type DeleteMembershipResult {
   errors: [DeleteMembershipError!]!
 }
 
+input deletePipelineInput {
+  id: String!
+}
+
+type deletePipelineResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+}
+
 enum DeleteTeamError {
   NOT_FOUND
   PERMISSION_DENIED
@@ -976,6 +1013,14 @@ type MePermissions {
   manageAccessmodAccessRequests: Boolean!
 }
 
+enum MessagePriority {
+  DEBUG
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
 scalar MovingSpeeds
 
 type Mutation {
@@ -1021,6 +1066,11 @@ type Mutation {
   approveAccessmodAccessRequest(input: ApproveAccessmodAccessRequestInput!): ApproveAccessmodAccessRequestResult!
   denyAccessmodAccessRequest(input: DenyAccessmodAccessRequestInput!): DenyAccessmodAccessRequestResult!
   updateExternalDashboard(input: UpdateExternalDashboardInput!): UpdateExternalDashboardResult!
+  createPipeline(input: createPipelineInput): createPipelineResult!
+  deletePipeline(input: deletePipelineInput): deletePipelineResult!
+  runPipeline(input: runPipelineInput): runPipelineResult!
+  pipelineToken(input: pipelineTokenInput): PipelineTokenResult!
+  createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
 }
 
 type Organization {
@@ -1043,6 +1093,88 @@ enum PermissionMode {
   OWNER
   EDITOR
   VIEWER
+}
+
+type Pipeline {
+  id: String!
+  name: String!
+  entrypoint: String!
+  parameters: JSON!
+  config: String!
+  schedule: String
+  user: User
+  runs(page: Int, perPage: Int, orderBy: PipelineRunOrderBy): PipelineRunPage!
+}
+
+enum PipelineError {
+  PIPELINE_NOT_FOUND
+  INVALID_CONFIG
+}
+
+type PipelineRun {
+  id: String!
+  user: User
+  config: String!
+  status: PipelineRunStatus!
+  executionDate: DateTime
+  duration: Int
+  progress: Int!
+  triggerMode: PipelineRunTrigger
+  messages: [PipelineRunMessage!]!
+  logs: String
+  outputs: [PipelineRunOutput!]!
+}
+
+type PipelineRunMessage {
+  message: String!
+  priority: MessagePriority!
+  timestamp: DateTime
+}
+
+enum PipelineRunOrderBy {
+  EXECUTION_DATE_DESC
+  EXECUTION_DATE_ASC
+}
+
+type PipelineRunOutput {
+  title: String!
+  uri: String!
+}
+
+type PipelineRunPage {
+  items: [PipelineRun!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
+enum PipelineRunStatus {
+  success
+  running
+  failed
+  queued
+}
+
+enum PipelineRunTrigger {
+  SCHEDULED
+  MANUAL
+}
+
+type PipelinesPage {
+  items: [Pipeline!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
+input pipelineTokenInput {
+  name: String!
+}
+
+type PipelineTokenResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+  token: String
 }
 
 input PrepareAccessmodFileDownloadInput {
@@ -1112,6 +1244,11 @@ type Query {
   notebooksUrl: URL!
   totalNotebooks: Int!
   lastActivities: [Activity!]!
+  pipelines(page: Int, perPage: Int): PipelinesPage!
+  pipeline(id: String, name: String): Pipeline
+  pipelineRun(id: String!): PipelineRun
+  workspace(id: String!): Workspace
+  workspaces(page: Int, perPage: Int): WorkspacePage!
 }
 
 enum RequestAccessmodAccessError {
@@ -1155,6 +1292,17 @@ type RunDAGResult {
   errors: [RunDAGError!]!
   dagRun: DAGRun
   dag: DAG
+}
+
+input runPipelineInput {
+  id: String!
+  config: String
+}
+
+type runPipelineResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+  run: PipelineRun
 }
 
 type S3Bucket {
@@ -1507,5 +1655,45 @@ type WHOInfo {
 type WHORegion {
   code: String!
   name: String!
+}
+
+type Workspace {
+  id: String!
+  name: String!
+  description: String
+  memberships(page: Int, perPage: Int): WorkspaceMembershipPage!
+  countries: [Country!]
+  createdAt: DateTime!
+  updatedAt: DateTime
+  createdBy: User!
+}
+
+type WorkspaceMembership {
+  id: String!
+  user: User!
+  workspace: Workspace!
+  role: WorkspaceMembershipRole!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type WorkspaceMembershipPage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [WorkspaceMembership!]!
+}
+
+enum WorkspaceMembershipRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+type WorkspacePage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [Workspace!]!
 }
 
