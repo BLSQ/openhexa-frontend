@@ -7,8 +7,9 @@ import { CountryPicker_CountryFragment } from "core/features/CountryPicker/Count
 import useForm from "core/hooks/useForm";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useCreateWorkspaceMutation } from "workspaces/graphql/mutation.generated";
+import { useCreateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 import { ensureArray } from "core/helpers/array";
+import { useRouter } from "next/router";
 
 type CreateWorkspaceDialogProps = {
   onClose(): void;
@@ -21,13 +22,14 @@ type Form = {
 };
 
 const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
+  const router = useRouter();
   const [mutate] = useCreateWorkspaceMutation();
 
   const { t } = useTranslation();
   const { open, onClose } = props;
   const form = useForm<Form>({
-    onSubmit: async (values) => {
-      await mutate({
+    onSubmit(values) {
+      mutate({
         variables: {
           input: {
             name: values.name,
@@ -36,8 +38,12 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             })),
           },
         },
-      });
-      onClose();
+      }).then(({ data }) =>
+        router.push({
+          pathname: "/workspaces/[id]",
+          query: { id: data?.createWorkspace.workspace?.id },
+        })
+      );
     },
     validate: (values) => {
       const errors = {} as any;

@@ -1,3 +1,4 @@
+import { gql, useQuery } from "@apollo/client";
 import { Transition } from "@headlessui/react";
 import {
   ArrowRightOnRectangleIcon,
@@ -18,6 +19,11 @@ import { useRouter } from "next/router";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { usePopper } from "react-popper";
 import useOnClickOutside from "use-onclickoutside";
+import {
+  WorkspacesPageDocument,
+  WorkspacesPageQuery,
+  WorkspacesPageQueryVariables,
+} from "workspaces/graphql/queries.generated";
 
 import { WORKSPACES } from "workspaces/helpers/fixtures";
 import CreateWorkspaceDialog from "../CreateWorkspaceDialog";
@@ -61,6 +67,11 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
+
+  const { data, loading } = useQuery<
+    WorkspacesPageQuery,
+    WorkspacesPageQueryVariables
+  >(WorkspacesPageDocument, { variables: { page: 1, perPage: 5 } });
 
   return (
     <div className="w-full" ref={innerMenuRef}>
@@ -130,30 +141,31 @@ const SidebarMenu = (props: SidebarMenuProps) => {
               />
             </div>
 
-            {WORKSPACES.map((item) => (
-              <Link
-                noStyle
-                href={{
-                  pathname: "/workspaces/[workspaceId]",
-                  query: { workspaceId: item.id },
-                }}
-                className="flex items-center py-2.5 px-4 hover:bg-gray-100"
-                key={item.id}
-              >
-                {item.country && (
-                  <div className="mr-2.5 flex h-full items-center">
-                    <img
-                      alt="Country flag"
-                      className="h-4 flex-shrink rounded-sm"
-                      src={`/static/flags/${item.country.code}.gif`}
-                    />
-                  </div>
-                )}
-                <span className="text-sm leading-tight tracking-tight">
-                  {item.name}
-                </span>
-              </Link>
-            ))}
+            {data &&
+              data.workspaces.items.map((item) => (
+                <Link
+                  noStyle
+                  href={{
+                    pathname: "/workspaces/[workspaceId]",
+                    query: { workspaceId: item.id },
+                  }}
+                  className="flex items-center py-2.5 px-4 hover:bg-gray-100"
+                  key={item.id}
+                >
+                  {item.countries && item.countries.length === 1 && (
+                    <div className="mr-2.5 flex h-full items-center">
+                      <img
+                        alt="Country flag"
+                        className="h-4 flex-shrink rounded-sm"
+                        src={item.countries[0].flag}
+                      />
+                    </div>
+                  )}
+                  <span className="text-sm leading-tight tracking-tight">
+                    {item.name}
+                  </span>
+                </Link>
+              ))}
             {false && (
               <div className="text-center">
                 <button
