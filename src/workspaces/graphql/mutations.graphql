@@ -1,0 +1,16 @@
+mutation createWorkspace($input: CreateWorkspaceInput!) {
+  createWorkspace(input: $input) {
+    success
+    workspace {
+      id
+      name
+      description
+      countries{
+        code
+        alpha3
+        name
+      }
+    }
+    errors
+  }
+}
