@@ -12,7 +12,7 @@ import { TextColumn } from "core/components/DataGrid/TextColumn";
 import Button from "core/components/Button";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { DateTime } from "luxon";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { PlusCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Block from "core/components/Block";
 import {
   useWorkspacePageQuery,
@@ -23,6 +23,9 @@ import DataCard from "core/components/DataCard";
 import TextProperty from "core/components/DataCard/TextProperty";
 import { OnSaveFn } from "core/components/DataCard/FormSection";
 import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
+import DescriptionList from "core/components/DescriptionList";
+import { useState } from "react";
+import DeleteWorkspaceDialog from "workspaces/features/DeleteWorkspaceDialog";
 
 type Props = {
   page: number;
@@ -37,6 +40,8 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
   });
 
   const [mutate] = useUpdateWorkspaceMutation();
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const onSectionSave: OnSaveFn = async (values) => {
     await mutate({
@@ -74,7 +79,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
           <DataCard.FormSection
             collapsible={false}
             onSave={onSectionSave}
-            title={t("General")}
+            title={t("General settings")}
           >
             <TextProperty
               required
@@ -83,8 +88,21 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
               label={t("Name")}
               defaultValue="-"
             />
+            <DescriptionList>
+              <DescriptionList.Item label={t("Delete this workspace")}>
+                <Button
+                  size="sm"
+                  className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
+                  onClick={() => setIsDialogOpen(true)}
+                  leadingIcon={<TrashIcon className="w-4" />}
+                >
+                  {t("Delete")}
+                </Button>
+              </DescriptionList.Item>
+            </DescriptionList>
           </DataCard.FormSection>
         </DataCard>
+
         <Tabs defaultIndex={0}>
           <Tabs.Tab className="mt-4" label={t("Members")}>
             <div className="mb-4 flex justify-end">
@@ -154,6 +172,13 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
             <div></div>
           </Tabs.Tab>
         </Tabs>
+        <DeleteWorkspaceDialog
+          workspace={workspace}
+          open={isDialogOpen}
+          onClose={() => {
+            setIsDialogOpen(false);
+          }}
+        />
       </WorkspaceLayout.PageContent>
     </Page>
   );

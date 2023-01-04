@@ -31,3 +31,11 @@ mutation updateWorkspace($input: UpdateWorkspaceInput!) {
     errors
   }
 }
+
+
+mutation deleteWorkspace($input: DeleteWorkspaceInput!) {
+    deleteWorkspace(input: $input) {
+      success
+      errors
+    }
+  }
