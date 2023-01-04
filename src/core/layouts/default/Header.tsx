@@ -90,15 +90,19 @@ const Header = () => {
           {me.permissions.adminPanel && (
             <Menu.Item href="/admin">{t("Administration")}</Menu.Item>
           )}
-          {hasWorkspacesEnabled && (
+          {hasWorkspacesEnabled && data?.workspaces.totalItems ? (
             <Menu.Item
               href={{
                 pathname: `/workspaces/[workspaceId]`,
-                query: { workspaceId: data?.workspaces.items[0].id },
+                query: {
+                  workspaceId: data.workspaces.items[0].id,
+                },
               }}
             >
               {t("Your workspaces")}
             </Menu.Item>
+          ) : (
+            <></>
           )}
 
           <Menu.Item onClick={() => logout()}>{t("Sign out")}</Menu.Item>
