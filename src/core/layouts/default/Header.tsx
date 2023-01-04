@@ -14,6 +14,12 @@ import Navbar from "./Navbar";
 import { LayoutClasses } from "./styles";
 import { WORKSPACES } from "workspaces/helpers/fixtures";
 import useFeature from "identity/hooks/useFeature";
+import { useQuery } from "@apollo/client";
+import {
+  WorkspacesPageDocument,
+  WorkspacesPageQuery,
+  WorkspacesPageQueryVariables,
+} from "workspaces/graphql/queries.generated";
 
 const Header = () => {
   const me = useMe();
@@ -23,6 +29,14 @@ const Header = () => {
   useHotkeys("cmd+k,ctrl+k", toggleSearch);
 
   const [hasWorkspacesEnabled] = useFeature("workspaces");
+
+  const { data } = useQuery<WorkspacesPageQuery, WorkspacesPageQueryVariables>(
+    WorkspacesPageDocument,
+    {
+      variables: { page: 1, perPage: 1 },
+      skip: !hasWorkspacesEnabled,
+    }
+  );
 
   if (!me.user) {
     return null;
@@ -80,7 +94,7 @@ const Header = () => {
             <Menu.Item
               href={{
                 pathname: `/workspaces/[workspaceId]`,
-                query: { workspaceId: WORKSPACES[0].id },
+                query: { workspaceId: data?.workspaces.items[0].id },
               }}
             >
               {t("Your workspaces")}

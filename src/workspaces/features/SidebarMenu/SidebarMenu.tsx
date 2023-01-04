@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { Transition } from "@headlessui/react";
 import {
   ArrowRightOnRectangleIcon,
@@ -10,7 +10,6 @@ import { ChevronDownIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import Link from "core/components/Link";
 import User from "core/features/User";
-import Toggle from "core/helpers/Toggle";
 import useToggle from "core/hooks/useToggle";
 import useFeature from "identity/hooks/useFeature";
 import useMe from "identity/hooks/useMe";
@@ -20,16 +19,16 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { usePopper } from "react-popper";
 import useOnClickOutside from "use-onclickoutside";
 import {
+  WorkspacePageQuery,
   WorkspacesPageDocument,
   WorkspacesPageQuery,
   WorkspacesPageQueryVariables,
 } from "workspaces/graphql/queries.generated";
 
-import { WORKSPACES } from "workspaces/helpers/fixtures";
 import CreateWorkspaceDialog from "../CreateWorkspaceDialog";
 
 type SidebarMenuProps = {
-  workspace: typeof WORKSPACES[0];
+  workspace: WorkspacePageQuery["workspace"];
 };
 
 const POPPER_MODIFIERS = [{ name: "offset", options: { offset: [8, 4] } }];
@@ -68,10 +67,21 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
 
-  const { data, loading } = useQuery<
+  const { data, loading, refetch } = useQuery<
     WorkspacesPageQuery,
     WorkspacesPageQueryVariables
   >(WorkspacesPageDocument, { variables: { page: 1, perPage: 5 } });
+
+  const showMore = (perPage: number) => {
+    refetch({
+      page: 1,
+      perPage,
+    });
+  };
+
+  if (!workspace) {
+    return null;
+  }
 
   return (
     <div className="w-full" ref={innerMenuRef}>
@@ -80,13 +90,13 @@ const SidebarMenu = (props: SidebarMenuProps) => {
         ref={setReferenceElement}
         onClick={toggle}
       >
-        {workspace.country && (
+        {workspace.countries && workspace.countries.length === 1 && (
           <div className="mr-2.5 flex h-full items-center">
             <img
               alt="Country flag"
               loading="lazy"
               className="w-5 rounded-sm"
-              src={`/static/flags/${workspace.country.code}.gif`}
+              src={workspace.countries[0].flag}
             />
           </div>
         )}
@@ -116,6 +126,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
         leave="transition ease-in duration-75"
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
+        afterLeave={() => showMore(5)}
       >
         <div
           style={styles.popper}
@@ -141,31 +152,46 @@ const SidebarMenu = (props: SidebarMenuProps) => {
               />
             </div>
 
-            {data &&
-              data.workspaces.items.map((item) => (
-                <Link
-                  noStyle
-                  href={{
-                    pathname: "/workspaces/[workspaceId]",
-                    query: { workspaceId: item.id },
-                  }}
-                  className="flex items-center py-2.5 px-4 hover:bg-gray-100"
-                  key={item.id}
-                >
-                  {item.countries && item.countries.length === 1 && (
-                    <div className="mr-2.5 flex h-full items-center">
-                      <img
-                        alt="Country flag"
-                        className="h-4 flex-shrink rounded-sm"
-                        src={item.countries[0].flag}
-                      />
-                    </div>
-                  )}
-                  <span className="text-sm leading-tight tracking-tight">
-                    {item.name}
-                  </span>
-                </Link>
-              ))}
+            <div className="max-h-96 overflow-y-auto">
+              {data &&
+                data?.workspaces.items.map((workspace, index) => (
+                  <Link
+                    noStyle
+                    href={{
+                      pathname: "/workspaces/[workspaceId]",
+                      query: { workspaceId: workspace.id },
+                    }}
+                    className="flex items-center py-2.5 px-4 hover:bg-gray-100"
+                    key={index}
+                  >
+                    {workspace.countries && workspace.countries.length === 1 && (
+                      <div className="mr-2.5 flex h-full items-center">
+                        <img
+                          alt="Country flag"
+                          className="h-4 flex-shrink rounded-sm"
+                          src={workspace.countries[0].flag}
+                        />
+                      </div>
+                    )}
+                    <span className="text-sm leading-tight tracking-tight">
+                      {workspace.name}
+                    </span>
+                  </Link>
+                ))}
+              {data &&
+                data?.workspaces.totalItems !==
+                  data.workspaces.items.length && (
+                  <div className="pb-2 text-center">
+                    <button
+                      onClick={() => showMore(data.workspaces.totalItems)}
+                      className="ml-4 inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-400"
+                    >
+                      {t("Show more")}
+                    </button>
+                  </div>
+                )}
+            </div>
+
             {false && (
               <div className="text-center">
                 <button

@@ -14,3 +14,20 @@ mutation createWorkspace($input: CreateWorkspaceInput!) {
     errors
   }
 }
+
+mutation updateWorkspace($input: UpdateWorkspaceInput!) {
+  updateWorkspace(input: $input) {
+    success
+    workspace {
+      id
+      name
+      description
+      countries{
+        code
+        alpha3
+        name
+      }
+    }
+    errors
+  }
+}

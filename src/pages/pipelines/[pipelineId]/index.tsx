@@ -189,7 +189,7 @@ const PipelinePage = (props: Props) => {
             <h3 className="mb-4 text-lg font-medium">{t("Runs")}</h3>
             <Block>
               <DataGrid
-                defaultPageSize={10}
+                defaultPageSize={1}
                 data={dag.runs.items}
                 totalItems={dag.runs.totalItems}
                 fetchData={onChangePage}

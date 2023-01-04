@@ -1153,6 +1153,7 @@ export type Mutation = {
   updateExternalDashboard: UpdateExternalDashboardResult;
   updateMembership: UpdateMembershipResult;
   updateTeam: UpdateTeamResult;
+  updateWorkspace: UpdateWorkspaceResult;
 };
 
 
@@ -1383,6 +1384,11 @@ export type MutationUpdateMembershipArgs = {
 
 export type MutationUpdateTeamArgs = {
   input: UpdateTeamInput;
+};
+
+
+export type MutationUpdateWorkspaceArgs = {
+  input: UpdateWorkspaceInput;
 };
 
 export type Organization = {
@@ -2124,6 +2130,26 @@ export type UpdateTeamResult = {
   errors: Array<UpdateTeamError>;
   success: Scalars['Boolean'];
   team?: Maybe<Team>;
+};
+
+export enum UpdateWorkspaceError {
+  Invalid = 'INVALID',
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateWorkspaceInput = {
+  countries?: InputMaybe<Array<CountryInput>>;
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateWorkspaceResult = {
+  __typename?: 'UpdateWorkspaceResult';
+  errors: Array<CreateWorkspaceError>;
+  success: Scalars['Boolean'];
+  workspace?: Maybe<Workspace>;
 };
 
 export type User = {

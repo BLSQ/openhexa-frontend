@@ -5,8 +5,6 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 
-import { useRouter } from "next/router";
-import { WORKSPACES } from "workspaces/helpers/fixtures";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Tabs from "core/components/Tabs";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
@@ -16,20 +14,47 @@ import DateColumn from "core/components/DataGrid/DateColumn";
 import { DateTime } from "luxon";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Block from "core/components/Block";
+import {
+  useWorkspacePageQuery,
+  WorkspacePageDocument,
+  WorkspacePageQuery,
+} from "workspaces/graphql/queries.generated";
+import DataCard from "core/components/DataCard";
+import TextProperty from "core/components/DataCard/TextProperty";
+import { OnSaveFn } from "core/components/DataCard/FormSection";
+import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 
 type Props = {
   page: number;
   perPage: number;
+  workspaceId: string;
 };
 
 const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const workspace = WORKSPACES.find((w) => w.id === router.query.workspaceId);
+  const { data, refetch } = useWorkspacePageQuery({
+    variables: { id: props.workspaceId },
+  });
 
-  if (!workspace) {
+  const [mutate] = useUpdateWorkspaceMutation();
+
+  const onSectionSave: OnSaveFn = async (values) => {
+    await mutate({
+      variables: {
+        input: {
+          id: workspace.id,
+          name: values.name,
+        },
+      },
+    });
+    await refetch();
+  };
+
+  if (!data?.workspace) {
     return null;
   }
+
+  const { workspace } = data;
 
   return (
     <Page title={t("Workspace")}>
@@ -44,8 +69,22 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
           <Breadcrumbs.Part isLast>{t("Settings")}</Breadcrumbs.Part>
         </Breadcrumbs>
       </WorkspaceLayout.Header>
-      <WorkspaceLayout.PageContent>
-        <Title level={2}>{t("Settings")}</Title>
+      <WorkspaceLayout.PageContent className="space-y-8">
+        <DataCard className="w-full" item={workspace}>
+          <DataCard.FormSection
+            collapsible={false}
+            onSave={onSectionSave}
+            title={t("General")}
+          >
+            <TextProperty
+              required
+              id="name"
+              accessor="name"
+              label={t("Name")}
+              defaultValue="-"
+            />
+          </DataCard.FormSection>
+        </DataCard>
         <Tabs defaultIndex={0}>
           <Tabs.Tab className="mt-4" label={t("Members")}>
             <div className="mb-4 flex justify-end">
@@ -57,9 +96,9 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
               <DataGrid
                 className="bg-white shadow-md"
                 defaultPageSize={5}
-                totalItems={workspace.members.length}
+                totalItems={workspace.memberships.totalItems}
                 fixedLayout={false}
-                data={workspace.members}
+                data={workspace.memberships.items}
               >
                 <TextColumn
                   className="max-w-[50ch] py-3 "
@@ -126,6 +165,26 @@ WorkspaceSettingsPage.getLayout = (page, pageProps) => {
 
 export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
+  async getServerSideProps(ctx, client) {
+    const { data } = await client.query<WorkspacePageQuery>({
+      query: WorkspacePageDocument,
+      variables: {
+        id: ctx.params?.workspaceId,
+      },
+    });
+
+    if (!data.workspace) {
+      return {
+        notFound: true,
+      };
+    }
+
+    return {
+      props: {
+        workspaceId: ctx.params?.workspaceId,
+      },
+    };
+  },
 });
 
 export default WorkspaceSettingsPage;
