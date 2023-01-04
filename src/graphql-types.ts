@@ -960,6 +960,21 @@ export type DeleteTeamResult = {
   success: Scalars['Boolean'];
 };
 
+export enum DeleteWorkspaceError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteWorkspaceInput = {
+  id: Scalars['String'];
+};
+
+export type DeleteWorkspaceResult = {
+  __typename?: 'DeleteWorkspaceResult';
+  errors: Array<DeleteWorkspaceError>;
+  success: Scalars['Boolean'];
+};
+
 export enum DenyAccessmodAccessRequestError {
   Invalid = 'INVALID'
 }
@@ -1128,6 +1143,7 @@ export type Mutation = {
   deleteMembership: DeleteMembershipResult;
   deletePipeline: DeletePipelineResult;
   deleteTeam: DeleteTeamResult;
+  deleteWorkspace: DeleteWorkspaceResult;
   denyAccessmodAccessRequest: DenyAccessmodAccessRequestResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
   login: LoginResult;
@@ -1264,6 +1280,11 @@ export type MutationDeletePipelineArgs = {
 
 export type MutationDeleteTeamArgs = {
   input: DeleteTeamInput;
+};
+
+
+export type MutationDeleteWorkspaceArgs = {
+  input: DeleteWorkspaceInput;
 };
 
 
@@ -2147,7 +2168,7 @@ export type UpdateWorkspaceInput = {
 
 export type UpdateWorkspaceResult = {
   __typename?: 'UpdateWorkspaceResult';
-  errors: Array<CreateWorkspaceError>;
+  errors: Array<UpdateWorkspaceError>;
   success: Scalars['Boolean'];
   workspace?: Maybe<Workspace>;
 };

@@ -5,11 +5,10 @@ import useForm from "core/hooks/useForm";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
+import { useDeleteWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 import { Workspace } from "graphql-types";
-import Textarea from "core/components/forms/Textarea";
-import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 
-type EditWorkspaceDialogProps = {
+type DeleteWorkspaceDialogProps = {
   onClose(): void;
   open: boolean;
   workspace: Omit<
@@ -22,34 +21,24 @@ type Form = {
   description: string;
 };
 
-const EditWorkspaceDialog = (props: EditWorkspaceDialogProps) => {
+const DeleteWorkspaceDialog = (props: DeleteWorkspaceDialogProps) => {
   const router = useRouter();
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
 
-  const [mutate] = useUpdateWorkspaceMutation();
+  const [mutate] = useDeleteWorkspaceMutation();
 
   const form = useForm<Form>({
-    onSubmit(values) {
+    onSubmit() {
       mutate({
         variables: {
           input: {
             id: workspace.id,
-            description: values.description ?? workspace.description ?? "",
           },
         },
-      }).then(({ data }) => onClose());
-    },
-    validate: (values) => {
-      const errors = {} as any;
-
-      if (!values.description) {
-        errors.description = t("Workspace description should not be empty");
-      }
-      return errors;
-    },
-    initialState: {
-      description: workspace.description || "",
+      }).then(() => {
+        router.push("/dashboard");
+      });
     },
   });
 
@@ -60,25 +49,22 @@ const EditWorkspaceDialog = (props: EditWorkspaceDialogProps) => {
   }, [open, form]);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="max-w-5xl">
-      <Dialog.Title>{t("Edit workspace description")}</Dialog.Title>
+    <Dialog open={open} onClose={onClose}>
+      <Dialog.Title>{`${t("Delete")} ${workspace.name}`}</Dialog.Title>
       <form onSubmit={form.handleSubmit}>
         <Dialog.Content className="space-y-4">
-          <Textarea
-            name="description"
-            required
-            value={form.formData.description}
-            onChange={form.handleInputChange}
-            rows={20}
-          />
+          <p>
+            {t("You're about to delete this workspace and all it's content.")}
+          </p>
         </Dialog.Content>
+
         <Dialog.Actions>
           <Button variant="white" type="button" onClick={onClose}>
             {t("Cancel")}
           </Button>
           <Button disabled={form.isSubmitting || !form.isValid} type="submit">
             {form.isSubmitting && <Spinner size="xs" className="mr-1" />}
-            {t("Save")}
+            {t("Delete")}
           </Button>
         </Dialog.Actions>
       </form>
@@ -86,4 +72,4 @@ const EditWorkspaceDialog = (props: EditWorkspaceDialogProps) => {
   );
 };
 
-export default EditWorkspaceDialog;
+export default DeleteWorkspaceDialog;

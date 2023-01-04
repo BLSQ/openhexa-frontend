@@ -867,6 +867,20 @@ type DeleteTeamResult {
   errors: [DeleteTeamError!]!
 }
 
+enum DeleteWorkspaceError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input DeleteWorkspaceInput {
+  id: String!
+}
+
+type DeleteWorkspaceResult {
+  success: Boolean!
+  errors: [DeleteWorkspaceError!]!
+}
+
 enum DenyAccessmodAccessRequestError {
   INVALID
 }
@@ -1072,6 +1086,7 @@ type Mutation {
   pipelineToken(input: pipelineTokenInput): PipelineTokenResult!
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
   updateWorkspace(input: UpdateWorkspaceInput!): UpdateWorkspaceResult!
+  deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspaceResult!
 }
 
 type Organization {
@@ -1640,7 +1655,7 @@ input UpdateWorkspaceInput {
 
 type UpdateWorkspaceResult {
   success: Boolean!
-  errors: [CreateWorkspaceError!]!
+  errors: [UpdateWorkspaceError!]!
   workspace: Workspace
 }
 
