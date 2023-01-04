@@ -1071,6 +1071,7 @@ type Mutation {
   runPipeline(input: runPipelineInput): runPipelineResult!
   pipelineToken(input: pipelineTokenInput): PipelineTokenResult!
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
+  updateWorkspace(input: UpdateWorkspaceInput!): UpdateWorkspaceResult!
 }
 
 type Organization {
@@ -1622,6 +1623,25 @@ type UpdateTeamResult {
   team: Team
   success: Boolean!
   errors: [UpdateTeamError!]!
+}
+
+enum UpdateWorkspaceError {
+  PERMISSION_DENIED
+  NOT_FOUND
+  INVALID
+}
+
+input UpdateWorkspaceInput {
+  id: String!
+  name: String
+  description: String
+  countries: [CountryInput!]
+}
+
+type UpdateWorkspaceResult {
+  success: Boolean!
+  errors: [CreateWorkspaceError!]!
+  workspace: Workspace
 }
 
 scalar URL

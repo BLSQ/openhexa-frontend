@@ -9,10 +9,12 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "core/components/Link";
+import { Workspace } from "graphql-types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { ReactNode, useMemo } from "react";
 import SidebarMenu from "workspaces/features/SidebarMenu";
+import { useWorkspacePageQuery } from "workspaces/graphql/queries.generated";
 import { WORKSPACES } from "workspaces/helpers/fixtures";
 
 type SidebarProps = {
@@ -71,10 +73,16 @@ const Sidebar = (props: SidebarProps) => {
   const { workspaceId } = props;
   const { t } = useTranslation();
   const router = useRouter();
-  const workspace = WORKSPACES.find((x) => x.id === workspaceId);
-  if (!workspace) {
+  const { data } = useWorkspacePageQuery({
+    variables: { id: workspaceId },
+  });
+
+  if (!data?.workspace) {
     return null;
   }
+
+  const { workspace } = data;
+
   return (
     <div className="fixed inset-y-0 flex w-64 flex-col">
       <div className="flex flex-grow flex-col overflow-y-auto border-r border-gray-200 bg-gray-800">

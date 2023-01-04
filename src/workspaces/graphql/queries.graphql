@@ -11,3 +11,26 @@ query WorkspacesPage($page: Int, $perPage: Int) {
     }
   }
 }
+
+query WorkspacePage($id: String!) {
+  workspace(id: $id) {
+    id
+    name
+    description
+    countries {
+      code
+      flag
+    }
+    memberships {
+      totalItems
+      items {
+        id
+        role
+        user {
+          email
+        }
+        createdAt
+      }
+    }
+  }
+}
