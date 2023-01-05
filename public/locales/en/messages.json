@@ -59,6 +59,7 @@
   "Date": "Date",
   "Definition": "Definition",
   "Delete": "Delete",
+  "Delete this workspace": "Delete this workspace",
   "Description": "Description",
   "Done": "Done",
   "Download": "Download",
@@ -89,7 +90,7 @@
   "First name": "First name",
   "Forgot your password?": "Forgot your password?",
   "From date": "From date",
-  "General": "General",
+  "General settings": "General settings",
   "Generate extract": "Generate extract",
   "Go back to login": "Go back to login",
   "Go to advanced search": "Go to advanced search",
@@ -229,6 +230,7 @@
   "Workspace name": "Workspace name",
   "Wrong email address and/or password.": "Wrong email address and/or password.",
   "You can create a connection based on our supported integrations": "You can create a connection based on our supported integrations",
+  "You're about to delete this workspace and all it's content.": "You're about to delete this workspace and all it's content.",
   "Your account": "Your account",
   "Your workspaces": "Your workspaces"
 }
