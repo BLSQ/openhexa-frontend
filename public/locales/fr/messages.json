@@ -59,6 +59,7 @@
   "Date": "",
   "Definition": "",
   "Delete": "",
+  "Delete this workspace": "",
   "Description": "",
   "Done": "",
   "Download": "",
@@ -89,7 +90,7 @@
   "First name": "",
   "Forgot your password?": "",
   "From date": "",
-  "General": "",
+  "General settings": "",
   "Generate extract": "",
   "Go back to login": "",
   "Go to advanced search": "",
@@ -229,6 +230,7 @@
   "Workspace name": "",
   "Wrong email address and/or password.": "",
   "You can create a connection based on our supported integrations": "",
+  "You're about to delete this workspace and all it's content.": "",
   "Your account": "",
   "Your workspaces": ""
 }
