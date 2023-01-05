@@ -12,6 +12,7 @@ import Link from "core/components/Link";
 import User from "core/features/User";
 import useCacheKey from "core/hooks/useCacheKey";
 import useToggle from "core/hooks/useToggle";
+import { Country, Workspace } from "graphql-types";
 import useFeature from "identity/hooks/useFeature";
 import useMe from "identity/hooks/useMe";
 import { useTranslation } from "next-i18next";
@@ -20,7 +21,6 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { usePopper } from "react-popper";
 import useOnClickOutside from "use-onclickoutside";
 import {
-  WorkspacePageQuery,
   WorkspacesPageDocument,
   WorkspacesPageQuery,
   WorkspacesPageQueryVariables,
@@ -28,10 +28,11 @@ import {
 
 import CreateWorkspaceDialog from "../CreateWorkspaceDialog";
 
-type SidebarMenuProps = {
-  workspace: WorkspacePageQuery["workspace"];
-};
-
+interface SidebarMenuProps {
+  workspace: Pick<Workspace, "name"> & {
+    countries?: Array<Pick<Country, "code" | "flag">> | null;
+  };
+}
 const POPPER_MODIFIERS = [{ name: "offset", options: { offset: [8, 4] } }];
 
 const SidebarMenu = (props: SidebarMenuProps) => {
@@ -172,15 +173,16 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                     className="flex items-center py-2.5 px-4 hover:bg-gray-100"
                     key={index}
                   >
-                    {workspace.countries && workspace.countries.length === 1 && (
-                      <div className="mr-2.5 flex h-full items-center">
-                        <img
-                          alt="Country flag"
-                          className="h-4 flex-shrink rounded-sm"
-                          src={workspace.countries[0].flag}
-                        />
-                      </div>
-                    )}
+                    {workspace.countries &&
+                      workspace.countries.length === 1 && (
+                        <div className="mr-2.5 flex h-full items-center">
+                          <img
+                            alt="Country flag"
+                            className="h-4 flex-shrink rounded-sm"
+                            src={workspace.countries[0].flag}
+                          />
+                        </div>
+                      )}
                     <span className="text-sm leading-tight tracking-tight">
                       {workspace.name}
                     </span>
