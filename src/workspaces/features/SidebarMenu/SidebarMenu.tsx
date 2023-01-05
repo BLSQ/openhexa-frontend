@@ -10,6 +10,7 @@ import { ChevronDownIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import Link from "core/components/Link";
 import User from "core/features/User";
+import useCacheKey from "core/hooks/useCacheKey";
 import useToggle from "core/hooks/useToggle";
 import useFeature from "identity/hooks/useFeature";
 import useMe from "identity/hooks/useMe";
@@ -70,7 +71,14 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   const { data, loading, refetch } = useQuery<
     WorkspacesPageQuery,
     WorkspacesPageQueryVariables
-  >(WorkspacesPageDocument, { variables: { page: 1, perPage: 5 } });
+  >(WorkspacesPageDocument, {
+    variables: { page: 1, perPage: 5 },
+    fetchPolicy: "no-cache",
+  });
+
+  useCacheKey("workspaces", () => {
+    refetch();
+  });
 
   const showMore = (perPage: number) => {
     refetch({

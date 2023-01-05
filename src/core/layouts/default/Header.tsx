@@ -20,6 +20,7 @@ import {
   WorkspacesPageQuery,
   WorkspacesPageQueryVariables,
 } from "workspaces/graphql/queries.generated";
+import useCacheKey from "core/hooks/useCacheKey";
 
 const Header = () => {
   const me = useMe();
@@ -30,13 +31,16 @@ const Header = () => {
 
   const [hasWorkspacesEnabled] = useFeature("workspaces");
 
-  const { data } = useQuery<WorkspacesPageQuery, WorkspacesPageQueryVariables>(
-    WorkspacesPageDocument,
-    {
-      variables: { page: 1, perPage: 1 },
-      skip: !hasWorkspacesEnabled,
-    }
-  );
+  const { data, refetch } = useQuery<
+    WorkspacesPageQuery,
+    WorkspacesPageQueryVariables
+  >(WorkspacesPageDocument, {
+    variables: { page: 1, perPage: 1 },
+    skip: !hasWorkspacesEnabled,
+    fetchPolicy: "no-cache",
+  });
+
+  useCacheKey("workspaces", () => refetch());
 
   if (!me.user) {
     return null;

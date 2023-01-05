@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import { useDeleteWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 import { Workspace } from "graphql-types";
+import Router from "next/router";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type DeleteWorkspaceDialogProps = {
   onClose(): void;
@@ -28,17 +30,19 @@ const DeleteWorkspaceDialog = (props: DeleteWorkspaceDialogProps) => {
 
   const [mutate] = useDeleteWorkspaceMutation();
 
+  const clearCache = useCacheKey(["workspaces", workspace.id]);
+
   const form = useForm<Form>({
-    onSubmit() {
-      mutate({
+    onSubmit: async () => {
+      await mutate({
         variables: {
           input: {
             id: workspace.id,
           },
         },
-      }).then(() => {
-        router.push("/dashboard");
       });
+      clearCache();
+      router.push("/dashboard");
     },
   });
 

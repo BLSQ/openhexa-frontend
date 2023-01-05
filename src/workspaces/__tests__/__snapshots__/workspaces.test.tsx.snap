@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Workspaces renders the workspaces page 1`] = `
+exports[`Workspaces renders null as workspace doesn't exist 1`] = `<div />`;
+
+exports[`Workspaces renders the workspace page 1`] = `
 <div>
   <div
     class="sticky top-0 z-10 flex h-16 flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white py-3 shadow px-4 md:px-6 xl:px-10 2xl:px-12"
