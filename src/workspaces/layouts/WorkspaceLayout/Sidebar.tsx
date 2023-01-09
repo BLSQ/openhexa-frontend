@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "core/components/Link";
-import { Workspace, WorkspaceMembershipRole } from "graphql-types";
+import { WorkspaceMembershipRole } from "graphql-types";
 import useMe from "identity/hooks/useMe";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -72,7 +72,7 @@ const NavItem = (props: {
 const Sidebar = (props: SidebarProps) => {
   const { workspaceId } = props;
   const { t } = useTranslation();
-  const router = useRouter();
+
   const me = useMe();
   const { data } = useWorkspacePageQuery({
     variables: { id: workspaceId },
