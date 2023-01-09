@@ -13,10 +13,12 @@ export type WorkspacesPageQuery = { __typename?: 'Query', workspaces: { __typena
 
 export type WorkspacePageQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
+  page?: Types.InputMaybe<Types.Scalars['Int']>;
+  perPage?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
-export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string }>, memberships: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', email: string } }> } } | null };
+export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string }>, memberships: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', id: string, firstName?: string | null, lastName?: string | null, email: string } }> } } | null };
 
 
 export const WorkspacesPageDocument = gql`
@@ -64,7 +66,7 @@ export type WorkspacesPageQueryHookResult = ReturnType<typeof useWorkspacesPageQ
 export type WorkspacesPageLazyQueryHookResult = ReturnType<typeof useWorkspacesPageLazyQuery>;
 export type WorkspacesPageQueryResult = Apollo.QueryResult<WorkspacesPageQuery, WorkspacesPageQueryVariables>;
 export const WorkspacePageDocument = gql`
-    query WorkspacePage($id: String!) {
+    query WorkspacePage($id: String!, $page: Int, $perPage: Int) {
   workspace(id: $id) {
     id
     name
@@ -73,12 +75,15 @@ export const WorkspacePageDocument = gql`
       code
       flag
     }
-    memberships {
+    memberships(page: $page, perPage: $perPage) {
       totalItems
       items {
         id
         role
         user {
+          id
+          firstName
+          lastName
           email
         }
         createdAt
@@ -101,6 +106,8 @@ export const WorkspacePageDocument = gql`
  * const { data, loading, error } = useWorkspacePageQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */

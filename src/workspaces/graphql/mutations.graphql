@@ -5,7 +5,7 @@ mutation createWorkspace($input: CreateWorkspaceInput!) {
       id
       name
       description
-      countries{
+      countries {
         code
         alpha3
         name
@@ -22,7 +22,7 @@ mutation updateWorkspace($input: UpdateWorkspaceInput!) {
       id
       name
       description
-      countries{
+      countries {
         code
         alpha3
         name
@@ -32,10 +32,19 @@ mutation updateWorkspace($input: UpdateWorkspaceInput!) {
   }
 }
 
-
 mutation deleteWorkspace($input: DeleteWorkspaceInput!) {
-    deleteWorkspace(input: $input) {
-      success
-      errors
+  deleteWorkspace(input: $input) {
+    success
+    errors
+  }
+}
+
+mutation createWorkspaceMember($input: CreateWorkspaceMemberInput!) {
+  createWorkspaceMember(input: $input) {
+    success
+    errors
+    workspaceMembership {
+      id
     }
   }
+}

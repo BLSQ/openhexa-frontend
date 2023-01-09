@@ -12,7 +12,7 @@ query WorkspacesPage($page: Int, $perPage: Int) {
   }
 }
 
-query WorkspacePage($id: String!) {
+query WorkspacePage($id: String!, $page: Int, $perPage:Int) {
   workspace(id: $id) {
     id
     name
@@ -21,12 +21,15 @@ query WorkspacePage($id: String!) {
       code
       flag
     }
-    memberships {
+    memberships(page: $page, perPage: $perPage) {
       totalItems
       items {
         id
         role
         user {
+          id
+          firstName
+          lastName
           email
         }
         createdAt

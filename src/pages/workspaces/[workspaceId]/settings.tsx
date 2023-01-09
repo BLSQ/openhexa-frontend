@@ -26,6 +26,7 @@ import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generat
 import DescriptionList from "core/components/DescriptionList";
 import { useState } from "react";
 import DeleteWorkspaceDialog from "workspaces/features/DeleteWorkspaceDialog";
+import InviteMemberDialog from "workspaces/features/InviteMemberDialog";
 
 type Props = {
   page: number;
@@ -36,12 +37,14 @@ type Props = {
 const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const { data, refetch } = useWorkspacePageQuery({
-    variables: { id: props.workspaceId },
+    variables: { id: props.workspaceId, page: 1, perPage: 5 },
   });
 
   const [mutate] = useUpdateWorkspaceMutation();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const [isNewMemberDialogOpen, setIsNewMemberDialogOpen] = useState(false);
 
   const onSectionSave: OnSaveFn = async (values) => {
     await mutate({
@@ -53,6 +56,14 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
       },
     });
     await refetch();
+  };
+
+  const onChangePage = ({ page }: { page: number }) => {
+    refetch({
+      page,
+      perPage: 5,
+      id: workspace.id as string,
+    });
   };
 
   if (!data?.workspace) {
@@ -93,7 +104,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
                 <Button
                   size="sm"
                   className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
-                  onClick={() => setIsDialogOpen(true)}
+                  onClick={() => setIsDeleteDialogOpen(true)}
                   leadingIcon={<TrashIcon className="w-4" />}
                 >
                   {t("Delete")}
@@ -106,27 +117,34 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
         <Tabs defaultIndex={0}>
           <Tabs.Tab className="mt-4" label={t("Members")}>
             <div className="mb-4 flex justify-end">
-              <Button leadingIcon={<PlusCircleIcon className="mr-1 h-4 w-4" />}>
+              <Button
+                onClick={() => setIsNewMemberDialogOpen(true)}
+                leadingIcon={<PlusCircleIcon className="mr-1 h-4 w-4" />}
+              >
                 {t("Invite member")}
               </Button>
             </div>
             <Block>
               <DataGrid
                 className="bg-white shadow-md"
-                defaultPageSize={5}
+                defaultPageSize={10}
                 totalItems={workspace.memberships.totalItems}
                 fixedLayout={false}
                 data={workspace.memberships.items}
+                fetchData={onChangePage}
               >
                 <TextColumn
                   className="max-w-[50ch] py-3 "
-                  accessor="name"
+                  accessor={({ user }) =>
+                    user.firstName ? `${user.firstName} ${user.lastName}` : "-"
+                  }
                   id="name"
                   label="Name"
+                  defaultValue="-"
                 />
                 <TextColumn
                   className="max-w-[50ch] py-3 "
-                  accessor="email"
+                  accessor={({ user }) => user.email}
                   id="email"
                   label="Email"
                 />
@@ -174,10 +192,18 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
         </Tabs>
         <DeleteWorkspaceDialog
           workspace={workspace}
-          open={isDialogOpen}
+          open={isDeleteDialogOpen}
           onClose={() => {
-            setIsDialogOpen(false);
+            setIsDeleteDialogOpen(false);
           }}
+        />
+        <InviteMemberDialog
+          open={isNewMemberDialogOpen}
+          onClose={() => {
+            setIsNewMemberDialogOpen(false);
+            refetch({ id: workspace.id, page: 1, perPage: 5 });
+          }}
+          workspace={workspace}
         />
       </WorkspaceLayout.PageContent>
     </Page>

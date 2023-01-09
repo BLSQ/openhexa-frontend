@@ -9,6 +9,8 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "core/components/Link";
+import { Workspace, WorkspaceMembershipRole } from "graphql-types";
+import useMe from "identity/hooks/useMe";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { ReactNode, useMemo } from "react";
@@ -70,6 +72,8 @@ const NavItem = (props: {
 const Sidebar = (props: SidebarProps) => {
   const { workspaceId } = props;
   const { t } = useTranslation();
+  const router = useRouter();
+  const me = useMe();
   const { data } = useWorkspacePageQuery({
     variables: { id: workspaceId },
   });
@@ -79,6 +83,10 @@ const Sidebar = (props: SidebarProps) => {
   }
 
   const { workspace } = data;
+
+  const member = workspace.memberships.items.filter(
+    (m) => m.user.id === me.user?.id
+  )[0];
 
   return (
     <div className="fixed inset-y-0 flex w-64 flex-col">
@@ -126,12 +134,14 @@ const Sidebar = (props: SidebarProps) => {
               <BookOpenIcon className="h-5 w-5" />
               {t("JupyterHub")}
             </NavItem>
-            <NavItem
-              href={`/workspaces/${encodeURIComponent(workspaceId)}/settings`}
-            >
-              <Cog6ToothIcon className="h-5 w-5" />
-              {t("Settings")}
-            </NavItem>
+            {member.role === WorkspaceMembershipRole.Admin && (
+              <NavItem
+                href={`/workspaces/${encodeURIComponent(workspaceId)}/settings`}
+              >
+                <Cog6ToothIcon className="h-5 w-5" />
+                {t("Settings")}
+              </NavItem>
+            )}
           </nav>
         </div>
         <div className="mb-5 flex flex-shrink-0 flex-col items-center px-4">
