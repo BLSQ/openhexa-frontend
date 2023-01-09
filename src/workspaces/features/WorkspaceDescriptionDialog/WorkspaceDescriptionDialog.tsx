@@ -4,12 +4,12 @@ import Spinner from "core/components/Spinner";
 import useForm from "core/hooks/useForm";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useRouter } from "next/router";
 import { Workspace } from "graphql-types";
 import Textarea from "core/components/forms/Textarea";
 import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
+import useCacheKey from "core/hooks/useCacheKey";
 
-type EditWorkspaceDialogProps = {
+type WorkspaceDescriptionDialogProps = {
   onClose(): void;
   open: boolean;
   workspace: Omit<
@@ -22,11 +22,10 @@ type Form = {
   description: string;
 };
 
-const EditWorkspaceDialog = (props: EditWorkspaceDialogProps) => {
-  const router = useRouter();
+const WorkspaceDescriptionDialog = (props: WorkspaceDescriptionDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
-
+  const clearCache = useCacheKey(["workspace", workspace.id]);
   const [mutate] = useUpdateWorkspaceMutation();
 
   const form = useForm<Form>({
@@ -35,10 +34,13 @@ const EditWorkspaceDialog = (props: EditWorkspaceDialogProps) => {
         variables: {
           input: {
             id: workspace.id,
-            description: values.description ?? workspace.description ?? "",
+            description: values.description,
           },
         },
-      }).then(({ data }) => onClose());
+      }).then(() => {
+        clearCache();
+        onClose();
+      });
     },
     validate: (values) => {
       const errors = {} as any;
@@ -86,4 +88,4 @@ const EditWorkspaceDialog = (props: EditWorkspaceDialogProps) => {
   );
 };
 
-export default EditWorkspaceDialog;
+export default WorkspaceDescriptionDialog;
