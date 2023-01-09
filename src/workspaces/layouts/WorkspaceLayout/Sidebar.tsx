@@ -9,13 +9,11 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "core/components/Link";
-import { Workspace } from "graphql-types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { ReactNode, useMemo } from "react";
 import SidebarMenu from "workspaces/features/SidebarMenu";
 import { useWorkspacePageQuery } from "workspaces/graphql/queries.generated";
-import { WORKSPACES } from "workspaces/helpers/fixtures";
 
 type SidebarProps = {
   workspaceId: string;
@@ -72,7 +70,6 @@ const NavItem = (props: {
 const Sidebar = (props: SidebarProps) => {
   const { workspaceId } = props;
   const { t } = useTranslation();
-  const router = useRouter();
   const { data } = useWorkspacePageQuery({
     variables: { id: workspaceId },
   });

@@ -5,10 +5,10 @@ import MarkdownViewer from "core/components/MarkdownViewer";
 import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
+import useCacheKey from "core/hooks/useCacheKey";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 import { useState } from "react";
-import EditWorkspaceDialog from "workspaces/features/EditWorkspaceDialog/EditWorkspaceDialog";
+import WorkspaceDescriptionDialog from "workspaces/features/WorkspaceDescriptionDialog/WorkspaceDescriptionDialog";
 import {
   useWorkspacePageQuery,
   WorkspacePageDocument,
@@ -24,7 +24,8 @@ type Props = {
 
 const WorkspaceHome: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
-  const router = useRouter();
+
+  useCacheKey("workspace", () => refetch());
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data, refetch } = useWorkspacePageQuery({
@@ -57,12 +58,11 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
           </Block.Content>
         </Block>
       </WorkspaceLayout.PageContent>
-      <EditWorkspaceDialog
+      <WorkspaceDescriptionDialog
         open={isDialogOpen}
         workspace={workspace}
         onClose={() => {
           setIsDialogOpen(false);
-          refetch();
         }}
       />
     </Page>
@@ -92,7 +92,6 @@ export const getServerSideProps = createGetServerSideProps({
     return {
       props: {
         workspaceId: ctx.params?.workspaceId,
-        workspace: data.workspace,
       },
     };
   },

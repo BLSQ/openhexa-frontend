@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import { Workspace } from "graphql-types";
 import { useRouter } from "next/router";
 import type { ReactElement } from "react";
 import Header from "./Header";

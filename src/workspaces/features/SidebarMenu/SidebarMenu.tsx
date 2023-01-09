@@ -30,7 +30,7 @@ import CreateWorkspaceDialog from "../CreateWorkspaceDialog";
 
 interface SidebarMenuProps {
   workspace: Pick<Workspace, "name"> & {
-    countries?: Array<Pick<Country, "code" | "flag">> | null;
+    countries: Array<Pick<Country, "code" | "flag">>;
   };
 }
 const POPPER_MODIFIERS = [{ name: "offset", options: { offset: [8, 4] } }];
@@ -74,17 +74,16 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     WorkspacesPageQueryVariables
   >(WorkspacesPageDocument, {
     variables: { page: 1, perPage: 5 },
-    fetchPolicy: "no-cache",
   });
 
   useCacheKey("workspaces", () => {
     refetch();
   });
 
-  const showMore = (perPage: number) => {
+  const showMore = () => {
     refetch({
       page: 1,
-      perPage,
+      perPage: data?.workspaces.totalItems,
     });
   };
 
@@ -99,7 +98,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
         ref={setReferenceElement}
         onClick={toggle}
       >
-        {workspace.countries && workspace.countries.length === 1 && (
+        {workspace.countries.length === 1 && (
           <div className="mr-2.5 flex h-full items-center">
             <img
               alt="Country flag"
@@ -135,7 +134,6 @@ const SidebarMenu = (props: SidebarMenuProps) => {
         leave="transition ease-in duration-75"
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
-        afterLeave={() => showMore(5)}
       >
         <div
           style={styles.popper}
@@ -162,44 +160,41 @@ const SidebarMenu = (props: SidebarMenuProps) => {
             </div>
 
             <div className="max-h-96 overflow-y-auto">
-              {data &&
-                data?.workspaces.items.map((workspace, index) => (
-                  <Link
-                    noStyle
-                    href={{
-                      pathname: "/workspaces/[workspaceId]",
-                      query: { workspaceId: workspace.id },
-                    }}
-                    className="flex items-center py-2.5 px-4 hover:bg-gray-100"
-                    key={index}
+              {data?.workspaces.items.map((workspace, index) => (
+                <Link
+                  noStyle
+                  href={{
+                    pathname: "/workspaces/[workspaceId]",
+                    query: { workspaceId: workspace.id },
+                  }}
+                  className="flex items-center py-2.5 px-4 hover:bg-gray-100"
+                  key={index}
+                >
+                  {workspace.countries && workspace.countries.length === 1 && (
+                    <div className="mr-2.5 flex h-full items-center">
+                      <img
+                        alt="Country flag"
+                        className="h-4 flex-shrink rounded-sm"
+                        src={workspace.countries[0].flag}
+                      />
+                    </div>
+                  )}
+                  <span className="text-sm leading-tight tracking-tight">
+                    {workspace.name}
+                  </span>
+                </Link>
+              ))}
+              {data?.workspaces.totalItems !==
+                data?.workspaces.items.length && (
+                <div className="pb-2 text-center">
+                  <button
+                    onClick={() => showMore()}
+                    className="ml-4 inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-400"
                   >
-                    {workspace.countries &&
-                      workspace.countries.length === 1 && (
-                        <div className="mr-2.5 flex h-full items-center">
-                          <img
-                            alt="Country flag"
-                            className="h-4 flex-shrink rounded-sm"
-                            src={workspace.countries[0].flag}
-                          />
-                        </div>
-                      )}
-                    <span className="text-sm leading-tight tracking-tight">
-                      {workspace.name}
-                    </span>
-                  </Link>
-                ))}
-              {data &&
-                data?.workspaces.totalItems !==
-                  data.workspaces.items.length && (
-                  <div className="pb-2 text-center">
-                    <button
-                      onClick={() => showMore(data.workspaces.totalItems)}
-                      className="ml-4 inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-400"
-                    >
-                      {t("Show more")}
-                    </button>
-                  </div>
-                )}
+                    {t("Show more")}
+                  </button>
+                </div>
+              )}
             </div>
 
             {false && (

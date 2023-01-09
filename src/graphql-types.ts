@@ -679,6 +679,19 @@ export type CreateMembershipResult = {
   success: Scalars['Boolean'];
 };
 
+export type CreatePipelineInput = {
+  entrypoint: Scalars['String'];
+  name: Scalars['String'];
+  parameters: Scalars['JSON'];
+};
+
+export type CreatePipelineResult = {
+  __typename?: 'CreatePipelineResult';
+  errors: Array<PipelineError>;
+  pipeline?: Maybe<Pipeline>;
+  success: Scalars['Boolean'];
+};
+
 export enum CreateTeamError {
   NameDuplicate = 'NAME_DUPLICATE',
   PermissionDenied = 'PERMISSION_DENIED'
@@ -704,6 +717,25 @@ export type CreateWorkspaceInput = {
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
 };
+
+export type CreateWorkspaceMemberInput = {
+  role: WorkspaceMembershipRole;
+  userEmail: Scalars['String'];
+  workspaceId: Scalars['String'];
+};
+
+export type CreateWorkspaceMemberResult = {
+  __typename?: 'CreateWorkspaceMemberResult';
+  errors: Array<CreateWorkspaceMembershipError>;
+  success: Scalars['Boolean'];
+  workspaceMembership?: Maybe<WorkspaceMembership>;
+};
+
+export enum CreateWorkspaceMembershipError {
+  AlreadyExists = 'ALREADY_EXISTS',
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
 
 export type CreateWorkspaceResult = {
   __typename?: 'CreateWorkspaceResult';
@@ -945,6 +977,16 @@ export type DeleteMembershipResult = {
   success: Scalars['Boolean'];
 };
 
+export type DeletePipelineInput = {
+  id: Scalars['String'];
+};
+
+export type DeletePipelineResult = {
+  __typename?: 'DeletePipelineResult';
+  errors: Array<PipelineError>;
+  success: Scalars['Boolean'];
+};
+
 export enum DeleteTeamError {
   NotFound = 'NOT_FOUND',
   PermissionDenied = 'PERMISSION_DENIED'
@@ -1028,6 +1070,17 @@ export type LaunchAccessmodAnalysisResult = {
   __typename?: 'LaunchAccessmodAnalysisResult';
   analysis?: Maybe<AccessmodAnalysis>;
   errors: Array<LaunchAccessmodAnalysisError>;
+  success: Scalars['Boolean'];
+};
+
+export type LogPipelineMessageInput = {
+  message: Scalars['String'];
+  priority: MessagePriority;
+};
+
+export type LogPipelineMessageResult = {
+  __typename?: 'LogPipelineMessageResult';
+  errors: Array<PipelineError>;
   success: Scalars['Boolean'];
 };
 
@@ -1134,6 +1187,7 @@ export type Mutation = {
   createPipeline: CreatePipelineResult;
   createTeam: CreateTeamResult;
   createWorkspace: CreateWorkspaceResult;
+  createWorkspaceMember: CreateWorkspaceMemberResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
   deleteAccessmodFileset: DeleteAccessmodFilesetResult;
   deleteAccessmodProject: DeleteAccessmodProjectResult;
@@ -1146,6 +1200,7 @@ export type Mutation = {
   deleteWorkspace: DeleteWorkspaceResult;
   denyAccessmodAccessRequest: DenyAccessmodAccessRequestResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
+  logPipelineMessage: LogPipelineMessageResult;
   login: LoginResult;
   logout: LogoutResult;
   pipelineToken: PipelineTokenResult;
@@ -1168,8 +1223,10 @@ export type Mutation = {
   updateDAG: UpdateDagResult;
   updateExternalDashboard: UpdateExternalDashboardResult;
   updateMembership: UpdateMembershipResult;
+  updatePipelineProgress: UpdatePipelineProgressResult;
   updateTeam: UpdateTeamResult;
   updateWorkspace: UpdateWorkspaceResult;
+  uploadPipeline: UploadPipelineResult;
 };
 
 
@@ -1238,6 +1295,11 @@ export type MutationCreateWorkspaceArgs = {
 };
 
 
+export type MutationCreateWorkspaceMemberArgs = {
+  input: CreateWorkspaceMemberInput;
+};
+
+
 export type MutationDeleteAccessmodAnalysisArgs = {
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
 };
@@ -1295,6 +1357,11 @@ export type MutationDenyAccessmodAccessRequestArgs = {
 
 export type MutationLaunchAccessmodAnalysisArgs = {
   input?: InputMaybe<LaunchAccessmodAnalysisInput>;
+};
+
+
+export type MutationLogPipelineMessageArgs = {
+  input?: InputMaybe<LogPipelineMessageInput>;
 };
 
 
@@ -1403,6 +1470,11 @@ export type MutationUpdateMembershipArgs = {
 };
 
 
+export type MutationUpdatePipelineProgressArgs = {
+  input?: InputMaybe<UpdatePipelineProgressInput>;
+};
+
+
 export type MutationUpdateTeamArgs = {
   input: UpdateTeamInput;
 };
@@ -1410,6 +1482,11 @@ export type MutationUpdateTeamArgs = {
 
 export type MutationUpdateWorkspaceArgs = {
   input: UpdateWorkspaceInput;
+};
+
+
+export type MutationUploadPipelineArgs = {
+  input?: InputMaybe<UploadPipelineInput>;
 };
 
 export type Organization = {
@@ -1456,11 +1533,14 @@ export type PipelineRunsArgs = {
 
 export enum PipelineError {
   InvalidConfig = 'INVALID_CONFIG',
-  PipelineNotFound = 'PIPELINE_NOT_FOUND'
+  PipelineAlreadyCompleted = 'PIPELINE_ALREADY_COMPLETED',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND'
 }
 
 export type PipelineRun = {
   __typename?: 'PipelineRun';
+  code: Scalars['String'];
   config: Scalars['String'];
   duration?: Maybe<Scalars['Int']>;
   executionDate?: Maybe<Scalars['DateTime']>;
@@ -1468,10 +1548,13 @@ export type PipelineRun = {
   logs?: Maybe<Scalars['String']>;
   messages: Array<PipelineRunMessage>;
   outputs: Array<PipelineRunOutput>;
+  pipeline: Pipeline;
   progress: Scalars['Int'];
+  run_id: Scalars['String'];
   status: PipelineRunStatus;
   triggerMode?: Maybe<PipelineRunTrigger>;
   user?: Maybe<User>;
+  version: PipelineVersion;
 };
 
 export type PipelineRunMessage = {
@@ -1512,11 +1595,24 @@ export enum PipelineRunTrigger {
   Scheduled = 'SCHEDULED'
 }
 
+export type PipelineTokenInput = {
+  name: Scalars['String'];
+};
+
 export type PipelineTokenResult = {
   __typename?: 'PipelineTokenResult';
   errors: Array<PipelineError>;
   success: Scalars['Boolean'];
   token?: Maybe<Scalars['String']>;
+};
+
+export type PipelineVersion = {
+  __typename?: 'PipelineVersion';
+  id: Scalars['String'];
+  number: Scalars['Int'];
+  pipeline: Pipeline;
+  user?: Maybe<User>;
+  zipfile: Scalars['String'];
 };
 
 export type PipelinesPage = {
@@ -1597,6 +1693,7 @@ export type Query = {
   organizations: Array<Organization>;
   pipeline?: Maybe<Pipeline>;
   pipelineRun?: Maybe<PipelineRun>;
+  pipelineRunCode?: Maybe<Scalars['String']>;
   pipelines: PipelinesPage;
   search: SearchQueryResult;
   team?: Maybe<Team>;
@@ -1728,6 +1825,11 @@ export type QueryPipelineRunArgs = {
 };
 
 
+export type QueryPipelineRunCodeArgs = {
+  id?: InputMaybe<Scalars['String']>;
+};
+
+
 export type QueryPipelinesArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
@@ -1808,6 +1910,19 @@ export type RunDagResult = {
   dag?: Maybe<Dag>;
   dagRun?: Maybe<DagRun>;
   errors: Array<RunDagError>;
+  success: Scalars['Boolean'];
+};
+
+export type RunPipelineInput = {
+  config?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+  version?: InputMaybe<Scalars['Int']>;
+};
+
+export type RunPipelineResult = {
+  __typename?: 'RunPipelineResult';
+  errors: Array<PipelineError>;
+  run?: Maybe<PipelineRun>;
   success: Scalars['Boolean'];
 };
 
@@ -2135,6 +2250,16 @@ export type UpdateMembershipResult = {
   success: Scalars['Boolean'];
 };
 
+export type UpdatePipelineProgressInput = {
+  percent: Scalars['Int'];
+};
+
+export type UpdatePipelineProgressResult = {
+  __typename?: 'UpdatePipelineProgressResult';
+  errors: Array<PipelineError>;
+  success: Scalars['Boolean'];
+};
+
 export enum UpdateTeamError {
   NameDuplicate = 'NAME_DUPLICATE',
   NotFound = 'NOT_FOUND',
@@ -2171,6 +2296,18 @@ export type UpdateWorkspaceResult = {
   errors: Array<UpdateWorkspaceError>;
   success: Scalars['Boolean'];
   workspace?: Maybe<Workspace>;
+};
+
+export type UploadPipelineInput = {
+  name: Scalars['String'];
+  zipfile: Scalars['String'];
+};
+
+export type UploadPipelineResult = {
+  __typename?: 'UploadPipelineResult';
+  errors: Array<PipelineError>;
+  success: Scalars['Boolean'];
+  version?: Maybe<Scalars['Int']>;
 };
 
 export type User = {
@@ -2210,7 +2347,7 @@ export type WhoRegion = {
 
 export type Workspace = {
   __typename?: 'Workspace';
-  countries?: Maybe<Array<Country>>;
+  countries: Array<Country>;
   createdAt: Scalars['DateTime'];
   createdBy: User;
   description?: Maybe<Scalars['String']>;
@@ -2256,43 +2393,4 @@ export type WorkspacePage = {
   pageNumber: Scalars['Int'];
   totalItems: Scalars['Int'];
   totalPages: Scalars['Int'];
-};
-
-export type CreatePipelineInput = {
-  entrypoint: Scalars['String'];
-  name: Scalars['String'];
-  parameters: Scalars['JSON'];
-};
-
-export type CreatePipelineResult = {
-  __typename?: 'createPipelineResult';
-  errors: Array<PipelineError>;
-  pipeline?: Maybe<Pipeline>;
-  success: Scalars['Boolean'];
-};
-
-export type DeletePipelineInput = {
-  id: Scalars['String'];
-};
-
-export type DeletePipelineResult = {
-  __typename?: 'deletePipelineResult';
-  errors: Array<PipelineError>;
-  success: Scalars['Boolean'];
-};
-
-export type PipelineTokenInput = {
-  name: Scalars['String'];
-};
-
-export type RunPipelineInput = {
-  config?: InputMaybe<Scalars['String']>;
-  id: Scalars['String'];
-};
-
-export type RunPipelineResult = {
-  __typename?: 'runPipelineResult';
-  errors: Array<PipelineError>;
-  run?: Maybe<PipelineRun>;
-  success: Scalars['Boolean'];
 };

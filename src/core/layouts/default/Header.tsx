@@ -7,12 +7,10 @@ import { logout } from "identity/helpers/auth";
 import useMe from "identity/hooks/useMe";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useHotkeys } from "react-hotkeys-hook";
 import Menu from "core/components/Menu";
 import Navbar from "./Navbar";
 import { LayoutClasses } from "./styles";
-import { WORKSPACES } from "workspaces/helpers/fixtures";
 import useFeature from "identity/hooks/useFeature";
 import { useQuery } from "@apollo/client";
 import {
@@ -24,7 +22,6 @@ import useCacheKey from "core/hooks/useCacheKey";
 
 const Header = () => {
   const me = useMe();
-  const router = useRouter();
   const { t } = useTranslation();
   const [isSearchOpen, { toggle: toggleSearch }] = useToggle(false);
   useHotkeys("cmd+k,ctrl+k", toggleSearch);
@@ -37,7 +34,6 @@ const Header = () => {
   >(WorkspacesPageDocument, {
     variables: { page: 1, perPage: 1 },
     skip: !hasWorkspacesEnabled,
-    fetchPolicy: "no-cache",
   });
 
   useCacheKey("workspaces", () => refetch());
@@ -95,16 +91,7 @@ const Header = () => {
             <Menu.Item href="/admin">{t("Administration")}</Menu.Item>
           )}
           {hasWorkspacesEnabled && data?.workspaces.totalItems ? (
-            <Menu.Item
-              href={{
-                pathname: `/workspaces/[workspaceId]`,
-                query: {
-                  workspaceId: data.workspaces.items[0].id,
-                },
-              }}
-            >
-              {t("Your workspaces")}
-            </Menu.Item>
+            <Menu.Item href="/workspaces">{t("Your workspaces")}</Menu.Item>
           ) : (
             <></>
           )}

@@ -9,14 +9,14 @@ export type WorkspacesPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacesPageQuery = { __typename?: 'Query', workspaces: { __typename?: 'WorkspacePage', totalItems: number, items: Array<{ __typename?: 'Workspace', id: string, name: string, countries?: Array<{ __typename?: 'Country', code: string, flag: string }> | null }> } };
+export type WorkspacesPageQuery = { __typename?: 'Query', workspaces: { __typename?: 'WorkspacePage', totalItems: number, items: Array<{ __typename?: 'Workspace', id: string, name: string, countries: Array<{ __typename?: 'Country', code: string, flag: string }> }> } };
 
 export type WorkspacePageQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
 
 
-export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries?: Array<{ __typename?: 'Country', code: string, flag: string }> | null, memberships: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', email: string } }> } } | null };
+export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string }>, memberships: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', email: string } }> } } | null };
 
 
 export const WorkspacesPageDocument = gql`

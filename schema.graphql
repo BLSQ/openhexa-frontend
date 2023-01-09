@@ -611,13 +611,13 @@ type CreateMembershipResult {
   errors: [CreateMembershipError!]!
 }
 
-input createPipelineInput {
+input CreatePipelineInput {
   name: String!
   entrypoint: String!
   parameters: JSON!
 }
 
-type createPipelineResult {
+type CreatePipelineResult {
   success: Boolean!
   errors: [PipelineError!]!
   pipeline: Pipeline
@@ -646,6 +646,24 @@ input CreateWorkspaceInput {
   name: String!
   description: String
   countries: [CountryInput!]
+}
+
+input CreateWorkspaceMemberInput {
+  workspaceId: String!
+  userEmail: String!
+  role: WorkspaceMembershipRole!
+}
+
+type CreateWorkspaceMemberResult {
+  success: Boolean!
+  errors: [CreateWorkspaceMembershipError!]!
+  workspaceMembership: WorkspaceMembership
+}
+
+enum CreateWorkspaceMembershipError {
+  ALREADY_EXISTS
+  PERMISSION_DENIED
+  NOT_FOUND
 }
 
 type CreateWorkspaceResult {
@@ -844,11 +862,11 @@ type DeleteMembershipResult {
   errors: [DeleteMembershipError!]!
 }
 
-input deletePipelineInput {
+input DeletePipelineInput {
   id: String!
 }
 
-type deletePipelineResult {
+type DeletePipelineResult {
   success: Boolean!
   errors: [PipelineError!]!
 }
@@ -970,6 +988,16 @@ type LogoutResult {
   success: Boolean!
 }
 
+input LogPipelineMessageInput {
+  priority: MessagePriority!
+  message: String!
+}
+
+type LogPipelineMessageResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+}
+
 type Me {
   user: User
   features: [FeatureFlag!]!
@@ -1080,13 +1108,17 @@ type Mutation {
   approveAccessmodAccessRequest(input: ApproveAccessmodAccessRequestInput!): ApproveAccessmodAccessRequestResult!
   denyAccessmodAccessRequest(input: DenyAccessmodAccessRequestInput!): DenyAccessmodAccessRequestResult!
   updateExternalDashboard(input: UpdateExternalDashboardInput!): UpdateExternalDashboardResult!
-  createPipeline(input: createPipelineInput): createPipelineResult!
-  deletePipeline(input: deletePipelineInput): deletePipelineResult!
-  runPipeline(input: runPipelineInput): runPipelineResult!
-  pipelineToken(input: pipelineTokenInput): PipelineTokenResult!
+  createPipeline(input: CreatePipelineInput): CreatePipelineResult!
+  deletePipeline(input: DeletePipelineInput): DeletePipelineResult!
+  runPipeline(input: RunPipelineInput): RunPipelineResult!
+  pipelineToken(input: PipelineTokenInput): PipelineTokenResult!
+  uploadPipeline(input: UploadPipelineInput): UploadPipelineResult!
+  logPipelineMessage(input: LogPipelineMessageInput): LogPipelineMessageResult!
+  updatePipelineProgress(input: UpdatePipelineProgressInput): UpdatePipelineProgressResult!
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
   updateWorkspace(input: UpdateWorkspaceInput!): UpdateWorkspaceResult!
   deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspaceResult!
+  createWorkspaceMember(input: CreateWorkspaceMemberInput!): CreateWorkspaceMemberResult!
 }
 
 type Organization {
@@ -1124,12 +1156,17 @@ type Pipeline {
 
 enum PipelineError {
   PIPELINE_NOT_FOUND
+  PIPELINE_VERSION_NOT_FOUND
   INVALID_CONFIG
+  PIPELINE_ALREADY_COMPLETED
 }
 
 type PipelineRun {
   id: String!
+  run_id: String!
   user: User
+  pipeline: Pipeline!
+  version: PipelineVersion!
   config: String!
   status: PipelineRunStatus!
   executionDate: DateTime
@@ -1139,6 +1176,7 @@ type PipelineRun {
   messages: [PipelineRunMessage!]!
   logs: String
   outputs: [PipelineRunOutput!]!
+  code: String!
 }
 
 type PipelineRunMessage {
@@ -1183,7 +1221,7 @@ type PipelinesPage {
   totalItems: Int!
 }
 
-input pipelineTokenInput {
+input PipelineTokenInput {
   name: String!
 }
 
@@ -1191,6 +1229,14 @@ type PipelineTokenResult {
   success: Boolean!
   errors: [PipelineError!]!
   token: String
+}
+
+type PipelineVersion {
+  id: String!
+  user: User
+  pipeline: Pipeline!
+  number: Int!
+  zipfile: String!
 }
 
 input PrepareAccessmodFileDownloadInput {
@@ -1263,6 +1309,7 @@ type Query {
   pipelines(page: Int, perPage: Int): PipelinesPage!
   pipeline(id: String, name: String): Pipeline
   pipelineRun(id: String!): PipelineRun
+  pipelineRunCode(id: String): String
   workspace(id: String!): Workspace
   workspaces(page: Int, perPage: Int): WorkspacePage!
 }
@@ -1310,12 +1357,13 @@ type RunDAGResult {
   dag: DAG
 }
 
-input runPipelineInput {
+input RunPipelineInput {
   id: String!
+  version: Int
   config: String
 }
 
-type runPipelineResult {
+type RunPipelineResult {
   success: Boolean!
   errors: [PipelineError!]!
   run: PipelineRun
@@ -1623,6 +1671,15 @@ type UpdateMembershipResult {
   errors: [UpdateMembershipError!]!
 }
 
+input UpdatePipelineProgressInput {
+  percent: Int!
+}
+
+type UpdatePipelineProgressResult {
+  success: Boolean!
+  errors: [PipelineError!]!
+}
+
 enum UpdateTeamError {
   NOT_FOUND
   PERMISSION_DENIED
@@ -1657,6 +1714,17 @@ type UpdateWorkspaceResult {
   success: Boolean!
   errors: [UpdateWorkspaceError!]!
   workspace: Workspace
+}
+
+input UploadPipelineInput {
+  name: String!
+  zipfile: String!
+}
+
+type UploadPipelineResult {
+  success: Boolean!
+  version: Int
+  errors: [PipelineError!]!
 }
 
 scalar URL
@@ -1697,7 +1765,7 @@ type Workspace {
   name: String!
   description: String
   memberships(page: Int, perPage: Int): WorkspaceMembershipPage!
-  countries: [Country!]
+  countries: [Country!]!
   createdAt: DateTime!
   updatedAt: DateTime
   createdBy: User!
