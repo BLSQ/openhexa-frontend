@@ -648,24 +648,6 @@ input CreateWorkspaceInput {
   countries: [CountryInput!]
 }
 
-input CreateWorkspaceMemberInput {
-  workspaceId: String!
-  userEmail: String!
-  role: WorkspaceMembershipRole!
-}
-
-type CreateWorkspaceMemberResult {
-  success: Boolean!
-  errors: [CreateWorkspaceMembershipError!]!
-  workspaceMembership: WorkspaceMembership
-}
-
-enum CreateWorkspaceMembershipError {
-  ALREADY_EXISTS
-  PERMISSION_DENIED
-  NOT_FOUND
-}
-
 type CreateWorkspaceResult {
   success: Boolean!
   errors: [CreateWorkspaceError!]!
@@ -958,6 +940,24 @@ type FeatureFlag {
   config: JSON!
 }
 
+input InviteWorkspaceMemberInput {
+  workspaceId: String!
+  userEmail: String!
+  role: WorkspaceMembershipRole!
+}
+
+type InviteWorkspaceMemberResult {
+  success: Boolean!
+  errors: [InviteWorkspaceMembershipError!]!
+  workspaceMembership: WorkspaceMembership
+}
+
+enum InviteWorkspaceMembershipError {
+  ALREADY_EXISTS
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
 scalar JSON
 
 enum LaunchAccessmodAnalysisError {
@@ -1118,7 +1118,7 @@ type Mutation {
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
   updateWorkspace(input: UpdateWorkspaceInput!): UpdateWorkspaceResult!
   deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspaceResult!
-  createWorkspaceMember(input: CreateWorkspaceMemberInput!): CreateWorkspaceMemberResult!
+  inviteWorkspaceMember(input: InviteWorkspaceMemberInput!): InviteWorkspaceMemberResult!
 }
 
 type Organization {
@@ -1312,7 +1312,6 @@ type Query {
   pipelineRunCode(id: String): String
   workspace(id: String!): Workspace
   workspaces(page: Int, perPage: Int): WorkspacePage!
-  workspaceMembershipByUserId(userId: String!): WorkspaceMembership
 }
 
 enum RequestAccessmodAccessError {

@@ -39,8 +39,8 @@ mutation deleteWorkspace($input: DeleteWorkspaceInput!) {
   }
 }
 
-mutation createWorkspaceMember($input: CreateWorkspaceMemberInput!) {
-  createWorkspaceMember(input: $input) {
+mutation inviteWorkspaceMember($input: InviteWorkspaceMemberInput!) {
+  inviteWorkspaceMember(input: $input) {
     success
     errors
     workspaceMembership {

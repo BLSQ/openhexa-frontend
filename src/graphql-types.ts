@@ -718,25 +718,6 @@ export type CreateWorkspaceInput = {
   name: Scalars['String'];
 };
 
-export type CreateWorkspaceMemberInput = {
-  role: WorkspaceMembershipRole;
-  userEmail: Scalars['String'];
-  workspaceId: Scalars['String'];
-};
-
-export type CreateWorkspaceMemberResult = {
-  __typename?: 'CreateWorkspaceMemberResult';
-  errors: Array<CreateWorkspaceMembershipError>;
-  success: Scalars['Boolean'];
-  workspaceMembership?: Maybe<WorkspaceMembership>;
-};
-
-export enum CreateWorkspaceMembershipError {
-  AlreadyExists = 'ALREADY_EXISTS',
-  NotFound = 'NOT_FOUND',
-  PermissionDenied = 'PERMISSION_DENIED'
-}
-
 export type CreateWorkspaceResult = {
   __typename?: 'CreateWorkspaceResult';
   errors: Array<CreateWorkspaceError>;
@@ -1058,6 +1039,25 @@ export type FeatureFlag = {
   config: Scalars['JSON'];
 };
 
+export type InviteWorkspaceMemberInput = {
+  role: WorkspaceMembershipRole;
+  userEmail: Scalars['String'];
+  workspaceId: Scalars['String'];
+};
+
+export type InviteWorkspaceMemberResult = {
+  __typename?: 'InviteWorkspaceMemberResult';
+  errors: Array<InviteWorkspaceMembershipError>;
+  success: Scalars['Boolean'];
+  workspaceMembership?: Maybe<WorkspaceMembership>;
+};
+
+export enum InviteWorkspaceMembershipError {
+  AlreadyExists = 'ALREADY_EXISTS',
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
 export enum LaunchAccessmodAnalysisError {
   LaunchFailed = 'LAUNCH_FAILED'
 }
@@ -1187,7 +1187,6 @@ export type Mutation = {
   createPipeline: CreatePipelineResult;
   createTeam: CreateTeamResult;
   createWorkspace: CreateWorkspaceResult;
-  createWorkspaceMember: CreateWorkspaceMemberResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
   deleteAccessmodFileset: DeleteAccessmodFilesetResult;
   deleteAccessmodProject: DeleteAccessmodProjectResult;
@@ -1199,6 +1198,7 @@ export type Mutation = {
   deleteTeam: DeleteTeamResult;
   deleteWorkspace: DeleteWorkspaceResult;
   denyAccessmodAccessRequest: DenyAccessmodAccessRequestResult;
+  inviteWorkspaceMember: InviteWorkspaceMemberResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
   logPipelineMessage: LogPipelineMessageResult;
   login: LoginResult;
@@ -1295,11 +1295,6 @@ export type MutationCreateWorkspaceArgs = {
 };
 
 
-export type MutationCreateWorkspaceMemberArgs = {
-  input: CreateWorkspaceMemberInput;
-};
-
-
 export type MutationDeleteAccessmodAnalysisArgs = {
   input?: InputMaybe<DeleteAccessmodAnalysisInput>;
 };
@@ -1352,6 +1347,11 @@ export type MutationDeleteWorkspaceArgs = {
 
 export type MutationDenyAccessmodAccessRequestArgs = {
   input: DenyAccessmodAccessRequestInput;
+};
+
+
+export type MutationInviteWorkspaceMemberArgs = {
+  input: InviteWorkspaceMemberInput;
 };
 
 
@@ -1700,7 +1700,6 @@ export type Query = {
   teams: TeamPage;
   totalNotebooks: Scalars['Int'];
   workspace?: Maybe<Workspace>;
-  workspaceMembershipByUserId?: Maybe<WorkspaceMembership>;
   workspaces: WorkspacePage;
 };
 
@@ -1860,11 +1859,6 @@ export type QueryTeamsArgs = {
 
 export type QueryWorkspaceArgs = {
   id: Scalars['String'];
-};
-
-
-export type QueryWorkspaceMembershipByUserIdArgs = {
-  userId: Scalars['String'];
 };
 
 

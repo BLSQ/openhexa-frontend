@@ -24,12 +24,12 @@ export type DeleteWorkspaceMutationVariables = Types.Exact<{
 
 export type DeleteWorkspaceMutation = { __typename?: 'Mutation', deleteWorkspace: { __typename?: 'DeleteWorkspaceResult', success: boolean, errors: Array<Types.DeleteWorkspaceError> } };
 
-export type CreateWorkspaceMemberMutationVariables = Types.Exact<{
-  input: Types.CreateWorkspaceMemberInput;
+export type InviteWorkspaceMemberMutationVariables = Types.Exact<{
+  input: Types.InviteWorkspaceMemberInput;
 }>;
 
 
-export type CreateWorkspaceMemberMutation = { __typename?: 'Mutation', createWorkspaceMember: { __typename?: 'CreateWorkspaceMemberResult', success: boolean, errors: Array<Types.CreateWorkspaceMembershipError>, workspaceMembership?: { __typename?: 'WorkspaceMembership', id: string } | null } };
+export type InviteWorkspaceMemberMutation = { __typename?: 'Mutation', inviteWorkspaceMember: { __typename?: 'InviteWorkspaceMemberResult', success: boolean, errors: Array<Types.InviteWorkspaceMembershipError>, workspaceMembership?: { __typename?: 'WorkspaceMembership', id: string } | null } };
 
 
 export const CreateWorkspaceDocument = gql`
@@ -154,9 +154,9 @@ export function useDeleteWorkspaceMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteWorkspaceMutationHookResult = ReturnType<typeof useDeleteWorkspaceMutation>;
 export type DeleteWorkspaceMutationResult = Apollo.MutationResult<DeleteWorkspaceMutation>;
 export type DeleteWorkspaceMutationOptions = Apollo.BaseMutationOptions<DeleteWorkspaceMutation, DeleteWorkspaceMutationVariables>;
-export const CreateWorkspaceMemberDocument = gql`
-    mutation createWorkspaceMember($input: CreateWorkspaceMemberInput!) {
-  createWorkspaceMember(input: $input) {
+export const InviteWorkspaceMemberDocument = gql`
+    mutation inviteWorkspaceMember($input: InviteWorkspaceMemberInput!) {
+  inviteWorkspaceMember(input: $input) {
     success
     errors
     workspaceMembership {
@@ -165,29 +165,29 @@ export const CreateWorkspaceMemberDocument = gql`
   }
 }
     `;
-export type CreateWorkspaceMemberMutationFn = Apollo.MutationFunction<CreateWorkspaceMemberMutation, CreateWorkspaceMemberMutationVariables>;
+export type InviteWorkspaceMemberMutationFn = Apollo.MutationFunction<InviteWorkspaceMemberMutation, InviteWorkspaceMemberMutationVariables>;
 
 /**
- * __useCreateWorkspaceMemberMutation__
+ * __useInviteWorkspaceMemberMutation__
  *
- * To run a mutation, you first call `useCreateWorkspaceMemberMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateWorkspaceMemberMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInviteWorkspaceMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteWorkspaceMemberMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createWorkspaceMemberMutation, { data, loading, error }] = useCreateWorkspaceMemberMutation({
+ * const [inviteWorkspaceMemberMutation, { data, loading, error }] = useInviteWorkspaceMemberMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateWorkspaceMemberMutation(baseOptions?: Apollo.MutationHookOptions<CreateWorkspaceMemberMutation, CreateWorkspaceMemberMutationVariables>) {
+export function useInviteWorkspaceMemberMutation(baseOptions?: Apollo.MutationHookOptions<InviteWorkspaceMemberMutation, InviteWorkspaceMemberMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateWorkspaceMemberMutation, CreateWorkspaceMemberMutationVariables>(CreateWorkspaceMemberDocument, options);
+        return Apollo.useMutation<InviteWorkspaceMemberMutation, InviteWorkspaceMemberMutationVariables>(InviteWorkspaceMemberDocument, options);
       }
-export type CreateWorkspaceMemberMutationHookResult = ReturnType<typeof useCreateWorkspaceMemberMutation>;
-export type CreateWorkspaceMemberMutationResult = Apollo.MutationResult<CreateWorkspaceMemberMutation>;
-export type CreateWorkspaceMemberMutationOptions = Apollo.BaseMutationOptions<CreateWorkspaceMemberMutation, CreateWorkspaceMemberMutationVariables>;
+export type InviteWorkspaceMemberMutationHookResult = ReturnType<typeof useInviteWorkspaceMemberMutation>;
+export type InviteWorkspaceMemberMutationResult = Apollo.MutationResult<InviteWorkspaceMemberMutation>;
+export type InviteWorkspaceMemberMutationOptions = Apollo.BaseMutationOptions<InviteWorkspaceMemberMutation, InviteWorkspaceMemberMutationVariables>;

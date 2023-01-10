@@ -4,10 +4,10 @@ import Field from "core/components/forms/Field";
 import Spinner from "core/components/Spinner";
 
 import { useTranslation } from "react-i18next";
-import { useCreateWorkspaceMemberMutation } from "workspaces/graphql/mutations.generated";
+import { useInviteWorkspaceMemberMutation } from "workspaces/graphql/mutations.generated";
 import useForm from "core/hooks/useForm";
 import {
-  CreateWorkspaceMembershipError,
+  InviteWorkspaceMembershipError,
   Workspace,
   WorkspaceMembershipRole,
 } from "graphql-types";
@@ -32,7 +32,7 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
 
-  const [createWorkspaceMember] = useCreateWorkspaceMemberMutation();
+  const [createWorkspaceMember] = useInviteWorkspaceMemberMutation();
 
   const form = useForm<Form>({
     onSubmit: async (values) => {
@@ -46,28 +46,28 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
         },
       });
 
-      if (!data?.createWorkspaceMember) {
+      if (!data?.inviteWorkspaceMember) {
         throw new Error("Unknown error.");
       }
 
       if (
-        data.createWorkspaceMember.errors.includes(
-          CreateWorkspaceMembershipError.AlreadyExists
+        data.inviteWorkspaceMember.errors.includes(
+          InviteWorkspaceMembershipError.AlreadyExists
         )
       ) {
         throw new Error("User already added to this workspace.");
       }
 
       if (
-        data.createWorkspaceMember.errors.includes(
-          CreateWorkspaceMembershipError.NotFound
+        data.inviteWorkspaceMember.errors.includes(
+          InviteWorkspaceMembershipError.NotFound
         )
       ) {
         throw new Error("No user matching this email address.");
       }
       if (
-        data.createWorkspaceMember.errors.includes(
-          CreateWorkspaceMembershipError.PermissionDenied
+        data.inviteWorkspaceMember.errors.includes(
+          InviteWorkspaceMembershipError.PermissionDenied
         )
       ) {
         throw new Error("You are not authorized to perform this action");
