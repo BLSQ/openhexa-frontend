@@ -128,9 +128,9 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
               <DataGrid
                 className="bg-white shadow-md"
                 defaultPageSize={10}
-                totalItems={workspace.memberships.totalItems}
+                totalItems={workspace.members.totalItems}
                 fixedLayout={false}
-                data={workspace.memberships.items}
+                data={workspace.members.items}
                 fetchData={onChangePage}
               >
                 <TextColumn

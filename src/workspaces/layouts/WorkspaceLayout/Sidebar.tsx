@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "core/components/Link";
-import { WorkspaceMembershipRole } from "graphql-types";
+import { WorkspaceMembership, WorkspaceMembershipRole } from "graphql-types";
 import useMe from "identity/hooks/useMe";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -84,8 +84,8 @@ const Sidebar = (props: SidebarProps) => {
 
   const { workspace } = data;
 
-  const member = workspace.memberships.items.filter(
-    (m) => m.user.id === me.user?.id
+  const member = workspace.members.items.filter(
+    (m: WorkspaceMembership) => m.user.id === me.user?.id
   )[0];
 
   return (

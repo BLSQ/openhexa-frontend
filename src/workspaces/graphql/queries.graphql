@@ -21,7 +21,7 @@ query WorkspacePage($id: String!, $page: Int, $perPage:Int) {
       code
       flag
     }
-    memberships(page: $page, perPage: $perPage) {
+    members(page: $page, perPage: $perPage) {
       totalItems
       items {
         id

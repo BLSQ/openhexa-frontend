@@ -19,7 +19,7 @@ type InviteMemberDialogProps = {
   open: boolean;
   workspace: Omit<
     Workspace,
-    "createdAt" | "updatedAt" | "createdBy" | "memberships" | "countries"
+    "createdAt" | "updatedAt" | "createdBy" | "members" | "countries"
   >;
 };
 

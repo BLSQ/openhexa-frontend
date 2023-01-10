@@ -1312,6 +1312,7 @@ type Query {
   pipelineRunCode(id: String): String
   workspace(id: String!): Workspace
   workspaces(page: Int, perPage: Int): WorkspacePage!
+  workspaceMembershipByUserId(userId: String!): WorkspaceMembership
 }
 
 enum RequestAccessmodAccessError {
@@ -1764,7 +1765,7 @@ type Workspace {
   id: String!
   name: String!
   description: String
-  memberships(page: Int, perPage: Int): WorkspaceMembershipPage!
+  members(page: Int, perPage: Int): WorkspaceMembershipPage!
   countries: [Country!]!
   createdAt: DateTime!
   updatedAt: DateTime

@@ -1700,6 +1700,7 @@ export type Query = {
   teams: TeamPage;
   totalNotebooks: Scalars['Int'];
   workspace?: Maybe<Workspace>;
+  workspaceMembershipByUserId?: Maybe<WorkspaceMembership>;
   workspaces: WorkspacePage;
 };
 
@@ -1859,6 +1860,11 @@ export type QueryTeamsArgs = {
 
 export type QueryWorkspaceArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryWorkspaceMembershipByUserIdArgs = {
+  userId: Scalars['String'];
 };
 
 
@@ -2352,13 +2358,13 @@ export type Workspace = {
   createdBy: User;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  memberships: WorkspaceMembershipPage;
+  members: WorkspaceMembershipPage;
   name: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 
-export type WorkspaceMembershipsArgs = {
+export type WorkspaceMembersArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
 };
