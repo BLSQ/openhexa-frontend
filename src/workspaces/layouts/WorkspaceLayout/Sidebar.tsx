@@ -9,8 +9,6 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "core/components/Link";
-import { WorkspaceMembership, WorkspaceMembershipRole } from "graphql-types";
-import useMe from "identity/hooks/useMe";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { ReactNode, useMemo } from "react";
@@ -73,7 +71,6 @@ const Sidebar = (props: SidebarProps) => {
   const { workspaceId } = props;
   const { t } = useTranslation();
 
-  const me = useMe();
   const { data } = useWorkspacePageQuery({
     variables: { id: workspaceId },
   });
@@ -83,10 +80,6 @@ const Sidebar = (props: SidebarProps) => {
   }
 
   const { workspace } = data;
-
-  const member = workspace.members.items.filter(
-    (m: WorkspaceMembership) => m.user.id === me.user?.id
-  )[0];
 
   return (
     <div className="fixed inset-y-0 flex w-64 flex-col">
@@ -134,7 +127,7 @@ const Sidebar = (props: SidebarProps) => {
               <BookOpenIcon className="h-5 w-5" />
               {t("JupyterHub")}
             </NavItem>
-            {member.role === WorkspaceMembershipRole.Admin && (
+            {workspace.permissions.manageMembers && (
               <NavItem
                 href={`/workspaces/${encodeURIComponent(workspaceId)}/settings`}
               >

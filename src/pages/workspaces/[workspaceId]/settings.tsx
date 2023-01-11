@@ -27,6 +27,7 @@ import DescriptionList from "core/components/DescriptionList";
 import { useState } from "react";
 import DeleteWorkspaceDialog from "workspaces/features/DeleteWorkspaceDialog";
 import InviteMemberDialog from "workspaces/features/InviteMemberDialog";
+import WorkspaceMembers from "workspaces/features/WorkspaceMembers";
 
 type Props = {
   page: number;
@@ -56,14 +57,6 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
       },
     });
     await refetch();
-  };
-
-  const onChangePage = ({ page }: { page: number }) => {
-    refetch({
-      page,
-      perPage: 5,
-      id: workspace.id as string,
-    });
   };
 
   if (!data?.workspace) {
@@ -99,18 +92,20 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
               label={t("Name")}
               defaultValue="-"
             />
-            <DescriptionList>
-              <DescriptionList.Item label={t("Delete this workspace")}>
-                <Button
-                  size="sm"
-                  className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
-                  onClick={() => setIsDeleteDialogOpen(true)}
-                  leadingIcon={<TrashIcon className="w-4" />}
-                >
-                  {t("Delete")}
-                </Button>
-              </DescriptionList.Item>
-            </DescriptionList>
+            {workspace.permissions.delete && (
+              <DescriptionList>
+                <DescriptionList.Item label={t("Delete this workspace")}>
+                  <Button
+                    size="sm"
+                    className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
+                    onClick={() => setIsDeleteDialogOpen(true)}
+                    leadingIcon={<TrashIcon className="w-4" />}
+                  >
+                    {t("Delete")}
+                  </Button>
+                </DescriptionList.Item>
+              </DescriptionList>
+            )}
           </DataCard.FormSection>
         </DataCard>
 
@@ -125,50 +120,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
               </Button>
             </div>
             <Block>
-              <DataGrid
-                className="bg-white shadow-md"
-                defaultPageSize={10}
-                totalItems={workspace.members.totalItems}
-                fixedLayout={false}
-                data={workspace.members.items}
-                fetchData={onChangePage}
-              >
-                <TextColumn
-                  className="max-w-[50ch] py-3 "
-                  accessor={({ user }) =>
-                    user.firstName ? `${user.firstName} ${user.lastName}` : "-"
-                  }
-                  id="name"
-                  label="Name"
-                  defaultValue="-"
-                />
-                <TextColumn
-                  className="max-w-[50ch] py-3 "
-                  accessor={({ user }) => user.email}
-                  id="email"
-                  label="Email"
-                />
-                <TextColumn
-                  className="max-w-[50ch] py-3 "
-                  accessor="role"
-                  label="Role"
-                  id="member_role"
-                />
-                <DateColumn
-                  className="max-w-[50ch] py-3 "
-                  accessor="createdAt"
-                  id="createdAt"
-                  label="Joined"
-                  format={DateTime.DATE_FULL}
-                />
-                <BaseColumn>
-                  {() => (
-                    <Button size="sm" variant="secondary">
-                      {t("Edit")}
-                    </Button>
-                  )}
-                </BaseColumn>
-              </DataGrid>
+              <WorkspaceMembers workspaceId={workspace.id} />
             </Block>
           </Tabs.Tab>
           <Tabs.Tab

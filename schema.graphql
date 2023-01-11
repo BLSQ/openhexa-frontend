@@ -1053,6 +1053,7 @@ type MePermissions {
   createCollection: Boolean!
   createAccessmodProject: Boolean!
   manageAccessmodAccessRequests: Boolean!
+  createWorkspace: Boolean!
 }
 
 enum MessagePriority {
@@ -1765,6 +1766,7 @@ type Workspace {
   name: String!
   description: String
   members(page: Int, perPage: Int): WorkspaceMembershipPage!
+  permissions: WorkspacePermissions!
   countries: [Country!]!
   createdAt: DateTime!
   updatedAt: DateTime
@@ -1798,5 +1800,11 @@ type WorkspacePage {
   totalPages: Int!
   totalItems: Int!
   items: [Workspace!]!
+}
+
+type WorkspacePermissions {
+  update: Boolean!
+  delete: Boolean!
+  manageMembers: Boolean!
 }
 

@@ -4,18 +4,16 @@ import Spinner from "core/components/Spinner";
 import useForm from "core/hooks/useForm";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Workspace } from "graphql-types";
 import Textarea from "core/components/forms/Textarea";
 import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
-import useCacheKey from "core/hooks/useCacheKey";
+import { gql } from "@apollo/client";
+import { WorkspaceDescription_WorkspaceFragment } from "./WorkspaceDescriptionDialog.generated";
+import { UpdateWorkspaceError } from "graphql-types";
 
 type WorkspaceDescriptionDialogProps = {
   onClose(): void;
   open: boolean;
-  workspace: Omit<
-    Workspace,
-    "createdAt" | "updatedAt" | "createdBy" | "memberships" | "countries"
-  >;
+  workspace: WorkspaceDescription_WorkspaceFragment;
 };
 
 type Form = {
@@ -25,28 +23,35 @@ type Form = {
 const WorkspaceDescriptionDialog = (props: WorkspaceDescriptionDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
-  const clearCache = useCacheKey(["workspace", workspace.id]);
   const [mutate] = useUpdateWorkspaceMutation();
 
   const form = useForm<Form>({
-    onSubmit(values) {
-      mutate({
+    onSubmit: async (values) => {
+      const { data } = await mutate({
         variables: {
           input: {
             id: workspace.id,
             description: values.description,
           },
         },
-      }).then(() => {
-        clearCache();
-        onClose();
       });
+      if (!data?.updateWorkspace) {
+        throw new Error("Unknown error.");
+      }
+      if (
+        data.updateWorkspace.errors.includes(
+          UpdateWorkspaceError.PermissionDenied
+        )
+      ) {
+        throw new Error("You are not authorized to perform this action");
+      }
+      onClose();
     },
     validate: (values) => {
       const errors = {} as any;
 
       if (!values.description) {
-        errors.description = t("Workspace description should not be empty");
+        errors.description = t("Type a description for the workspace");
       }
       return errors;
     },
@@ -63,7 +68,7 @@ const WorkspaceDescriptionDialog = (props: WorkspaceDescriptionDialogProps) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="max-w-5xl">
-      <Dialog.Title>{t("Edit workspace description")}</Dialog.Title>
+      <Dialog.Title>{t("Edit workspace's description")}</Dialog.Title>
       <form onSubmit={form.handleSubmit}>
         <Dialog.Content className="space-y-4">
           <Textarea
@@ -73,6 +78,9 @@ const WorkspaceDescriptionDialog = (props: WorkspaceDescriptionDialogProps) => {
             onChange={form.handleInputChange}
             rows={20}
           />
+          {form.submitError && (
+            <div className="text-danger mt-3 text-sm">{form.submitError}</div>
+          )}
         </Dialog.Content>
         <Dialog.Actions>
           <Button variant="white" type="button" onClick={onClose}>
@@ -86,6 +94,15 @@ const WorkspaceDescriptionDialog = (props: WorkspaceDescriptionDialogProps) => {
       </form>
     </Dialog>
   );
+};
+
+WorkspaceDescriptionDialog.fragments = {
+  workspace: gql`
+    fragment WorkspaceDescription_workspace on Workspace {
+      id
+      description
+    }
+  `,
 };
 
 export default WorkspaceDescriptionDialog;

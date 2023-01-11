@@ -1123,6 +1123,7 @@ export type MePermissions = {
   createAccessmodProject: Scalars['Boolean'];
   createCollection: Scalars['Boolean'];
   createTeam: Scalars['Boolean'];
+  createWorkspace: Scalars['Boolean'];
   manageAccessmodAccessRequests: Scalars['Boolean'];
   superUser: Scalars['Boolean'];
 };
@@ -2354,6 +2355,7 @@ export type Workspace = {
   id: Scalars['String'];
   members: WorkspaceMembershipPage;
   name: Scalars['String'];
+  permissions: WorkspacePermissions;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
@@ -2393,4 +2395,11 @@ export type WorkspacePage = {
   pageNumber: Scalars['Int'];
   totalItems: Scalars['Int'];
   totalPages: Scalars['Int'];
+};
+
+export type WorkspacePermissions = {
+  __typename?: 'WorkspacePermissions';
+  delete: Scalars['Boolean'];
+  manageMembers: Scalars['Boolean'];
+  update: Scalars['Boolean'];
 };

@@ -12,13 +12,6 @@ import Menu from "core/components/Menu";
 import Navbar from "./Navbar";
 import { LayoutClasses } from "./styles";
 import useFeature from "identity/hooks/useFeature";
-import { useQuery } from "@apollo/client";
-import {
-  WorkspacesPageDocument,
-  WorkspacesPageQuery,
-  WorkspacesPageQueryVariables,
-} from "workspaces/graphql/queries.generated";
-import useCacheKey from "core/hooks/useCacheKey";
 
 const Header = () => {
   const me = useMe();
@@ -27,16 +20,6 @@ const Header = () => {
   useHotkeys("cmd+k,ctrl+k", toggleSearch);
 
   const [hasWorkspacesEnabled] = useFeature("workspaces");
-
-  const { data, refetch } = useQuery<
-    WorkspacesPageQuery,
-    WorkspacesPageQueryVariables
-  >(WorkspacesPageDocument, {
-    variables: { page: 1, perPage: 1 },
-    skip: !hasWorkspacesEnabled,
-  });
-
-  useCacheKey("workspaces", () => refetch());
 
   if (!me.user) {
     return null;
@@ -90,10 +73,8 @@ const Header = () => {
           {me.permissions.adminPanel && (
             <Menu.Item href="/admin">{t("Administration")}</Menu.Item>
           )}
-          {hasWorkspacesEnabled && data?.workspaces.totalItems ? (
+          {hasWorkspacesEnabled && (
             <Menu.Item href="/workspaces">{t("Your workspaces")}</Menu.Item>
-          ) : (
-            <></>
           )}
 
           <Menu.Item onClick={() => logout()}>{t("Sign out")}</Menu.Item>

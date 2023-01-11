@@ -10,9 +10,10 @@ import { useTranslation } from "react-i18next";
 import { useCreateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 import { ensureArray } from "core/helpers/array";
 import { useRouter } from "next/router";
+import { CreateWorkspaceError } from "graphql-types";
 
 type CreateWorkspaceDialogProps = {
-  onClose(): void;
+  onClose(workspaceId: string | null): void;
   open: boolean;
 };
 
@@ -28,8 +29,8 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose } = props;
   const form = useForm<Form>({
-    onSubmit(values) {
-      mutate({
+    onSubmit: async (values) => {
+      const { data } = await mutate({
         variables: {
           input: {
             name: values.name,
@@ -38,12 +39,24 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
             })),
           },
         },
-      }).then(({ data }) =>
+      });
+
+      if (!data?.createWorkspace) {
+        throw new Error("Unknown error.");
+      }
+
+      if (
+        data.createWorkspace.errors.includes(
+          CreateWorkspaceError.PermissionDenied
+        )
+      ) {
+        throw new Error("You are not authorized to perform this action");
+      } else {
         router.push({
           pathname: "/workspaces/[id]",
           query: { id: data?.createWorkspace.workspace?.id },
-        })
-      );
+        });
+      }
     },
     validate: (values) => {
       const errors = {} as any;
@@ -89,9 +102,12 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
               onChange={(value) => form.setFieldValue("countries", value)}
             />
           </Field>
+          {form.submitError && (
+            <div className="text-danger mt-3 text-sm">{form.submitError}</div>
+          )}
         </Dialog.Content>
         <Dialog.Actions>
-          <Button variant="white" type="button" onClick={onClose}>
+          <Button variant="white" type="button" onClick={() => onClose(null)}>
             {t("Cancel")}
           </Button>
           <Button disabled={form.isSubmitting || !form.isValid} type="submit">

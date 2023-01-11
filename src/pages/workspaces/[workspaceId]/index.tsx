@@ -49,7 +49,9 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
             {workspace.name}
           </Breadcrumbs.Part>
         </Breadcrumbs>
-        <Button onClick={() => setIsDialogOpen(true)}>{t("Edit")}</Button>
+        {workspace.permissions.update && (
+          <Button onClick={() => setIsDialogOpen(true)}>{t("Edit")}</Button>
+        )}
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
         <Block>

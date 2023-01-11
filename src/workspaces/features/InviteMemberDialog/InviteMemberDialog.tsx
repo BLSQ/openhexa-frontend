@@ -2,25 +2,22 @@ import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
 import Spinner from "core/components/Spinner";
-
 import { useTranslation } from "react-i18next";
 import { useInviteWorkspaceMemberMutation } from "workspaces/graphql/mutations.generated";
 import useForm from "core/hooks/useForm";
 import {
   InviteWorkspaceMembershipError,
-  Workspace,
   WorkspaceMembershipRole,
 } from "graphql-types";
 import Input from "core/components/forms/Input";
 import SimpleSelect from "core/components/forms/SimpleSelect";
+import { gql } from "@apollo/client";
+import { InviteMemberWorkspace_WorkspaceFragment } from "./InviteMemberDialog.generated";
 
 type InviteMemberDialogProps = {
   onClose(): void;
   open: boolean;
-  workspace: Omit<
-    Workspace,
-    "createdAt" | "updatedAt" | "createdBy" | "members" | "countries"
-  >;
+  workspace: InviteMemberWorkspace_WorkspaceFragment;
 };
 
 type Form = {
@@ -102,7 +99,7 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
         <Dialog.Content className="space-y-4">
           <Field name="email" label={t("Email address")} type="email" required>
             <Input
-              placeholder={t("Email address")}
+              placeholder={t("sabrina@bluesquarehub.com")}
               name="email"
               type="email"
               autoComplete="email"
@@ -112,10 +109,10 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
               error={form.touched.email && form.errors.email}
             />
           </Field>
-          <Field name="role" label={t("Role")} type="options" required>
+          <Field name="role" label={t("Role")} required>
             <SimpleSelect
               name="role"
-              value={form.formData.role || WorkspaceMembershipRole.Viewer}
+              value={form.formData.role}
               onChange={form.handleInputChange}
               required
             >
@@ -152,6 +149,15 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
       </form>
     </Dialog>
   );
+};
+
+InviteMemberDialog.fragments = {
+  workspace: gql`
+    fragment InviteMemberWorkspace_workspace on Workspace {
+      id
+      name
+    }
+  `,
 };
 
 export default InviteMemberDialog;
