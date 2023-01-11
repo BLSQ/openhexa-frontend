@@ -85,6 +85,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           <Field
             name="name"
             required
+            data-testid="name"
             label={t("Workspace name")}
             value={form.formData.name}
             onChange={form.handleInputChange}

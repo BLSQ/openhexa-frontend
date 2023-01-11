@@ -8,7 +8,7 @@ import { NextPageWithLayout } from "core/helpers/types";
 import useCacheKey from "core/hooks/useCacheKey";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
-import WorkspaceDescriptionDialog from "workspaces/features/WorkspaceDescriptionDialog/WorkspaceDescriptionDialog";
+import UpdateDescriptionDialog from "workspaces/features/UpdateDescriptionDialog";
 import {
   useWorkspacePageQuery,
   WorkspacePageDocument,
@@ -60,7 +60,7 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
           </Block.Content>
         </Block>
       </WorkspaceLayout.PageContent>
-      <WorkspaceDescriptionDialog
+      <UpdateDescriptionDialog
         open={isDialogOpen}
         workspace={workspace}
         onClose={() => {

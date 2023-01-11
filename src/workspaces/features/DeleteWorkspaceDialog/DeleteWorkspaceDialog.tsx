@@ -22,13 +22,12 @@ const DeleteWorkspaceDialog = (props: DeleteWorkspaceDialogProps) => {
   const { open, onClose, workspace } = props;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [mutate] = useDeleteWorkspaceMutation();
-
+  const [deleteWorkspace] = useDeleteWorkspaceMutation();
   const clearCache = useCacheKey(["workspaces", workspace.id]);
 
-  const deleteWorkspace = async () => {
+  const onSubmit = async () => {
     setIsSubmitting(true);
-    const { data } = await mutate({
+    const { data } = await deleteWorkspace({
       variables: {
         input: {
           id: workspace.id,
@@ -66,7 +65,7 @@ const DeleteWorkspaceDialog = (props: DeleteWorkspaceDialogProps) => {
         <Button variant="white" type="button" onClick={onClose}>
           {t("Cancel")}
         </Button>
-        <Button onClick={deleteWorkspace}>
+        <Button onClick={onSubmit}>
           {isSubmitting && <Spinner size="xs" className="mr-1" />}
           {t("Delete")}
         </Button>

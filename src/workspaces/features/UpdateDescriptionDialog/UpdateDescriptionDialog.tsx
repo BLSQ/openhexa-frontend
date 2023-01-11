@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import Textarea from "core/components/forms/Textarea";
 import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 import { gql } from "@apollo/client";
-import { WorkspaceDescription_WorkspaceFragment } from "./WorkspaceDescriptionDialog.generated";
+import { WorkspaceDescription_WorkspaceFragment } from "./UpdateDescriptionDialog.generated";
 import { UpdateWorkspaceError } from "graphql-types";
 
 type WorkspaceDescriptionDialogProps = {
@@ -77,6 +77,7 @@ const WorkspaceDescriptionDialog = (props: WorkspaceDescriptionDialogProps) => {
             value={form.formData.description}
             onChange={form.handleInputChange}
             rows={20}
+            data-testid="description"
           />
           {form.submitError && (
             <div className="text-danger mt-3 text-sm">{form.submitError}</div>

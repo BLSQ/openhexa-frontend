@@ -42,6 +42,7 @@ describe("Workspaces", () => {
       </TestApp>
     );
     const elm = await screen.findByText("Rwanda Workspace", { selector: "a" });
+    expect(elm).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 

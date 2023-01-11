@@ -106,6 +106,8 @@ export const WORKSPACES = SAMPLE_PROJECTS.map((project, i) => ({
   countries: [
     {
       code: "AL",
+      alpha3: "AL",
+      name: "Alabama",
       flag: "AL",
     },
   ],
