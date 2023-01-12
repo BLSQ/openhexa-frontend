@@ -195,7 +195,7 @@ function FormSection<F extends { [key: string]: any }>(
                   {form.submitError}
                 </p>
               )}
-              <div className="mt-2 flex items-center justify-end gap-2">
+              <div className="mt-6 flex items-center justify-end gap-2">
                 <Button
                   type="submit"
                   disabled={form.isSubmitting || !form.isValid}

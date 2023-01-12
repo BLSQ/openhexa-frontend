@@ -113,39 +113,41 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
           </DataCard>
         </div>
 
-        <Tabs defaultIndex={0}>
-          <Tabs.Tab className="mt-4" label={t("Members")}>
-            <div className="mb-4 flex justify-end">
-              <Button
-                onClick={() => setIsNewMemberDialogOpen(true)}
-                leadingIcon={<PlusCircleIcon className="mr-1 h-4 w-4" />}
-              >
-                {t("Invite member")}
-              </Button>
-            </div>
-            <Block>
-              <WorkspaceMembers workspaceId={workspace.id} />
-            </Block>
-          </Tabs.Tab>
-          <Tabs.Tab
-            className="mt-4 grid grid-cols-2 gap-5 sm:grid-cols-3"
-            label={t("Environments")}
-          >
-            <div></div>
-          </Tabs.Tab>
-          <Tabs.Tab
-            className="mt-4 grid grid-cols-2 gap-5 sm:grid-cols-3"
-            label={t("Version Control")}
-          >
-            <div></div>
-          </Tabs.Tab>
-          <Tabs.Tab
-            className="mt-4 grid grid-cols-2 gap-5 sm:grid-cols-3"
-            label={t("Policies")}
-          >
-            <div></div>
-          </Tabs.Tab>
-        </Tabs>
+        <div>
+          <Tabs defaultIndex={0}>
+            <Tabs.Tab className="mt-4" label={t("Members")}>
+              <div className="mb-4 flex justify-end">
+                <Button
+                  onClick={() => setIsNewMemberDialogOpen(true)}
+                  leadingIcon={<PlusCircleIcon className="mr-1 h-4 w-4" />}
+                >
+                  {t("Invite member")}
+                </Button>
+              </div>
+              <Block>
+                <WorkspaceMembers workspaceId={workspace.id} />
+              </Block>
+            </Tabs.Tab>
+            <Tabs.Tab
+              className="mt-4 grid grid-cols-2 gap-5 sm:grid-cols-3"
+              label={t("Environments")}
+            >
+              <div></div>
+            </Tabs.Tab>
+            <Tabs.Tab
+              className="mt-4 grid grid-cols-2 gap-5 sm:grid-cols-3"
+              label={t("Version Control")}
+            >
+              <div></div>
+            </Tabs.Tab>
+            <Tabs.Tab
+              className="mt-4 grid grid-cols-2 gap-5 sm:grid-cols-3"
+              label={t("Policies")}
+            >
+              <div></div>
+            </Tabs.Tab>
+          </Tabs>
+        </div>
         <DeleteWorkspaceDialog
           workspace={workspace}
           open={isDeleteDialogOpen}
