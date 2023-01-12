@@ -6,10 +6,13 @@ import { useDataCardProperty } from "./context";
 import DataCard from "./DataCard";
 import { PropertyDefinition } from "./types";
 
-type CountryPropertyProps = { multiple?: boolean } & PropertyDefinition;
+type CountryPropertyProps = {
+  multiple?: boolean;
+  withPortal?: boolean;
+} & PropertyDefinition;
 
 const CountryProperty = (props: CountryPropertyProps) => {
-  const { multiple, defaultValue, ...delegated } = props;
+  const { multiple, withPortal, defaultValue, ...delegated } = props;
   const { property, section } = useDataCardProperty(delegated);
 
   const countriesArray = useMemo(
@@ -24,6 +27,7 @@ const CountryProperty = (props: CountryPropertyProps) => {
           value={property.formValue ?? null}
           onChange={(v) => property.setValue(v)}
           multiple={multiple}
+          withPortal={withPortal}
         />
       ) : (
         <div className="flex flex-wrap items-center gap-1.5">
