@@ -34,7 +34,7 @@ type Props = {
 const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const { data, refetch } = useWorkspacePageQuery({
-    variables: { id: props.workspaceId, page: 1, perPage: 5 },
+    variables: { id: props.workspaceId },
   });
 
   const [mutate] = useUpdateWorkspaceMutation();
