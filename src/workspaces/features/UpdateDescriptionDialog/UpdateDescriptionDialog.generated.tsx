@@ -1,10 +1,10 @@
 import * as Types from '../../../graphql-types';
 
 import { gql } from '@apollo/client';
-export type WorkspaceDescription_WorkspaceFragment = { __typename?: 'Workspace', id: string, description?: string | null };
+export type UpdateWorkspaceDescription_WorkspaceFragmentFragment = { __typename?: 'Workspace', id: string, description?: string | null };
 
-export const WorkspaceDescription_WorkspaceFragmentDoc = gql`
-    fragment WorkspaceDescription_workspace on Workspace {
+export const UpdateWorkspaceDescription_WorkspaceFragmentFragmentDoc = gql`
+    fragment UpdateWorkspaceDescription_WorkspaceFragment on Workspace {
   id
   description
 }

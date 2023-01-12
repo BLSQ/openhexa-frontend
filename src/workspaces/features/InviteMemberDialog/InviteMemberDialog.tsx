@@ -13,6 +13,7 @@ import Input from "core/components/forms/Input";
 import SimpleSelect from "core/components/forms/SimpleSelect";
 import { gql } from "@apollo/client";
 import { InviteMemberWorkspace_WorkspaceFragment } from "./InviteMemberDialog.generated";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type InviteMemberDialogProps = {
   onClose(): void;
@@ -30,6 +31,7 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
   const { open, onClose, workspace } = props;
 
   const [createWorkspaceMember] = useInviteWorkspaceMemberMutation();
+  const clearCache = useCacheKey(["workspaces", workspace.id]);
 
   const form = useForm<Form>({
     onSubmit: async (values) => {
@@ -69,6 +71,7 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
       ) {
         throw new Error("You are not authorized to perform this action");
       }
+      clearCache();
       handleClose();
     },
     initialState: { role: WorkspaceMembershipRole.Viewer, email: "" },

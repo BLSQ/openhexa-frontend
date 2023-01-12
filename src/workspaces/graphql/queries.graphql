@@ -12,7 +12,7 @@ query WorkspacesPage($page: Int, $perPage: Int) {
   }
 }
 
-query WorkspacePage($id: String!, $page: Int, $perPage: Int) {
+query WorkspacePage($id: String!) {
   workspace(id: $id) {
     id
     name
@@ -27,18 +27,8 @@ query WorkspacePage($id: String!, $page: Int, $perPage: Int) {
       update
       manageMembers
     }
-    members(page: $page, perPage: $perPage) {
-      totalItems
-      items {
-        id
-        role
-        user {
-          id
-          displayName
-          email
-        }
-        createdAt
-      }
-    }
+    ...DeleteWorkspace_workspace
+    ...InviteMemberWorkspace_workspace
+    ...UpdateWorkspaceDescription_WorkspaceFragment
   }
 }

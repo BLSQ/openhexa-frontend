@@ -1,11 +1,15 @@
+import { gql, useQuery } from "@apollo/client";
 import Button from "core/components/Button";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
-
+import useCacheKey from "core/hooks/useCacheKey";
+import { capitalize } from "lodash";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
-import { useWorkspacePageQuery } from "workspaces/graphql/queries.generated";
+import { WorskspaceMembersQuery } from "./WorkspaceMembers.generated";
+
+const DEFAULT_PAGE_SIZE = 5;
 
 export default function WorkspaceMembers({
   workspaceId,
@@ -13,15 +17,35 @@ export default function WorkspaceMembers({
   workspaceId: string;
 }) {
   const { t } = useTranslation();
-  const { data, refetch } = useWorkspacePageQuery({
-    variables: { id: workspaceId, page: 1, perPage: 5 },
-  });
+  const { data, refetch } = useQuery<WorskspaceMembersQuery>(
+    gql`
+      query WorskspaceMembers($id: String!, $page: Int, $perPage: Int) {
+        workspace(id: $id) {
+          members(page: $page, perPage: $perPage) {
+            totalItems
+            items {
+              id
+              role
+              user {
+                id
+                displayName
+                email
+              }
+              createdAt
+            }
+          }
+        }
+      }
+    `,
+    { variables: { id: workspaceId, page: 1, perPage: DEFAULT_PAGE_SIZE } }
+  );
+
+  useCacheKey("workspace", () => refetch());
 
   const onChangePage = ({ page }: { page: number }) => {
     refetch({
       page,
-      perPage: 5,
-      id: workspace.id as string,
+      id: workspaceId,
     });
   };
 
@@ -34,7 +58,7 @@ export default function WorkspaceMembers({
   return (
     <DataGrid
       className="bg-white shadow-md"
-      defaultPageSize={10}
+      defaultPageSize={DEFAULT_PAGE_SIZE}
       totalItems={workspace.members.totalItems}
       fixedLayout={false}
       data={workspace.members.items}
@@ -55,7 +79,7 @@ export default function WorkspaceMembers({
       />
       <TextColumn
         className="max-w-[50ch] py-3 "
-        accessor="role"
+        accessor={(member) => capitalize(member.role)}
         label="Role"
         id="member_role"
       />

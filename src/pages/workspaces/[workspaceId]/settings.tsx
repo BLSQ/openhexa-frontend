@@ -38,9 +38,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
   });
 
   const [mutate] = useUpdateWorkspaceMutation();
-
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
   const [isNewMemberDialogOpen, setIsNewMemberDialogOpen] = useState(false);
 
   const onSectionSave: OnSaveFn = async (values) => {
@@ -159,7 +157,6 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
           open={isNewMemberDialogOpen}
           onClose={() => {
             setIsNewMemberDialogOpen(false);
-            refetch({ id: workspace.id, page: 1, perPage: 5 });
           }}
           workspace={workspace}
         />

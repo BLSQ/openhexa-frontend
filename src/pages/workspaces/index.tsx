@@ -17,12 +17,7 @@ const WorkspacesHome = () => {
   const me = useMe();
   const { t } = useTranslation();
 
-  const handleClose = (workspaceId: string | null) => {
-    if (!workspaceId) {
-      return router.push("/dashboard");
-    }
-    router.push(`/workspaces/${workspaceId}`);
-  };
+  const handleClose = () => {};
 
   if (hasWorkspacesEnabled && me.permissions.createWorkspace) {
     return (

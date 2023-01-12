@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { CreateWorkspaceError } from "graphql-types";
 
 type CreateWorkspaceDialogProps = {
-  onClose(workspaceId: string | null): void;
+  onClose(): void;
   open: boolean;
 };
 
@@ -108,7 +108,7 @@ const CreateWorkspaceDialog = (props: CreateWorkspaceDialogProps) => {
           )}
         </Dialog.Content>
         <Dialog.Actions>
-          <Button variant="white" type="button" onClick={() => onClose(null)}>
+          <Button variant="white" type="button" onClick={onClose}>
             {t("Cancel")}
           </Button>
           <Button disabled={form.isSubmitting || !form.isValid} type="submit">

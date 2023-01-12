@@ -1,6 +1,9 @@
 import * as Types from '../../graphql-types';
 
 import { gql } from '@apollo/client';
+import { DeleteWorkspace_WorkspaceFragmentDoc } from '../features/DeleteWorkspaceDialog/DeleteWorkspaceDialog.generated';
+import { InviteMemberWorkspace_WorkspaceFragmentDoc } from '../features/InviteMemberDialog/InviteMemberDialog.generated';
+import { UpdateWorkspaceDescription_WorkspaceFragmentFragmentDoc } from '../features/UpdateDescriptionDialog/UpdateDescriptionDialog.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type WorkspacesPageQueryVariables = Types.Exact<{
@@ -13,12 +16,10 @@ export type WorkspacesPageQuery = { __typename?: 'Query', workspaces: { __typena
 
 export type WorkspacePageQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
-  page?: Types.InputMaybe<Types.Scalars['Int']>;
-  perPage?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
-export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string, name: string }>, permissions: { __typename?: 'WorkspacePermissions', delete: boolean, update: boolean, manageMembers: boolean }, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', id: string, displayName: string, email: string } }> } } | null };
+export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string, name: string }>, permissions: { __typename?: 'WorkspacePermissions', delete: boolean, update: boolean, manageMembers: boolean } } | null };
 
 
 export const WorkspacesPageDocument = gql`
@@ -66,7 +67,7 @@ export type WorkspacesPageQueryHookResult = ReturnType<typeof useWorkspacesPageQ
 export type WorkspacesPageLazyQueryHookResult = ReturnType<typeof useWorkspacesPageLazyQuery>;
 export type WorkspacesPageQueryResult = Apollo.QueryResult<WorkspacesPageQuery, WorkspacesPageQueryVariables>;
 export const WorkspacePageDocument = gql`
-    query WorkspacePage($id: String!, $page: Int, $perPage: Int) {
+    query WorkspacePage($id: String!) {
   workspace(id: $id) {
     id
     name
@@ -81,22 +82,14 @@ export const WorkspacePageDocument = gql`
       update
       manageMembers
     }
-    members(page: $page, perPage: $perPage) {
-      totalItems
-      items {
-        id
-        role
-        user {
-          id
-          displayName
-          email
-        }
-        createdAt
-      }
-    }
+    ...DeleteWorkspace_workspace
+    ...InviteMemberWorkspace_workspace
+    ...UpdateWorkspaceDescription_WorkspaceFragment
   }
 }
-    `;
+    ${DeleteWorkspace_WorkspaceFragmentDoc}
+${InviteMemberWorkspace_WorkspaceFragmentDoc}
+${UpdateWorkspaceDescription_WorkspaceFragmentFragmentDoc}`;
 
 /**
  * __useWorkspacePageQuery__
@@ -111,8 +104,6 @@ export const WorkspacePageDocument = gql`
  * const { data, loading, error } = useWorkspacePageQuery({
  *   variables: {
  *      id: // value for 'id'
- *      page: // value for 'page'
- *      perPage: // value for 'perPage'
  *   },
  * });
  */
