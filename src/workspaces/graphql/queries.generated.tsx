@@ -18,7 +18,7 @@ export type WorkspacePageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string }>, permissions: { __typename?: 'WorkspacePermissions', delete: boolean, update: boolean, manageMembers: boolean }, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', id: string, displayName: string, email: string } }> } } | null };
+export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string, name: string }>, permissions: { __typename?: 'WorkspacePermissions', delete: boolean, update: boolean, manageMembers: boolean }, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', id: string, displayName: string, email: string } }> } } | null };
 
 
 export const WorkspacesPageDocument = gql`
@@ -74,6 +74,7 @@ export const WorkspacePageDocument = gql`
     countries {
       code
       flag
+      name
     }
     permissions {
       delete

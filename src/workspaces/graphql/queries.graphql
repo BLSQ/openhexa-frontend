@@ -20,6 +20,7 @@ query WorkspacePage($id: String!, $page: Int, $perPage: Int) {
     countries {
       code
       flag
+      name
     }
     permissions {
       delete

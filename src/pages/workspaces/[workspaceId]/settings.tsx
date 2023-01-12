@@ -1,17 +1,12 @@
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Page from "core/components/Page";
-import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Tabs from "core/components/Tabs";
-import DataGrid, { BaseColumn } from "core/components/DataGrid";
-import { TextColumn } from "core/components/DataGrid/TextColumn";
 import Button from "core/components/Button";
-import DateColumn from "core/components/DataGrid/DateColumn";
-import { DateTime } from "luxon";
 import { PlusCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Block from "core/components/Block";
 import {
@@ -23,11 +18,12 @@ import DataCard from "core/components/DataCard";
 import TextProperty from "core/components/DataCard/TextProperty";
 import { OnSaveFn } from "core/components/DataCard/FormSection";
 import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
-import DescriptionList from "core/components/DescriptionList";
 import { useState } from "react";
 import DeleteWorkspaceDialog from "workspaces/features/DeleteWorkspaceDialog";
 import InviteMemberDialog from "workspaces/features/InviteMemberDialog";
 import WorkspaceMembers from "workspaces/features/WorkspaceMembers";
+import CountryProperty from "core/components/DataCard/CountryProperty";
+import { ensureArray } from "core/helpers/array";
 
 type Props = {
   page: number;
@@ -53,6 +49,11 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
         input: {
           id: workspace.id,
           name: values.name,
+          countries: ensureArray(values.countries || workspace.countries).map(
+            ({ code }) => ({
+              code,
+            })
+          ),
         },
       },
     });
@@ -67,7 +68,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
 
   return (
     <Page title={t("Workspace")}>
-      <WorkspaceLayout.Header>
+      <WorkspaceLayout.Header className="flex justify-between">
         <Breadcrumbs withHome={false}>
           <Breadcrumbs.Part
             isFirst
@@ -77,37 +78,41 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
           </Breadcrumbs.Part>
           <Breadcrumbs.Part isLast>{t("Settings")}</Breadcrumbs.Part>
         </Breadcrumbs>
-      </WorkspaceLayout.Header>
-      <WorkspaceLayout.PageContent className="space-y-8">
-        <DataCard className="w-full" item={workspace}>
-          <DataCard.FormSection
-            collapsible={false}
-            onSave={onSectionSave}
-            title={t("General settings")}
+        {workspace.permissions.delete && (
+          <Button
+            size="sm"
+            className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
+            onClick={() => setIsDeleteDialogOpen(true)}
+            leadingIcon={<TrashIcon className="w-4" />}
           >
-            <TextProperty
-              required
-              id="name"
-              accessor="name"
-              label={t("Name")}
-              defaultValue="-"
-            />
-            {workspace.permissions.delete && (
-              <DescriptionList>
-                <DescriptionList.Item label={t("Delete this workspace")}>
-                  <Button
-                    size="sm"
-                    className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
-                    onClick={() => setIsDeleteDialogOpen(true)}
-                    leadingIcon={<TrashIcon className="w-4" />}
-                  >
-                    {t("Delete")}
-                  </Button>
-                </DescriptionList.Item>
-              </DescriptionList>
-            )}
-          </DataCard.FormSection>
-        </DataCard>
+            {t("Delete")}
+          </Button>
+        )}
+      </WorkspaceLayout.Header>
+      <WorkspaceLayout.PageContent className="space-y-10">
+        <div>
+          <DataCard className="w-full" item={workspace}>
+            <DataCard.FormSection
+              onSave={onSectionSave}
+              title={t("General settings")}
+            >
+              <TextProperty
+                required
+                id="name"
+                accessor="name"
+                label={t("Name")}
+                defaultValue="-"
+              />
+              <CountryProperty
+                id="countries"
+                accessor="countries"
+                multiple
+                label={t("Countries")}
+                defaultValue="-"
+              />
+            </DataCard.FormSection>
+          </DataCard>
+        </div>
 
         <Tabs defaultIndex={0}>
           <Tabs.Tab className="mt-4" label={t("Members")}>
