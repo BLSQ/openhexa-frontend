@@ -59,7 +59,7 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
 
       if (
         data.inviteWorkspaceMember.errors.includes(
-          InviteWorkspaceMembershipError.NotFound
+          InviteWorkspaceMembershipError.UserNotFound
         )
       ) {
         throw new Error("No user matching this email address.");

@@ -3,7 +3,7 @@ import * as Types from '../../graphql-types';
 import { gql } from '@apollo/client';
 import { DeleteWorkspace_WorkspaceFragmentDoc } from '../features/DeleteWorkspaceDialog/DeleteWorkspaceDialog.generated';
 import { InviteMemberWorkspace_WorkspaceFragmentDoc } from '../features/InviteMemberDialog/InviteMemberDialog.generated';
-import { UpdateWorkspaceDescription_WorkspaceFragmentFragmentDoc } from '../features/UpdateDescriptionDialog/UpdateDescriptionDialog.generated';
+import { UpdateWorkspaceDescription_WorkspaceFragmentDoc } from '../features/UpdateDescriptionDialog/UpdateDescriptionDialog.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type WorkspacesPageQueryVariables = Types.Exact<{
@@ -84,12 +84,12 @@ export const WorkspacePageDocument = gql`
     }
     ...DeleteWorkspace_workspace
     ...InviteMemberWorkspace_workspace
-    ...UpdateWorkspaceDescription_WorkspaceFragment
+    ...UpdateWorkspaceDescription_workspace
   }
 }
     ${DeleteWorkspace_WorkspaceFragmentDoc}
 ${InviteMemberWorkspace_WorkspaceFragmentDoc}
-${UpdateWorkspaceDescription_WorkspaceFragmentFragmentDoc}`;
+${UpdateWorkspaceDescription_WorkspaceFragmentDoc}`;
 
 /**
  * __useWorkspacePageQuery__

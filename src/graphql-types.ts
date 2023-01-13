@@ -1054,8 +1054,9 @@ export type InviteWorkspaceMemberResult = {
 
 export enum InviteWorkspaceMembershipError {
   AlreadyExists = 'ALREADY_EXISTS',
-  NotFound = 'NOT_FOUND',
-  PermissionDenied = 'PERMISSION_DENIED'
+  PermissionDenied = 'PERMISSION_DENIED',
+  UserNotFound = 'USER_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
 }
 
 export enum LaunchAccessmodAnalysisError {

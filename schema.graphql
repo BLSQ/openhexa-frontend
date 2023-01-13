@@ -955,7 +955,8 @@ type InviteWorkspaceMemberResult {
 enum InviteWorkspaceMembershipError {
   ALREADY_EXISTS
   PERMISSION_DENIED
-  NOT_FOUND
+  USER_NOT_FOUND
+  WORKSPACE_NOT_FOUND
 }
 
 scalar JSON

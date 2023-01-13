@@ -7,20 +7,20 @@ import { useTranslation } from "react-i18next";
 import Textarea from "core/components/forms/Textarea";
 import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 import { gql } from "@apollo/client";
-import { UpdateWorkspaceDescription_WorkspaceFragmentFragment } from "./UpdateDescriptionDialog.generated";
 import { UpdateWorkspaceError } from "graphql-types";
+import { UpdateWorkspaceDescription_WorkspaceFragment } from "./UpdateDescriptionDialog.generated";
 
-type WorkspaceDescriptionDialogProps = {
+type UpdateDescriptionDialogProps = {
   onClose(): void;
   open: boolean;
-  workspace: UpdateWorkspaceDescription_WorkspaceFragmentFragment;
+  workspace: UpdateWorkspaceDescription_WorkspaceFragment;
 };
 
 type Form = {
   description: string;
 };
 
-const WorkspaceDescriptionDialog = (props: WorkspaceDescriptionDialogProps) => {
+const UpdateDescriptionDialog = (props: UpdateDescriptionDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
   const [mutate] = useUpdateWorkspaceMutation();
@@ -97,13 +97,13 @@ const WorkspaceDescriptionDialog = (props: WorkspaceDescriptionDialogProps) => {
   );
 };
 
-WorkspaceDescriptionDialog.fragments = {
+UpdateDescriptionDialog.fragments = {
   workspace: gql`
-    fragment UpdateWorkspaceDescription_WorkspaceFragment on Workspace {
+    fragment UpdateWorkspaceDescription_workspace on Workspace {
       id
       description
     }
   `,
 };
 
-export default WorkspaceDescriptionDialog;
+export default UpdateDescriptionDialog;

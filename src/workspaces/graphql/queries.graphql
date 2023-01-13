@@ -29,6 +29,6 @@ query WorkspacePage($id: String!) {
     }
     ...DeleteWorkspace_workspace
     ...InviteMemberWorkspace_workspace
-    ...UpdateWorkspaceDescription_WorkspaceFragment
+    ...UpdateWorkspaceDescription_workspace
   }
 }

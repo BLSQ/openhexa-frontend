@@ -1,3 +1,3 @@
-import WorkspaceDescriptionDialog from "./UpdateDescriptionDialog";
+import UpdateDescriptionDialog from "./UpdateDescriptionDialog";
 
-export default WorkspaceDescriptionDialog;
+export default UpdateDescriptionDialog;
