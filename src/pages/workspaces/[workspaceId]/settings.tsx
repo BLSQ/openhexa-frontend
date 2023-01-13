@@ -107,7 +107,6 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
                 multiple
                 label={t("Countries")}
                 defaultValue="-"
-                withPortal
               />
             </DataCard.FormSection>
           </DataCard>
