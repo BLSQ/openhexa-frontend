@@ -48,3 +48,11 @@ mutation inviteWorkspaceMember($input: InviteWorkspaceMemberInput!) {
     }
   }
 }
+
+
+mutation deleteWorkspaceMember($input: DeleteWorkspaceMemberInput!) {
+  deleteWorkspaceMember(input: $input) {
+    success
+    errors
+  }
+}
