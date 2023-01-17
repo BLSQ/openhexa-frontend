@@ -116,7 +116,7 @@ export default function WorkspaceMembers({
           label={t("Joined")}
           format={DateTime.DATE_FULL}
         />
-        <BaseColumn className="flex gap-x-4">
+        <BaseColumn className="flex justify-end gap-x-2">
           {(member) => (
             <>
               <Button
