@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.15.3](https://github.com/BLSQ/openhexa-frontend/compare/0.15.2...0.15.3) (2023-01-16)
+
+
+### Bug Fixes
+
+* **Workspaces:** check workspace featureFlag and permission on server… ([#174](https://github.com/BLSQ/openhexa-frontend/issues/174)) ([5456999](https://github.com/BLSQ/openhexa-frontend/commit/5456999d7f964ffca6e1de0c4887ca39bab87c2f))
+
+## [0.15.2](https://github.com/BLSQ/openhexa-frontend/compare/0.15.1...0.15.2) (2023-01-16)
+
+
+### Bug Fixes
+
+* **2FA:** User is not redirected to login page after activation ([6e8abfd](https://github.com/BLSQ/openhexa-frontend/commit/6e8abfd3c612d75b1d73a1279ba1d8f74ede070d))
+* **2FA:** User is not redirected to login page after activation ([6e8abfd](https://github.com/BLSQ/openhexa-frontend/commit/6e8abfd3c612d75b1d73a1279ba1d8f74ede070d))
+
+## [0.15.1](https://github.com/BLSQ/openhexa-frontend/compare/0.15.0...0.15.1) (2023-01-16)
+
+
+### Bug Fixes
+
+* **2FA:** Fix send new token on login page ([#170](https://github.com/BLSQ/openhexa-frontend/issues/170)) ([fb77a66](https://github.com/BLSQ/openhexa-frontend/commit/fb77a667e2f7a69ee58cc565650a5c8793c938a8))
+
 ## [0.15.0](https://github.com/BLSQ/openhexa-frontend/compare/0.14.1...0.15.0) (2023-01-16)
 
 
