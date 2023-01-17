@@ -1,17 +1,13 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
-  DeleteWorkspaceDocument,
   DeleteWorkspaceMemberDocument,
   useDeleteWorkspaceMemberMutation,
-  useDeleteWorkspaceMutation,
 } from "workspaces/graphql/mutations.generated";
 import { TestApp } from "core/helpers/testutils";
 import router from "next/router";
 import DeleteWorkspaceMemberDialog from ".";
-import { WORKSPACES } from "workspaces/helpers/fixtures";
 import { v4 } from "uuid";
-const { id, description, name, countries, ...rest } = WORKSPACES[0];
 
 const MEMBER = {
   id: v4(),
