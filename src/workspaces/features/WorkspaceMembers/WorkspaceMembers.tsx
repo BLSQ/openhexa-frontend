@@ -5,15 +5,20 @@ import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import useCacheKey from "core/hooks/useCacheKey";
+import { User, WorkspaceMembership } from "graphql-types";
 import { capitalize } from "lodash";
 import { DateTime } from "luxon";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import DeleteWorkspaceMemberDialog from "./DeleteWorkspaceMemberDialog";
-import { DeleteWorkspaceMember_WorkspaceMemberFragment } from "./DeleteWorkspaceMemberDialog/DeleteWorkspaceMemberDialog.generated";
+import UpdateWorkspaceMemberDialog from "./UpdateWorkspaceMemberDialog";
 import { WorskspaceMembersQuery } from "./WorkspaceMembers.generated";
 
 const DEFAULT_PAGE_SIZE = 5;
+
+type WorkspaceMember = Pick<WorkspaceMembership, "id" | "role"> & {
+  user: Pick<User, "id" | "displayName">;
+};
 
 export default function WorkspaceMembers({
   workspaceId,
@@ -21,9 +26,9 @@ export default function WorkspaceMembers({
   workspaceId: string;
 }) {
   const { t } = useTranslation();
-  const [selectedMember, setSelectedMember] =
-    useState<DeleteWorkspaceMember_WorkspaceMemberFragment>();
+  const [selectedMember, setSelectedMember] = useState<WorkspaceMember>();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
 
   const { data, refetch } = useQuery<WorskspaceMembersQuery>(
     gql`
@@ -69,6 +74,12 @@ export default function WorkspaceMembers({
     setOpenDeleteDialog(true);
   };
 
+  const handleUpdateClicked = (memberId: string) => {
+    const member = workspace.members.items.filter((m) => m.id === memberId)[0];
+    setSelectedMember(member);
+    setOpenEditDialog(true);
+  };
+
   return (
     <>
       <DataGrid
@@ -108,7 +119,11 @@ export default function WorkspaceMembers({
         <BaseColumn className="flex gap-x-4">
           {(member) => (
             <>
-              <Button size="sm" variant="secondary">
+              <Button
+                onClick={() => handleUpdateClicked(member.id)}
+                size="sm"
+                variant="secondary"
+              >
                 <PencilIcon className="h-4" />
               </Button>
               <Button
@@ -125,7 +140,20 @@ export default function WorkspaceMembers({
       {selectedMember && (
         <DeleteWorkspaceMemberDialog
           open={openDeleteDialog}
-          onClose={() => setOpenDeleteDialog(false)}
+          onClose={() => {
+            setSelectedMember(undefined);
+            setOpenDeleteDialog(false);
+          }}
+          member={selectedMember}
+        />
+      )}
+      {selectedMember && (
+        <UpdateWorkspaceMemberDialog
+          open={openEditDialog}
+          onClose={() => {
+            setSelectedMember(undefined);
+            setOpenEditDialog(false);
+          }}
           member={selectedMember}
         />
       )}

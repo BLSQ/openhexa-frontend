@@ -56,3 +56,14 @@ mutation deleteWorkspaceMember($input: DeleteWorkspaceMemberInput!) {
     errors
   }
 }
+
+mutation updateWorkspaceMember($input: UpdateWorkspaceMemberInput!) {
+  updateWorkspaceMember(input: $input) {
+    success
+    errors
+    workspaceMembership {
+      id
+      role
+    }
+  }
+}
