@@ -143,7 +143,12 @@ const SidebarMenu = (props: SidebarMenuProps) => {
         >
           <section>
             <div className="flex w-full items-center justify-between px-4 py-2 text-sm font-medium tracking-wide text-gray-500 opacity-90">
-              {t("Your workspaces")}
+              <Link
+                href="/workspaces"
+                customStyle="text-gray-500 hover:text-gray-700"
+              >
+                {t("Your workspaces")}
+              </Link>
 
               <button
                 type="button"

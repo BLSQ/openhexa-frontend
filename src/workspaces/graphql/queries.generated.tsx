@@ -12,7 +12,7 @@ export type WorkspacesPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacesPageQuery = { __typename?: 'Query', workspaces: { __typename?: 'WorkspacePage', totalItems: number, items: Array<{ __typename?: 'Workspace', id: string, name: string, countries: Array<{ __typename?: 'Country', code: string, flag: string }> }> } };
+export type WorkspacesPageQuery = { __typename?: 'Query', workspaces: { __typename?: 'WorkspacePage', totalItems: number, totalPages: number, items: Array<{ __typename?: 'Workspace', id: string, name: string, countries: Array<{ __typename?: 'Country', code: string, flag: string }> }> } };
 
 export type WorkspacePageQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -89,6 +89,7 @@ export const WorkspacesPageDocument = gql`
     query WorkspacesPage($page: Int, $perPage: Int) {
   workspaces(page: $page, perPage: $perPage) {
     totalItems
+    totalPages
     items {
       id
       name

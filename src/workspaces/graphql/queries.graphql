@@ -1,6 +1,7 @@
 query WorkspacesPage($page: Int, $perPage: Int) {
   workspaces(page: $page, perPage: $perPage) {
     totalItems
+    totalPages
     items {
       id
       name
