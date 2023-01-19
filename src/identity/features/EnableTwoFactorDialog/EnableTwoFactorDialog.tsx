@@ -45,7 +45,7 @@ const EnableTwoFactorDialog = (props: EnableTwoFactorDialogProps) => {
             "This will enable the two-factor authentication using your email address. A one-time code will be sent to you every time you try to log in."
           )}
         </p>
-        <p>{t("You will have to log in again ro your account.")}</p>
+        <p>{t("You will have to log in again to your account.")}</p>
       </Dialog.Content>
 
       <Dialog.Actions>
