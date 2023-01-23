@@ -7,17 +7,17 @@ const defaultOptions = {} as const;
 export type SearchQueryQueryVariables = Types.Exact<{
   query?: Types.InputMaybe<Types.Scalars['String']>;
   types?: Types.InputMaybe<Array<Types.Scalars['String']> | Types.Scalars['String']>;
-  datasourceIds?: Types.InputMaybe<Array<Types.Scalars['String']> | Types.Scalars['String']>;
+  datasourceIds?: Types.InputMaybe<Array<Types.Scalars['UUID']> | Types.Scalars['UUID']>;
   page?: Types.InputMaybe<Types.Scalars['Int']>;
   perPage?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 
-export type SearchQueryQuery = { __typename?: 'Query', search: { __typename?: 'SearchQueryResult', results: Array<{ __typename?: 'SearchResult', rank: number, object: { __typename: 'CatalogEntry', id: string, name: string, objectId: string, objectUrl: any, symbol?: any | null, datasource?: { __typename?: 'Datasource', id: string, name: string } | null, type: { __typename?: 'CatalogEntryType', model: string, app: string, name: string } } | { __typename: 'Collection', id: string, name: string } }>, types: Array<{ __typename?: 'SearchType', value: string, label: string }> } };
+export type SearchQueryQuery = { __typename?: 'Query', search: { __typename?: 'SearchQueryResult', results: Array<{ __typename?: 'SearchResult', rank: number, object: { __typename: 'CatalogEntry', id: any, name: string, objectId: string, objectUrl: any, symbol?: any | null, datasource?: { __typename?: 'Datasource', id: any, name: string } | null, type: { __typename?: 'CatalogEntryType', model: string, app: string, name: string } } | { __typename: 'Collection', id: any, name: string } }>, types: Array<{ __typename?: 'SearchType', value: string, label: string }> } };
 
 
 export const SearchQueryDocument = gql`
-    query SearchQuery($query: String, $types: [String!], $datasourceIds: [String!], $page: Int, $perPage: Int) {
+    query SearchQuery($query: String, $types: [String!], $datasourceIds: [UUID!], $page: Int, $perPage: Int) {
   search(
     query: $query
     datasourceIds: $datasourceIds

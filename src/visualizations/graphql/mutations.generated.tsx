@@ -8,7 +8,7 @@ export type UpdateExternalDashboardMutationVariables = Types.Exact<{
 }>;
 
 
-export type UpdateExternalDashboardMutation = { __typename?: 'Mutation', updateExternalDashboard: { __typename?: 'UpdateExternalDashboardResult', success: boolean, errors: Array<Types.UpdateExternalDashboardError>, externalDashboard?: { __typename?: 'ExternalDashboard', id: string, name: string, description?: string | null } | null } };
+export type UpdateExternalDashboardMutation = { __typename?: 'Mutation', updateExternalDashboard: { __typename?: 'UpdateExternalDashboardResult', success: boolean, errors: Array<Types.UpdateExternalDashboardError>, externalDashboard?: { __typename?: 'ExternalDashboard', id: any, name: string, description?: string | null } | null } };
 
 
 export const UpdateExternalDashboardDocument = gql`

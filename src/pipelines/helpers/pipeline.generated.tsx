@@ -8,7 +8,7 @@ export type RunPipelineMutationVariables = Types.Exact<{
 }>;
 
 
-export type RunPipelineMutation = { __typename?: 'Mutation', runDAG: { __typename?: 'RunDAGResult', success: boolean, errors: Array<Types.RunDagError>, dag?: { __typename?: 'DAG', id: string } | null, dagRun?: { __typename?: 'DAGRun', id: string, externalUrl?: any | null, externalId?: string | null } | null } };
+export type RunPipelineMutation = { __typename?: 'Mutation', runDAG: { __typename?: 'RunDAGResult', success: boolean, errors: Array<Types.RunDagError>, dag?: { __typename?: 'DAG', id: any } | null, dagRun?: { __typename?: 'DAGRun', id: any, externalUrl?: any | null, externalId?: string | null } | null } };
 
 
 export const RunPipelineDocument = gql`

@@ -1,7 +1,7 @@
 import * as Types from '../../../graphql-types';
 
 import { gql } from '@apollo/client';
-export type PipelineRunReadonlyForm_DagFragment = { __typename?: 'DAG', formCode?: string | null, id: string };
+export type PipelineRunReadonlyForm_DagFragment = { __typename?: 'DAG', formCode?: string | null, id: any };
 
 export type PipelineRunReadonlyForm_DagRunFragment = { __typename?: 'DAGRun', config?: any | null };
 

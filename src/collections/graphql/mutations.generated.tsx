@@ -22,7 +22,7 @@ export type UpdateCollectionMutationVariables = Types.Exact<{
 }>;
 
 
-export type UpdateCollectionMutation = { __typename?: 'Mutation', updateCollection: { __typename?: 'UpdateCollectionResult', success: boolean, errors: Array<Types.CreateCollectionError>, collection?: { __typename?: 'Collection', id: string, name: string, description?: string | null, summary?: string | null } | null } };
+export type UpdateCollectionMutation = { __typename?: 'Mutation', updateCollection: { __typename?: 'UpdateCollectionResult', success: boolean, errors: Array<Types.CreateCollectionError>, collection?: { __typename?: 'Collection', id: any, name: string, description?: string | null, summary?: string | null } | null } };
 
 
 export const DeleteCollectionDocument = gql`
