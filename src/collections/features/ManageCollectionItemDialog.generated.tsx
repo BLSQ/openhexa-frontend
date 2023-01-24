@@ -7,7 +7,7 @@ const defaultOptions = {} as const;
 export type ManageCollectionItemDialogQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type ManageCollectionItemDialogQuery = { __typename?: 'Query', collections: { __typename?: 'CollectionPage', items: Array<{ __typename?: 'Collection', id: any, name: string, summary?: string | null, elements: { __typename?: 'CollectionElementPage', items: Array<{ __typename?: 'CollectionElement', id: any, objectId: any, app: string, model: string }> }, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }> }> } };
+export type ManageCollectionItemDialogQuery = { __typename?: 'Query', collections: { __typename?: 'CollectionPage', items: Array<{ __typename?: 'Collection', id: string, name: string, summary?: string | null, elements: { __typename?: 'CollectionElementPage', items: Array<{ __typename?: 'CollectionElement', id: string, objectId: string, app: string, model: string }> }, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }> }> } };
 
 
 export const ManageCollectionItemDialogDocument = gql`

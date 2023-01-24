@@ -9,9 +9,9 @@ export type SetFavoriteRunMutationVariables = Types.Exact<{
 }>;
 
 
-export type SetFavoriteRunMutation = { __typename?: 'Mutation', setDAGRunFavorite?: { __typename?: 'SetDAGRunFavoriteResult', success: boolean, errors: Array<Types.SetDagRunFavoriteError>, dagRun?: { __typename?: 'DAGRun', id: any, label?: string | null, isFavorite: boolean } | null } | null };
+export type SetFavoriteRunMutation = { __typename?: 'Mutation', setDAGRunFavorite?: { __typename?: 'SetDAGRunFavoriteResult', success: boolean, errors: Array<Types.SetDagRunFavoriteError>, dagRun?: { __typename?: 'DAGRun', id: string, label?: string | null, isFavorite: boolean } | null } | null };
 
-export type PipelineRunFavoriteTrigger_RunFragment = { __typename?: 'DAGRun', id: any, label?: string | null, isFavorite: boolean };
+export type PipelineRunFavoriteTrigger_RunFragment = { __typename?: 'DAGRun', id: string, label?: string | null, isFavorite: boolean };
 
 export const PipelineRunFavoriteTrigger_RunFragmentDoc = gql`
     fragment PipelineRunFavoriteTrigger_run on DAGRun {

@@ -15,14 +15,14 @@ export type CollectionsPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type CollectionsPageQuery = { __typename?: 'Query', collections: { __typename?: 'CollectionPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'Collection', id: any, name: string, summary?: string | null, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }>, author?: { __typename?: 'User', displayName: string } | null }> } };
+export type CollectionsPageQuery = { __typename?: 'Query', collections: { __typename?: 'CollectionPage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'Collection', id: string, name: string, summary?: string | null, createdAt: any, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string }>, author?: { __typename?: 'User', displayName: string } | null }> } };
 
 export type CollectionPageQueryVariables = Types.Exact<{
   id: Types.Scalars['UUID'];
 }>;
 
 
-export type CollectionPageQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: any, name: string, createdAt: any, updatedAt: any, description?: string | null, summary?: string | null, author?: { __typename?: 'User', id: any, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string, alpha3: string }>, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, permissions: { __typename?: 'CollectionPermissions', update: boolean, delete: boolean }, elements: { __typename?: 'CollectionElementPage', items: Array<{ __typename?: 'CollectionElement', id: any, createdAt: any, updatedAt: any, name: string, type: string, app: string, model: string, url?: any | null, objectId: any }> } } | null };
+export type CollectionPageQuery = { __typename?: 'Query', collection?: { __typename?: 'Collection', id: string, name: string, createdAt: any, updatedAt: any, description?: string | null, summary?: string | null, author?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, countries: Array<{ __typename?: 'Country', code: string, name: string, flag: string, alpha3: string }>, tags: Array<{ __typename?: 'Tag', id: string, name: string }>, permissions: { __typename?: 'CollectionPermissions', update: boolean, delete: boolean }, elements: { __typename?: 'CollectionElementPage', items: Array<{ __typename?: 'CollectionElement', id: string, createdAt: any, updatedAt: any, name: string, type: string, app: string, model: string, url?: any | null, objectId: string }> } } | null };
 
 
 export const CollectionsPageDocument = gql`

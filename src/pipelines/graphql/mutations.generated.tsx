@@ -8,7 +8,7 @@ export type UpdatePipelineMutationVariables = Types.Exact<{
 }>;
 
 
-export type UpdatePipelineMutation = { __typename?: 'Mutation', updateDAG: { __typename?: 'UpdateDAGResult', success: boolean, errors: Array<Types.UpdateDagError>, dag?: { __typename?: 'DAG', id: any, label: string, description?: string | null, schedule?: string | null } | null } };
+export type UpdatePipelineMutation = { __typename?: 'Mutation', updateDAG: { __typename?: 'UpdateDAGResult', success: boolean, errors: Array<Types.UpdateDagError>, dag?: { __typename?: 'DAG', id: string, label: string, description?: string | null, schedule?: string | null } | null } };
 
 
 export const UpdatePipelineDocument = gql`

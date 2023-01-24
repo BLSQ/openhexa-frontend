@@ -22,7 +22,7 @@ export type CreateCollectionMutationVariables = Types.Exact<{
 }>;
 
 
-export type CreateCollectionMutation = { __typename?: 'Mutation', createCollection: { __typename?: 'CreateCollectionResult', success: boolean, errors: Array<Types.CreateCollectionError>, collection?: { __typename?: 'Collection', id: any, name: string } | null } };
+export type CreateCollectionMutation = { __typename?: 'Mutation', createCollection: { __typename?: 'CreateCollectionResult', success: boolean, errors: Array<Types.CreateCollectionError>, collection?: { __typename?: 'Collection', id: string, name: string } | null } };
 
 export type DeleteCollectionMutationVariables = Types.Exact<{
   input: Types.DeleteCollectionInput;

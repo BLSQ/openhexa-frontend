@@ -12,77 +12,77 @@ export type WorkspacesPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacesPageQuery = { __typename?: 'Query', workspaces: { __typename?: 'WorkspacePage', totalItems: number, items: Array<{ __typename?: 'Workspace', id: any, name: string, countries: Array<{ __typename?: 'Country', code: string, flag: string }> }> } };
+export type WorkspacesPageQuery = { __typename?: 'Query', workspaces: { __typename?: 'WorkspacePage', totalItems: number, items: Array<{ __typename?: 'Workspace', id: string, name: string, countries: Array<{ __typename?: 'Country', code: string, flag: string }> }> } };
 
 export type WorkspacePageQueryVariables = Types.Exact<{
   id: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string, name: string }>, permissions: { __typename?: 'WorkspacePermissions', delete: boolean, update: boolean, manageMembers: boolean } } | null };
+export type WorkspacePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string, description?: string | null, countries: Array<{ __typename?: 'Country', code: string, flag: string, name: string }>, permissions: { __typename?: 'WorkspacePermissions', delete: boolean, update: boolean, manageMembers: boolean } } | null };
 
 export type WorkspacePipelinesPageQueryVariables = Types.Exact<{
   id: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspacePipelinesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspacePipelinesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 export type WorkspacePipelinePageQueryVariables = Types.Exact<{
   workspaceId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspacePipelinePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspacePipelinePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 export type WorkspacePipelineStartPageQueryVariables = Types.Exact<{
   workspaceId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspacePipelineStartPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspacePipelineStartPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 export type WorkspacePipelineRunPageQueryVariables = Types.Exact<{
   workspaceId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspacePipelineRunPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspacePipelineRunPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 export type WorkspaceFilesPageQueryVariables = Types.Exact<{
   workspaceId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspaceFilesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspaceFilesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 export type WorkspaceDatabasesPageQueryVariables = Types.Exact<{
   workspaceId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspaceDatabasesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspaceDatabasesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 export type WorkspaceDatabaseTablePageQueryVariables = Types.Exact<{
   workspaceId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspaceDatabaseTablePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspaceDatabaseTablePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 export type WorkspaceConnectionsPageQueryVariables = Types.Exact<{
   workspaceId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspaceConnectionsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspaceConnectionsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 export type WorkspaceConnectionPageQueryVariables = Types.Exact<{
   workspaceId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspaceConnectionPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: any, name: string } | null };
+export type WorkspaceConnectionPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', id: string, name: string } | null };
 
 
 export const WorkspacesPageDocument = gql`

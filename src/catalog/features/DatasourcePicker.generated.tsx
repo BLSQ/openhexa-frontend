@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type DatasourcePickerQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type DatasourcePickerQuery = { __typename?: 'Query', catalog: { __typename?: 'CatalogPage', items: Array<{ __typename?: 'CatalogEntry', id: any, objectId: string, name: string, symbol?: any | null, type: { __typename?: 'CatalogEntryType', name: string, app: string } }> } };
+export type DatasourcePickerQuery = { __typename?: 'Query', catalog: { __typename?: 'CatalogPage', items: Array<{ __typename?: 'CatalogEntry', id: string, objectId: string, name: string, symbol?: any | null, type: { __typename?: 'CatalogEntryType', name: string, app: string } }> } };
 
 
 export const DatasourcePickerDocument = gql`

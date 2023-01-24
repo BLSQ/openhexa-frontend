@@ -10,7 +10,7 @@ export type WorskspaceMembersQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorskspaceMembersQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', members: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: any, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', id: any, displayName: string, email: string } }> } } | null };
+export type WorskspaceMembersQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', members: { __typename?: 'WorkspaceMembershipPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole, createdAt: any, user: { __typename?: 'User', id: string, displayName: string, email: string } }> } } | null };
 
 
 export const WorskspaceMembersDocument = gql`
