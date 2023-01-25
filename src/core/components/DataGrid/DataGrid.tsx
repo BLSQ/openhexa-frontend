@@ -238,7 +238,7 @@ function DataGrid(props: DataGridProps) {
 
   return (
     <div className={className}>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto px-4">
         <Table
           {...getTableProps()}
           className={clsx(fixedLayout && "table-fixed")}

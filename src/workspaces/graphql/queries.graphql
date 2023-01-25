@@ -85,11 +85,41 @@ query WorkspaceConnectionsPage($workspaceSlug: String!) {
   workspace(slug: $workspaceSlug) {
     slug
     name
+    ...CreateConnectionDialog_workspace
+    connections {
+      id
+      description
+      name
+      type
+      slug
+
+      permissions {
+        update
+        delete
+      }
+    }
   }
 }
-query WorkspaceConnectionPage($workspaceSlug: String!) {
+
+query WorkspaceConnectionPage($workspaceSlug: String!, $connectionId: UUID!) {
   workspace(slug: $workspaceSlug) {
     slug
     name
+  }
+  connection(id: $connectionId) {
+    id
+    name
+    description
+    type
+    createdAt
+    user {
+      ...User_user
+    }
+    permissions {
+      update
+      delete
+    }
+
+    ...ConnectionFieldsSection_connection
   }
 }

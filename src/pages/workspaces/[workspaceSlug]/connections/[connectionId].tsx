@@ -1,51 +1,66 @@
+import { TrashIcon } from "@heroicons/react/24/outline";
 import Badge from "core/components/Badge";
-import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import CodeEditor from "core/components/CodeEditor";
+import DataCard from "core/components/DataCard";
+import { OnSaveFn } from "core/components/DataCard/FormSection";
+import TextProperty from "core/components/DataCard/TextProperty";
 import DescriptionList from "core/components/DescriptionList";
 import Page from "core/components/Page";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "core/components/Table";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import ReactMarkdown from "react-markdown";
+import ConnectionFieldsSection from "workspaces/features/ConnectionFieldsSection";
+import { useUpdateWorkspaceConnectionMutation } from "workspaces/graphql/mutations.generated";
 import {
   useWorkspaceConnectionPageQuery,
-  WorkspaceConnectionsPageDocument,
+  WorkspaceConnectionPageDocument,
+  WorkspaceConnectionPageQuery,
+  WorkspaceConnectionPageQueryVariables,
 } from "workspaces/graphql/queries.generated";
+import { TYPES } from "workspaces/helpers/connection";
 import { FAKE_WORKSPACE } from "workspaces/helpers/fixtures";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
-  page: number;
-  perPage: number;
+  workspaceSlug: string;
+  connectionId: string;
 };
 
-const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
+const WorkspacePipelinePage: NextPageWithLayout = ({
+  workspaceSlug,
+  connectionId,
+}: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data } = useWorkspaceConnectionPageQuery({
-    variables: { workspaceSlug: router.query.workspaceSlug as string },
+    variables: { workspaceSlug, connectionId },
   });
 
-  if (!data?.workspace) {
+  const [updateConnection] = useUpdateWorkspaceConnectionMutation();
+
+  const onSave: OnSaveFn = async (values, item) => {
+    await updateConnection({
+      variables: {
+        input: {
+          id: item.id,
+          name: values.name,
+          slug: values.slug,
+          description: values.description,
+        },
+      },
+    });
+  };
+
+  if (!data?.workspace || !data?.connection) {
     return null;
   }
-  const { workspace } = data;
+  const { workspace, connection } = data;
 
-  const connection = FAKE_WORKSPACE.connections.find(
-    (t) => t.id === router.query.connectionId
-  );
-
-  if (!connection) {
+  const type = TYPES.find((t) => t.value === connection.type);
+  if (!connection || !type) {
     return null;
   }
 
@@ -75,54 +90,44 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             {connection.name}
           </Breadcrumbs.Part>
         </Breadcrumbs>
-        <Button>{t("Edit")}</Button>
+        {connection.permissions.delete && (
+          <Button
+            size="sm"
+            className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
+            leadingIcon={<TrashIcon className="w-4" />}
+          >
+            {t("Delete")}
+          </Button>
+        )}
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <Block className="divide-y-2 divide-gray-100">
-          <Block.Content title={t("Information")} className="space-y-4">
-            <DescriptionList>
-              <DescriptionList.Item label={t("Type")}>
-                <Badge className={connection.type.color}>
-                  {connection.type?.label ?? "custom"}
-                </Badge>
-              </DescriptionList.Item>
-            </DescriptionList>
-            <ReactMarkdown className="prose text-sm">
-              {connection.description}
-            </ReactMarkdown>
-          </Block.Content>
-          <Block.Section title={t("Code samples")}>
+        <DataCard item={connection} className="divide-y-2 divide-gray-100">
+          <DataCard.FormSection
+            onSave={onSave}
+            title={t("Information")}
+            className="space-y-4"
+          >
+            <DescriptionList.Item label={t("Type")}>
+              <Badge className={type.color}>{type.label ?? "custom"}</Badge>
+            </DescriptionList.Item>
+            <TextProperty
+              id="description"
+              label={t("Description")}
+              accessor="description"
+              markdown
+            />
+          </DataCard.FormSection>
+          <DataCard.Section title={t("Code samples")}>
             <CodeEditor
               readonly
               lang="json"
               value={FAKE_WORKSPACE.database.workspaceTables[0].codeSample[0]}
             />
-          </Block.Section>
-          <Block.Section title={t("Variables")}>
-            <div className="overflow-hidden rounded border border-gray-100">
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="py-3">{t("Name")}</TableCell>
-                    <TableCell className="py-3">{t("Value")}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {connection.credentials.map((creds, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="py-3 font-medium">
-                        {creds.label}
-                      </TableCell>
-                      <TableCell className="py-3">
-                        {creds.secret ? "***********" : creds.value}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </Block.Section>
-        </Block>
+          </DataCard.Section>
+          <DataCard.Section title={t("Fields")}>
+            <ConnectionFieldsSection connection={connection} />
+          </DataCard.Section>
+        </DataCard>
       </WorkspaceLayout.PageContent>
     </Page>
   );
@@ -135,16 +140,28 @@ WorkspacePipelinePage.getLayout = (page, pageProps) => {
 export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
   async getServerSideProps(ctx, client) {
-    const { data } = await client.query({
-      query: WorkspaceConnectionsPageDocument,
-      variables: { workspaceSlug: ctx.params?.workspaceSlug },
+    const workspaceSlug = ctx.params?.workspaceSlug as string;
+    const connectionId = ctx.params?.connectionId as string;
+    const { data } = await client.query<
+      WorkspaceConnectionPageQuery,
+      WorkspaceConnectionPageQueryVariables
+    >({
+      query: WorkspaceConnectionPageDocument,
+      variables: { workspaceSlug, connectionId },
     });
 
-    if (!data.workspace) {
+    if (!data.workspace || !data.connection) {
       return {
         notFound: true,
       };
     }
+
+    return {
+      props: {
+        connectionId,
+        workspaceSlug,
+      },
+    };
   },
 });
 

@@ -5,13 +5,14 @@ const ButtonVariants = [
   "primary",
   "secondary",
   "white",
+  "danger",
   "outlined",
   "custom",
 ] as const;
-type ButtonVariant = typeof ButtonVariants[number];
+type ButtonVariant = (typeof ButtonVariants)[number];
 
 const ButtonSizes = ["sm", "md", "lg", "xl", "xxl"] as const;
-type ButtonSize = typeof ButtonSizes[number];
+type ButtonSize = (typeof ButtonSizes)[number];
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -34,6 +35,8 @@ export const Classes: { [key: string]: string } = {
   white:
     "text-gray-800 border-gray-400 bg-white hover:bg-gray-50 focus:ring-gray-400",
   outlined: "text-gray-800 border-transparent shadow-none hover:bg-gray-100",
+  danger:
+    "border-transparent text-white bg-red-700 hover:bg-red-800 focus:ring-red-700",
 
   // Sizes
   sm: "text-xs px-2 py-1",

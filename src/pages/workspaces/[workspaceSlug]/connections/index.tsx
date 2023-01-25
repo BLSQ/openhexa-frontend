@@ -10,12 +10,11 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import CreateConnectionDialog from "workspaces/features/CreateConnectionDialog";
-import { TYPES } from "workspaces/features/CreateConnectionDialog/CreateConnectionDialog";
 import {
   useWorkspaceConnectionsPageQuery,
   WorkspaceConnectionsPageDocument,
 } from "workspaces/graphql/queries.generated";
-import { FAKE_WORKSPACE } from "workspaces/helpers/fixtures";
+import { TYPES } from "workspaces/helpers/connection";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
@@ -35,7 +34,7 @@ const WorkspaceConnectionsPage: NextPageWithLayout = (props: Props) => {
     return null;
   }
   const { workspace } = data;
-
+  console.log(workspace);
   return (
     <>
       <Page title={t("Workspace")}>
@@ -68,55 +67,54 @@ const WorkspaceConnectionsPage: NextPageWithLayout = (props: Props) => {
         </WorkspaceLayout.Header>
         <WorkspaceLayout.PageContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 xl:gap-5">
-            {FAKE_WORKSPACE.connections.map((connection) => (
-              <Card
-                key={connection.id}
-                title={
-                  <div className="flex justify-between gap-2">
-                    <>
-                      {(() => {
-                        const type = TYPES.find(
-                          (type) => type.value === connection.type.value
-                        );
-                        return (
-                          type && (
-                            <div className="flex items-center gap-x-2">
+            {workspace.connections.map((connection) => {
+              const type = TYPES.find((type) => type.value === connection.type);
+              return (
+                <Card
+                  key={connection.id}
+                  title={
+                    <div className="flex justify-between gap-2">
+                      {type ? (
+                        <>
+                          <div className="flex items-center gap-x-2">
+                            {type.iconSrc && (
                               <img
                                 src={type.iconSrc}
                                 className="h-6 w-6"
                                 alt=""
                               />
-                              {connection.name}
-                            </div>
-                          )
-                        );
-                      })()}
-                      <Badge className={connection.type.color}>
-                        {connection.type.label}
-                      </Badge>
-                    </>
-                  </div>
-                }
-                href={{
-                  pathname:
-                    "/workspaces/[workspaceSlug]/connections/[connectionId]",
-                  query: {
-                    workspaceSlug: workspace.slug,
-                    connectionId: connection.id,
-                  },
-                }}
-              >
-                <Card.Content className="line-clamp-3">
-                  {connection.shortDescription}
-                </Card.Content>
-              </Card>
-            ))}
+                            )}
+                            {connection.name}
+                          </div>
+                          <Badge className={type.color}>{type.label}</Badge>
+                        </>
+                      ) : (
+                        connection.name
+                      )}
+                    </div>
+                  }
+                  href={{
+                    pathname:
+                      "/workspaces/[workspaceSlug]/connections/[connectionId]",
+                    query: {
+                      workspaceSlug: workspace.slug,
+                      connectionId: connection.id,
+                    },
+                  }}
+                >
+                  <Card.Content className="line-clamp-3">
+                    {connection.description}
+                  </Card.Content>
+                </Card>
+              );
+            })}
           </div>
         </WorkspaceLayout.PageContent>
       </Page>
 
       <CreateConnectionDialog
         open={openModal}
+        workspace={workspace}
         onClose={() => setOpenModal(!openModal)}
       />
     </>

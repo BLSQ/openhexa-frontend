@@ -6,8 +6,8 @@ export const TableClasses = {
   thead: "bg-gray-50",
   tbody: "divide-y divide-gray-200",
   tr: "",
-  th: "px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
-  td: "px-4 py-5 text-sm text-gray-500 h-full",
+  th: "first:pl-0 last:pr-0 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider",
+  td: "first:pl-0 last:pr-0 px-4 py-5 text-sm text-gray-500 h-full",
 };
 
 export const Table = (props: HTMLAttributes<HTMLTableElement>) => (
@@ -33,6 +33,7 @@ export const TableCell = (
     width?: string;
     heading?: boolean;
     wrap?: boolean;
+
     overrideStyle?: boolean;
   }
 ) => {

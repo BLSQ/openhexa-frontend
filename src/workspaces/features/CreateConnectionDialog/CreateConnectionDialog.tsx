@@ -1,3 +1,4 @@
+import { gql } from "@apollo/client";
 import {
   Cog6ToothIcon,
   PlusCircleIcon,
@@ -8,35 +9,21 @@ import Dialog from "core/components/Dialog";
 import Checkbox from "core/components/forms/Checkbox";
 import Field from "core/components/forms/Field";
 import Link from "core/components/Link";
+import Spinner from "core/components/Spinner";
 import Title from "core/components/Title";
+import useForm from "core/hooks/useForm";
+import { WorkspaceConnectionType } from "graphql-types";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
+import { useCreateWorkspaceConnectionMutation } from "workspaces/graphql/mutations.generated";
+import { TYPES } from "workspaces/helpers/connection";
+import CreateConnectionDialog from ".";
+import { CreateConnectionDialog_WorkspaceFragment } from "./CreateConnectionDialog.generated";
 
-export const TYPES = [
-  {
-    value: "postgresql",
-    label: "PostgreSQL",
-    iconSrc: "/static/connector_postgresql/img/symbol.svg",
-  },
-  {
-    value: "aws_s3_bucket",
-    label: "Amazon S3 Bucket",
-    iconSrc: "/static/connector_s3/img/symbol.svg",
-  },
-  {
-    value: "gcs_bucket",
-    label: "Google Cloud Bucket",
-    iconSrc: "/static/connector_gcs/img/symbol.svg",
-  },
-  {
-    value: "dhis2",
-    label: "DHIS2 Instance",
-    iconSrc: "/static/connector_dhis2/img/symbol.svg",
-  },
-];
 interface CreateConnectionDialogProps {
   open: boolean;
   onClose: () => void;
+  workspace: CreateConnectionDialog_WorkspaceFragment;
 }
 
 const ConnectionTypePanel = ({
@@ -51,22 +38,24 @@ const ConnectionTypePanel = ({
         {t("You can create a connection based on our supported integrations")}
       </p>
       <div className="flex flex-wrap gap-6">
-        {TYPES.map((connectionType, index) => (
-          <button
-            key={index}
-            onClick={() => onSelect(connectionType.value)}
-            className="border-1 flex h-24 w-32 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-md border border-gray-100 p-2 text-center shadow-md hover:border-gray-200 hover:bg-gray-100"
-          >
-            {connectionType.iconSrc && (
-              <img src={connectionType.iconSrc} className="h-8 w-8" alt="" />
-            )}
-            <div className="text-sm">{connectionType.label}</div>
-          </button>
-        ))}
+        {TYPES.filter((c) => c.value !== WorkspaceConnectionType.Custom).map(
+          (connectionType, index) => (
+            <button
+              key={index}
+              onClick={() => onSelect(connectionType.value)}
+              className="border-1 flex h-24 w-32 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-md border border-gray-100 p-2 text-center shadow-md hover:border-gray-200 hover:bg-gray-100"
+            >
+              {connectionType.iconSrc && (
+                <img src={connectionType.iconSrc} className="h-8 w-8" alt="" />
+              )}
+              <div className="text-sm">{connectionType.label}</div>
+            </button>
+          )
+        )}
       </div>
       <p className="pt-4">{t("Or you can create a custom connection")}</p>
       <button
-        onClick={() => onSelect("CUSTOM")}
+        onClick={() => onSelect(WorkspaceConnectionType.Custom)}
         className="border-1 flex h-24 w-32 flex-col items-center justify-center gap-1.5 overflow-hidden rounded-md border border-gray-100 p-2 text-center shadow-md hover:border-gray-200 hover:bg-gray-100"
       >
         <Cog6ToothIcon className="h-16 w-16 text-gray-500" />
@@ -76,24 +65,46 @@ const ConnectionTypePanel = ({
   );
 };
 
+type Form = {
+  name: string;
+  description?: string;
+  slug?: string;
+  type: WorkspaceConnectionType | null;
+  fields: { secret?: boolean; name: string; value?: string }[];
+};
+
 export default function CreateCollectionDialog({
   open,
   onClose,
+  workspace,
 }: CreateConnectionDialogProps) {
   const { t } = useTranslation();
-  const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [fields, setFields] = useState<
-    { key?: string; value?: string; secret?: boolean }[]
-  >([{ key: "", value: "" }]);
+  const [createConnection] = useCreateWorkspaceConnectionMutation();
+  const form = useForm<Form>({
+    initialState: { type: null, fields: [] },
+    async onSubmit(values) {
+      console.log(values);
+      const { data } = await createConnection({
+        variables: {
+          input: {
+            name: values.name,
+            type: values.type!,
+            workspaceId: workspace.id,
+          },
+        },
+      });
+      console.log(data);
+    },
+  });
 
   const updateField = (index: number, values: any) => {
-    const newFields = [...fields];
+    const newFields = [...(form.formData.fields ?? [])];
     newFields.splice(index, 1, values);
-    setFields(newFields);
+    form.setFieldValue("fields", newFields);
   };
 
   const handleClose = () => {
-    setSelectedType(null);
+    form.resetForm();
     onClose();
   };
 
@@ -102,30 +113,32 @@ export default function CreateCollectionDialog({
       open={open}
       onClose={handleClose}
       centered={false}
-      maxWidth={selectedType ? "max-w-7xl" : "max-w-3xl"}
+      maxWidth={form.formData.type ? "max-w-7xl" : "max-w-3xl"}
     >
       <Dialog.Title>{t("Create a connection")}</Dialog.Title>
-      {selectedType ? (
+      {form.formData.type ? (
         <Dialog.Content className="flex">
           <form className="grid flex-1 grid-cols-2 gap-x-2 gap-y-4">
             <Field
-              onChange={() => {}}
+              onChange={form.handleInputChange}
               type="text"
               name="name"
+              value={form.formData.name}
               label={t("Connection name")}
               placeholder={t("My connection")}
               required
             />
             <Field
-              onChange={() => {}}
+              onChange={form.handleInputChange}
               name="slug"
+              value={form.formData.slug}
               label={t("Slug")}
-              required
               placeholder={t("MY_CONNECTION")}
             />
             <Field
-              onChange={() => {}}
+              onChange={form.handleInputChange}
               name="description"
+              value={form.formData.description}
               className="col-span-2"
               label={t("Description")}
               help={t("Short description of the connection")}
@@ -133,8 +146,8 @@ export default function CreateCollectionDialog({
             />
             <div className="col-span-2 space-y-3">
               <Title level={5}>{t("Fields")}</Title>
-              <div className="max-h-80 overflow-y-auto">
-                {fields.map((field, index) => (
+              <div className="max-h-80 space-y-2 overflow-y-auto py-px px-px">
+                {form.formData.fields!.map((field, index) => (
                   <div
                     key={index}
                     className="flex w-full items-center justify-end gap-2"
@@ -143,14 +156,13 @@ export default function CreateCollectionDialog({
                       className="flex-1"
                       onChange={(event) =>
                         updateField(index, {
-                          key: event.target.value,
+                          name: event.target.value,
                           value: field.value,
                         })
                       }
-                      value={field.key}
-                      name="key"
-                      label={t("Key")}
-                      placeholder={t("KEY_XXX")}
+                      value={field.name}
+                      name="name"
+                      label={t("Name")}
                       required
                     />
                     <Field
@@ -159,7 +171,7 @@ export default function CreateCollectionDialog({
                       onChange={(event) =>
                         updateField(index, {
                           value: event.target.value,
-                          key: field.key,
+                          name: field.name,
                         })
                       }
                       value={field.value}
@@ -184,7 +196,10 @@ export default function CreateCollectionDialog({
                       <button
                         type="button"
                         onClick={() =>
-                          setFields(fields.filter((_, i) => i !== index))
+                          form.setFieldValue(
+                            "fields",
+                            form.formData.fields!.filter((_, i) => i !== index)
+                          )
                         }
                       >
                         <XMarkIcon className="h-4 w-4" />
@@ -198,7 +213,9 @@ export default function CreateCollectionDialog({
                 variant="white"
                 size="sm"
                 type="button"
-                onClick={() => setFields([...fields, {}])}
+                onClick={() =>
+                  form.setFieldValue("fields", [...form.formData.fields!, {}])
+                }
                 leadingIcon={<PlusCircleIcon className="h-4 w-4" />}
               >
                 {t("Add a field")}
@@ -216,14 +233,32 @@ export default function CreateCollectionDialog({
           </div>
         </Dialog.Content>
       ) : (
-        <ConnectionTypePanel onSelect={setSelectedType} />
+        <ConnectionTypePanel
+          onSelect={(type) => form.setFieldValue("type", type)}
+        />
       )}
       <Dialog.Actions>
         <Button type="button" variant="white" onClick={handleClose}>
           {t("Cancel")}
         </Button>
-        {selectedType && <Button disabled>{t("Create connection")}</Button>}
+        {form.formData.type && (
+          <Button
+            onClick={(event) => form.handleSubmit(event)}
+            disabled={!form.isValid || form.isSubmitting}
+          >
+            {form.isSubmitting && <Spinner size="xs" className="mr-1" />}
+            {t("Create connection")}
+          </Button>
+        )}
       </Dialog.Actions>
     </Dialog>
   );
 }
+
+CreateCollectionDialog.fragments = {
+  workspace: gql`
+    fragment CreateConnectionDialog_workspace on Workspace {
+      slug
+    }
+  `,
+};

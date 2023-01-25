@@ -4,6 +4,9 @@ import { gql } from '@apollo/client';
 import { DeleteWorkspace_WorkspaceFragmentDoc } from '../features/DeleteWorkspaceDialog/DeleteWorkspaceDialog.generated';
 import { InviteMemberWorkspace_WorkspaceFragmentDoc } from '../features/InviteMemberDialog/InviteMemberDialog.generated';
 import { UpdateWorkspaceDescription_WorkspaceFragmentDoc } from '../features/UpdateDescriptionDialog/UpdateDescriptionDialog.generated';
+import { CreateConnectionDialog_WorkspaceFragmentDoc } from '../features/CreateConnectionDialog/CreateConnectionDialog.generated';
+import { User_UserFragmentDoc } from '../../core/features/User/User.generated';
+import { ConnectionFieldsSection_ConnectionFragmentDoc } from '../features/ConnectionFieldsSection/ConnectionFieldsSection.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type WorkspacesPageQueryVariables = Types.Exact<{
@@ -75,14 +78,15 @@ export type WorkspaceConnectionsPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspaceConnectionsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string } | null };
+export type WorkspaceConnectionsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, connections: Array<{ __typename?: 'Connection', id: string, description?: string | null, name: string, type: Types.ConnectionType, slug: string, permissions: { __typename?: 'ConnectionPermissions', update: boolean, delete: boolean } }> } | null };
 
 export type WorkspaceConnectionPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String'];
+  connectionId: Types.Scalars['UUID'];
 }>;
 
 
-export type WorkspaceConnectionPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string } | null };
+export type WorkspaceConnectionPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string } | null, connection?: { __typename?: 'Connection', id: string, name: string, description?: string | null, type: Types.ConnectionType, createdAt: any, user: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } }, permissions: { __typename?: 'ConnectionPermissions', update: boolean, delete: boolean }, fields: Array<{ __typename?: 'ConnectionField', code: string, value?: string | null, secret: boolean, updatedAt?: any | null }> } | null };
 
 
 export const WorkspacesPageDocument = gql`
@@ -438,9 +442,21 @@ export const WorkspaceConnectionsPageDocument = gql`
   workspace(slug: $workspaceSlug) {
     slug
     name
+    ...CreateConnectionDialog_workspace
+    connections {
+      id
+      description
+      name
+      type
+      slug
+      permissions {
+        update
+        delete
+      }
+    }
   }
 }
-    `;
+    ${CreateConnectionDialog_WorkspaceFragmentDoc}`;
 
 /**
  * __useWorkspaceConnectionsPageQuery__
@@ -470,13 +486,29 @@ export type WorkspaceConnectionsPageQueryHookResult = ReturnType<typeof useWorks
 export type WorkspaceConnectionsPageLazyQueryHookResult = ReturnType<typeof useWorkspaceConnectionsPageLazyQuery>;
 export type WorkspaceConnectionsPageQueryResult = Apollo.QueryResult<WorkspaceConnectionsPageQuery, WorkspaceConnectionsPageQueryVariables>;
 export const WorkspaceConnectionPageDocument = gql`
-    query WorkspaceConnectionPage($workspaceSlug: String!) {
+    query WorkspaceConnectionPage($workspaceSlug: String!, $connectionId: UUID!) {
   workspace(slug: $workspaceSlug) {
     slug
     name
   }
+  connection(id: $connectionId) {
+    id
+    name
+    description
+    type
+    createdAt
+    user {
+      ...User_user
+    }
+    permissions {
+      update
+      delete
+    }
+    ...ConnectionFieldsSection_connection
+  }
 }
-    `;
+    ${User_UserFragmentDoc}
+${ConnectionFieldsSection_ConnectionFragmentDoc}`;
 
 /**
  * __useWorkspaceConnectionPageQuery__
@@ -491,6 +523,7 @@ export const WorkspaceConnectionPageDocument = gql`
  * const { data, loading, error } = useWorkspaceConnectionPageQuery({
  *   variables: {
  *      workspaceSlug: // value for 'workspaceSlug'
+ *      connectionId: // value for 'connectionId'
  *   },
  * });
  */
