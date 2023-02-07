@@ -422,7 +422,7 @@ type CollectionElement {
   model: String!
   type: String!
   name: String!
-  objectId: UUID!
+  objectId: String!
   url: URL
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -577,7 +577,7 @@ input CreateCollectionElementInput {
   collectionId: UUID!
   app: String!
   model: String!
-  objectId: UUID!
+  objectId: String!
 }
 
 type CreateCollectionElementResult {
@@ -592,7 +592,7 @@ enum CreateCollectionError {
 
 input CreateCollectionInput {
   name: String!
-  authorId: UUID
+  authorId: String
   countries: [CountryInput!]
   tagIds: [String!]
   summary: String
@@ -1687,7 +1687,7 @@ input UpdateCollectionInput {
   id: UUID!
   name: String
   summary: String
-  authorId: UUID
+  authorId: String
   countries: [CountryInput!]
   tagIds: [String!]
   description: String

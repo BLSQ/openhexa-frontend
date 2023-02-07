@@ -477,7 +477,7 @@ export type CollectionElement = {
   id: Scalars['UUID'];
   model: Scalars['String'];
   name: Scalars['String'];
-  objectId: Scalars['UUID'];
+  objectId: Scalars['String'];
   type: Scalars['String'];
   updatedAt: Scalars['DateTime'];
   url?: Maybe<Scalars['URL']>;
@@ -642,7 +642,7 @@ export type CreateCollectionElementInput = {
   app: Scalars['String'];
   collectionId: Scalars['UUID'];
   model: Scalars['String'];
-  objectId: Scalars['UUID'];
+  objectId: Scalars['String'];
 };
 
 export type CreateCollectionElementResult = {
@@ -657,7 +657,7 @@ export enum CreateCollectionError {
 }
 
 export type CreateCollectionInput = {
-  authorId?: InputMaybe<Scalars['UUID']>;
+  authorId?: InputMaybe<Scalars['String']>;
   countries?: InputMaybe<Array<CountryInput>>;
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
@@ -2293,7 +2293,7 @@ export enum UpdateCollectionError {
 }
 
 export type UpdateCollectionInput = {
-  authorId?: InputMaybe<Scalars['UUID']>;
+  authorId?: InputMaybe<Scalars['String']>;
   countries?: InputMaybe<Array<CountryInput>>;
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['UUID'];
