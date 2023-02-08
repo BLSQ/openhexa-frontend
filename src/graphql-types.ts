@@ -925,6 +925,39 @@ export type Dhis2Instance = {
   url?: Maybe<Scalars['String']>;
 };
 
+export type Database = {
+  __typename?: 'Database';
+  table?: Maybe<DatabaseTable>;
+  tables: DatabaseTablePage;
+};
+
+
+export type DatabaseTableArgs = {
+  name: Scalars['String'];
+};
+
+
+export type DatabaseTablesArgs = {
+  page?: InputMaybe<Scalars['Int']>;
+  perPage?: InputMaybe<Scalars['Int']>;
+};
+
+export type DatabaseTable = {
+  __typename?: 'DatabaseTable';
+  columns: Array<TableColumn>;
+  count?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  sample: Scalars['JSON'];
+};
+
+export type DatabaseTablePage = {
+  __typename?: 'DatabaseTablePage';
+  items: Array<DatabaseTable>;
+  pageNumber: Scalars['Int'];
+  totalItems: Scalars['Int'];
+  totalPages: Scalars['Int'];
+};
+
 export type Datasource = {
   __typename?: 'Datasource';
   id: Scalars['UUID'];
@@ -1902,6 +1935,7 @@ export type Query = {
   dag?: Maybe<Dag>;
   dagRun?: Maybe<DagRun>;
   dags: DagPage;
+  databaseTable?: Maybe<DatabaseTable>;
   externalDashboard?: Maybe<ExternalDashboard>;
   externalDashboards: ExternalDashboardPage;
   lastActivities: Array<Activity>;
@@ -2022,6 +2056,11 @@ export type QueryDagRunArgs = {
 export type QueryDagsArgs = {
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryDatabaseTableArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -2238,6 +2277,12 @@ export type SetPasswordResult = {
   __typename?: 'SetPasswordResult';
   error?: Maybe<SetPasswordError>;
   success: Scalars['Boolean'];
+};
+
+export type TableColumn = {
+  __typename?: 'TableColumn';
+  name: Scalars['String'];
+  type: Scalars['String'];
 };
 
 export type Tag = {
@@ -2625,6 +2670,7 @@ export type Workspace = {
   countries: Array<Country>;
   createdAt: Scalars['DateTime'];
   createdBy: User;
+  database: Database;
   description?: Maybe<Scalars['String']>;
   members: WorkspaceMembershipPage;
   name: Scalars['String'];
