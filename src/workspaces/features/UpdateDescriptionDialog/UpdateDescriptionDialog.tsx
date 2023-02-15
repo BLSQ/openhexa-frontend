@@ -9,6 +9,7 @@ import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generat
 import { gql } from "@apollo/client";
 import { UpdateWorkspaceError } from "graphql-types";
 import { UpdateWorkspaceDescription_WorkspaceFragment } from "./UpdateDescriptionDialog.generated";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type UpdateDescriptionDialogProps = {
   onClose(): void;
@@ -24,6 +25,7 @@ const UpdateDescriptionDialog = (props: UpdateDescriptionDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
   const [mutate] = useUpdateWorkspaceMutation();
+  const clearCache = useCacheKey(["workspace", workspace.slug]);
 
   const form = useForm<Form>({
     onSubmit: async (values) => {
@@ -45,6 +47,7 @@ const UpdateDescriptionDialog = (props: UpdateDescriptionDialogProps) => {
       ) {
         throw new Error("You are not authorized to perform this action");
       }
+      clearCache();
       onClose();
     },
     validate: (values) => {
