@@ -3,7 +3,7 @@ import Button from "core/components/Button";
 import DataGrid from "core/components/DataGrid";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import Dialog from "core/components/Dialog";
-import { TableColumn, TableValue } from "graphql-types";
+import { TableColumn } from "graphql-types";
 import { useTranslation } from "next-i18next";
 import { WorkspaceDatabaseTableDataQuery } from "./DataPreviewDialog.generated";
 
@@ -32,10 +32,7 @@ const DataPreviewDialog = ({
                 name
                 type
               }
-              sample {
-                column
-                value
-              }
+              sample
             }
           }
         }
@@ -62,7 +59,7 @@ const DataPreviewDialog = ({
         <div>
           <p className="text-gray-600">
             {t(
-              "The following table gives you a preview of data available on {{name}}",
+              "The following table gives you a preview of data available in {{name}}",
               { name: tableName }
             )}
           </p>
@@ -72,15 +69,13 @@ const DataPreviewDialog = ({
             className="mt-4"
             defaultPageSize={5}
           >
-            {table.columns.map((c: TableColumn, index) => (
+            {table.columns.map((c, index) => (
               <TextColumn
                 key={index}
                 className="py-3 font-medium"
                 name={c.name}
                 label={c.name}
-                accessor={(row: [TableValue]) =>
-                  row.filter((r) => r.column === c.name)[0].value
-                }
+                accessor={(row) => row[c.name]}
                 defaultValue="-"
               />
             ))}

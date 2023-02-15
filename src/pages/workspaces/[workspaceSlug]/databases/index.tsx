@@ -62,7 +62,7 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
         <DataGrid
           className="overflow-hidden rounded-md bg-white shadow"
           data={tables.items}
-          defaultPageSize={5}
+          defaultPageSize={15}
           sortable
           totalItems={tables.totalItems}
           fixedLayout={false}
@@ -94,10 +94,15 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
             className="py-3"
             accessor="count"
             id="content"
-            label="# Rows"
+            label={t("# Rows")}
           >
             {(value) => (
-              <span>{`~ ${value} row${value > 0 ? `'s` : ``} `}</span>
+              <span>
+                {t("Approx. {{count}} row", {
+                  count: value,
+                  plural: "Approx. {{count}} rows",
+                })}
+              </span>
             )}
           </BaseColumn>
           <ChevronLinkColumn

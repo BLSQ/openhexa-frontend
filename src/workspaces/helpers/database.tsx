@@ -1,45 +1,38 @@
 type lang = "R" | "PYTHON";
 
-const trimText = (text: string): string => {
-  return text
-    .split("\n")
-    .map((l) => l.trimStart())
-    .join("\n");
-};
-
 export const getUsageSnippet = (tableName: string, lang: lang) => {
   let text = "";
   switch (lang) {
     case "PYTHON":
       text = `import os
-              import pandas as pd
-              from sqlalchemy import create_engine
-              
-              engine = create_engine(os.environ["POSTGRESQL_HEXA_EXPLORE_DEMO_URL"])
-              
-              # Create sample dataframe
-              df = pd.DataFrame({....})
-              
-              # Write data
-              df.to_sql("${tableName}", con=engine, if_exists="replace")
-              
-              # Read data
-              pd.read_sql("SELECT * FROM ${tableName}", con=engine)`;
+import pandas as pd
+from sqlalchemy import create_engine
+
+engine = create_engine(os.environ["POSTGRESQL_HEXA_EXPLORE_DEMO_URL"])
+
+# Create sample dataframe
+df = pd.DataFrame({....})
+
+# Write data
+df.to_sql("${tableName}", con=engine, if_exists="replace")
+
+# Read data
+pd.read_sql("SELECT * FROM ${tableName}", con=engine)`;
       break;
     case "R":
       text = `library(DBI)
   
-            con <- dbConnect(
-                RPostgres::Postgres(),
-                dbname = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_DATABASE"),
-                host = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_HOSTNAME"),
-                port = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PORT"),
-                user = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_USERNAME"),
-                password = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PASSWORD")
-            )
-            
-            dbWriteTable(con, "${tableName}", Data_fin, overwrite=TRUE)`;
+con <- dbConnect(
+    RPostgres::Postgres(),
+    dbname = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_DATABASE"),
+    host = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_HOSTNAME"),
+    port = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PORT"),
+    user = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_USERNAME"),
+    password = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PASSWORD")
+)
+
+dbWriteTable(con, "${tableName}", Data_fin, overwrite=TRUE)`;
       break;
   }
-  return trimText(text);
+  return text;
 };
