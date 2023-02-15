@@ -60,13 +60,15 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
           </Block.Content>
         </Block>
       </WorkspaceLayout.PageContent>
-      <UpdateDescriptionDialog
-        open={isDialogOpen}
-        workspace={workspace}
-        onClose={() => {
-          setIsDialogOpen(false);
-        }}
-      />
+      {isDialogOpen && (
+        <UpdateDescriptionDialog
+          open={isDialogOpen}
+          workspace={workspace}
+          onClose={() => {
+            setIsDialogOpen(false);
+          }}
+        />
+      )}
     </Page>
   );
 };
