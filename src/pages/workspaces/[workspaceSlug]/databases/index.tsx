@@ -78,7 +78,7 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
               <Link
                 href={{
                   pathname: "/workspaces/[workspaceSlug]/databases/[tableId]",
-                  query: { workspaceSlug: workspace.slug, tableId: value.id },
+                  query: { workspaceSlug: workspace.slug, tableId: value.name },
                 }}
               >
                 <div className="flex items-center gap-3">
