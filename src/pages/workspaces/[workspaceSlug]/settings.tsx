@@ -185,6 +185,15 @@ export const getServerSideProps = createGetServerSideProps({
         notFound: true,
       };
     }
+    const { permissions } = data.workspace;
+    if (!permissions.manageMembers) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: `/workspaces`,
+        },
+      };
+    }
 
     return {
       props: {
