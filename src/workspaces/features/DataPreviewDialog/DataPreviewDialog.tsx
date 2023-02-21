@@ -26,6 +26,7 @@ const DataPreviewDialog = ({
         $tableName: String!
       ) {
         workspace(slug: $workspaceSlug) {
+          slug
           database {
             table(name: $tableName) {
               columns {

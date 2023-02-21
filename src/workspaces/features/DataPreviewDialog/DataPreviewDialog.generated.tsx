@@ -9,12 +9,13 @@ export type WorkspaceDatabaseTableDataQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspaceDatabaseTableDataQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', database: { __typename?: 'Database', table?: { __typename?: 'DatabaseTable', sample: any, columns: Array<{ __typename?: 'TableColumn', name: string, type: string }> } | null } } | null };
+export type WorkspaceDatabaseTableDataQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, database: { __typename?: 'Database', table?: { __typename?: 'DatabaseTable', sample: any, columns: Array<{ __typename?: 'TableColumn', name: string, type: string }> } | null } } | null };
 
 
 export const WorkspaceDatabaseTableDataDocument = gql`
     query WorkspaceDatabaseTableData($workspaceSlug: String!, $tableName: String!) {
   workspace(slug: $workspaceSlug) {
+    slug
     database {
       table(name: $tableName) {
         columns {
