@@ -36,7 +36,7 @@ const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
     },
   });
 
-  if (!data?.workspace || !data?.workspace.database) {
+  if (!data?.workspace) {
     return null;
   }
   const { workspace } = data;
@@ -127,7 +127,7 @@ const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
           <DataPreviewDialog
             open={openModal}
             onClose={() => setOpenModal(!openModal)}
-            workspaceId={workspace.slug}
+            workspaceSlug={workspace.slug}
             tableName={table.name}
           />
         </Block>
@@ -151,7 +151,7 @@ export const getServerSideProps = createGetServerSideProps({
       },
     });
 
-    if (!data.workspace || !data.workspace.database.table) {
+    if (!data.workspace?.database.table) {
       return {
         notFound: true,
       };

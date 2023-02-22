@@ -9,12 +9,12 @@ import { WorkspaceDatabaseTableDataQuery } from "./DataPreviewDialog.generated";
 
 const DataPreviewDialog = ({
   open,
-  workspaceId,
+  workspaceSlug,
   tableName,
   onClose,
 }: {
   open: boolean;
-  workspaceId: string;
+  workspaceSlug: string;
   tableName: string;
   onClose: () => void;
 }) => {
@@ -39,17 +39,14 @@ const DataPreviewDialog = ({
         }
       }
     `,
-    { variables: { workspaceSlug: workspaceId, tableName: tableName } }
+    { variables: { workspaceSlug: workspaceSlug, tableName: tableName } }
   );
 
-  if (!data?.workspace) {
+  if (!data?.workspace?.database.table) {
     return null;
   }
   const { workspace } = data;
   const { table } = workspace.database;
-  if (!table) {
-    return null;
-  }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="max-w-6xl" centered={false}>
@@ -65,12 +62,12 @@ const DataPreviewDialog = ({
             )}
           </p>
           <DataGrid
-            data={table.sample}
+            data={table?.sample}
             fixedLayout={false}
             className="mt-4"
             defaultPageSize={5}
           >
-            {table.columns.map((c, index) => (
+            {table?.columns.map((c, index) => (
               <TextColumn
                 key={index}
                 className="py-3 font-medium"

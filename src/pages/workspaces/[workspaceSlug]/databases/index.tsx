@@ -22,7 +22,7 @@ type Props = {
 const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { perPage, page } = props;
+
   const workspaceSlug = router.query.workspaceSlug as string;
   const { data, refetch } = useWorkspaceDatabasesPageQuery({
     variables: { workspaceSlug: workspaceSlug },
@@ -31,6 +31,7 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
   const onChangePage = ({ page }: { page: number }) => {
     refetch({
       workspaceSlug: workspaceSlug,
+      page,
     });
   };
 

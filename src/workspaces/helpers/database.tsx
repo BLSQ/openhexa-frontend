@@ -8,7 +8,7 @@ export const getUsageSnippet = (tableName: string, lang: lang) => {
 import pandas as pd
 from sqlalchemy import create_engine
 
-engine = create_engine(os.environ["POSTGRESQL_HEXA_EXPLORE_DEMO_URL"])
+engine = create_engine(os.environ["WORKSPACE_DB_URL"])
 
 # Create sample dataframe
 df = pd.DataFrame({....})
@@ -24,11 +24,14 @@ pd.read_sql("SELECT * FROM ${tableName}", con=engine)`;
   
 con <- dbConnect(
     RPostgres::Postgres(),
-    dbname = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_DATABASE"),
-    host = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_HOSTNAME"),
-    port = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PORT"),
-    user = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_USERNAME"),
-    password = Sys.getenv("POSTGRESQL_HEXA_EXPLORE_DEMO_PASSWORD")
+    dbname = Sys.getenv("WORKSPACE_DATABASE_NAME"),
+    host = Sys.getenv("WORKSPACE_DATABASE_HOST"),
+    port = Sys.getenv("WORKSPACE_DATABASE_PORT"),
+    user = Sys.getenv("WORKSPACE_DATABASE_USERNAME"),
+    password = Sys.getenv("WORKSPACE_DATABASE_PASSWORD")
+=
+=
+=
 )
 
 dbWriteTable(con, "${tableName}", Data_fin, overwrite=TRUE)`;
