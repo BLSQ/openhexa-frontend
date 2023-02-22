@@ -180,18 +180,9 @@ export const getServerSideProps = createGetServerSideProps({
       },
     });
 
-    if (!data.workspace) {
+    if (!data.workspace || !data.workspace.permissions.manageMembers) {
       return {
         notFound: true,
-      };
-    }
-    const { permissions } = data.workspace;
-    if (!permissions.manageMembers) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: `/workspaces`,
-        },
       };
     }
 
