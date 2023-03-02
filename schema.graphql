@@ -1063,6 +1063,21 @@ type GenerateChallengeResult {
   errors: [GenerateChallengeError!]
 }
 
+enum GenerateDatabaseNewPasswordError {
+  PERMISSION_DENIED
+  NOT_FOUND
+}
+
+input GenerateDatabaseNewPasswordInput {
+  workspaceSlug: String!
+}
+
+type GenerateDatabaseNewPasswordResult {
+  success: Boolean!
+  errors: [GenerateDatabaseNewPasswordError!]!
+  workspace: Workspace
+}
+
 input InviteWorkspaceMemberInput {
   workspaceSlug: String!
   userEmail: String!
@@ -1264,6 +1279,7 @@ type Mutation {
   createConnection(input: CreateConnectionInput!): CreateConnectionResult!
   updateConnection(input: UpdateConnectionInput!): UpdateConnectionResult!
   deleteConnection(input: DeleteConnectionInput!): DeleteConnectionResult!
+  generateDatabaseNewPassword(input: GenerateDatabaseNewPasswordInput!): GenerateDatabaseNewPasswordResult!
 }
 
 type NotebookServer {

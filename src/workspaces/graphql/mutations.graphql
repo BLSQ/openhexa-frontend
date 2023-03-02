@@ -90,7 +90,6 @@ mutation updateConnection($input: UpdateConnectionInput!) {
   }
 }
 
-
 mutation launchNotebookServer($input: LaunchNotebookServerInput!) {
   launchNotebookServer(input: $input) {
     success
@@ -98,5 +97,14 @@ mutation launchNotebookServer($input: LaunchNotebookServerInput!) {
       name
       url
     }
+  }
+}
+
+mutation generateDatabaseNewPassword(
+  $input: GenerateDatabaseNewPasswordInput!
+) {
+  generateDatabaseNewPassword(input: $input) {
+    success
+    errors
   }
 }
