@@ -48,7 +48,7 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
 
   return (
     <Page title={t("Workspace")}>
-      <WorkspaceLayout.Header className="flex justify-between">
+      <WorkspaceLayout.Header className="flex items-center justify-between">
         <Breadcrumbs withHome={false}>
           <Breadcrumbs.Part
             isFirst
