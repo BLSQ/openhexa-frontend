@@ -3,10 +3,10 @@ import Dialog from "core/components/Dialog";
 import Spinner from "core/components/Spinner";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useGenerateDatabaseNewPasswordMutation } from "workspaces/graphql/mutations.generated";
+import { useGenerateNewDatabasePasswordMutation } from "workspaces/graphql/mutations.generated";
 import { gql } from "@apollo/client";
 import { GenerateWorkspaceDatabasePasswordFragment } from "./GenerateDatabasePasswordDialog.generated";
-import { GenerateDatabaseNewPasswordError } from "graphql-types";
+import { GenerateNewDatabasePasswordError } from "graphql-types";
 
 type GenerateDatabasePasswordDialogProps = {
   onClose(): void;
@@ -20,7 +20,7 @@ const GenerateWorkspaceDatabasePasswordDialog = (
   const { open, onClose, workspace } = props;
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [generateNewPassword] = useGenerateDatabaseNewPasswordMutation();
+  const [generateNewPassword] = useGenerateNewDatabasePasswordMutation();
   const onSubmit = async () => {
     setIsSubmitting(true);
     const { data } = await generateNewPassword({
@@ -31,17 +31,17 @@ const GenerateWorkspaceDatabasePasswordDialog = (
       },
     });
 
-    if (!data?.generateDatabaseNewPassword) {
+    if (!data?.generateNewDatabasePassword) {
       throw new Error("Unknown error.");
     }
 
-    if (data.generateDatabaseNewPassword.success) {
+    if (data.generateNewDatabasePassword.success) {
       setIsSubmitting(false);
       onClose();
     }
     if (
-      data.generateDatabaseNewPassword.errors.includes(
-        GenerateDatabaseNewPasswordError.PermissionDenied
+      data.generateNewDatabasePassword.errors.includes(
+        GenerateNewDatabasePasswordError.PermissionDenied
       )
     ) {
       throw new Error("You are not authorized to perform this action");

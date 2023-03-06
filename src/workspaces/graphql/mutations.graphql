@@ -100,10 +100,10 @@ mutation launchNotebookServer($input: LaunchNotebookServerInput!) {
   }
 }
 
-mutation generateDatabaseNewPassword(
-  $input: GenerateDatabaseNewPasswordInput!
+mutation generateNewDatabasePassword(
+  $input: GenerateNewDatabasePasswordInput!
 ) {
-  generateDatabaseNewPassword(input: $input) {
+  generateNewDatabasePassword(input: $input) {
     success
     errors
   }

@@ -66,12 +66,12 @@ export type LaunchNotebookServerMutationVariables = Types.Exact<{
 
 export type LaunchNotebookServerMutation = { __typename?: 'Mutation', launchNotebookServer: { __typename?: 'LaunchNotebookServerResult', success: boolean, server?: { __typename?: 'NotebookServer', name: string, url: string } | null } };
 
-export type GenerateDatabaseNewPasswordMutationVariables = Types.Exact<{
-  input: Types.GenerateDatabaseNewPasswordInput;
+export type GenerateNewDatabasePasswordMutationVariables = Types.Exact<{
+  input: Types.GenerateNewDatabasePasswordInput;
 }>;
 
 
-export type GenerateDatabaseNewPasswordMutation = { __typename?: 'Mutation', generateDatabaseNewPassword: { __typename?: 'GenerateDatabaseNewPasswordResult', success: boolean, errors: Array<Types.GenerateDatabaseNewPasswordError> } };
+export type GenerateNewDatabasePasswordMutation = { __typename?: 'Mutation', generateNewDatabasePassword: { __typename?: 'GenerateNewDatabasePasswordResult', success: boolean, errors: Array<Types.GenerateNewDatabasePasswordError> } };
 
 
 export const CreateWorkspaceDocument = gql`
@@ -420,37 +420,37 @@ export function useLaunchNotebookServerMutation(baseOptions?: Apollo.MutationHoo
 export type LaunchNotebookServerMutationHookResult = ReturnType<typeof useLaunchNotebookServerMutation>;
 export type LaunchNotebookServerMutationResult = Apollo.MutationResult<LaunchNotebookServerMutation>;
 export type LaunchNotebookServerMutationOptions = Apollo.BaseMutationOptions<LaunchNotebookServerMutation, LaunchNotebookServerMutationVariables>;
-export const GenerateDatabaseNewPasswordDocument = gql`
-    mutation generateDatabaseNewPassword($input: GenerateDatabaseNewPasswordInput!) {
-  generateDatabaseNewPassword(input: $input) {
+export const GenerateNewDatabasePasswordDocument = gql`
+    mutation generateNewDatabasePassword($input: GenerateNewDatabasePasswordInput!) {
+  generateNewDatabasePassword(input: $input) {
     success
     errors
   }
 }
     `;
-export type GenerateDatabaseNewPasswordMutationFn = Apollo.MutationFunction<GenerateDatabaseNewPasswordMutation, GenerateDatabaseNewPasswordMutationVariables>;
+export type GenerateNewDatabasePasswordMutationFn = Apollo.MutationFunction<GenerateNewDatabasePasswordMutation, GenerateNewDatabasePasswordMutationVariables>;
 
 /**
- * __useGenerateDatabaseNewPasswordMutation__
+ * __useGenerateNewDatabasePasswordMutation__
  *
- * To run a mutation, you first call `useGenerateDatabaseNewPasswordMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useGenerateDatabaseNewPasswordMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useGenerateNewDatabasePasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGenerateNewDatabasePasswordMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [generateDatabaseNewPasswordMutation, { data, loading, error }] = useGenerateDatabaseNewPasswordMutation({
+ * const [generateNewDatabasePasswordMutation, { data, loading, error }] = useGenerateNewDatabasePasswordMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useGenerateDatabaseNewPasswordMutation(baseOptions?: Apollo.MutationHookOptions<GenerateDatabaseNewPasswordMutation, GenerateDatabaseNewPasswordMutationVariables>) {
+export function useGenerateNewDatabasePasswordMutation(baseOptions?: Apollo.MutationHookOptions<GenerateNewDatabasePasswordMutation, GenerateNewDatabasePasswordMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<GenerateDatabaseNewPasswordMutation, GenerateDatabaseNewPasswordMutationVariables>(GenerateDatabaseNewPasswordDocument, options);
+        return Apollo.useMutation<GenerateNewDatabasePasswordMutation, GenerateNewDatabasePasswordMutationVariables>(GenerateNewDatabasePasswordDocument, options);
       }
-export type GenerateDatabaseNewPasswordMutationHookResult = ReturnType<typeof useGenerateDatabaseNewPasswordMutation>;
-export type GenerateDatabaseNewPasswordMutationResult = Apollo.MutationResult<GenerateDatabaseNewPasswordMutation>;
-export type GenerateDatabaseNewPasswordMutationOptions = Apollo.BaseMutationOptions<GenerateDatabaseNewPasswordMutation, GenerateDatabaseNewPasswordMutationVariables>;
+export type GenerateNewDatabasePasswordMutationHookResult = ReturnType<typeof useGenerateNewDatabasePasswordMutation>;
+export type GenerateNewDatabasePasswordMutationResult = Apollo.MutationResult<GenerateNewDatabasePasswordMutation>;
+export type GenerateNewDatabasePasswordMutationOptions = Apollo.BaseMutationOptions<GenerateNewDatabasePasswordMutation, GenerateNewDatabasePasswordMutationVariables>;
