@@ -5,13 +5,13 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useGenerateNewDatabasePasswordMutation } from "workspaces/graphql/mutations.generated";
 import { gql } from "@apollo/client";
-import { GenerateWorkspaceDatabasePasswordFragment } from "./GenerateDatabasePasswordDialog.generated";
+import { GenerateWorkspaceDatabasePasswordDialog_WorkspaceFragment } from "./GenerateDatabasePasswordDialog.generated";
 import { GenerateNewDatabasePasswordError } from "graphql-types";
 
 type GenerateDatabasePasswordDialogProps = {
   onClose(): void;
   open: boolean;
-  workspace: GenerateWorkspaceDatabasePasswordFragment;
+  workspace: GenerateWorkspaceDatabasePasswordDialog_WorkspaceFragment;
 };
 
 const GenerateWorkspaceDatabasePasswordDialog = (
@@ -73,7 +73,7 @@ const GenerateWorkspaceDatabasePasswordDialog = (
 
 GenerateWorkspaceDatabasePasswordDialog.fragments = {
   workspace: gql`
-    fragment GenerateWorkspaceDatabasePassword on Workspace {
+    fragment GenerateWorkspaceDatabasePasswordDialog_workspace on Workspace {
       slug
     }
   `,
