@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DataPreviewDialog displays table data 1`] = `<div />`;
-
 exports[`DataPreviewDialog is displayed when open is true 1`] = `<div />`;
 
 exports[`DataPreviewDialog is not displayed  1`] = `<div />`;

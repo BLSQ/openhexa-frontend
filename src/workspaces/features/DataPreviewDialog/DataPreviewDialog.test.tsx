@@ -1,7 +1,7 @@
 import DataPreviewDialog from "./DataPreviewDialog";
 import { render, screen } from "@testing-library/react";
 import { faker } from "@faker-js/faker";
-import { TestApp } from "core/helpers/testutils";
+import { TestApp, waitForDialog } from "core/helpers/testutils";
 import { WorkspaceDatabaseTableDataDocument } from "./DataPreviewDialog.generated";
 
 const WORKSPACE = {
@@ -43,6 +43,28 @@ describe("DataPreviewDialog", () => {
   });
 
   it("displays table data", async () => {
+    const sample = [
+      {
+        id: "f9d1fcfc-6846-4823-8e5a-39b96b9c0a91",
+        region: "REG1",
+        count: 10,
+      },
+      {
+        id: "3f654d6f-b95a-4796-93df-1756a1065f5b",
+        region: "REG2",
+        count: 13,
+      },
+      {
+        id: "701a61ae-23c9-4edd-9920-31aba81a0785",
+        region: "REG3",
+        count: 0,
+      },
+      {
+        id: "3ccbf1bf-7cc0-4cb9-9d31-16b1b3afb1dc",
+        region: "REG4",
+        count: 34,
+      },
+    ];
     const graphqlMocks = [
       {
         request: {
@@ -55,8 +77,8 @@ describe("DataPreviewDialog", () => {
         result: {
           data: {
             workspace: {
+              slug: WORKSPACE.slug,
               database: {
-                slug: WORKSPACE.slug,
                 table: {
                   columns: [
                     {
@@ -72,28 +94,7 @@ describe("DataPreviewDialog", () => {
                       type: "integer",
                     },
                   ],
-                  sample: [
-                    {
-                      id: "f9d1fcfc-6846-4823-8e5a-39b96b9c0a91",
-                      region: "REG1",
-                      count: 10,
-                    },
-                    {
-                      id: "3f654d6f-b95a-4796-93df-1756a1065f5b",
-                      region: "REG2",
-                      count: 13,
-                    },
-                    {
-                      id: "701a61ae-23c9-4edd-9920-31aba81a0785",
-                      region: "REG3",
-                      count: 0,
-                    },
-                    {
-                      id: "3ccbf1bf-7cc0-4cb9-9d31-16b1b3afb1dc",
-                      region: "REG4",
-                      count: 34,
-                    },
-                  ],
+                  sample,
                 },
               },
             },
@@ -102,7 +103,7 @@ describe("DataPreviewDialog", () => {
       },
     ];
 
-    const { container } = render(
+    render(
       <TestApp mocks={graphqlMocks}>
         <DataPreviewDialog
           workspaceSlug={WORKSPACE.slug}
@@ -112,6 +113,9 @@ describe("DataPreviewDialog", () => {
         />
       </TestApp>
     );
-    expect(container).toMatchSnapshot();
+    await waitForDialog();
+    sample.forEach((s) => {
+      expect(screen.queryByText(s.id)).not.toBeNull();
+    });
   });
 });
