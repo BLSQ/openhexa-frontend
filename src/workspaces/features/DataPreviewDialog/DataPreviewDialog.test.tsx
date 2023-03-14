@@ -29,8 +29,45 @@ describe("DataPreviewDialog", () => {
   });
 
   it("is displayed when open is true", async () => {
+    const graphqlMocks = [
+      {
+        request: {
+          query: WorkspaceDatabaseTableDataDocument,
+          variables: {
+            workspaceSlug: WORKSPACE.slug,
+            tableName: "test",
+          },
+        },
+        result: {
+          data: {
+            workspace: {
+              slug: WORKSPACE.slug,
+              database: {
+                table: {
+                  columns: [
+                    {
+                      name: "id",
+                      type: "uuid",
+                    },
+                    {
+                      name: "region",
+                      type: "character varying",
+                    },
+                    {
+                      name: "count",
+                      type: "integer",
+                    },
+                  ],
+                  sample: [],
+                },
+              },
+            },
+          },
+        },
+      },
+    ];
     const { container } = render(
-      <TestApp mocks={[]}>
+      <TestApp mocks={graphqlMocks}>
         <DataPreviewDialog
           workspaceSlug={WORKSPACE.slug}
           open={true}
@@ -39,6 +76,7 @@ describe("DataPreviewDialog", () => {
         />
       </TestApp>
     );
+    await waitForDialog();
     expect(container).toMatchSnapshot();
   });
 
@@ -103,7 +141,7 @@ describe("DataPreviewDialog", () => {
       },
     ];
 
-    render(
+    const { container } = render(
       <TestApp mocks={graphqlMocks}>
         <DataPreviewDialog
           workspaceSlug={WORKSPACE.slug}
@@ -111,11 +149,19 @@ describe("DataPreviewDialog", () => {
           tableName="test_table"
           onClose={onClose}
         />
-      </TestApp>
+      </TestApp>,
+      { container: document.body }
     );
     await waitForDialog();
+
+    const elm = await screen.getByText(/Sample data for/i, {
+      selector: "h3",
+    });
+
+    expect(elm).toHaveTextContent("Sample data for {{name}}");
     sample.forEach((s) => {
       expect(screen.queryByText(s.id)).not.toBeNull();
     });
+    expect(container).toMatchSnapshot();
   });
 });
