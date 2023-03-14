@@ -29,9 +29,6 @@ con <- dbConnect(
     port = Sys.getenv("WORKSPACE_DATABASE_PORT"),
     user = Sys.getenv("WORKSPACE_DATABASE_USERNAME"),
     password = Sys.getenv("WORKSPACE_DATABASE_PASSWORD")
-=
-=
-=
 )
 
 dbWriteTable(con, "${tableName}", Data_fin, overwrite=TRUE)`;

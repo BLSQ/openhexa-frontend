@@ -1,20 +1,22 @@
 import { TableCellsIcon } from "@heroicons/react/24/outline";
+import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import Button from "core/components/Button";
+import CodeEditor from "core/components/CodeEditor";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
 import Link from "core/components/Link";
 import Page from "core/components/Page";
+import Tabs from "core/components/Tabs";
+import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import GenerateWorkspaceDatabasePasswordDialog from "workspaces/features/GenerateDatabasePasswordDialog";
 import {
   useWorkspaceDatabasesPageQuery,
   WorkspaceDatabasesPageDocument,
 } from "workspaces/graphql/queries.generated";
+import { getUsageSnippet } from "workspaces/helpers/database";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
@@ -26,8 +28,6 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
   const router = useRouter();
 
   const { t } = useTranslation();
-  const [isDialog, setIsDialogOpen] = useState(false);
-
   const { data, refetch } = useWorkspaceDatabasesPageQuery({
     variables: { workspaceSlug: props.workspaceSlug, page: props.page },
   });
@@ -65,13 +65,9 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
               {t("Database")}
             </Breadcrumbs.Part>
           </Breadcrumbs>
-          {workspace.permissions.update && (
-            <Button onClick={() => setIsDialogOpen(true)}>
-              {t("Regenerate password")}
-            </Button>
-          )}
         </WorkspaceLayout.Header>
         <WorkspaceLayout.PageContent className="space-y-8">
+          <Title level={2}>{t("Tables")}</Title>
           <DataGrid
             className="overflow-hidden rounded-md bg-white shadow"
             data={tables.items}
@@ -132,11 +128,26 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
               })}
             />
           </DataGrid>
-          <GenerateWorkspaceDatabasePasswordDialog
-            open={isDialog}
-            onClose={() => setIsDialogOpen(false)}
-            workspace={workspace}
-          />
+          <Block>
+            <Block.Section collapsible={false} title={t("Usage")}>
+              <Tabs defaultIndex={0}>
+                <Tabs.Tab label={t("Create tables")}>
+                  <CodeEditor
+                    readonly
+                    lang="python"
+                    value={getUsageSnippet("table", "PYTHON")}
+                  />
+                </Tabs.Tab>
+                <Tabs.Tab label={t("Use in BI tools")}>
+                  <CodeEditor
+                    readonly
+                    lang="r"
+                    value={getUsageSnippet("table", "R")}
+                  />
+                </Tabs.Tab>
+              </Tabs>
+            </Block.Section>
+          </Block>
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
     </Page>
