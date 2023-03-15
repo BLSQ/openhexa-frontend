@@ -16,7 +16,10 @@ import {
   useWorkspaceDatabasesPageQuery,
   WorkspaceDatabasesPageDocument,
 } from "workspaces/graphql/queries.generated";
-import { getUsageSnippet } from "workspaces/helpers/database";
+import {
+  getReadTableSnippet,
+  getUsageSnippet,
+} from "workspaces/helpers/database";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
@@ -131,11 +134,18 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
           <Block>
             <Block.Section collapsible={false} title={t("Usage")}>
               <Tabs defaultIndex={0}>
-                <Tabs.Tab label={t("Create tables")}>
+                <Tabs.Tab label={t("Create table")}>
                   <CodeEditor
                     readonly
                     lang="python"
                     value={getUsageSnippet("table", "PYTHON")}
+                  />
+                </Tabs.Tab>
+                <Tabs.Tab label={t("Read table")}>
+                  <CodeEditor
+                    readonly
+                    lang="python"
+                    value={getReadTableSnippet("table")}
                   />
                 </Tabs.Tab>
                 <Tabs.Tab label={t("Use in BI tools")}>
