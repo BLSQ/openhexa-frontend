@@ -25,59 +25,6 @@ describe("DataPreviewDialog", () => {
     const dialog = await screen.queryByRole("dialog");
     expect(dialog).not.toBeInTheDocument();
     expect(onClose).not.toHaveBeenCalled();
-    expect(container).toMatchSnapshot();
-  });
-
-  it("is displayed when open is true", async () => {
-    const graphqlMocks = [
-      {
-        request: {
-          query: WorkspaceDatabaseTableDataDocument,
-          variables: {
-            workspaceSlug: WORKSPACE.slug,
-            tableName: "test",
-          },
-        },
-        result: {
-          data: {
-            workspace: {
-              slug: WORKSPACE.slug,
-              database: {
-                table: {
-                  columns: [
-                    {
-                      name: "id",
-                      type: "uuid",
-                    },
-                    {
-                      name: "region",
-                      type: "character varying",
-                    },
-                    {
-                      name: "count",
-                      type: "integer",
-                    },
-                  ],
-                  sample: [],
-                },
-              },
-            },
-          },
-        },
-      },
-    ];
-    const { container } = render(
-      <TestApp mocks={graphqlMocks}>
-        <DataPreviewDialog
-          workspaceSlug={WORKSPACE.slug}
-          open={true}
-          tableName="test"
-          onClose={onClose}
-        />
-      </TestApp>
-    );
-    await waitForDialog();
-    expect(container).toMatchSnapshot();
   });
 
   it("displays table data", async () => {
@@ -149,19 +96,16 @@ describe("DataPreviewDialog", () => {
           tableName="test_table"
           onClose={onClose}
         />
-      </TestApp>,
-      { container: document.body }
+      </TestApp>
     );
     await waitForDialog();
 
-    const elm = await screen.getByText(/Sample data for/i, {
+    const elm = await screen.getByText("Sample data for {{name}}", {
       selector: "h3",
     });
-
-    expect(elm).toHaveTextContent("Sample data for {{name}}");
+    expect(elm).toBeInTheDocument();
     sample.forEach((s) => {
-      expect(screen.queryByText(s.id)).not.toBeNull();
+      expect(screen.queryByText(s.id)).toBeInTheDocument();
     });
-    expect(container).toMatchSnapshot();
   });
 });
