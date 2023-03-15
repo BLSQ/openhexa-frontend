@@ -149,8 +149,7 @@ describe("DataPreviewDialog", () => {
           tableName="test_table"
           onClose={onClose}
         />
-      </TestApp>,
-      { container: document.body }
+      </TestApp>
     );
     await waitForDialog();
 
