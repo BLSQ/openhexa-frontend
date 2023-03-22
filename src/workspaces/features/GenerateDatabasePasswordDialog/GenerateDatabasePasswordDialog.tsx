@@ -56,7 +56,7 @@ const GenerateWorkspaceDatabasePasswordDialog = (
       <Dialog.Content className="space-y-4">
         <p>
           {t(
-            "You're about to generate a new password for the workspace database. This action cannot be undone."
+            "You're about to generate a new password for the workspace database. This action cannot be undone and make sure to:"
           )}
         </p>
         <ul className="list list-inside list-disc">
