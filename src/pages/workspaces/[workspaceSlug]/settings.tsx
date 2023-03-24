@@ -19,12 +19,12 @@ import TextProperty from "core/components/DataCard/TextProperty";
 import { OnSaveFn } from "core/components/DataCard/FormSection";
 import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 import { useState } from "react";
-import DeleteWorkspaceDialog from "workspaces/features/DeleteWorkspaceDialog";
 import InviteMemberDialog from "workspaces/features/InviteMemberDialog";
 import WorkspaceMembers from "workspaces/features/WorkspaceMembers";
 import CountryProperty from "core/components/DataCard/CountryProperty";
 import { ensureArray } from "core/helpers/array";
 import GenerateWorkspaceDatabasePasswordDialog from "workspaces/features/GenerateDatabasePasswordDialog";
+import ArchiveWorkspaceDialog from "workspaces/features/ArchiveWorkspaceDialog";
 
 type Props = {
   page: number;
@@ -86,7 +86,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
               onClick={() => setIsDeleteDialogOpen(true)}
               leadingIcon={<TrashIcon className="w-4" />}
             >
-              {t("Delete")}
+              {t("Archive")}
             </Button>
           )}
         </WorkspaceLayout.Header>
@@ -159,7 +159,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
               </Tabs.Tab>
             </Tabs>
           </div>
-          <DeleteWorkspaceDialog
+          <ArchiveWorkspaceDialog
             workspace={workspace}
             open={isDeleteDialogOpen}
             onClose={() => {
