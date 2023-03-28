@@ -39,7 +39,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
   });
 
   const [mutate] = useUpdateWorkspaceMutation();
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
   const [isNewMemberDialogOpen, setIsNewMemberDialogOpen] = useState(false);
   const [isGeneratePwdDialogOpen, setIsGeneratePwdDialogOpen] = useState(false);
 
@@ -83,7 +83,7 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
             <Button
               size="sm"
               className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
-              onClick={() => setIsDeleteDialogOpen(true)}
+              onClick={() => setIsArchiveDialogOpen(true)}
               leadingIcon={<TrashIcon className="w-4" />}
             >
               {t("Archive")}
@@ -161,9 +161,9 @@ const WorkspaceSettingsPage: NextPageWithLayout = (props: Props) => {
           </div>
           <ArchiveWorkspaceDialog
             workspace={workspace}
-            open={isDeleteDialogOpen}
+            open={isArchiveDialogOpen}
             onClose={() => {
-              setIsDeleteDialogOpen(false);
+              setIsArchiveDialogOpen(false);
             }}
           />
           <InviteMemberDialog
