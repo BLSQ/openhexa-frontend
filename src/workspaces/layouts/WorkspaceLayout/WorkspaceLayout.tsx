@@ -20,7 +20,7 @@ export const LayoutContext = createContext({
 
 const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
   const { children, className, workspace } = props;
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(true);
   return (
     <LayoutContext.Provider value={{ isOpen, setOpen }}>
       <div
