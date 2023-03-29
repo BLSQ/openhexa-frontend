@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import clsx from "clsx";
 import { CustomApolloClient } from "core/helpers/apollo";
-import type { ReactElement } from "react";
+import { createContext, ReactElement, useState } from "react";
 import Header from "./Header";
 import PageContent from "./PageContent";
 import Sidebar from "./Sidebar";
@@ -13,14 +13,35 @@ type WorkspaceLayoutProps = {
   workspace: WorkspaceLayout_WorkspaceFragment;
 };
 
+export const LayoutContext = createContext({
+  isOpen: false,
+  setOpen: (isOpen: boolean) => {},
+});
+
 const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
   const { children, className, workspace } = props;
-
+  const [isOpen, setOpen] = useState(false);
   return (
-    <>
-      <Sidebar workspace={workspace} />
-      <main className={clsx("flex flex-col pl-64", className)}>{children}</main>
-    </>
+    <LayoutContext.Provider value={{ isOpen, setOpen }}>
+      <div
+        className={clsx(
+          "fixed inset-y-0 flex w-64 -translate-x-full flex-col transition-all",
+          isOpen ? "translate-x-0" : ""
+        )}
+      >
+        <Sidebar workspace={workspace} />
+      </div>
+
+      <main
+        className={clsx(
+          "flex flex-col transition-all",
+          className,
+          isOpen ? "pl-64" : "pl-0"
+        )}
+      >
+        {children}
+      </main>
+    </LayoutContext.Provider>
   );
 };
 
