@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
 import Button from "core/components/Button";
+import { ButtonProps } from "core/components/Button/Button";
 import Spinner from "core/components/Spinner";
 import { ReactElement, ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,7 +23,7 @@ type DownloadBucketObjectProps = {
     onClick(): void;
   }): ReactElement;
   object: DownloadBucketObject_ObjectFragment;
-};
+} & ButtonProps;
 
 const DownloadBucketObject = (props: DownloadBucketObjectProps) => {
   const { workspace, object, children, ...delegated } = props;
