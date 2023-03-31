@@ -51,6 +51,20 @@ export function createGetServerSideProps(options: CreateGetServerSideProps) {
         },
       };
     }
+    if (ctx.me?.user) {
+      // check if user has access to legacy openhexa (version without workspaces)
+      if (
+        !ctx.me?.features.filter((f) => f.code === "openhexa_legacy")[0] &&
+        !ctx.resolvedUrl.startsWith("/workspaces")
+      ) {
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/workspaces",
+          },
+        };
+      }
+    }
     result.props = {
       ...result.props,
       me: ctx.me,
