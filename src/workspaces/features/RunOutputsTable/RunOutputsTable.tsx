@@ -86,36 +86,9 @@ const RunOutputsTable = (props: RunOutputsTableProps) => {
     >
       <BaseColumn label={t("Name")}>
         {(output) => (
-          <div className="flex h-full items-center gap-1.5">
+          <div className="flex h-full items-center gap-1.5 text-gray-600">
             {renderOutputIcon(output.type)}
-            {output.type === "file" && (
-              <Link
-                customStyle="text-gray-600 hover:text-gray-800"
-                href={{
-                  pathname: "/workspaces/[workspaceSlug]/files/[path]",
-                  query: {
-                    workspaceSlug: workspace.slug,
-                    path: getDirectory(
-                      output.uri.split(`gs://${workspace.bucket.name}/`)[1]
-                    ),
-                  },
-                }}
-              >
-                {output.name}
-              </Link>
-            )}
-            {output.type === "db" && (
-              <Link
-                customStyle="text-gray-600 hover:text-gray-800"
-                href={{
-                  pathname: "/workspaces/[workspaceSlug]/databases/[table]",
-                  query: { workspaceSlug: workspace.slug, table: output.name },
-                }}
-              >
-                {output.name}
-              </Link>
-            )}
-            {output.type !== "db" && output.type !== "file" && output.name}
+            {output.name}
           </div>
         )}
       </BaseColumn>

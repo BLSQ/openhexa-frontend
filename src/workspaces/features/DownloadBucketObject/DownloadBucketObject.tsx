@@ -21,9 +21,9 @@ type DownloadBucketObjectProps = {
   }: {
     isPreparing: boolean;
     onClick(): void;
-  }): ReactElement;
+  }): ReactElement | null;
   object: DownloadBucketObject_ObjectFragment;
-} & ButtonProps;
+} & Omit<ButtonProps, "children">;
 
 const DownloadBucketObject = (props: DownloadBucketObjectProps) => {
   const { workspace, object, children, ...delegated } = props;
@@ -41,7 +41,7 @@ const DownloadBucketObject = (props: DownloadBucketObjectProps) => {
   };
 
   if (children) {
-    return children({ onClick, isPreparing });
+    return children({ onClick, isPreparing }) || null;
   }
 
   return (
