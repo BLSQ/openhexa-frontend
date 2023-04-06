@@ -52,9 +52,20 @@ export function createGetServerSideProps(options: CreateGetServerSideProps) {
       };
     }
     if (ctx.me?.user) {
-      // check if user has access to legacy openhexa (version without workspaces)
+      const { features } = ctx.me;
+
       if (
-        !ctx.me?.features.filter((f) => f.code === "openhexa_legacy")[0] &&
+        !features.some(
+          (f) => f.code === "openhexa_legacy" || f.code === "workspaces"
+        )
+      ) {
+        throw new Error(
+          "There is a configuration error with this account. Please contact your administrator."
+        );
+      }
+
+      if (
+        !features.some((f) => f.code === "openhexa_legacy") &&
         !ctx.resolvedUrl.startsWith("/workspaces")
       ) {
         return {
