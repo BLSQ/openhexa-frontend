@@ -705,7 +705,8 @@ type CreateMembershipResult {
 }
 
 input CreatePipelineInput {
-  name: String!
+  code: String!
+  name: String
   workspaceSlug: String!
 }
 
@@ -1150,6 +1151,21 @@ type GenerateNewDatabasePasswordResult {
   workspace: Workspace
 }
 
+enum GenerateWorkspaceTokenError {
+  WORKSPACE_NOT_FOUND
+  PERMISSION_DENIED
+}
+
+input GenerateWorkspaceTokenInput {
+  slug: String!
+}
+
+type GenerateWorkspaceTokenResult {
+  success: Boolean!
+  token: String
+  errors: [GenerateWorkspaceTokenError!]!
+}
+
 input InviteWorkspaceMemberInput {
   workspaceSlug: String!
   userEmail: String!
@@ -1349,6 +1365,7 @@ type Mutation {
   inviteWorkspaceMember(input: InviteWorkspaceMemberInput!): InviteWorkspaceMemberResult!
   updateWorkspaceMember(input: UpdateWorkspaceMemberInput!): UpdateWorkspaceMemberResult!
   deleteWorkspaceMember(input: DeleteWorkspaceMemberInput!): DeleteWorkspaceMemberResult!
+  generateWorkspaceToken(input: GenerateWorkspaceTokenInput!): GenerateWorkspaceTokenResult!
   createConnection(input: CreateConnectionInput!): CreateConnectionResult!
   updateConnection(input: UpdateConnectionInput!): UpdateConnectionResult!
   deleteConnection(input: DeleteConnectionInput!): DeleteConnectionResult!
@@ -1389,7 +1406,8 @@ enum PermissionMode {
 
 type Pipeline {
   id: UUID!
-  name: String!
+  name: String
+  code: String!
   permissions: PipelinePermissions!
   workspace: Workspace
   config: JSON!
@@ -1479,7 +1497,8 @@ type PipelinesPage {
 }
 
 input PipelineTokenInput {
-  name: String!
+  workspaceSlug: String!
+  pipelineCode: String!
 }
 
 type PipelineTokenResult {
@@ -1606,9 +1625,9 @@ type Query {
   totalNotebooks: Int!
   lastActivities: [Activity!]!
   pipelines(workspaceSlug: String, page: Int, perPage: Int): PipelinesPage!
-  pipeline(id: UUID, name: String): Pipeline
+  pipeline(id: UUID): Pipeline
+  pipelineByCode(workspaceSlug: String!, code: String!): Pipeline
   pipelineRun(id: String!): PipelineRun
-  pipelineRunCode(id: UUID): String
   workspace(slug: String!): Workspace
   workspaces(page: Int, perPage: Int): WorkspacePage!
   databaseTable(id: String!): DatabaseTable
@@ -2071,7 +2090,8 @@ type UpdateWorkspaceResult {
 }
 
 input UploadPipelineInput {
-  name: String!
+  workspaceSlug: String!
+  code: String!
   entrypoint: String!
   parameters: JSON!
   zipfile: String!

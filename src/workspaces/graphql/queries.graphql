@@ -37,6 +37,7 @@ query WorkspacePipelinesPage(
     slug
     name
     ...WorkspaceLayout_workspace
+    ...CreatePipelineDialog_workspace
   }
 
   pipelines(workspaceSlug: $workspaceSlug, page: $page, perPage: $perPage) {
@@ -61,7 +62,7 @@ query WorkspaceNotebooksPage($workspaceSlug: String!) {
 
 query WorkspacePipelinePage(
   $workspaceSlug: String!
-  $pipelineId: UUID!
+  $pipelineCode: String!
   $page: Int = 1
   $perPage: Int = 10
 ) {
@@ -71,7 +72,7 @@ query WorkspacePipelinePage(
     ...WorkspaceLayout_workspace
   }
 
-  pipeline(id: $pipelineId) {
+  pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
     ...PipelineVersionsDialog_pipeline
     ...RunPipelineDialog_pipeline
     permissions {
@@ -79,6 +80,7 @@ query WorkspacePipelinePage(
       update
     }
     id
+    code
     name
     description
     schedule
@@ -115,6 +117,7 @@ query WorkspacePipelineStartPage($workspaceSlug: String!) {
     ...WorkspaceLayout_workspace
   }
 }
+
 query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: String!) {
   workspace(slug: $workspaceSlug) {
     slug
@@ -136,6 +139,7 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: String!) {
     triggerMode
     pipeline {
       id
+      code
       name
       ...RunPipelineDialog_pipeline
     }
