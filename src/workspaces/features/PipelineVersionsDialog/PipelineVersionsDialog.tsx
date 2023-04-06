@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import Button from "core/components/Button";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
@@ -13,6 +13,7 @@ import {
   PipelineVersionsDialogQueryVariables,
   PipelineVersionsDialog_PipelineFragment,
 } from "./PipelineVersionsDialog.generated";
+import { useEffect } from "react";
 
 type PipelineVersionsDialogProps = {
   open: boolean;
@@ -23,7 +24,7 @@ type PipelineVersionsDialogProps = {
 const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
   const { open, onClose, pipeline } = props;
   const { t } = useTranslation();
-  const { data, loading } = useQuery<
+  const [refetch, { data, loading }] = useLazyQuery<
     PipelineVersionsDialogQuery,
     PipelineVersionsDialogQueryVariables
   >(
@@ -47,9 +48,17 @@ const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
       ${User.fragments.user}
     `,
     {
-      variables: { pipelineId: pipeline.id },
+      variables: {
+        pipelineId: pipeline.id,
+      },
     }
   );
+
+  useEffect(() => {
+    if (open) {
+      refetch({ variables: { pipelineId: pipeline.id } });
+    }
+  }, [open, pipeline.id, refetch]);
   return (
     <Dialog open={open} onClose={onClose} maxWidth="max-w-3xl">
       <Dialog.Title>{t("Pipeline versions")}</Dialog.Title>
@@ -102,6 +111,9 @@ PipelineVersionsDialog.fragments = {
   pipeline: gql`
     fragment PipelineVersionsDialog_pipeline on Pipeline {
       id
+      workspace {
+        slug
+      }
     }
   `,
 };

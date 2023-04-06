@@ -99,15 +99,15 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
             <Breadcrumbs.Part
               href={`/workspaces/${encodeURIComponent(
                 workspace.slug
-              )}/pipelines/${encodeURIComponent(run.pipeline.id)}`}
+              )}/pipelines/${encodeURIComponent(run.pipeline.code)}`}
             >
               {run.pipeline.name}
             </Breadcrumbs.Part>
             <Breadcrumbs.Part
               isLast
               href={{
-                pathname: "/pipelines/[pipelineId]/runs/[runId]",
-                query: { pipelineId: run.pipeline.id, runId: run.id },
+                pathname: "/pipelines/[pipelineCode]/runs/[runId]",
+                query: { pipelineCode: run.pipeline.code, runId: run.id },
               }}
             >
               <Time datetime={run.executionDate} />
@@ -173,7 +173,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                   <Link
                     href={`/workspaces/${encodeURIComponent(
                       workspace.slug
-                    )}/pipelines/${encodeURIComponent(run.pipeline.id)}`}
+                    )}/pipelines/${encodeURIComponent(run.pipeline.code)}`}
                   >
                     {run.pipeline.name}
                   </Link>
