@@ -111,7 +111,7 @@ const ConnectionFieldsSection = (props: ConnectionFieldsSectionProps) => {
         <TextColumn className="py-3" label={t("Name")} accessor={"code"} />
         <TextColumn
           className="flex text-gray-900"
-          label={t("Key")}
+          label={t("Environment variable")}
           accessor={(value) => slugify(connection.slug, value.code)}
         />
         <BaseColumn
