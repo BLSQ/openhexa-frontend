@@ -109,11 +109,13 @@ const ConnectionFieldsSection = (props: ConnectionFieldsSectionProps) => {
         defaultPageSize={5}
       >
         <TextColumn className="py-3" label={t("Name")} accessor={"code"} />
-        <TextColumn
-          className="flex text-gray-900"
-          label={t("Environment variable")}
-          accessor={(value) => slugify(connection.slug, value.code)}
-        />
+        <BaseColumn label={t("Environment variable")} accessor={"code"}>
+          {(value) => (
+            <code className="rounded-md bg-slate-100 p-1.5 font-mono text-xs font-medium text-gray-600">
+              {slugify(connection.slug, value)}
+            </code>
+          )}
+        </BaseColumn>
         <BaseColumn
           className="flex justify-start gap-x-2 text-gray-900"
           label={t("Value")}
