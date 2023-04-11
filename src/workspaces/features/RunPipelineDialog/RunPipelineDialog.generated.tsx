@@ -2,7 +2,7 @@ import * as Types from '../../../graphql-types';
 
 import { gql } from '@apollo/client';
 import { PipelineVersionPicker_PipelineFragmentDoc } from '../PipelineVersionPicker/PipelineVersionPicker.generated';
-export type RunPipelineDialog_PipelineFragment = { __typename?: 'Pipeline', id: string, permissions: { __typename?: 'PipelinePermissions', run: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: any, user?: { __typename?: 'User', displayName: string } | null } | null, versions: { __typename?: 'PipelineVersionPage', items: Array<{ __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: any, user?: { __typename?: 'User', displayName: string } | null }> } };
+export type RunPipelineDialog_PipelineFragment = { __typename?: 'Pipeline', id: string, permissions: { __typename?: 'PipelinePermissions', run: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: any, user?: { __typename?: 'User', displayName: string } | null } | null };
 
 export type RunPipelineDialog_VersionFragment = { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: any, user?: { __typename?: 'User', displayName: string } | null };
 

@@ -50,9 +50,8 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
     getInitialState() {
       return {
         version:
-          (("version" in props && props.version) ||
-            ("run" in props && props.run.version) ||
-            pipeline.currentVersion) ??
+          ("version" in props && props.version) ||
+          ("run" in props && props.run.version) ||
           null,
         ...("run" in props ? props.run.config : {}),
       };
@@ -108,7 +107,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
               onChange={(value) => form.setFieldValue("version", value)}
             />
           </Field>
-          {parameters.length === 0 && (
+          {form.formData.version && parameters.length === 0 && (
             <p>{t("This pipeline has no parameter")}</p>
           )}
           <div

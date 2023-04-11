@@ -14,7 +14,13 @@ export type SelectProps<O extends SelectOption> = {
   multiple?: boolean;
 } & Pick<
   ComboboxProps<O>,
-  "placeholder" | "disabled" | "name" | "required" | "className" | "by"
+  | "placeholder"
+  | "disabled"
+  | "name"
+  | "required"
+  | "className"
+  | "by"
+  | "loading"
 >;
 
 const DEFAULT_FILTER_OPTIONS = (options: SelectOption[], query: string) => {
@@ -40,6 +46,7 @@ function Select<O extends SelectOption = { [key: string]: any }>(
     filterOptions = DEFAULT_FILTER_OPTIONS,
     getOptionLabel,
     required,
+    loading,
   } = props;
   const [query, setQuery] = useState<string | null>(null);
 
@@ -66,6 +73,7 @@ function Select<O extends SelectOption = { [key: string]: any }>(
       onChange={onChange}
       displayValue={displayValue}
       by={by}
+      loading={loading}
       withPortal
     >
       {filteredOptions.map((option, i) => (

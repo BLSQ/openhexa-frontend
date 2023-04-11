@@ -63,12 +63,21 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
           on Github.
         </p>
         <p>
-          Configure the workspace in your terminal using the following command:
+          Configure the workspace in your terminal using the following commands:
         </p>
 
-        <pre className=" bg-slate-100 p-2 font-mono text-sm">
-          <span className="select-none">$ </span>openhexa workspaces add{" "}
-          <b>{workspace.slug}</b>
+        <pre className=" bg-slate-100 p-2 font-mono text-sm leading-6">
+          <div>
+            <span className="select-none text-gray-400">$ </span>pip install
+            openhexa.cli{" "}
+            <span className="select-none text-gray-400">
+              # if not installed
+            </span>
+          </div>
+          <div>
+            <span className="select-none text-gray-400">$ </span>openhexa
+            workspaces add <b>{workspace.slug}</b>
+          </div>
         </pre>
         <Field name="token" label={t("Access Token")} required>
           <div className="flex w-full flex-1 items-center gap-1">
