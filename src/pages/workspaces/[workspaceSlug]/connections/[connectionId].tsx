@@ -14,6 +14,7 @@ import { NextPageWithLayout } from "core/helpers/types";
 import useCacheKey from "core/hooks/useCacheKey";
 import { useTranslation } from "next-i18next";
 import ConnectionFieldsSection from "workspaces/features/ConnectionFieldsSection";
+import ConnectionKeysSection from "workspaces/features/ConnectionKeysSection";
 import ConnectionUsageSnippets from "workspaces/features/ConnectionUsageSnippets";
 import DeleteConnectionTrigger from "workspaces/features/DeleteConnectionTrigger";
 import { useUpdateConnectionMutation } from "workspaces/graphql/mutations.generated";
@@ -145,6 +146,7 @@ const WorkspaceConnectionPage: NextPageWithLayout = ({
                 />
               </DataCard.FormSection>
               <ConnectionFieldsSection connection={connection} />
+              <ConnectionKeysSection connection={connection} />
             </div>
             <DataCard.Section title={t("Usage example")}>
               <ConnectionUsageSnippets connection={connection} />
