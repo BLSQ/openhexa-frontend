@@ -67,7 +67,7 @@ DHIS2_PASSWORD = os.getenv("${slugify(connection.slug, "password")}")
 import pandas as pd
 from sqlalchemy import create_engine
 
-engine = create_engine(os.environ["TEST_URL"])
+engine = create_engine(os.environ["${slugify(connection.slug, "url")}"])
 
 # Create sample dataframe
 df = pd.DataFrame({"name": ["Jane", "John", "Tyler"], "age": [19, 17, 22]})
