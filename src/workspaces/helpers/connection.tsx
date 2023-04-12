@@ -284,7 +284,7 @@ function PostgreSQLForm(props: { form: FormInstance<ConnectionForm> }) {
         onChange={(event) => updateField(event.target.name, event.target.value)}
         value={username.value}
         name="username"
-        label={t("User")}
+        label={t("Username")}
         required
       />
 
