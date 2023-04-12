@@ -38,7 +38,7 @@ const updateFormField = (
 };
 
 export const slugify = (...keys: string[]) =>
-  keys.join("_").replace("-", "_").toUpperCase();
+  keys.join("_").replaceAll("-", "_").toUpperCase();
 
 export function getUsageSnippets(
   connection: Pick<Connection, "slug" | "type"> & {
