@@ -118,7 +118,7 @@ query WorkspacePipelineStartPage($workspaceSlug: String!) {
   }
 }
 
-query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: String!) {
+query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
   workspace(slug: $workspaceSlug) {
     slug
     name
@@ -130,8 +130,16 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: String!) {
     id
     version {
       number
-      entrypoint
-      parameters
+      parameters {
+        code
+        name
+        help
+        type
+        default
+        required
+        choices
+        multiple
+      }
     }
     config
     executionDate

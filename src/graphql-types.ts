@@ -13,6 +13,7 @@ export type Scalars = {
   AccessmodFilesetMetadata: any;
   Date: any;
   DateTime: any;
+  Generic: any;
   JSON: any;
   MovingSpeeds: any;
   SimplifiedExtentType: any;
@@ -1891,6 +1892,17 @@ export type OrganizationInput = {
   url?: InputMaybe<Scalars['String']>;
 };
 
+export type ParameterInput = {
+  choices?: InputMaybe<Array<Scalars['Generic']>>;
+  code: Scalars['String'];
+  default?: InputMaybe<Scalars['Generic']>;
+  help?: InputMaybe<Scalars['String']>;
+  multiple?: InputMaybe<Scalars['Boolean']>;
+  name?: InputMaybe<Scalars['String']>;
+  required?: InputMaybe<Scalars['Boolean']>;
+  type: Scalars['String'];
+};
+
 export enum PermissionMode {
   Editor = 'EDITOR',
   Owner = 'OWNER',
@@ -1935,6 +1947,18 @@ export enum PipelineError {
   PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND',
   WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
 }
+
+export type PipelineParameter = {
+  __typename?: 'PipelineParameter';
+  choices?: Maybe<Array<Scalars['Generic']>>;
+  code: Scalars['String'];
+  default?: Maybe<Scalars['Generic']>;
+  help?: Maybe<Scalars['String']>;
+  multiple: Scalars['Boolean'];
+  name: Scalars['String'];
+  required: Scalars['Boolean'];
+  type: Scalars['String'];
+};
 
 export type PipelinePermissions = {
   __typename?: 'PipelinePermissions';
@@ -2016,10 +2040,9 @@ export type PipelineTokenResult = {
 export type PipelineVersion = {
   __typename?: 'PipelineVersion';
   createdAt: Scalars['DateTime'];
-  entrypoint: Scalars['String'];
   id: Scalars['UUID'];
   number: Scalars['Int'];
-  parameters: Scalars['JSON'];
+  parameters: Array<PipelineParameter>;
   pipeline: Pipeline;
   user?: Maybe<User>;
   zipfile: Scalars['String'];
@@ -2279,7 +2302,7 @@ export type QueryExternalDashboardsArgs = {
 
 
 export type QueryPipelineArgs = {
-  id?: InputMaybe<Scalars['UUID']>;
+  id: Scalars['UUID'];
 };
 
 
@@ -2290,7 +2313,7 @@ export type QueryPipelineByCodeArgs = {
 
 
 export type QueryPipelineRunArgs = {
-  id: Scalars['String'];
+  id: Scalars['UUID'];
 };
 
 
@@ -2821,8 +2844,7 @@ export type UpdateWorkspaceResult = {
 
 export type UploadPipelineInput = {
   code: Scalars['String'];
-  entrypoint: Scalars['String'];
-  parameters: Scalars['JSON'];
+  parameters: Array<ParameterInput>;
   workspaceSlug: Scalars['String'];
   zipfile: Scalars['String'];
 };

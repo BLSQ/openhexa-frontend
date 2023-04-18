@@ -72,7 +72,6 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
     return null;
   }
   const { workspace, pipelineRun: run } = data;
-
   const isFinished = [
     PipelineRunStatus.Failed,
     PipelineRunStatus.Success,
@@ -205,7 +204,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                 displayMode={DescriptionListDisplayMode.LABEL_ABOVE}
               >
                 {config.map((entry) => (
-                  <DescriptionList.Item key={entry.name} label={entry.help}>
+                  <DescriptionList.Item key={entry.name} label={entry.name}>
                     {(entry.type === "str" && entry.value) ?? "-"}
                     {entry.type === "bool" && (
                       <Switch checked={entry.value} disabled />

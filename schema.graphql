@@ -1166,6 +1166,8 @@ type GenerateWorkspaceTokenResult {
   errors: [GenerateWorkspaceTokenError!]!
 }
 
+scalar Generic
+
 input InviteWorkspaceMemberInput {
   workspaceSlug: String!
   userEmail: String!
@@ -1398,6 +1400,17 @@ input OrganizationInput {
   contactInfo: String
 }
 
+input ParameterInput {
+  code: String!
+  type: String!
+  name: String
+  multiple: Boolean
+  required: Boolean
+  default: Generic
+  help: String
+  choices: [Generic!]
+}
+
 enum PermissionMode {
   OWNER
   EDITOR
@@ -1427,6 +1440,17 @@ enum PipelineError {
   PIPELINE_ALREADY_EXISTS
   INVALID_CONFIG
   PIPELINE_ALREADY_COMPLETED
+}
+
+type PipelineParameter {
+  code: String!
+  name: String!
+  type: String!
+  multiple: Boolean!
+  required: Boolean!
+  default: Generic
+  help: String
+  choices: [Generic!]
 }
 
 type PipelinePermissions {
@@ -1513,8 +1537,7 @@ type PipelineVersion {
   pipeline: Pipeline!
   number: Int!
   createdAt: DateTime!
-  entrypoint: String!
-  parameters: JSON!
+  parameters: [PipelineParameter!]!
   zipfile: String!
 }
 
@@ -1625,9 +1648,9 @@ type Query {
   totalNotebooks: Int!
   lastActivities: [Activity!]!
   pipelines(workspaceSlug: String, page: Int, perPage: Int): PipelinesPage!
-  pipeline(id: UUID): Pipeline
+  pipeline(id: UUID!): Pipeline
   pipelineByCode(workspaceSlug: String!, code: String!): Pipeline
-  pipelineRun(id: String!): PipelineRun
+  pipelineRun(id: UUID!): PipelineRun
   workspace(slug: String!): Workspace
   workspaces(page: Int, perPage: Int): WorkspacePage!
   databaseTable(id: String!): DatabaseTable
@@ -2092,8 +2115,7 @@ type UpdateWorkspaceResult {
 input UploadPipelineInput {
   workspaceSlug: String!
   code: String!
-  entrypoint: String!
-  parameters: JSON!
+  parameters: [ParameterInput!]!
   zipfile: String!
 }
 

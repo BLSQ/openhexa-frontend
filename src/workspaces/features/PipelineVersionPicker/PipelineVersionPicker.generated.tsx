@@ -8,11 +8,11 @@ export type PipelineVersionPickerQueryVariables = Types.Exact<{
 }>;
 
 
-export type PipelineVersionPickerQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', versions: { __typename?: 'PipelineVersionPage', items: Array<{ __typename?: 'PipelineVersion', id: string, number: number, parameters: any, createdAt: any, user?: { __typename?: 'User', displayName: string } | null }> } } | null };
+export type PipelineVersionPickerQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', versions: { __typename?: 'PipelineVersionPage', items: Array<{ __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null }> } } | null };
 
 export type PipelineVersionPicker_PipelineFragment = { __typename?: 'Pipeline', id: string };
 
-export type PipelineVersionPicker_VersionFragment = { __typename?: 'PipelineVersion', id: string, number: number, parameters: any, createdAt: any, user?: { __typename?: 'User', displayName: string } | null };
+export type PipelineVersionPicker_VersionFragment = { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null };
 
 export const PipelineVersionPicker_PipelineFragmentDoc = gql`
     fragment PipelineVersionPicker_pipeline on Pipeline {
@@ -23,8 +23,17 @@ export const PipelineVersionPicker_VersionFragmentDoc = gql`
     fragment PipelineVersionPicker_version on PipelineVersion {
   id
   number
-  parameters
   createdAt
+  parameters {
+    code
+    name
+    help
+    type
+    default
+    required
+    choices
+    multiple
+  }
   user {
     displayName
   }

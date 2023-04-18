@@ -9,7 +9,7 @@ export type PipelineVersionsDialogQueryVariables = Types.Exact<{
 }>;
 
 
-export type PipelineVersionsDialogQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', id: string, versions: { __typename?: 'PipelineVersionPage', totalItems: number, items: Array<{ __typename?: 'PipelineVersion', id: string, number: number, entrypoint: string, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> } } | null };
+export type PipelineVersionsDialogQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', id: string, versions: { __typename?: 'PipelineVersionPage', totalItems: number, items: Array<{ __typename?: 'PipelineVersion', id: string, number: number, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> } } | null };
 
 export type PipelineVersionsDialog_PipelineFragment = { __typename?: 'Pipeline', id: string, workspace?: { __typename?: 'Workspace', slug: string } | null };
 
@@ -33,7 +33,6 @@ export const PipelineVersionsDialogDocument = gql`
         user {
           ...User_user
         }
-        entrypoint
       }
     }
   }

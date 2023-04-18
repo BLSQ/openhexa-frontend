@@ -112,8 +112,17 @@ PipelineVersionPicker.fragments = {
     fragment PipelineVersionPicker_version on PipelineVersion {
       id
       number
-      parameters
       createdAt
+      parameters {
+        code
+        name
+        help
+        type
+        default
+        required
+        choices
+        multiple
+      }
       user {
         displayName
       }

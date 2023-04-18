@@ -69,7 +69,7 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
         <pre className=" bg-slate-100 p-2 font-mono text-sm leading-6">
           <div>
             <span className="select-none text-gray-400">$ </span>pip install
-            openhexa.cli{" "}
+            openhexa.sdk{" "}
             <span className="select-none text-gray-400">
               # if not installed
             </span>

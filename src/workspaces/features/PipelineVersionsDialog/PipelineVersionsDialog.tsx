@@ -40,7 +40,6 @@ const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
               user {
                 ...User_user
               }
-              entrypoint
             }
           }
         }
@@ -81,11 +80,6 @@ const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
               label={t("Version")}
             />
             <UserColumn accessor="user" id="user" label={t("User")} />
-            <TextColumn
-              id="entrypoint"
-              accessor={"entrypoint"}
-              label={t("Entrypoint")}
-            />
             <BaseColumn id="default" label={t("Default")}>
               {(item) => <CheckIcon className="h-4 w-4" />}
             </BaseColumn>
