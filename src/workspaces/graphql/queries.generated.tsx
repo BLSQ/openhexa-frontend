@@ -329,7 +329,7 @@ export const WorkspacePipelinePageDocument = gql`
       id
       number
     }
-    runs(page: $page, perPage: $perPage) {
+    runs(page: $page, perPage: $perPage, orderBy: EXECUTION_DATE_DESC) {
       items {
         id
         version {
