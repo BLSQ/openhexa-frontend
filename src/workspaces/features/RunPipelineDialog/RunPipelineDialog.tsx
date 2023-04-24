@@ -87,10 +87,15 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       form.setFieldValue("version", version);
       if (version) {
         version.parameters.map((param) => {
-          form.setFieldValue(param.code, param.default);
+          if ("run" in props && props.run?.config[param.code] !== null) {
+            form.setFieldValue(param.code, props.run.config[param.code]);
+          } else {
+            form.setFieldValue(param.code, param.default);
+          }
         });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, form.formData.version]);
 
   if (!pipeline.permissions.run && open) {
