@@ -36,7 +36,7 @@ type RunPipelineDialogProps = {
 const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const router = useRouter();
   const { open, onClose, pipeline } = props;
-  const clearCache = useCacheKey(["pipelines", pipeline.id]);
+  const clearCache = useCacheKey(["pipelines", pipeline.code]);
 
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
