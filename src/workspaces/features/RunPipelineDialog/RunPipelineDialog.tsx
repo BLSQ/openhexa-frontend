@@ -183,6 +183,7 @@ RunPipelineDialog.fragments = {
       permissions {
         run
       }
+      code
       currentVersion {
         id
         number

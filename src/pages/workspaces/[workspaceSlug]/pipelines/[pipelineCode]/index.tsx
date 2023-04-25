@@ -56,7 +56,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     },
   });
 
-  useCacheKey("pipelines", () => refetch());
+  useCacheKey(["pipelines", pipelineCode], () => refetch());
 
   if (!data?.workspace || !data?.pipeline) {
     return null;
