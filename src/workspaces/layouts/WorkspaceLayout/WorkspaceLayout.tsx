@@ -7,47 +7,74 @@ import Header from "./Header";
 import PageContent from "./PageContent";
 import Sidebar from "./Sidebar";
 import { WorkspaceLayout_WorkspaceFragment } from "./WorkspaceLayout.generated";
-
+import { getCookie, setCookie } from "cookies-next";
+import { GetServerSidePropsContext } from "next";
 type WorkspaceLayoutProps = {
   children: ReactElement | ReactElement[];
   className?: string;
   workspace: WorkspaceLayout_WorkspaceFragment;
+  forceCompactSidebar?: boolean;
 };
 
 export const LayoutContext = createContext({
-  isOpen: false,
-  setOpen: (isOpen: boolean) => {},
+  isSidebarOpen: false,
+  setSidebarOpen: (open: boolean) => {},
 });
 
+export let cookieSidebarOpenState = true;
+
+function getDefaultSidebarOpen() {
+  if (typeof window === "undefined") {
+    return cookieSidebarOpenState;
+  } else {
+    return (getCookie("sidebar-open") as boolean) ?? true;
+  }
+}
+
 const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
-  const { children, className, workspace } = props;
+  const { children, className, workspace, forceCompactSidebar = false } = props;
   const [_, setLastWorkspace] = useLocalStorage("last-visited-workspace");
+  const defaultSidebarOpen = getDefaultSidebarOpen();
+
+  const [isSidebarOpen, setSidebarOpen] = useState(
+    !forceCompactSidebar && defaultSidebarOpen
+  );
 
   useEffect(() => {
     setLastWorkspace(workspace.slug);
   }, [workspace.slug, setLastWorkspace]);
 
-  const [isOpen, setOpen] = useState(false);
-  return (
-    <LayoutContext.Provider value={{ isOpen, setOpen }}>
-      <div
-        className={clsx(
-          "fixed inset-y-0 flex w-64 -translate-x-full flex-col transition-all",
-          isOpen ? "translate-x-0" : ""
-        )}
-      >
-        <Sidebar workspace={workspace} />
-      </div>
+  const onChangeSidebar = (open: boolean) => {
+    if (!forceCompactSidebar) {
+      setCookie("sidebar-open", open);
+    }
+    setSidebarOpen(open);
+  };
 
-      <main
-        className={clsx(
-          "flex flex-col transition-all",
-          className,
-          isOpen ? "pl-64" : "pl-0"
-        )}
-      >
-        {children}
-      </main>
+  return (
+    <LayoutContext.Provider
+      value={{
+        isSidebarOpen,
+        setSidebarOpen: onChangeSidebar,
+      }}
+    >
+      <div className="flex min-h-screen">
+        <div className="h-screen bg-gray-800">
+          <Sidebar
+            workspace={workspace}
+            className={clsx(
+              "sticky top-0 flex flex-col transition-all duration-75",
+              isSidebarOpen ? "w-64 2xl:w-72" : "w-16"
+            )}
+          />
+        </div>
+
+        <main
+          className={clsx("flex flex-1 flex-col transition-all", className)}
+        >
+          {children}
+        </main>
+      </div>
     </LayoutContext.Provider>
   );
 };
@@ -62,7 +89,12 @@ WorkspaceLayout.fragments = {
   `,
 };
 
-WorkspaceLayout.prefetch = async (client: CustomApolloClient) => {
+WorkspaceLayout.prefetch = async (
+  ctx: GetServerSidePropsContext,
+  client: CustomApolloClient
+) => {
+  // Load the cookie value from the request to render it correctly on the server
+  cookieSidebarOpenState = (getCookie("sidebar-open", ctx) as boolean) ?? true;
   await Sidebar.prefetch(client);
 };
 
