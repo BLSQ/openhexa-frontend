@@ -43,6 +43,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   const me = useMe();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const isAdmin = useFeature("adminPanel");
+  const [hasLegacyAccess] = useFeature("openhexa_legacy");
   const router = useRouter();
   useEffect(() => {
     if (isOpen) {
@@ -253,14 +254,16 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                 {t("Administration")}
               </Link>
             )}
-            <Link
-              href="/"
-              noStyle
-              className="group flex gap-2 px-4 py-2.5 text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-800"
-            >
-              <XCircleIcon className="h-5 w-5 text-gray-400 transition-all group-hover:text-gray-600" />
-              {t("Exit preview")}
-            </Link>
+            {hasLegacyAccess && (
+              <Link
+                href="/"
+                noStyle
+                className="group flex gap-2 px-4 py-2.5 text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-800"
+              >
+                <XCircleIcon className="h-5 w-5 text-gray-400 transition-all group-hover:text-gray-600" />
+                {t("Back to OpenHexa classic")}
+              </Link>
+            )}
             <Link
               href="/auth/logout"
               noStyle
