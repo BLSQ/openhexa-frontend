@@ -18,7 +18,7 @@ export type SelectProps<O> = {
   filterOptions?: (options: O[], query: string) => O[];
   displayValue?: (option: O) => string;
   multiple?: boolean;
-  onCreate?: (query: string) => void;
+  onAdd?: (query: string) => void;
 } & Pick<
   ComboboxProps<O>,
   | "placeholder"
@@ -41,7 +41,7 @@ function Select<O>(props: SelectProps<O>) {
     options,
     value,
     onChange,
-    onCreate,
+    onAdd,
     multiple,
     disabled,
     placeholder,
@@ -66,11 +66,11 @@ function Select<O>(props: SelectProps<O>) {
     [options, query, filterOptions]
   );
 
-  const handleCreate: MouseEventHandler<HTMLDivElement> = (event) => {
-    if (!onCreate) return;
+  const handleAdd: MouseEventHandler<HTMLDivElement> = (event) => {
+    if (!onAdd) return;
     setQuery("");
     setResetKey(Math.random().toString(36).substring(7));
-    onCreate(query);
+    onAdd(query);
   };
 
   const Picker = multiple ? MultiCombobox : Combobox;
@@ -91,12 +91,12 @@ function Select<O>(props: SelectProps<O>) {
       loading={loading}
       withPortal
     >
-      {onCreate && query.length > 0 && (
+      {onAdd && query.length > 0 && (
         <div
           className="cursor-pointer p-2 text-gray-900 hover:bg-blue-500 hover:text-white"
-          onClick={handleCreate}
+          onClick={handleAdd}
         >
-          Create &quot;{query}&quot;
+          Add &quot;{query}&quot;
         </div>
       )}
       {filteredOptions.map((option, i) => (
