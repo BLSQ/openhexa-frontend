@@ -82,6 +82,7 @@ const SearchPage = () => {
                       multiple
                       placeholder="Datasource"
                       value={form.formData.datasources}
+                      displayValue={(datasource) => datasource.label}
                       onChange={(values) =>
                         form.setFieldValue("datasources", values)
                       }
@@ -100,6 +101,7 @@ const SearchPage = () => {
                       multiple
                       value={form.formData.types ?? []}
                       onChange={(types) => form.setFieldValue("types", types)}
+                      displayValue={(option) => option.label}
                       options={
                         types?.map((t) => ({ id: t.value, label: t.label })) ??
                         []
