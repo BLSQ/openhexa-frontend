@@ -14,10 +14,12 @@ import { PageContent } from "core/layouts/default";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
 
+type Option = { id: string; label: string }[] | null;
+
 type SearchForm = {
   query: string;
-  datasources: { id: string; label: string }[] | null;
-  types: { id: string; label: string }[] | null;
+  datasources: Option;
+  types: Option;
 };
 
 const SearchPage = () => {
@@ -39,6 +41,14 @@ const SearchPage = () => {
       });
     },
   });
+
+  const filterOptions = (options: Option, query: string) => {
+    return (
+      options?.filter((opt) =>
+        opt.label.toLowerCase().includes(query.toLowerCase())
+      ) || []
+    );
+  };
 
   const { results, types, loading } = useSearch(searchOptions);
 
@@ -86,6 +96,7 @@ const SearchPage = () => {
                       onChange={(values) =>
                         form.setFieldValue("datasources", values)
                       }
+                      filterOptions={filterOptions}
                       name="datasources"
                     />
                   </Field>
@@ -102,6 +113,7 @@ const SearchPage = () => {
                       value={form.formData.types ?? []}
                       onChange={(types) => form.setFieldValue("types", types)}
                       displayValue={(option) => option.label}
+                      filterOptions={filterOptions}
                       options={
                         types?.map((t) => ({ id: t.value, label: t.label })) ??
                         []
