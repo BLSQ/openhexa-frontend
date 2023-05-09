@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import Switch from "core/components/Switch/Switch";
 import Input from "core/components/forms/Input/Input";
+import Select from "core/components/forms/Select";
 import Textarea from "core/components/forms/Textarea/Textarea";
 import { ensureArray } from "core/helpers/array";
 import { useCallback } from "react";
@@ -40,8 +41,26 @@ const ParameterField = (props: ParameterFieldProps) => {
       />
     );
   }
-
-  if (parameter.multiple || parameter.choices?.length) {
+  if (parameter.choices?.length) {
+    return (
+      <Select
+        onChange={handleChange}
+        value={value}
+        multiple={parameter.multiple}
+        options={parameter.choices ?? []}
+        getOptionLabel={(option) => option}
+        onCreate={
+          !parameter.choices
+            ? (query) =>
+                handleChange(
+                  parameter.multiple ? [...(value ?? []), query] : query
+                )
+            : undefined
+        }
+      />
+    );
+  }
+  if (parameter.multiple) {
     return (
       <Textarea
         name="value"
