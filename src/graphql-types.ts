@@ -956,8 +956,14 @@ export type Dhis2Instance = {
 
 export type Database = {
   __typename?: 'Database';
+  externalUrl: Scalars['String'];
+  host: Scalars['String'];
+  name: Scalars['String'];
+  password: Scalars['String'];
+  port: Scalars['Int'];
   table?: Maybe<DatabaseTable>;
   tables: DatabaseTablePage;
+  username: Scalars['String'];
 };
 
 

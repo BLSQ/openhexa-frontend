@@ -834,6 +834,12 @@ type DAGTemplate {
 type Database {
   tables(page: Int, perPage: Int): DatabaseTablePage!
   table(name: String!): DatabaseTable
+  name: String!
+  username: String!
+  password: String!
+  host: String!
+  port: Int!
+  externalUrl: String!
 }
 
 type DatabaseTable {
