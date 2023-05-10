@@ -5,6 +5,7 @@ import Select from "core/components/forms/Select";
 import Textarea from "core/components/forms/Textarea/Textarea";
 import { ensureArray } from "core/helpers/array";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 
 type ParameterFieldProps = {
   parameter: any;
@@ -13,6 +14,7 @@ type ParameterFieldProps = {
 };
 
 const ParameterField = (props: ParameterFieldProps) => {
+  const { t } = useTranslation();
   const { parameter, value, onChange } = props;
 
   const handleChange = useCallback(
@@ -62,15 +64,20 @@ const ParameterField = (props: ParameterFieldProps) => {
   }
   if (parameter.multiple) {
     return (
-      <Textarea
-        name="value"
-        rows={2}
-        className="w-full"
-        value={value && value.join("\n")}
-        onChange={(event) => {
-          handleChange(event.target.value.split("\n") || []);
-        }}
-      />
+      <>
+        <Textarea
+          name="value"
+          rows={4}
+          className="w-full"
+          value={value && value.join("\n")}
+          onChange={(event) => {
+            handleChange(event.target.value.split("\n") || []);
+          }}
+        />
+        <small className="ml-2 text-gray-600">
+          {t("Separate values with a new line")}
+        </small>
+      </>
     );
   }
 
