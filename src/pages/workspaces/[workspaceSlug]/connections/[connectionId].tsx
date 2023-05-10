@@ -145,7 +145,15 @@ const WorkspaceConnectionPage: NextPageWithLayout = ({
               <ConnectionFieldsSection connection={connection} />
             </div>
             <DataCard.Section title={t("Usage example")}>
-              <ConnectionUsageSnippets connection={connection} />
+              <p className="text-sm text-gray-900">
+                {t("Documentation for connections usage is available at ")}
+                <a
+                  href="https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines#using-connections"
+                  className="text-blue-600 hover:text-blue-500 focus:outline-none"
+                >
+                  https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines#using-connections
+                </a>
+              </p>
             </DataCard.Section>
           </DataCard>
         </WorkspaceLayout.PageContent>
