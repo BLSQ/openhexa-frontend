@@ -11,9 +11,7 @@ type DatabaseVariablesSectionProps = {
   workspace: DatabaseVariablesSection_WorkspaceFragment;
 };
 
-export const DatabaseVariablesSection = (
-  props: DatabaseVariablesSectionProps
-) => {
+const DatabaseVariablesSection = (props: DatabaseVariablesSectionProps) => {
   const { t } = useTranslation();
   const { database } = props.workspace;
   const credentials = useMemo(
@@ -30,7 +28,7 @@ export const DatabaseVariablesSection = (
       },
       {
         name: "password",
-        value: undefined,
+        value: database.password,
         secret: true,
       },
       {
@@ -72,7 +70,7 @@ export const DatabaseVariablesSection = (
         {(field) => (
           <>
             {field.secret && <LockClosedIcon className="h-3 w-3" />}
-            {field.secret && "*********"}
+            {field.secret && field.value && "*********"}
             {!field.secret && field.value}
           </>
         )}
@@ -88,6 +86,7 @@ DatabaseVariablesSection.fragment = {
       database {
         name
         username
+        password
         host
         port
         externalUrl

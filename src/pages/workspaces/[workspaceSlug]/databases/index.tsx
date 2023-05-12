@@ -9,7 +9,7 @@ import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
-import { DatabaseVariablesSection } from "workspaces/features/DatabaseVariablesSection/DatabaseVariablesSection";
+import DatabaseVariablesSection from "workspaces/features/DatabaseVariablesSection";
 import {
   useWorkspaceDatabasesPageQuery,
   WorkspaceDatabasesPageDocument,
