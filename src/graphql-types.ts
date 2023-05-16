@@ -1986,6 +1986,7 @@ export type PipelineParameter = {
 export type PipelinePermissions = {
   __typename?: 'PipelinePermissions';
   delete: Scalars['Boolean'];
+  deleteVersion: Scalars['Boolean'];
   run: Scalars['Boolean'];
   update: Scalars['Boolean'];
 };

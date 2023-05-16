@@ -1474,6 +1474,7 @@ type PipelinePermissions {
   update: Boolean!
   delete: Boolean!
   run: Boolean!
+  deleteVersion: Boolean!
 }
 
 type PipelineRun {

@@ -99,7 +99,8 @@ const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
                   <Button variant="white" size="sm" disabled>
                     {t("Set as default")}
                   </Button>
-                  {data.pipeline?.versions.items &&
+                  {pipeline.permissions.deleteVersion &&
+                    data.pipeline?.versions.items &&
                     data.pipeline?.versions.items.length > 1 && (
                       <Button
                         size="sm"
@@ -142,6 +143,9 @@ PipelineVersionsDialog.fragments = {
       code
       workspace {
         slug
+      }
+      permissions {
+        deleteVersion
       }
     }
   `,
