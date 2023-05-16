@@ -996,6 +996,22 @@ type DeletePipelineResult {
   errors: [PipelineError!]!
 }
 
+enum DeletePipelineVersionError {
+  PIPELINE_VERSION_NOT_FOUND
+  PERMISSION_DENIED
+  PIPELINE_NOT_FOUND
+}
+
+input DeletePipelineVersionInput {
+  pipelineId: UUID!
+  versionId: UUID!
+}
+
+type DeletePipelineVersionResult {
+  success: Boolean!
+  errors: [DeletePipelineVersionError!]!
+}
+
 enum DeleteTeamError {
   NOT_FOUND
   PERMISSION_DENIED
@@ -1360,6 +1376,7 @@ type Mutation {
   logPipelineMessage(input: LogPipelineMessageInput): LogPipelineMessageResult!
   updatePipelineProgress(input: UpdatePipelineProgressInput): UpdatePipelineProgressResult!
   addPipelineOutput(input: AddPipelineOutputInput): AddPipelineOutputResult!
+  deletePipelineVersion(input: DeletePipelineVersionInput!): DeletePipelineVersionResult!
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
   updateWorkspace(input: UpdateWorkspaceInput!): UpdateWorkspaceResult!
   deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspaceResult!

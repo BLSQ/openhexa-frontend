@@ -1,5 +1,5 @@
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
-import { CheckIcon } from "@heroicons/react/24/outline";
+import { gql, useLazyQuery } from "@apollo/client";
+import { CheckIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Button from "core/components/Button";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
@@ -13,7 +13,10 @@ import {
   PipelineVersionsDialogQueryVariables,
   PipelineVersionsDialog_PipelineFragment,
 } from "./PipelineVersionsDialog.generated";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import DeletePipelineVersionDialog from "../DeletePipelineVersionDialog";
+import useCacheKey from "core/hooks/useCacheKey";
+import { useRouter } from "next/router";
 
 type PipelineVersionsDialogProps = {
   open: boolean;
@@ -24,6 +27,12 @@ type PipelineVersionsDialogProps = {
 const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
   const { open, onClose, pipeline } = props;
   const { t } = useTranslation();
+  const router = useRouter();
+  const [selectedPipelineVersion, setSelectedPipelineVersion] = useState<{
+    id: string;
+    number: number;
+  } | null>();
+
   const [refetch, { data, loading }] = useLazyQuery<
     PipelineVersionsDialogQuery,
     PipelineVersionsDialogQueryVariables
@@ -53,6 +62,7 @@ const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
     }
   );
 
+  useCacheKey(["pipelines", pipeline.code], () => router.reload());
   useEffect(() => {
     if (open) {
       refetch({ variables: { pipelineId: pipeline.id } });
@@ -83,17 +93,41 @@ const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
             <BaseColumn id="default" label={t("Default")}>
               {(item) => <CheckIcon className="h-4 w-4" />}
             </BaseColumn>
-            <BaseColumn id="actions">
-              {({ row }) => (
-                <Button variant="white" size="sm" disabled>
-                  {t("Set as default")}
-                </Button>
+            <BaseColumn id="actions" className="flex justify-end gap-x-2">
+              {(item) => (
+                <>
+                  <Button variant="white" size="sm" disabled>
+                    {t("Set as default")}
+                  </Button>
+                  {data.pipeline?.versions.items &&
+                    data.pipeline?.versions.items.length > 1 && (
+                      <Button
+                        size="sm"
+                        className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
+                        onClick={() => {
+                          setSelectedPipelineVersion({
+                            id: item.id,
+                            number: item.number,
+                          });
+                        }}
+                      >
+                        <TrashIcon className="w-4" />
+                      </Button>
+                    )}
+                </>
               )}
             </BaseColumn>
           </DataGrid>
+          {selectedPipelineVersion && (
+            <DeletePipelineVersionDialog
+              open
+              pipeline={pipeline}
+              version={selectedPipelineVersion}
+              onClose={() => setSelectedPipelineVersion(null)}
+            />
+          )}
         </Dialog.Content>
       )}
-
       <Dialog.Actions>
         <Button onClick={onClose}>{t("Close")}</Button>
       </Dialog.Actions>
@@ -105,6 +139,7 @@ PipelineVersionsDialog.fragments = {
   pipeline: gql`
     fragment PipelineVersionsDialog_pipeline on Pipeline {
       id
+      code
       workspace {
         slug
       }
