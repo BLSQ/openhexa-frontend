@@ -144,7 +144,7 @@ const WorkspaceConnectionPage: NextPageWithLayout = ({
               </DataCard.FormSection>
               <ConnectionFieldsSection connection={connection} />
             </div>
-            <DataCard.Section title={t("Usage example")}>
+            <DataCard.Section title={t("Usage")}>
               <p className="text-sm text-gray-900">
                 {t("Documentation for connections usage is available at ")}
                 <a
