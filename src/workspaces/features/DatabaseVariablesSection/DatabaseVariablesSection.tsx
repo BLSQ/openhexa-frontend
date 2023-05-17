@@ -53,46 +53,48 @@ const SecretField = (field: { value: string | number }) => {
 
 const DatabaseVariablesSection = (props: DatabaseVariablesSectionProps) => {
   const { t } = useTranslation();
-  const { database } = props.workspace;
-  const credentials = useMemo(
+  const {
+    database: { credentials },
+  } = props.workspace;
+  const dbCredentials = useMemo(
     () => [
       {
         name: "db_name",
-        value: database.name,
+        value: credentials?.dbName,
         secret: false,
       },
       {
         name: "username",
-        value: database.name,
+        value: credentials?.username,
         secret: false,
       },
       {
         name: "password",
-        value: database.password,
+        value: credentials?.password,
         secret: true,
       },
       {
         name: "port",
-        value: database.port,
+        value: credentials?.port,
         secret: false,
       },
       {
         name: "host",
-        value: database.host,
+        value: credentials?.host,
         secret: false,
       },
       {
-        name: "external_url",
-        value: database.externalUrl,
-        secret: false,
+        name: "url",
+        value: credentials?.url,
+        secret: true,
       },
     ],
-    [database]
+    [credentials]
   );
   return (
     <DataGrid
       className="max-2w-lg w-3/4 rounded-md border"
-      data={credentials}
+      data={dbCredentials}
       fixedLayout={true}
     >
       <TextColumn className="py-3" label={t("Name")} accessor="name" />
@@ -124,12 +126,14 @@ DatabaseVariablesSection.fragment = {
     fragment DatabaseVariablesSection_workspace on Workspace {
       slug
       database {
-        name
-        username
-        password
-        host
-        port
-        externalUrl
+        credentials {
+          dbName
+          username
+          password
+          host
+          port
+          url
+        }
       }
     }
   `,
