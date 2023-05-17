@@ -123,8 +123,8 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
               })}
             />
           </DataGrid>
-          <Block>
-            <Block.Section collapsible title={t("Variables")}>
+          <Block className="divide-y-2">
+            <Block.Section collapsible title={t("Connection parameters")}>
               <DatabaseVariablesSection workspace={workspace} />
             </Block.Section>
             <Block.Section collapsible={false} title={t("Usage")}>

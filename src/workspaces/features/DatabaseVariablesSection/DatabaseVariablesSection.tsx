@@ -101,7 +101,7 @@ const DatabaseVariablesSection = (props: DatabaseVariablesSectionProps) => {
       <BaseColumn label={t("Environment variable")} accessor="name">
         {(value) => (
           <code className="rounded-md bg-slate-100 p-1.5 font-mono text-xs font-medium text-gray-600">
-            {slugify(`WORKSPACE_${value}`)}
+            {slugify(`WORKSPACE_DATABASE_${value}`)}
           </code>
         )}
       </BaseColumn>
