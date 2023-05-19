@@ -13,10 +13,11 @@ import {
   PipelineVersionsDialogQueryVariables,
   PipelineVersionsDialog_PipelineFragment,
 } from "./PipelineVersionsDialog.generated";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DeletePipelineVersionDialog from "../DeletePipelineVersionDialog";
 import useCacheKey from "core/hooks/useCacheKey";
 import { useRouter } from "next/router";
+import useMe from "identity/hooks/useMe";
 
 type PipelineVersionsDialogProps = {
   open: boolean;
@@ -26,6 +27,7 @@ type PipelineVersionsDialogProps = {
 
 const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
   const { open, onClose, pipeline } = props;
+  const me = useMe();
   const { t } = useTranslation();
   const router = useRouter();
   const [selectedPipelineVersion, setSelectedPipelineVersion] = useState<{
@@ -68,6 +70,15 @@ const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
       refetch({ variables: { pipelineId: pipeline.id } });
     }
   }, [open, pipeline.id, refetch]);
+
+  const canDeletePipeline = useMemo(() => {
+    return (
+      pipeline.permissions.deleteVersion &&
+      data?.pipeline?.versions.items &&
+      data.pipeline?.versions.items.length > 1
+    );
+  }, [data, pipeline]);
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="max-w-3xl">
       <Dialog.Title>{t("Pipeline versions")}</Dialog.Title>
@@ -99,22 +110,20 @@ const PipelineVersionsDialog = (props: PipelineVersionsDialogProps) => {
                   <Button variant="white" size="sm" disabled>
                     {t("Set as default")}
                   </Button>
-                  {pipeline.permissions.deleteVersion &&
-                    data.pipeline?.versions.items &&
-                    data.pipeline?.versions.items.length > 1 && (
-                      <Button
-                        size="sm"
-                        className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
-                        onClick={() => {
-                          setSelectedPipelineVersion({
-                            id: item.id,
-                            number: item.number,
-                          });
-                        }}
-                      >
-                        <TrashIcon className="w-4" />
-                      </Button>
-                    )}
+                  {canDeletePipeline && me.user?.id === item.user.id && (
+                    <Button
+                      size="sm"
+                      className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
+                      onClick={() => {
+                        setSelectedPipelineVersion({
+                          id: item.id,
+                          number: item.number,
+                        });
+                      }}
+                    >
+                      <TrashIcon className="w-4" />
+                    </Button>
+                  )}
                 </>
               )}
             </BaseColumn>
