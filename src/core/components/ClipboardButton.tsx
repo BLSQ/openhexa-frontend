@@ -13,7 +13,7 @@ interface ClipboardButtonProps {
 }
 
 const ClipboardButton = (props: ClipboardButtonProps) => {
-  const { value, className } = props;
+  const { value, className = "h-4 w-4" } = props;
   const [copied, setCopied] = useState(false);
   const handleClick = useCallback(() => {
     navigator.clipboard.writeText(value).then(() => {
