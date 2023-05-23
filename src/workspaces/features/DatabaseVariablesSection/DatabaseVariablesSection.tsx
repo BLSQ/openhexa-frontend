@@ -7,6 +7,7 @@ import { TextColumn } from "core/components/DataGrid/TextColumn";
 import { slugify } from "workspaces/helpers/connection";
 import SecretField from "./SecretField";
 import ClipboardButton from "core/components/ClipboardButton";
+import { LockClosedIcon } from "@heroicons/react/24/outline";
 
 type DatabaseVariablesSectionProps = {
   workspace: DatabaseVariablesSection_WorkspaceFragment;
@@ -69,8 +70,9 @@ const DatabaseVariablesSection = (props: DatabaseVariablesSectionProps) => {
       <BaseColumn className="flex gap-x-2 text-gray-900" label={t("Value")}>
         {(field) => (
           <div className="flex  gap-x-1 truncate">
+            {!field.value && <LockClosedIcon className="h-3 w-3" />}
             {field.secret && field.value && <SecretField value={field.value} />}
-            {!field.secret && (
+            {!field.secret && field.value && (
               <>
                 {field.value}
                 <ClipboardButton value={field.value} />
