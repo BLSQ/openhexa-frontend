@@ -1,4 +1,5 @@
 {
+  "(select specific version)": "",
   "{{files}} is not a valid file___one": "",
   "{{files}} is not a valid file___many": "",
   "{{files}} is not a valid file___other": "",
@@ -240,6 +241,7 @@
   "Run again": "",
   "Run of {{label}}": "",
   "Run pipeline": "",
+  "Run this pipeline using the {{label}} ": "",
   "Running": "",
   "Runs": "",
   "sabrina@bluesquarehub.com": "",

@@ -9,7 +9,7 @@ import useCacheKey from "core/hooks/useCacheKey";
 import useForm from "core/hooks/useForm";
 import { PipelineVersion } from "graphql-types";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { runPipeline } from "workspaces/helpers/pipelines";
 import PipelineVersionPicker from "../PipelineVersionPicker";
@@ -33,6 +33,7 @@ type RunPipelineDialogProps = {
 const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const router = useRouter();
   const { open, onClose, pipeline } = props;
+  const [showVersionPicker, setShowVersionPicker] = useState(false);
   const clearCache = useCacheKey(["pipelines", pipeline.code]);
 
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
@@ -109,25 +110,54 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       </Alert>
     );
   }
+  const handleClose = () => {
+    onClose();
+    setShowVersionPicker(false);
+  };
 
   const parameters = form.formData.version?.parameters ?? [];
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       maxWidth={parameters.length > 4 ? "max-w-3xl" : "max-w-2xl"}
     >
       <form onSubmit={form.handleSubmit}>
         <Dialog.Title>{t("Run pipeline")}</Dialog.Title>
         <Dialog.Content className="-m-1 max-h-[600px] overflow-y-auto p-1">
-          <Field name="version" label={t("Version")} required className="mb-6">
-            <PipelineVersionPicker
+          {!showVersionPicker ? (
+            <div className="mb-6 flex justify-start gap-x-1">
+              <p>
+                {t("Run this pipeline using the {{label}} ", {
+                  label: "run" in props ? "same version" : "latest version",
+                })}
+              </p>
+              <button
+                className="text-sm text-blue-600 hover:text-blue-500"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowVersionPicker(true);
+                }}
+              >
+                {t("(select specific version)")}
+              </button>
+            </div>
+          ) : (
+            <Field
+              name="version"
+              label={t("Version")}
               required
-              pipeline={pipeline}
-              value={form.formData.version ?? null}
-              onChange={(value) => form.setFieldValue("version", value)}
-            />
-          </Field>
+              className="mb-6"
+            >
+              <PipelineVersionPicker
+                required
+                pipeline={pipeline}
+                value={form.formData.version ?? null}
+                onChange={(value) => form.setFieldValue("version", value)}
+              />
+            </Field>
+          )}
+
           {form.formData.version && parameters.length === 0 && (
             <p>{t("This pipeline has no parameter")}</p>
           )}
@@ -160,7 +190,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           )}
         </Dialog.Content>
         <Dialog.Actions>
-          <Button type="button" variant="white" onClick={onClose}>
+          <Button type="button" variant="white" onClick={handleClose}>
             {t("Cancel")}
           </Button>
           <Button
