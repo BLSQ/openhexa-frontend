@@ -77,6 +77,8 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
     PipelineRunStatus.Success,
   ].includes(run.status);
 
+  console.log(config);
+
   return (
     <Page title={t("Workspace")}>
       <WorkspaceLayout workspace={workspace}>
@@ -206,14 +208,15 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                 {config.map((entry) => (
                   <DescriptionList.Item key={entry.name} label={entry.name}>
                     {entry.type === "str" && !entry.value && "-"}
-                    {entry.type === "str" && entry.value && entry.multiple
-                      ? entry.value.join(", ")
-                      : entry.value}
+                    {entry.type === "str"
+                      ? entry.value && entry.multiple
+                        ? entry.value.join(", ")
+                        : entry.value
+                      : ""}
                     {entry.type === "bool" && (
                       <Switch checked={entry.value} disabled />
                     )}
                     {(entry.type === "int" && entry.value) ?? "-"}
-                    {(entry.type === "float" && entry.value) ?? "-"}
                   </DescriptionList.Item>
                 ))}
               </DescriptionList>
