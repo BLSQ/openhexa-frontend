@@ -11,7 +11,11 @@ import User from "core/features/User";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
-import { PipelineRunStatus, PipelineRunTrigger } from "graphql-types";
+import {
+  PipelineParameter,
+  PipelineRunStatus,
+  PipelineRunTrigger,
+} from "graphql-types";
 import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -77,7 +81,18 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
     PipelineRunStatus.Success,
   ].includes(run.status);
 
-  console.log(config);
+  const renderParameterValue = (entry: PipelineParameter & { value: any }) => {
+    if (entry.type === "str" && entry.value) {
+      return entry.multiple ? entry.value.join(", ") : entry.value;
+    }
+    if (entry.type === "bool") {
+      return <Switch checked={entry.value} disabled />;
+    }
+    if (entry.type === "int" && entry.value) {
+      return entry.value;
+    }
+    return "-";
+  };
 
   return (
     <Page title={t("Workspace")}>
@@ -207,16 +222,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
               >
                 {config.map((entry) => (
                   <DescriptionList.Item key={entry.name} label={entry.name}>
-                    {entry.type === "str" && !entry.value && "-"}
-                    {entry.type === "str"
-                      ? entry.value && entry.multiple
-                        ? entry.value.join(", ")
-                        : entry.value
-                      : ""}
-                    {entry.type === "bool" && (
-                      <Switch checked={entry.value} disabled />
-                    )}
-                    {(entry.type === "int" && entry.value) ?? "-"}
+                    {renderParameterValue(entry)}
                   </DescriptionList.Item>
                 ))}
               </DescriptionList>
