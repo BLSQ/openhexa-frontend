@@ -128,8 +128,9 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           {!showVersionPicker ? (
             <div className="mb-6 flex justify-start gap-x-1">
               <p>
-                {t("Run this pipeline using the {{label}} ", {
+                {t("This pipeline will run using the {{label}} ({{version}})", {
                   label: "run" in props ? "same version" : "latest version",
+                  version: `v${form.formData.version?.number}`,
                 })}
               </p>
               <button
