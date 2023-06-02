@@ -39,7 +39,8 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
       const { version, ...params } = values;
-      const run = await runPipeline(pipeline.id, params, version?.number);
+      const versionNumber = showVersionPicker ? version.number : undefined;
+      const run = await runPipeline(pipeline.id, params, versionNumber);
       router.push(
         `/workspaces/${encodeURIComponent(
           router.query.workspaceSlug as string
