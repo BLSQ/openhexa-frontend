@@ -91,6 +91,9 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
     if (entry.type === "int" && entry.value) {
       return entry.value;
     }
+    if (entry.type === "float" && entry.value) {
+      return entry.value;
+    }
     return "-";
   };
 
