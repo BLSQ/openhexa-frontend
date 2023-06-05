@@ -39,8 +39,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
       const { version, ...params } = values;
-      const versionNumber = showVersionPicker ? version.number : undefined;
-      const run = await runPipeline(pipeline.id, params, versionNumber);
+      const run = await runPipeline(pipeline.id, params, version?.number);
       router.push(
         `/workspaces/${encodeURIComponent(
           router.query.workspaceSlug as string
@@ -74,6 +73,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   useEffect(() => {
     if (!open) {
       form.resetForm();
+      setShowVersionPicker(false);
     }
   }, [open, form]);
 
@@ -111,16 +111,12 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       </Alert>
     );
   }
-  const handleClose = () => {
-    onClose();
-    setShowVersionPicker(false);
-  };
 
   const parameters = form.formData.version?.parameters ?? [];
   return (
     <Dialog
       open={open}
-      onClose={handleClose}
+      onClose={onClose}
       maxWidth={parameters.length > 4 ? "max-w-3xl" : "max-w-2xl"}
     >
       <form onSubmit={form.handleSubmit}>
@@ -129,15 +125,15 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           {!showVersionPicker ? (
             <div className="mb-6 flex justify-start gap-x-1">
               <p>
-                {t("This pipeline will run using the {{label}} ({{version}})", {
-                  label: "run" in props ? "same version" : "latest version",
-                  version: `v${form.formData.version?.number}`,
-                })}
+                {!("run" in props) &&
+                  t("This pipeline will run using the latest version")}
+                {"run" in props &&
+                  t("This pipeline will run using the same version")}
               </p>
               <button
                 className="text-sm text-blue-600 hover:text-blue-500"
-                onClick={(e) => {
-                  e.preventDefault();
+                role="link"
+                onClick={() => {
                   setShowVersionPicker(true);
                 }}
               >
@@ -192,7 +188,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           )}
         </Dialog.Content>
         <Dialog.Actions>
-          <Button type="button" variant="white" onClick={handleClose}>
+          <Button type="button" variant="white" onClick={onClose}>
             {t("Cancel")}
           </Button>
           <Button
