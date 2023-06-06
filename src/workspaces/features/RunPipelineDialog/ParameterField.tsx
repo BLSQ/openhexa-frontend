@@ -48,7 +48,7 @@ const ParameterField = (props: ParameterFieldProps) => {
       <Select
         onChange={handleChange}
         value={value}
-        required={parameter.required ?? true}
+        required={Boolean(parameter.required)}
         multiple={parameter.multiple}
         options={parameter.choices ?? []}
         getOptionLabel={(option) => option}
@@ -69,7 +69,7 @@ const ParameterField = (props: ParameterFieldProps) => {
         <Textarea
           name="value"
           rows={4}
-          required={parameter.required ?? true}
+          required={Boolean(parameter.required)}
           className="w-full"
           value={value && value.join("\n")}
           onChange={(event) => {
@@ -90,7 +90,7 @@ const ParameterField = (props: ParameterFieldProps) => {
         <Input
           type="number"
           name={parameter.code}
-          required={parameter.required ?? true}
+          required={Boolean(parameter.required)}
           onChange={(event) => handleChange(event.target.value)}
           value={value || ""}
         />
@@ -100,7 +100,7 @@ const ParameterField = (props: ParameterFieldProps) => {
         <Input
           type="text"
           name={parameter.code}
-          required={parameter.required ?? true}
+          required={Boolean(parameter.required)}
           onChange={(event) => handleChange(event.target.value)}
           value={value || ""}
         />
