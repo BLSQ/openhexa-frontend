@@ -9,8 +9,7 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import DataPreviewDialog from "workspaces/features/DataPreviewDialog";
+import DatabaseTableDataGrid from "workspaces/features/DatabaseTableDataGrid/DatabaseTableDataGrid";
 import {
   useWorkspaceDatabaseTablePageQuery,
   WorkspaceDatabaseTablePageDocument,
@@ -24,7 +23,6 @@ type Props = {
 
 const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
-  const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
   const { data } = useWorkspaceDatabaseTablePageQuery({
     variables: {
@@ -41,10 +39,6 @@ const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
   if (!table) {
     return null;
   }
-
-  const handleOpenModal = () => {
-    setOpenModal(!openModal);
-  };
 
   return (
     <Page title={table.name}>
@@ -73,46 +67,15 @@ const WorkspaceDatabaseTableViewPage: NextPageWithLayout = (props: Props) => {
               {table.name}
             </Breadcrumbs.Part>
           </Breadcrumbs>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleOpenModal}
-              leadingIcon={<EyeIcon className="w-4" />}
-            >
-              {t("Preview data")}
-            </Button>
-          </div>
+          <div className="flex items-center gap-2"></div>
         </WorkspaceLayout.Header>
         <WorkspaceLayout.PageContent className="space-y-4">
           <Block className="divide-y-2 divide-gray-100">
-            <Block.Content title={t("Definition")}>
-              <DataGrid
-                data={table.columns}
-                fixedLayout={false}
-                totalItems={table.columns.length}
-                className="w-3/4 max-w-lg rounded-md border"
-              >
-                <TextColumn
-                  className="py-3 font-mono"
-                  textClassName="bg-gray-50 py-1 px-2"
-                  name="field"
-                  label="Field"
-                  accessor="name"
-                />
-                <TextColumn
-                  className="py-3"
-                  name="type"
-                  label="Type"
-                  accessor="type"
-                />
-              </DataGrid>
+            <Block.Content title={t("Data")}>
+              <DatabaseTableDataGrid workspace={workspace} table={table} />
             </Block.Content>
+            <Block.Content title={t("Usage")}>Lala</Block.Content>
           </Block>
-          <DataPreviewDialog
-            open={openModal}
-            onClose={() => setOpenModal(!openModal)}
-            workspaceSlug={workspace.slug}
-            tableName={table.name}
-          />
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
     </Page>
