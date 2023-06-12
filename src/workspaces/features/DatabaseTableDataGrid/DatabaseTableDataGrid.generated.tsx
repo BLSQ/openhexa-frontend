@@ -4,16 +4,16 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type DatabaseTableDataGridQueryVariables = Types.Exact<{
-  slug: Types.Scalars['String'];
-  tableName: Types.Scalars['String'];
-  orderBy: Types.Scalars['String'];
+  slug: Types.Scalars['String']['input'];
+  tableName: Types.Scalars['String']['input'];
+  orderBy: Types.Scalars['String']['input'];
   direction: Types.OrderByDirection;
-  page: Types.Scalars['Int'];
-  perPage?: Types.InputMaybe<Types.Scalars['Int']>;
+  page: Types.Scalars['Int']['input'];
+  perPage?: Types.InputMaybe<Types.Scalars['Int']['input']>;
 }>;
 
 
-export type DatabaseTableDataGridQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', database: { __typename?: 'Database', table?: { __typename?: 'DatabaseTable', rows: { __typename?: 'TableRowsPage', pageNumber: number, hasNextPage: boolean, hasPreviousPage: boolean, items: Array<any> } } | null } } | null };
+export type DatabaseTableDataGridQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, database: { __typename?: 'Database', table?: { __typename?: 'DatabaseTable', rows: { __typename?: 'TableRowsPage', pageNumber: number, hasNextPage: boolean, hasPreviousPage: boolean, items: Array<any> } } | null } } | null };
 
 export type DatabaseTableDataGrid_WorkspaceFragment = { __typename?: 'Workspace', slug: string };
 
@@ -36,6 +36,7 @@ export const DatabaseTableDataGrid_TableFragmentDoc = gql`
 export const DatabaseTableDataGridDocument = gql`
     query DatabaseTableDataGrid($slug: String!, $tableName: String!, $orderBy: String!, $direction: OrderByDirection!, $page: Int!, $perPage: Int) {
   workspace(slug: $slug) {
+    slug
     database {
       table(name: $tableName) {
         rows(orderBy: $orderBy, direction: $direction, page: $page, perPage: $perPage) {
