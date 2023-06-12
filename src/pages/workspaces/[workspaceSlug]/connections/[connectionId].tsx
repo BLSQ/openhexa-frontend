@@ -148,12 +148,33 @@ const WorkspaceConnectionPage: NextPageWithLayout = ({
             </div>
             <DataCard.Section title={t("Usage")}>
               <p className="text-sm text-gray-900">
-                {t("Documentation for connections usage is available at ")}
+                {t("You can find a general overview of workspace connections ")}
                 <a
-                  href="https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines#using-connections"
+                  href="https://github.com/BLSQ/openhexa/wiki/User-manual#adding-and-managing-connections"
                   className="text-blue-600 hover:text-blue-500 focus:outline-none"
+                  target="_blank"
                 >
-                  https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines#using-connections
+                  {t("here.")}
+                </a>
+                {t(" For usage in notebooks and pipelines see ")}
+                <a
+                  href={
+                    "https://github.com/BLSQ/openhexa/wiki/Using-notebooks-in-OpenHexa#using-connections"
+                  }
+                  className="text-blue-600 hover:text-blue-500 focus:outline-none"
+                  target="_blank"
+                >
+                  {t(" usage in notebooks")}
+                </a>
+                {t(" and ")}
+                <a
+                  href={
+                    "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines#using-connections"
+                  }
+                  className="text-blue-600 hover:text-blue-500 focus:outline-none"
+                  target="_blank"
+                >
+                  {t("data pipelines.")}
                 </a>
               </p>
             </DataCard.Section>

@@ -130,15 +130,37 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
               </Block.Section>
             )}
             <Block.Section collapsible={false} title={t("Usage")}>
-              <p className="text-sm text-gray-900">
-                {t("Documentation for database usage is available at ")}
+              <p className="gap-x-2 text-sm text-gray-900">
+                <a
+                  href={
+                    "https://github.com/BLSQ/openhexa/wiki/User-manual#using-the-workspaces-database"
+                  }
+                  className="text-blue-600 hover:text-blue-500 focus:outline-none"
+                  target="_blank"
+                >
+                  {t("This guide ")}
+                </a>
+                {t(
+                  "gives you a general overview for the workspace database. For usage in notebooks and pipelines see"
+                )}
+                <a
+                  href={
+                    "https://github.com/BLSQ/openhexa/wiki/Using-notebooks-in-OpenHexa#using-the-workspace-database"
+                  }
+                  className="text-blue-600 hover:text-blue-500 focus:outline-none"
+                  target="_blank"
+                >
+                  {t(" using database in notebooks")}
+                </a>
+                {t(" and ")}
                 <a
                   href={
                     "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines#using-the-workspace-database"
                   }
                   className="text-blue-600 hover:text-blue-500 focus:outline-none"
+                  target="_blank"
                 >
-                  https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines#using-the-workspace-database
+                  {t("data pipelines.")}
                 </a>
               </p>
             </Block.Section>
