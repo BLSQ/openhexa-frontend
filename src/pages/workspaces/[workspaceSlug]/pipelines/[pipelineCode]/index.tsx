@@ -19,6 +19,7 @@ import { useTranslation } from "next-i18next";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
 import CronProperty from "workspaces/features/CronProperty";
 import RenderProperty from "core/components/DataCard/RenderProperty";
+import WorkspaceMemberProperty from "workspaces/features/WorkspaceMemberProperty/";
 import {
   useWorkspacePipelinePageQuery,
   WorkspacePipelinePageDocument,
@@ -29,7 +30,7 @@ import { updatePipeline } from "workspaces/helpers/pipelines";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import PipelineVersionsDialog from "workspaces/features/PipelineVersionsDialog";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
-import { PipelineRunTrigger } from "graphql-types";
+import { PipelineRecipient, PipelineRunTrigger } from "graphql-types";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import { useRouter } from "next/router";
 import useCacheKey from "core/hooks/useCacheKey";
@@ -56,7 +57,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     },
   });
 
-  useCacheKey(["pipelines", pipelineCode], () => refetch());
+  const clearCache = useCacheKey(["pipelines", pipelineCode], () => refetch());
 
   if (!data?.workspace || !data?.pipeline) {
     return null;
@@ -64,11 +65,16 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const { workspace, pipeline } = data;
 
   const onSave = async (values: any) => {
+    const recipientIds = values.recipients.map(
+      (r: PipelineRecipient) => r.user.id
+    );
     await updatePipeline(pipeline.id, {
       name: values.name,
       schedule: values.schedule,
       description: values.description,
+      recipientIds,
     });
+    clearCache();
   };
 
   return (
@@ -143,12 +149,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 hideLabel
                 markdown
               />
-              <CronProperty
-                id="schedule"
-                accessor="schedule"
-                label={t("Schedule")}
-                defaultValue={t("Manual")}
-              />
               <RenderProperty<any>
                 id="currentVersion"
                 label={t("Current Version")}
@@ -170,6 +170,26 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   )
                 }
               </RenderProperty>
+            </DataCard.FormSection>
+            <DataCard.FormSection
+              title={t("Scheduling")}
+              onSave={pipeline.permissions.update ? onSave : undefined}
+              collapsible={false}
+            >
+              <CronProperty
+                id="schedule"
+                accessor="schedule"
+                label={t("Cron expression")}
+                defaultValue={t("Manual")}
+              />
+              <WorkspaceMemberProperty
+                id="recipients"
+                label={t("Repicients")}
+                accessor={(pipeline) => pipeline.recipients.items}
+                slug={workspace.slug}
+                multiple
+                defaultValue="-"
+              />
             </DataCard.FormSection>
           </DataCard>
 

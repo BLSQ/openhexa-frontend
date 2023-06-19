@@ -3,7 +3,7 @@ import * as Types from '../../../graphql-types';
 import { gql } from '@apollo/client';
 import { PipelineRunReadonlyForm_DagFragmentDoc } from '../PipelineRunForm/PipelineRunReadonlyForm.generated';
 import { PipelineRunOutputEntry_OutputFragmentDoc } from '../PipelineRunOutputEntry.generated';
-import { UserProperty_UserFragmentDoc } from '../../../core/components/DataCard/UserProperty.generated';
+import { UserProperty_UserFragmentDoc } from '../../../workspaces/features/WorkspaceMemberProperty/WorkspaceMemberProperty.generated';
 import { RunMessages_DagRunFragmentDoc } from '../RunMessages/RunMessages.generated';
 import { RunLogs_DagRunFragmentDoc } from '../RunLogs/RunLogs.generated';
 import { PipelineRunStatusBadge_DagRunFragmentDoc } from '../PipelineRunStatusBadge.generated';

@@ -1970,11 +1970,18 @@ export type Pipeline = {
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   permissions: PipelinePermissions;
+  recipients: PipelineRecipientPage;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
   workspace?: Maybe<Workspace>;
+};
+
+
+export type PipelineRecipientsArgs = {
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -2019,6 +2026,20 @@ export type PipelinePermissions = {
   update: Scalars['Boolean']['output'];
 };
 
+export type PipelineRecipient = {
+  __typename?: 'PipelineRecipient';
+  pipeline: Pipeline;
+  user: User;
+};
+
+export type PipelineRecipientPage = {
+  __typename?: 'PipelineRecipientPage';
+  items: Array<PipelineRecipient>;
+  pageNumber: Scalars['Int']['output'];
+  totalItems: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
 export type PipelineRun = {
   __typename?: 'PipelineRun';
   code: Scalars['String']['output'];
@@ -2032,6 +2053,7 @@ export type PipelineRun = {
   pipeline: Pipeline;
   progress: Scalars['Int']['output'];
   run_id: Scalars['UUID']['output'];
+  sendMailNotification: Scalars['Boolean']['output'];
   status: PipelineRunStatus;
   triggerMode?: Maybe<PipelineRunTrigger>;
   user?: Maybe<User>;
@@ -2456,6 +2478,7 @@ export type RunDagResult = {
 export type RunPipelineInput = {
   config: Scalars['JSON']['input'];
   id: Scalars['UUID']['input'];
+  sendMailNotification?: InputMaybe<Scalars['Boolean']['input']>;
   version?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -2828,6 +2851,7 @@ export type UpdatePipelineInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['UUID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  recipientIds?: InputMaybe<Array<Scalars['UUID']['input']>>;
   schedule?: InputMaybe<Scalars['String']['input']>;
 };
 

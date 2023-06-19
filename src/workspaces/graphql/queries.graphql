@@ -89,6 +89,14 @@ query WorkspacePipelinePage(
       id
       number
     }
+    recipients {
+      items {
+        user {
+          id
+          displayName
+        }
+      }
+    }
     runs(page: $page, perPage: $perPage) {
       items {
         id
@@ -108,6 +116,16 @@ query WorkspacePipelinePage(
       totalItems
       totalPages
       pageNumber
+    }
+    workspace {
+      members {
+        items {
+          id
+          user {
+            displayName
+          }
+        }
+      }
     }
   }
 }

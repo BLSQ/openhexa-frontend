@@ -62,7 +62,7 @@ export type WorkspacePipelinePageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacePipelinePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipeline?: { __typename?: 'Pipeline', id: string, code: string, name?: string | null, description?: string | null, schedule?: string | null, permissions: { __typename?: 'PipelinePermissions', run: boolean, update: boolean, deleteVersion: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', name: string, code: string, required: boolean, help?: string | null, type: string, default?: any | null, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null } | null, runs: { __typename?: 'PipelineRunPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'PipelineRun', id: string, executionDate?: any | null, duration?: number | null, triggerMode?: Types.PipelineRunTrigger | null, status: Types.PipelineRunStatus, version: { __typename?: 'PipelineVersion', number: number, id: string }, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> }, workspace?: { __typename?: 'Workspace', slug: string } | null } | null };
+export type WorkspacePipelinePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipeline?: { __typename?: 'Pipeline', id: string, code: string, name?: string | null, description?: string | null, schedule?: string | null, permissions: { __typename?: 'PipelinePermissions', run: boolean, update: boolean, deleteVersion: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', name: string, code: string, required: boolean, help?: string | null, type: string, default?: any | null, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null } | null, recipients: { __typename?: 'PipelineRecipientPage', items: Array<{ __typename?: 'PipelineRecipient', user: { __typename?: 'User', id: string, displayName: string } }> }, runs: { __typename?: 'PipelineRunPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'PipelineRun', id: string, executionDate?: any | null, duration?: number | null, triggerMode?: Types.PipelineRunTrigger | null, status: Types.PipelineRunStatus, version: { __typename?: 'PipelineVersion', number: number, id: string }, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> }, workspace?: { __typename?: 'Workspace', slug: string, members: { __typename?: 'WorkspaceMembershipPage', items: Array<{ __typename?: 'WorkspaceMembership', id: string, user: { __typename?: 'User', displayName: string } }> } } | null } | null };
 
 export type WorkspacePipelineStartPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
@@ -333,6 +333,14 @@ export const WorkspacePipelinePageDocument = gql`
       id
       number
     }
+    recipients {
+      items {
+        user {
+          id
+          displayName
+        }
+      }
+    }
     runs(page: $page, perPage: $perPage) {
       items {
         id
@@ -351,6 +359,16 @@ export const WorkspacePipelinePageDocument = gql`
       totalItems
       totalPages
       pageNumber
+    }
+    workspace {
+      members {
+        items {
+          id
+          user {
+            displayName
+          }
+        }
+      }
     }
   }
 }
