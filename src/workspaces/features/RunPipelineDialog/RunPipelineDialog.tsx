@@ -215,6 +215,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                     name={param.code}
                     label={param.name}
                     help={param.help}
+                    error={form.touched[param.code] && form.errors[param.code]}
                   >
                     <ParameterField
                       parameter={param}
