@@ -87,16 +87,21 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
     validate(values) {
       const errors = {} as any;
       const { version, ...fields } = values;
-      version?.parameters
-        .filter((param) => param.type !== "bool" || !param.required)
-        .map((param) => {
-          if (param.multiple && !fields[param.code]?.length) {
-            errors[param.code] = t("This field is required");
-          }
-          if (param.required && !fields[param.code]) {
-            errors[param.code] = t("This field is required");
-          }
-        });
+      if (!version) {
+        errors.version = t("Need a version");
+      } else {
+        version?.parameters
+          .filter((param) => param.type !== "bool" && param.required)
+          .map((param) => {
+            if (param.multiple && !fields[param.code]?.length) {
+              errors[param.code] = t("This field is required");
+            }
+            // otherwise 0 or 0.0 would be considered as falsy values
+            if (!["int", "float"].includes(param.type) && !fields[param.code]) {
+              errors[param.code] = t("This field is required");
+            }
+          });
+      }
       return errors;
     },
   });
@@ -163,6 +168,9 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
     >
       <form onSubmit={form.handleSubmit}>
         <Dialog.Title>{t("Run pipeline")}</Dialog.Title>
+        {form.errors.version && (
+          <div className="mt-3 text-sm text-red-600">{form.errors.version}</div>
+        )}
         {open && !form.formData.version ? (
           <Dialog.Content>
             <Spinner />
