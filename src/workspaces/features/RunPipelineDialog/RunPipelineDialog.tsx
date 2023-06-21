@@ -88,7 +88,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       const errors = {} as any;
       const { version, ...fields } = values;
       version?.parameters
-        .filter((param) => param.type !== "bool")
+        .filter((param) => param.type !== "bool" || !param.required)
         .map((param) => {
           if (param.multiple && !fields[param.code]?.length) {
             errors[param.code] = t("This field is required");
