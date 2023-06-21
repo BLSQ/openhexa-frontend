@@ -185,7 +185,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               <WorkspaceMemberProperty
                 id="recipients"
                 label={t("Repicients")}
-                accessor={(pipeline) => pipeline.recipients.items}
+                accessor={(pipeline) => pipeline.recipients}
                 slug={workspace.slug}
                 multiple
                 defaultValue="-"

@@ -1970,18 +1970,12 @@ export type Pipeline = {
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   permissions: PipelinePermissions;
-  recipients: PipelineRecipientPage;
+  recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
   workspace?: Maybe<Workspace>;
-};
-
-
-export type PipelineRecipientsArgs = {
-  page?: InputMaybe<Scalars['Int']['input']>;
-  perPage?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -2053,7 +2047,7 @@ export type PipelineRun = {
   pipeline: Pipeline;
   progress: Scalars['Int']['output'];
   run_id: Scalars['UUID']['output'];
-  sendMailNotification: Scalars['Boolean']['output'];
+  sendMailNotifications: Scalars['Boolean']['output'];
   status: PipelineRunStatus;
   triggerMode?: Maybe<PipelineRunTrigger>;
   user?: Maybe<User>;
@@ -2478,7 +2472,7 @@ export type RunDagResult = {
 export type RunPipelineInput = {
   config: Scalars['JSON']['input'];
   id: Scalars['UUID']['input'];
-  sendMailNotification?: InputMaybe<Scalars['Boolean']['input']>;
+  sendMailNotifications?: InputMaybe<Scalars['Boolean']['input']>;
   version?: InputMaybe<Scalars['Int']['input']>;
 };
 

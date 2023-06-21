@@ -1465,7 +1465,7 @@ type Pipeline {
   currentVersion: PipelineVersion
   runs(page: Int, perPage: Int, orderBy: PipelineRunOrderBy): PipelineRunPage!
   versions(page: Int, perPage: Int): PipelineVersionPage!
-  recipients(page: Int, perPage: Int): PipelineRecipientPage!
+  recipients: [PipelineRecipient!]!
 }
 
 enum PipelineError {
@@ -1523,7 +1523,7 @@ type PipelineRun {
   logs: String
   outputs: [PipelineRunOutput!]!
   code: String!
-  sendMailNotification: Boolean!
+  sendMailNotifications: Boolean!
 }
 
 type PipelineRunMessage {
@@ -1753,7 +1753,7 @@ input RunPipelineInput {
   id: UUID!
   version: Int
   config: JSON!
-  sendMailNotification: Boolean
+  sendMailNotifications: Boolean
 }
 
 type RunPipelineResult {

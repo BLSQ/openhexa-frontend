@@ -69,7 +69,7 @@ export async function runPipeline(
   pipelineId: string,
   config: any,
   version?: number,
-  sendMailNotification?: boolean
+  sendMailNotifications?: boolean
 ) {
   const client = getApolloClient();
 
@@ -86,7 +86,7 @@ export async function runPipeline(
       }
     `,
     variables: {
-      input: { id: pipelineId, config, version, sendMailNotification },
+      input: { id: pipelineId, config, version, sendMailNotifications },
     },
   });
 

@@ -90,11 +90,9 @@ query WorkspacePipelinePage(
       number
     }
     recipients {
-      items {
-        user {
-          id
-          displayName
-        }
+      user {
+        id
+        displayName
       }
     }
     runs(page: $page, perPage: $perPage) {
