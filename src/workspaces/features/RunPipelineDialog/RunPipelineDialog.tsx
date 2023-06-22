@@ -88,7 +88,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       const errors = {} as any;
       const { version, ...fields } = values;
       if (!version) {
-        errors.version = t("Need a version");
+        errors.version = t("The version is required");
       } else {
         version?.parameters
           .filter((param) => param.type !== "bool" && param.required)

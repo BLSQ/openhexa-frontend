@@ -72,7 +72,8 @@ const ParameterField = (props: ParameterFieldProps) => {
     return (
       <>
         <Textarea
-          name="value"
+          aria-label={parameter.code}
+          name={parameter.code}
           rows={4}
           required={Boolean(parameter.required)}
           className="w-full"
@@ -106,6 +107,7 @@ const ParameterField = (props: ParameterFieldProps) => {
       return (
         <Input
           type="text"
+          aria-label={parameter.code}
           name={parameter.code}
           required={Boolean(parameter.required)}
           onChange={(event) => handleChange(event.target.value)}
