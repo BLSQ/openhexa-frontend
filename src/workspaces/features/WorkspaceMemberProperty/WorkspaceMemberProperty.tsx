@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 import User from "core/features/User";
-import { useDataCardProperty } from "../../../core/components/DataCard/context";
-import DataCard from "../../../core/components/DataCard/DataCard";
-import { PropertyDefinition } from "../../../core/components/DataCard/types";
+import { useDataCardProperty } from "core/components/DataCard/context";
+import DataCard from "core/components/DataCard/DataCard";
+import { PropertyDefinition } from "core/components/DataCard/types";
 
 import { ensureArray } from "core/helpers/array";
 import { useMemo } from "react";
@@ -11,12 +11,14 @@ import clsx from "clsx";
 
 type WorkspaceMemberPropertyProps = {
   multiple?: boolean;
+  disabled?: boolean;
   slug: string;
   className?: string;
 } & PropertyDefinition;
 
 const WorkspaceMemberProperty = (props: WorkspaceMemberPropertyProps) => {
-  const { multiple, className, slug, defaultValue, ...delegated } = props;
+  const { multiple, disabled, className, slug, defaultValue, ...delegated } =
+    props;
   const { property, section } = useDataCardProperty(delegated);
 
   const membersArray = useMemo(
@@ -33,14 +35,10 @@ const WorkspaceMemberProperty = (props: WorkspaceMemberPropertyProps) => {
           onChange={(v) => property.setValue(v)}
           multiple={multiple}
           withPortal
+          disabled={disabled}
         />
       ) : (
-        <div
-          className={clsx(
-            "prose flex gap-x-2 text-sm text-gray-900",
-            className
-          )}
-        >
+        <div className={clsx("text-sm text-gray-900", className)}>
           {membersArray.length === 0 && defaultValue}
           {membersArray.map((member, i) => member.user.displayName).join(", ")}
         </div>

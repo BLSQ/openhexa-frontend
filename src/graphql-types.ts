@@ -2026,14 +2026,6 @@ export type PipelineRecipient = {
   user: User;
 };
 
-export type PipelineRecipientPage = {
-  __typename?: 'PipelineRecipientPage';
-  items: Array<PipelineRecipient>;
-  pageNumber: Scalars['Int']['output'];
-  totalItems: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
-};
-
 export type PipelineRun = {
   __typename?: 'PipelineRun';
   code: Scalars['String']['output'];

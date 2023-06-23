@@ -1500,13 +1500,6 @@ type PipelineRecipient {
   pipeline: Pipeline!
 }
 
-type PipelineRecipientPage {
-  items: [PipelineRecipient!]!
-  pageNumber: Int!
-  totalPages: Int!
-  totalItems: Int!
-}
-
 type PipelineRun {
   id: UUID!
   run_id: UUID!

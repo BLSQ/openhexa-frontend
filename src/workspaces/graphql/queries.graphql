@@ -115,16 +115,6 @@ query WorkspacePipelinePage(
       totalPages
       pageNumber
     }
-    workspace {
-      members {
-        items {
-          id
-          user {
-            displayName
-          }
-        }
-      }
-    }
   }
 }
 

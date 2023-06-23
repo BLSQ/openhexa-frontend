@@ -1,5 +1,5 @@
 import { PlayIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
@@ -34,6 +34,7 @@ import { PipelineRecipient, PipelineRunTrigger } from "graphql-types";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import { useRouter } from "next/router";
 import useCacheKey from "core/hooks/useCacheKey";
+import Switch from "core/components/Switch/Switch";
 
 type Props = {
   page: number;
@@ -47,6 +48,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const [isVersionsDialogOpen, setVersionsDialogOpen] = useState(false);
   const [isRunPipelineDialogOpen, setRunPipelineDialogOpen] = useState(false);
+  const [isSchedulingEnabled, setIsSchedulingEnabled] = useState(false);
   const router = useRouter();
   const { data, refetch } = useWorkspacePipelinePageQuery({
     variables: {
@@ -58,6 +60,18 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   });
 
   const clearCache = useCacheKey(["pipelines", pipelineCode], () => refetch());
+  // to prevent an "dirty read" from onSave function of isSchedulingEnabled state
+  const isEnabledRef = useRef<boolean>();
+
+  useEffect(() => {
+    if (data?.pipeline?.schedule) {
+      setIsSchedulingEnabled(true);
+    }
+  }, [data?.pipeline?.schedule]);
+
+  useEffect(() => {
+    isEnabledRef.current = isSchedulingEnabled;
+  });
 
   if (!data?.workspace || !data?.pipeline) {
     return null;
@@ -65,13 +79,18 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const { workspace, pipeline } = data;
 
   const onSave = async (values: any) => {
-    const recipientIds = values.recipients.map(
-      (r: PipelineRecipient) => r.user.id
-    );
+    let schedule = null,
+      recipientIds = [];
+
+    if (isEnabledRef.current) {
+      schedule = values.schedule;
+      recipientIds = values.recipients.map((r: PipelineRecipient) => r.user.id);
+    }
+
     await updatePipeline(pipeline.id, {
       name: values.name,
-      schedule: values.schedule,
       description: values.description,
+      schedule,
       recipientIds,
     });
     clearCache();
@@ -176,11 +195,23 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               onSave={pipeline.permissions.update ? onSave : undefined}
               collapsible={false}
             >
+              <RenderProperty<any> id="enableScheduling" label={t("Enabled")}>
+                {(property, section) => (
+                  <Switch
+                    name="enable_schedule"
+                    checked={isSchedulingEnabled}
+                    onChange={() => setIsSchedulingEnabled((value) => !value)}
+                    disabled={!section.isEdited}
+                  />
+                )}
+              </RenderProperty>
               <CronProperty
                 id="schedule"
                 accessor="schedule"
                 label={t("Cron expression")}
                 defaultValue={t("Manual")}
+                visible={isSchedulingEnabled}
+                required
               />
               <WorkspaceMemberProperty
                 id="recipients"
@@ -188,7 +219,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 accessor={(pipeline) => pipeline.recipients}
                 slug={workspace.slug}
                 multiple
+                disabled={!isSchedulingEnabled}
                 defaultValue="-"
+                visible={isSchedulingEnabled}
               />
             </DataCard.FormSection>
           </DataCard>
