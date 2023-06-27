@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.31.6](https://github.com/BLSQ/openhexa-frontend/compare/0.31.5...0.31.6) (2023-06-26)
+
+
+### Bug Fixes
+
+* **Files:** The download of an object happens with a content-disposition:download ([#349](https://github.com/BLSQ/openhexa-frontend/issues/349)) ([394396b](https://github.com/BLSQ/openhexa-frontend/commit/394396bd4f31d87aacd4e10641f52eca951680ac))
+
+
+### Miscellaneous
+
+* **Sidebar:** Visual improvements on how we display the workspaces ([#350](https://github.com/BLSQ/openhexa-frontend/issues/350)) ([9036a1a](https://github.com/BLSQ/openhexa-frontend/commit/9036a1a907fdd2ecafb7894a41774667fa796ed7))
+
+## [0.31.5](https://github.com/BLSQ/openhexa-frontend/compare/0.31.4...0.31.5) (2023-06-26)
+
+
+### Bug Fixes
+
+* add missing translations ([acedcb6](https://github.com/BLSQ/openhexa-frontend/commit/acedcb66a123e9a94cb2271d69a85216294087b6))
+* **RunPipeline:** Bool parameters are never required ([#353](https://github.com/BLSQ/openhexa-frontend/issues/353)) ([8626a50](https://github.com/BLSQ/openhexa-frontend/commit/8626a505d3676172b8210da69c9429a8142102af))
+* typo in RunPipelineDialog ([40ef996](https://github.com/BLSQ/openhexa-frontend/commit/40ef996692a79603916f0d32e4dd47ba158b0ceb))
+
 ## [0.31.4](https://github.com/BLSQ/openhexa-frontend/compare/0.31.3...0.31.4) (2023-06-23)
 
 
