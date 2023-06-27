@@ -21,6 +21,7 @@ import {
 } from "./RunPipelineDialog.generated";
 import Spinner from "core/components/Spinner";
 import { ensureArray } from "core/helpers/array";
+import Checkbox from "core/components/forms/Checkbox/Checkbox";
 
 type RunPipelineDialogProps = {
   open: boolean;
@@ -62,7 +63,12 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
       const { version, ...params } = values;
-      const run = await runPipeline(pipeline.id, params, version?.number);
+      const run = await runPipeline(
+        pipeline.id,
+        params,
+        version?.number,
+        values.send_mail_notifications
+      );
       await router.push(
         `/workspaces/${encodeURIComponent(
           router.query.workspaceSlug as string
@@ -252,6 +258,11 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                     />
                   </Field>
                 ))}
+                <Checkbox
+                  name="send_mail_notifications"
+                  onChange={form.handleInputChange}
+                  label={t("Get mail notifications")}
+                />
               </div>
               {form.submitError && (
                 <div className="mt-3 text-sm text-red-600">
