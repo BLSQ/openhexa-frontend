@@ -4,7 +4,7 @@ import { gql } from '@apollo/client';
 import { CountryBadge_CountryFragmentDoc } from '../../core/features/CountryBadge.generated';
 import { Tag_TagFragmentDoc } from '../../core/features/Tag.generated';
 import { PipelineRunStatusBadge_DagRunFragmentDoc } from '../features/PipelineRunStatusBadge.generated';
-import { UserProperty_UserFragmentDoc } from '../../workspaces/features/WorkspaceMemberProperty/WorkspaceMemberProperty.generated';
+import { UserProperty_UserFragmentDoc } from '../../core/components/DataCard/UserProperty.generated';
 import { UserColumn_UserFragmentDoc } from '../../core/components/DataGrid/UserColumn.generated';
 import { PipelineRunFavoriteTrigger_RunFragmentDoc } from '../features/PipelineRunFavoriteTrigger/PipelineRunFavoriteTrigger.generated';
 import { PipelineRunDataCard_DagRunFragmentDoc, PipelineRunDataCard_DagFragmentDoc } from '../features/PipelineRunDataCard/PipelineRunDataCard.generated';

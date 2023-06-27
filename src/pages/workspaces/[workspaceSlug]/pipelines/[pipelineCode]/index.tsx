@@ -48,7 +48,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const [isVersionsDialogOpen, setVersionsDialogOpen] = useState(false);
   const [isRunPipelineDialogOpen, setRunPipelineDialogOpen] = useState(false);
-  const [isSchedulingEnabled, setIsSchedulingEnabled] = useState(false);
   const router = useRouter();
   const { data, refetch } = useWorkspacePipelinePageQuery({
     variables: {
@@ -59,6 +58,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     },
   });
 
+  const [isSchedulingEnabled, setIsSchedulingEnabled] = useState(
+    Boolean(data?.pipeline?.schedule)
+  );
   const clearCache = useCacheKey(["pipelines", pipelineCode], () => refetch());
   // to prevent an "dirty read" from onSave function of isSchedulingEnabled state
   const isEnabledRef = useRef<boolean>();
@@ -79,14 +81,14 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const { workspace, pipeline } = data;
 
   const onSave = async (values: any) => {
-    let schedule = null,
-      recipientIds = [];
+    let schedule = null;
+    let recipientIds = values.recipients.map(
+      (r: PipelineRecipient) => r.user.id
+    );
 
     if (isEnabledRef.current) {
       schedule = values.schedule;
-      recipientIds = values.recipients.map((r: PipelineRecipient) => r.user.id);
     }
-
     await updatePipeline(pipeline.id, {
       name: values.name,
       description: values.description,
@@ -194,6 +196,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               title={t("Scheduling")}
               onSave={pipeline.permissions.update ? onSave : undefined}
               collapsible={false}
+              validate={isSchedulingEnabled}
             >
               <RenderProperty<any> id="enableScheduling" label={t("Enabled")}>
                 {(property, section) => (
@@ -205,24 +208,25 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   />
                 )}
               </RenderProperty>
-              <CronProperty
-                id="schedule"
-                accessor="schedule"
-                label={t("Cron expression")}
-                defaultValue={t("Manual")}
-                visible={isSchedulingEnabled}
-                required
-              />
-              <WorkspaceMemberProperty
-                id="recipients"
-                label={t("Repicients")}
-                accessor={(pipeline) => pipeline.recipients}
-                slug={workspace.slug}
-                multiple
-                disabled={!isSchedulingEnabled}
-                defaultValue="-"
-                visible={isSchedulingEnabled}
-              />
+
+              <>
+                <CronProperty
+                  id="schedule"
+                  accessor="schedule"
+                  label={t("Cron expression")}
+                  defaultValue={t("Manual")}
+                  required
+                  visible={isSchedulingEnabled}
+                />
+                <WorkspaceMemberProperty
+                  id="recipients"
+                  label={t("Notification repicients")}
+                  accessor={(pipeline) => pipeline.recipients}
+                  slug={workspace.slug}
+                  defaultValue="-"
+                  visible={isSchedulingEnabled}
+                />
+              </>
             </DataCard.FormSection>
           </DataCard>
 

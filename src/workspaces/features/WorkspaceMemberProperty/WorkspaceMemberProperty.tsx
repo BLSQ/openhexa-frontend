@@ -1,5 +1,3 @@
-import { gql } from "@apollo/client";
-import User from "core/features/User";
 import { useDataCardProperty } from "core/components/DataCard/context";
 import DataCard from "core/components/DataCard/DataCard";
 import { PropertyDefinition } from "core/components/DataCard/types";
@@ -17,23 +15,20 @@ type WorkspaceMemberPropertyProps = {
 } & PropertyDefinition;
 
 const WorkspaceMemberProperty = (props: WorkspaceMemberPropertyProps) => {
-  const { multiple, disabled, className, slug, defaultValue, ...delegated } =
-    props;
+  const { disabled, className, slug, defaultValue, ...delegated } = props;
   const { property, section } = useDataCardProperty(delegated);
 
   const membersArray = useMemo(
     () => ensureArray(property.displayValue),
     [property]
   );
-
   return (
     <DataCard.Property property={property}>
       {section.isEdited ? (
         <WorkspaceMemberPicker
           workspaceSlug={slug}
-          value={property.formValue ?? null}
+          value={property.formValue ?? []}
           onChange={(v) => property.setValue(v)}
-          multiple={multiple}
           withPortal
           disabled={disabled}
         />
@@ -45,15 +40,6 @@ const WorkspaceMemberProperty = (props: WorkspaceMemberPropertyProps) => {
       )}
     </DataCard.Property>
   );
-};
-
-WorkspaceMemberProperty.fragments = {
-  user: gql`
-    fragment UserProperty_user on User {
-      ...User_user
-    }
-    ${User.fragments.user}
-  `,
 };
 
 export default WorkspaceMemberProperty;

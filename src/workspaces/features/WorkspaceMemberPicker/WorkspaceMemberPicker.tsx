@@ -18,7 +18,6 @@ type WorkspaceMemberPickerProps = {
   required?: boolean;
   disabled?: boolean;
   withPortal?: boolean;
-  multiple?: boolean;
 };
 
 const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
@@ -29,7 +28,6 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
     disabled = false,
     required = false,
     withPortal = false,
-    multiple,
     onChange,
     placeholder = t("Select recipients"),
   } = props;
@@ -63,10 +61,8 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
     []
   );
 
-  const PickerComponent: any = multiple ? MultiCombobox : Combobox;
-
   return (
-    <PickerComponent
+    <MultiCombobox
       required={required}
       onChange={onChange}
       loading={loading}
@@ -87,7 +83,7 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
           {option.user.displayName}
         </Combobox.CheckOption>
       ))}
-    </PickerComponent>
+    </MultiCombobox>
   );
 };
 
