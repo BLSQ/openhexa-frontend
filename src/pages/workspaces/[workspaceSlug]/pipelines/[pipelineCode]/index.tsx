@@ -1,12 +1,14 @@
 import { PlayIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import DataCard from "core/components/DataCard";
+import RenderProperty from "core/components/DataCard/RenderProperty";
+import SwitchProperty from "core/components/DataCard/SwitchProperty";
 import TextProperty from "core/components/DataCard/TextProperty";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
+import { TextColumn } from "core/components/DataGrid/TextColumn";
 import UserColumn from "core/components/DataGrid/UserColumn";
 import Link from "core/components/Link";
 import Page from "core/components/Page";
@@ -15,26 +17,24 @@ import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
+import useCacheKey from "core/hooks/useCacheKey";
+import { PipelineRecipient, PipelineRunTrigger } from "graphql-types";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
+import { useState } from "react";
 import CronProperty from "workspaces/features/CronProperty";
-import RenderProperty from "core/components/DataCard/RenderProperty";
+import PipelineVersionsDialog from "workspaces/features/PipelineVersionsDialog";
+import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import WorkspaceMemberProperty from "workspaces/features/WorkspaceMemberProperty/";
 import {
-  useWorkspacePipelinePageQuery,
   WorkspacePipelinePageDocument,
   WorkspacePipelinePageQuery,
   WorkspacePipelinePageQueryVariables,
+  useWorkspacePipelinePageQuery,
 } from "workspaces/graphql/queries.generated";
 import { updatePipeline } from "workspaces/helpers/pipelines";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import PipelineVersionsDialog from "workspaces/features/PipelineVersionsDialog";
-import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
-import { PipelineRecipient, PipelineRunTrigger } from "graphql-types";
-import { TextColumn } from "core/components/DataGrid/TextColumn";
-import { useRouter } from "next/router";
-import useCacheKey from "core/hooks/useCacheKey";
-import Switch from "core/components/Switch/Switch";
 
 type Props = {
   page: number;
@@ -62,18 +62,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     Boolean(data?.pipeline?.schedule)
   );
   const clearCache = useCacheKey(["pipelines", pipelineCode], () => refetch());
-  // to prevent an "dirty read" from onSave function of isSchedulingEnabled state
-  const isEnabledRef = useRef<boolean>();
-
-  useEffect(() => {
-    if (data?.pipeline?.schedule) {
-      setIsSchedulingEnabled(true);
-    }
-  }, [data?.pipeline?.schedule]);
-
-  useEffect(() => {
-    isEnabledRef.current = isSchedulingEnabled;
-  });
 
   if (!data?.workspace || !data?.pipeline) {
     return null;
@@ -81,19 +69,12 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const { workspace, pipeline } = data;
 
   const onSave = async (values: any) => {
-    let schedule = null;
-    let recipientIds = values.recipients.map(
-      (r: PipelineRecipient) => r.user.id
-    );
-
-    if (isEnabledRef.current) {
-      schedule = values.schedule;
-    }
     await updatePipeline(pipeline.id, {
       name: values.name,
       description: values.description,
-      schedule,
-      recipientIds,
+      schedule: values.enableScheduling ? values.schedule : null,
+      recipientIds:
+        values.recipients?.map((r: PipelineRecipient) => r.user.id) ?? [],
     });
     clearCache();
   };
@@ -198,35 +179,31 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               collapsible={false}
               validate={isSchedulingEnabled}
             >
-              <RenderProperty<any> id="enableScheduling" label={t("Enabled")}>
-                {(property, section) => (
-                  <Switch
-                    name="enable_schedule"
-                    checked={isSchedulingEnabled}
-                    onChange={() => setIsSchedulingEnabled((value) => !value)}
-                    disabled={!section.isEdited}
-                  />
-                )}
-              </RenderProperty>
-
-              <>
-                <CronProperty
-                  id="schedule"
-                  accessor="schedule"
-                  label={t("Cron expression")}
-                  defaultValue={t("Manual")}
-                  required
-                  visible={isSchedulingEnabled}
-                />
-                <WorkspaceMemberProperty
-                  id="recipients"
-                  label={t("Notification repicients")}
-                  accessor={(pipeline) => pipeline.recipients}
-                  slug={workspace.slug}
-                  defaultValue="-"
-                  visible={isSchedulingEnabled}
-                />
-              </>
+              <SwitchProperty
+                id="enableScheduling"
+                label={t("Enabled")}
+                accessor={(item) => {
+                  console.log("item", item);
+                  return Boolean(item.schedule);
+                }}
+              />
+              <CronProperty
+                id="schedule"
+                accessor="schedule"
+                label={t("Cron expression")}
+                defaultValue={"-"}
+                visible={(_, __, values) => values.enableScheduling}
+                required={(_, __, values) => values.enableScheduling}
+              />
+              <WorkspaceMemberProperty
+                id="recipients"
+                label={t("Notification Recipients")}
+                accessor={(pipeline) => pipeline.recipients}
+                slug={workspace.slug}
+                multiple
+                defaultValue="-"
+                visible={(_, __, values) => values.enableScheduling}
+              />
             </DataCard.FormSection>
           </DataCard>
 
