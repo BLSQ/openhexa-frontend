@@ -67,7 +67,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
         pipeline.id,
         params,
         version?.number,
-        values.send_mail_notifications
+        values?.send_mail_notifications || false
       );
       await router.push(
         `/workspaces/${encodeURIComponent(
@@ -259,6 +259,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                   </Field>
                 ))}
                 <Checkbox
+                  checked={form.formData["send_mail_notifications"]}
                   name="send_mail_notifications"
                   onChange={form.handleInputChange}
                   label={t("Get mail notifications")}

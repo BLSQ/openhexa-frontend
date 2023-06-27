@@ -182,10 +182,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               <SwitchProperty
                 id="enableScheduling"
                 label={t("Enabled")}
-                accessor={(item) => {
-                  console.log("item", item);
-                  return Boolean(item.schedule);
-                }}
+                accessor={(item) => Boolean(item.schedule)}
               />
               <CronProperty
                 id="schedule"

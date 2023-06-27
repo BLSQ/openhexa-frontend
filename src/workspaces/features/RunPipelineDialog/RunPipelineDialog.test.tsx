@@ -79,7 +79,8 @@ describe("RunPipelineDialog", () => {
     expect(runPipelineMock).toHaveBeenCalledWith(
       pipeline.id,
       { is_ok: null },
-      pipeline.currentVersion.number
+      pipeline.currentVersion.number,
+      false
     );
   });
 
@@ -131,7 +132,8 @@ describe("RunPipelineDialog", () => {
     expect(runPipelineMock).toHaveBeenCalledWith(
       pipeline.id,
       { int: null },
-      pipeline.currentVersion.number
+      pipeline.currentVersion.number,
+      false
     );
   });
 
@@ -177,7 +179,8 @@ describe("RunPipelineDialog", () => {
     expect(runPipelineMock).toHaveBeenCalledWith(
       pipeline.id,
       { int_param: 0, float_param: 2.2 },
-      pipeline.currentVersion.number
+      pipeline.currentVersion.number,
+      false
     );
   });
 
@@ -211,7 +214,8 @@ describe("RunPipelineDialog", () => {
     expect(runPipelineMock).toHaveBeenCalledWith(
       pipeline.id,
       { multi: ["0", "1", "2"] },
-      pipeline.currentVersion.number
+      pipeline.currentVersion.number,
+      false
     );
   });
 
@@ -245,7 +249,8 @@ describe("RunPipelineDialog", () => {
     expect(runPipelineMock).toHaveBeenCalledWith(
       pipeline.id,
       { string: "coucou" },
-      pipeline.currentVersion.number
+      pipeline.currentVersion.number,
+      false
     );
   });
 
@@ -280,7 +285,8 @@ describe("RunPipelineDialog", () => {
     expect(runPipelineMock).toHaveBeenCalledWith(
       pipeline.id,
       { choices_param: 2 },
-      pipeline.currentVersion.number
+      pipeline.currentVersion.number,
+      false
     );
   });
 });
