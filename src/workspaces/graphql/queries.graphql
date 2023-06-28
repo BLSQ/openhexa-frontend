@@ -153,6 +153,7 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
     executionDate
     duration
     triggerMode
+    sendMailNotifications
     pipeline {
       id
       code

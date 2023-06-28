@@ -62,12 +62,12 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
 
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
-      const { version, ...params } = values;
+      const { version, sendMailNotifications, ...params } = values;
       const run = await runPipeline(
         pipeline.id,
         params,
         version?.number,
-        values?.send_mail_notifications || false
+        sendMailNotifications
       );
       await router.push(
         `/workspaces/${encodeURIComponent(
@@ -83,6 +83,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       const version = ("run" in props && props.run.version) || null;
       let state: any = {
         version,
+        sendMailNotifications: false,
       };
 
       if ("run" in props && props.run) {
@@ -258,12 +259,6 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                     />
                   </Field>
                 ))}
-                <Checkbox
-                  checked={form.formData["send_mail_notifications"]}
-                  name="send_mail_notifications"
-                  onChange={form.handleInputChange}
-                  label={t("Get mail notifications")}
-                />
               </div>
               {form.submitError && (
                 <div className="mt-3 text-sm text-red-600">
@@ -271,7 +266,18 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                 </div>
               )}
             </Dialog.Content>
-            <Dialog.Actions>
+            <Dialog.Actions className="flex-1 items-center">
+              <div className="flex flex-1 items-center">
+                <Checkbox
+                  checked={form.formData.sendMailNotifications}
+                  name="sendMailNotifications"
+                  onChange={form.handleInputChange}
+                  label={t("Receive mail notification")}
+                  help={t(
+                    "You will receive an email when the pipeline is done"
+                  )}
+                />
+              </div>
               <Button type="button" variant="white" onClick={onClose}>
                 {t("Cancel")}
               </Button>

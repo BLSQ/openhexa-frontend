@@ -84,6 +84,26 @@ describe("RunPipelineDialog", () => {
     );
   });
 
+  it("configure the run to receive the result by mail", async () => {
+    const pipeline = pipelineWithParameters([]);
+    useLazyQueryMock.mockReturnValue([
+      jest.fn(),
+      { loading: false, data: { pipelineByCode: pipeline } },
+    ]);
+
+    const user = userEvent.setup();
+
+    render(<RunPipelineDialog open pipeline={pipeline} onClose={() => {}} />);
+    await user.click(await screen.findByLabelText("Receive mail notification"));
+    await submitForm(user);
+    expect(runPipelineMock).toHaveBeenCalledWith(
+      pipeline.id,
+      {},
+      pipeline.currentVersion.number,
+      true
+    );
+  });
+
   it("calls the runPipeline with a required bool not checked", async () => {
     const pipeline = pipelineWithParameters([
       {
