@@ -39,7 +39,6 @@ type FormSectionProps = {
   onSave?: OnSaveFn;
   title?: string;
   children: ReactNode;
-  validate?: boolean;
 } & Pick<DescriptionListProps, "displayMode" | "columns"> &
   Omit<React.ComponentProps<typeof BlockSection>, "title" | "children">;
 
@@ -101,7 +100,6 @@ function FormSection<F extends { [key: string]: any }>(
     defaultOpen,
     children,
     onSave,
-    validate = true,
   } = props;
   const { item } = useItemContext();
 
@@ -144,10 +142,10 @@ function FormSection<F extends { [key: string]: any }>(
   });
 
   useEffect(() => {
-    if (isEdited || !validate) {
+    if (isEdited) {
       form.resetForm();
     }
-  }, [form, isEdited, validate]);
+  }, [form, isEdited]);
 
   useEffect(() => {
     properties.current = definitions.current.reduce<{

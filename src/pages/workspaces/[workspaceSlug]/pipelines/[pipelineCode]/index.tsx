@@ -58,9 +58,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     },
   });
 
-  const [isSchedulingEnabled, setIsSchedulingEnabled] = useState(
-    Boolean(data?.pipeline?.schedule)
-  );
   const clearCache = useCacheKey(["pipelines", pipelineCode], () => refetch());
 
   if (!data?.workspace || !data?.pipeline) {
@@ -177,7 +174,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               title={t("Scheduling")}
               onSave={pipeline.permissions.update ? onSave : undefined}
               collapsible={false}
-              validate={isSchedulingEnabled}
             >
               <SwitchProperty
                 id="enableScheduling"
