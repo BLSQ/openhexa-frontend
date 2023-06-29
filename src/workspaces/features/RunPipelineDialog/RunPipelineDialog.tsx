@@ -125,6 +125,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           }
         }
       }
+      console.log(errors);
       return errors;
     },
   });
