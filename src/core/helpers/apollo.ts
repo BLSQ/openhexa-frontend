@@ -68,6 +68,10 @@ const CACHE_CONFIG: InMemoryCacheConfig = {
       merge: true,
       keyFields: ["key"],
     },
+
+    Pipeline: {
+      merge: true,
+    },
   },
 };
 
