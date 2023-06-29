@@ -184,9 +184,10 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 id="schedule"
                 accessor="schedule"
                 label={t("Cron expression")}
-                defaultValue={"-"}
-                visible={(_, __, values) => values.enableScheduling}
-                required={(_, __, values) => values.enableScheduling}
+                visible={(_, __, values) =>
+                  Boolean(values.enableScheduling || pipeline.schedule)
+                }
+                required={(_, __, values) => Boolean(values.enableScheduling)}
               />
               <WorkspaceMemberProperty
                 id="recipients"
@@ -195,7 +196,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 slug={workspace.slug}
                 multiple
                 defaultValue="-"
-                visible={(_, __, values) => values.enableScheduling}
+                visible={(_, __, values) =>
+                  Boolean(values.enableScheduling || pipeline.schedule)
+                }
               />
             </DataCard.FormSection>
           </DataCard>
