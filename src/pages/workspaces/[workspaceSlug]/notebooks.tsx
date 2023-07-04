@@ -1,5 +1,8 @@
 import { useApolloClient } from "@apollo/client";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Alert from "core/components/Alert";
+import Breadcrumbs from "core/components/Breadcrumbs";
+import Button from "core/components/Button/Button";
 import Page from "core/components/Page";
 import Spinner from "core/components/Spinner";
 import { createGetServerSideProps } from "core/helpers/page";
@@ -68,6 +71,27 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
         className="min-h-screen"
         forceCompactSidebar
       >
+        <WorkspaceLayout.Header
+          className="flex items-center justify-between"
+          helpLink="https://github.com/BLSQ/openhexa/wiki/Using-notebooks-in-OpenHexa"
+        >
+          <Breadcrumbs withHome={false}>
+            <Breadcrumbs.Part
+              isFirst
+              href={`/workspaces/${encodeURIComponent(data.workspace.slug)}`}
+            >
+              {data.workspace.name}
+            </Breadcrumbs.Part>
+            <Breadcrumbs.Part
+              href={`/workspaces/${encodeURIComponent(
+                data.workspace.slug
+              )}/notebooks`}
+              isLast
+            >
+              {t("Notebooks")}
+            </Breadcrumbs.Part>
+          </Breadcrumbs>
+        </WorkspaceLayout.Header>
         {server?.ready ? (
           <iframe className="h-full w-full flex-1" src={server.url}></iframe>
         ) : (

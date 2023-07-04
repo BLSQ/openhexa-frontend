@@ -43,7 +43,7 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
   return (
     <Page title={workspace.name}>
       <WorkspaceLayout workspace={workspace}>
-        <WorkspaceLayout.Header className="flex items-center justify-between">
+        <WorkspaceLayout.Header helpLink="https://github.com/BLSQ/openhexa/wiki/User-manual#using-the-workspaces-database">
           <Breadcrumbs withHome={false}>
             <Breadcrumbs.Part
               isFirst
