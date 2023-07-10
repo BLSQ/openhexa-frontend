@@ -1360,6 +1360,29 @@ export enum InviteWorkspaceMembershipError {
   WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
 }
 
+export enum JoinWorkspaceError {
+  AlreadyExists = 'ALREADY_EXISTS',
+  ExpiredToken = 'EXPIRED_TOKEN',
+  InvalidCredentials = 'INVALID_CREDENTIALS',
+  InvalidToken = 'INVALID_TOKEN',
+  InvitationNotFound = 'INVITATION_NOT_FOUND'
+}
+
+export type JoinWorkspaceInput = {
+  confirmPassword: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  token: Scalars['String']['input'];
+};
+
+export type JoinWorkspaceResult = {
+  __typename?: 'JoinWorkspaceResult';
+  errors: Array<JoinWorkspaceError>;
+  success: Scalars['Boolean']['output'];
+  workspace?: Maybe<Workspace>;
+};
+
 export enum LaunchAccessmodAnalysisError {
   LaunchFailed = 'LAUNCH_FAILED'
 }
@@ -1522,6 +1545,7 @@ export type Mutation = {
   generateNewDatabasePassword: GenerateNewDatabasePasswordResult;
   generateWorkspaceToken: GenerateWorkspaceTokenResult;
   inviteWorkspaceMember: InviteWorkspaceMemberResult;
+  joinWorkspace: JoinWorkspaceResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
   launchNotebookServer: LaunchNotebookServerResult;
   logPipelineMessage: LogPipelineMessageResult;
@@ -1742,6 +1766,11 @@ export type MutationGenerateWorkspaceTokenArgs = {
 
 export type MutationInviteWorkspaceMemberArgs = {
   input: InviteWorkspaceMemberInput;
+};
+
+
+export type MutationJoinWorkspaceArgs = {
+  input: JoinWorkspaceInput;
 };
 
 
