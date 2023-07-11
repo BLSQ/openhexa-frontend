@@ -6,7 +6,7 @@ import useCacheKey from "core/hooks/useCacheKey";
 import { capitalize } from "lodash";
 import { DateTime } from "luxon";
 import { useTranslation } from "react-i18next";
-import { WorskspaceInvitationsQuery } from "./WorkspaceInvitation.generated";
+import { WorskspaceInvitationsQuery } from "./WorkspaceInvitations.generated";
 import { WorkspaceInvitationStatus } from "graphql-types";
 
 const DEFAULT_PAGE_SIZE = 5;

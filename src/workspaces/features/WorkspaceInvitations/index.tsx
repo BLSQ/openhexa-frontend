@@ -1,3 +1,3 @@
-import WorkspaceInvitations from "./WorkspaceInvitation";
+import WorkspaceInvitations from "./WorkspaceInvitations";
 
 export default WorkspaceInvitations;

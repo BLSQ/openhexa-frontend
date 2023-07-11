@@ -11,7 +11,7 @@ export type WorskspaceInvitationsQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorskspaceInvitationsQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, invitations: { __typename?: 'WorkspaceInvitationPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceInvitation', role: Types.WorkspaceMembershipRole, email: string, status: Types.WorkspaceInvitationStatus, createdAt: any, invited_by: { __typename?: 'User', displayName: string } }> } } | null };
+export type WorskspaceInvitationsQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, invitations: { __typename?: 'WorkspaceInvitationPage', totalItems: number, items: Array<{ __typename?: 'WorkspaceInvitation', role: Types.WorkspaceMembershipRole, email: string, status: Types.WorkspaceInvitationStatus, createdAt: any, invited_by?: { __typename?: 'User', displayName: string } | null }> } } | null };
 
 
 export const WorskspaceInvitationsDocument = gql`

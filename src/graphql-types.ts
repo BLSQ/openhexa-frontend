@@ -3040,7 +3040,7 @@ export type WorkspaceInvitation = {
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
-  invited_by: User;
+  invited_by?: Maybe<User>;
   role: WorkspaceMembershipRole;
   status: WorkspaceInvitationStatus;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
