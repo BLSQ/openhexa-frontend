@@ -35,7 +35,9 @@ const DialogContent = (props: { children: ReactNode; className?: string }) => {
 };
 
 const DialogActions = (props: { children: ReactNode; className?: string }) => (
-  <div className={clsx("mt-5 flex justify-end sm:gap-3 md:mt-7")}>
+  <div
+    className={clsx("mt-5 flex justify-end sm:gap-3 md:mt-7", props.className)}
+  >
     {props.children}
   </div>
 );
