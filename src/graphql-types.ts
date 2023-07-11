@@ -3014,6 +3014,7 @@ export type Workspace = {
   createdBy: User;
   database: Database;
   description?: Maybe<Scalars['String']['output']>;
+  invitations: WorkspaceInvitationPage;
   members: WorkspaceMembershipPage;
   name: Scalars['String']['output'];
   permissions: WorkspacePermissions;
@@ -3022,10 +3023,42 @@ export type Workspace = {
 };
 
 
+export type WorkspaceInvitationsArgs = {
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<WorkspaceInvitationStatus>;
+};
+
+
 export type WorkspaceMembersArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
 };
+
+export type WorkspaceInvitation = {
+  __typename?: 'WorkspaceInvitation';
+  createdAt: Scalars['DateTime']['output'];
+  email: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  invited_by: User;
+  role: WorkspaceMembershipRole;
+  status: WorkspaceInvitationStatus;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  workspace: Workspace;
+};
+
+export type WorkspaceInvitationPage = {
+  __typename?: 'WorkspaceInvitationPage';
+  items: Array<WorkspaceInvitation>;
+  pageNumber: Scalars['Int']['output'];
+  totalItems: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export enum WorkspaceInvitationStatus {
+  Accepted = 'ACCEPTED',
+  Pending = 'PENDING'
+}
 
 export type WorkspaceMembership = {
   __typename?: 'WorkspaceMembership';
