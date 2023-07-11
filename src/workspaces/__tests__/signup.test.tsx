@@ -402,7 +402,7 @@ describe("WorkspaceSignUpPage", () => {
     await user.click(submitBtn);
 
     const errorMessage = await screen.findByText(
-      "You already have an account. Please go to the login page."
+      "An account already exists with this email address. Please go to the login page."
     );
     expect(errorMessage).toBeInTheDocument();
   });

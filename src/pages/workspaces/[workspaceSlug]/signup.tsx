@@ -16,8 +16,6 @@ import { JoinWorkspaceError } from "graphql-types";
 import { useTranslation } from "react-i18next";
 
 type Props = {
-  page: number;
-  perPage: number;
   email: string;
   token: string;
 };
@@ -53,15 +51,15 @@ const WorkspaceSignUpPage: NextPageWithLayout = (props: Props) => {
         throw new Error("An unexpected error happened. Please retry later.");
       }
       const { success, errors, workspace } = data.joinWorkspace;
-      if (success) {
-        router.push(`/workspaces/${workspace?.slug}`);
-      } else if (
-        errors.some((x) => x === JoinWorkspaceError.InvalidCredentials)
-      ) {
+      if (success && workspace) {
+        await router.push(`/workspaces/${encodeURIComponent(workspace.slug)}`);
+      } else if (errors.includes(JoinWorkspaceError.InvalidCredentials)) {
         throw new Error(t("Invalid password format"));
-      } else if (errors.some((x) => x === JoinWorkspaceError.AlreadyExists)) {
+      } else if (errors.includes(JoinWorkspaceError.AlreadyExists)) {
         throw new Error(
-          t("You already have an account. Please go to the login page.")
+          t(
+            "An account already exists with this email address. Please go to the login page."
+          )
         );
       } else if (
         errors.some(
@@ -71,7 +69,7 @@ const WorkspaceSignUpPage: NextPageWithLayout = (props: Props) => {
         )
       ) {
         throw new Error(t("The invite link is invalid."));
-      } else if (errors.some((x) => x === JoinWorkspaceError.ExpiredToken)) {
+      } else if (errors.includes(JoinWorkspaceError.ExpiredToken)) {
         throw new Error(t("The invitation has expired."));
       }
     },
