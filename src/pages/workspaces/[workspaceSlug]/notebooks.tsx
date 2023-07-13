@@ -72,15 +72,6 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
             label: t("Using notebooks in OpenHexa"),
             href: "https://github.com/BLSQ/openhexa/wiki/Using-notebooks-in-OpenHexa",
           },
-          {
-            label: t("Using the workspace's database"),
-            href: "https://github.com/BLSQ/openhexa/wiki/User-manual#using-the-workspaces-database",
-          },
-
-          {
-            label: t("Using the workspace's filesystem"),
-            href: "https://github.com/BLSQ/openhexa/wiki/Using-notebooks-in-OpenHexa#using-the-workspace-filesystem",
-          },
         ]}
         forceCompactSidebar
       >

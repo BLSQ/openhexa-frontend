@@ -2,6 +2,7 @@ import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "core/components/Link";
 import Popover from "core/components/Popover/Popover";
+import Title from "core/components/Title";
 import { ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -27,25 +28,21 @@ const Help = (props: HelpProps) => {
         className="w-96"
         placement={placement}
       >
-        <p>
-          {t(
-            "Based on the page you are on, we have selected some help topics that might be relevant to you."
-          )}
-        </p>
-        <ul className="list-inside list-disc py-2">
+        <Title level={5}>{t("Suggested help topics")}</Title>
+        <ul className="list-inside list-disc">
           {links.map((link) => (
             <li key={link.href} className="py-1">
               <Link href={link.href}>{link.label}</Link>
             </li>
           ))}
         </ul>
-        <div className="-mx-4 -mb-4 border-t border-gray-300 bg-gray-100 px-4 py-4">
+        <div className="-mx-4 -mb-4 mt-2 border-t border-gray-300 bg-gray-100 px-4 py-4">
           <Link
             href="https://github.com/BLSQ/openhexa/wiki"
             customStyle="text-gray-900 hover:text-gray-500"
             target="_blank"
           >
-            {t("Or visit the OpenHexa wiki for more help")}
+            {t("Visit the OpenHexa documentation homepage")}
           </Link>
         </div>
       </Popover>
