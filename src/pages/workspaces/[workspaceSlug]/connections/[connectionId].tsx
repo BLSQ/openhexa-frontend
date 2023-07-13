@@ -13,7 +13,6 @@ import { NextPageWithLayout } from "core/helpers/types";
 import useCacheKey from "core/hooks/useCacheKey";
 import { useTranslation } from "next-i18next";
 import ConnectionFieldsSection from "workspaces/features/ConnectionFieldsSection";
-import ConnectionUsageSnippets from "workspaces/features/ConnectionUsageSnippets";
 import DeleteConnectionTrigger from "workspaces/features/DeleteConnectionTrigger";
 import { useUpdateConnectionMutation } from "workspaces/graphql/mutations.generated";
 import {
@@ -69,7 +68,19 @@ const WorkspaceConnectionPage: NextPageWithLayout = ({
 
   return (
     <Page title={connection.name}>
-      <WorkspaceLayout workspace={workspace}>
+      <WorkspaceLayout
+        workspace={workspace}
+        helpLinks={[
+          {
+            label: t("About workspace connections"),
+            href: "https://github.com/BLSQ/openhexa/wiki/User-manual#adding-and-managing-connections",
+          },
+          {
+            label: t("Using workspace connections in notebooks and pipelines"),
+            href: "https://github.com/BLSQ/openhexa/wiki/Using-notebooks-in-OpenHexa#using-connections",
+          },
+        ]}
+      >
         <WorkspaceLayout.Header className="flex items-center justify-between">
           <Breadcrumbs withHome={false}>
             <Breadcrumbs.Part
