@@ -196,29 +196,35 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 label={t("Enabled")}
                 accessor={(item) => Boolean(item.schedule)}
               />
-              <CronProperty
-                id="schedule"
-                accessor="schedule"
-                label={t("Schedule")}
-                help={t("The schedule value should follow the CRON syntax.")}
-                placeholder="0 15 * * *"
-                visible={(_, __, values) =>
-                  Boolean(values.enableScheduling || pipeline.schedule)
-                }
-                required={(_, __, values) => Boolean(values.enableScheduling)}
-              />
-              <WorkspaceMemberProperty
-                id="recipients"
-                label={t("Notification Recipients")}
-                accessor={(pipeline) => pipeline.recipients}
-                slug={workspace.slug}
-                multiple
-                defaultValue="-"
-                visible={(_, __, values) =>
-                  Boolean(values.enableScheduling || pipeline.schedule)
-                }
-              />
-            </DataCard.FormSection>
+                <SwitchProperty
+                  id="enableScheduling"
+                  label={t("Enabled")}
+                  accessor={(item) => Boolean(item.schedule)}
+                />
+                <CronProperty
+                  id="schedule"
+                  accessor="schedule"
+                  label={t("Schedule")}
+                  help={t("The schedule value should follow the CRON syntax.")}
+                  placeholder="0 15 * * *"
+                  visible={(_, __, values) =>
+                    Boolean(values.enableScheduling || pipeline.schedule)
+                  }
+                  required={(_, __, values) => Boolean(values.enableScheduling)}
+                />
+                <WorkspaceMemberProperty
+                  id="recipients"
+                  label={t("Notification Recipients")}
+                  accessor={(pipeline) => pipeline.recipients}
+                  slug={workspace.slug}
+                  multiple
+                  defaultValue="-"
+                  visible={(_, __, values) =>
+                    Boolean(values.enableScheduling || pipeline.schedule)
+                  }
+                />
+              </DataCard.FormSection>
+            )}
           </DataCard>
 
           <div>
