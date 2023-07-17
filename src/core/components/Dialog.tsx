@@ -121,7 +121,7 @@ function Dialog(props: DialogProps) {
           >
             <div
               className={clsx(
-                "inline-block transform px-2 transition-all sm:my-24 sm:w-full sm:px-4",
+                "my-12 inline-block transform px-2 transition-all sm:w-full sm:px-4 tall:my-24",
                 maxWidth ?? "max-w-lg",
                 centered && "sm:align-middle"
               )}
