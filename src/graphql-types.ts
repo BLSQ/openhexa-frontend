@@ -1889,6 +1889,7 @@ export type PipelinePermissions = {
   delete: Scalars['Boolean']['output'];
   deleteVersion: Scalars['Boolean']['output'];
   run: Scalars['Boolean']['output'];
+  schedule: Scalars['Boolean']['output'];
   update: Scalars['Boolean']['output'];
 };
 

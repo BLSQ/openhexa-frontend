@@ -184,18 +184,14 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 }
               </RenderProperty>
             </DataCard.FormSection>
-            <DataCard.FormSection
-              title={t("Scheduling")}
-              onSave={
-                pipeline.permissions.update ? onSaveScheduling : undefined
-              }
-              collapsible={false}
-            >
-              <SwitchProperty
-                id="enableScheduling"
-                label={t("Enabled")}
-                accessor={(item) => Boolean(item.schedule)}
-              />
+            {pipeline.permissions.schedule && (
+              <DataCard.FormSection
+                title={t("Scheduling")}
+                onSave={
+                  pipeline.permissions.update ? onSaveScheduling : undefined
+                }
+                collapsible={false}
+              >
                 <SwitchProperty
                   id="enableScheduling"
                   label={t("Enabled")}
