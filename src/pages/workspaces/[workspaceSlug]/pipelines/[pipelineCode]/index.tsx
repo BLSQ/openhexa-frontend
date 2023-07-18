@@ -184,43 +184,55 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 }
               </RenderProperty>
             </DataCard.FormSection>
-            {pipeline.permissions.schedule && (
-              <DataCard.FormSection
-                title={t("Scheduling")}
-                onSave={
-                  pipeline.permissions.update ? onSaveScheduling : undefined
-                }
-                collapsible={false}
-              >
-                <SwitchProperty
-                  id="enableScheduling"
-                  label={t("Enabled")}
-                  accessor={(item) => Boolean(item.schedule)}
-                />
-                <CronProperty
-                  id="schedule"
-                  accessor="schedule"
-                  label={t("Schedule")}
-                  help={t("The schedule value should follow the CRON syntax.")}
-                  placeholder="0 15 * * *"
-                  visible={(_, __, values) =>
-                    Boolean(values.enableScheduling || pipeline.schedule)
-                  }
-                  required={(_, __, values) => Boolean(values.enableScheduling)}
-                />
-                <WorkspaceMemberProperty
-                  id="recipients"
-                  label={t("Notification Recipients")}
-                  accessor={(pipeline) => pipeline.recipients}
-                  slug={workspace.slug}
-                  multiple
-                  defaultValue="-"
-                  visible={(_, __, values) =>
-                    Boolean(values.enableScheduling || pipeline.schedule)
-                  }
-                />
-              </DataCard.FormSection>
-            )}
+            <DataCard.FormSection
+              title={t("Scheduling")}
+              onSave={
+                pipeline.permissions.update && pipeline.permissions.schedule
+                  ? onSaveScheduling
+                  : undefined
+              }
+              collapsible={false}
+            >
+              {pipeline.permissions.schedule ? (
+                <>
+                  <SwitchProperty
+                    id="enableScheduling"
+                    label={t("Enabled")}
+                    accessor={(item) => Boolean(item.schedule)}
+                  />
+                  <CronProperty
+                    id="schedule"
+                    accessor="schedule"
+                    label={t("Schedule")}
+                    help={t(
+                      "The schedule value should follow the CRON syntax."
+                    )}
+                    placeholder="0 15 * * *"
+                    visible={(_, __, values) =>
+                      Boolean(values.enableScheduling || pipeline.schedule)
+                    }
+                    required={(_, __, values) =>
+                      Boolean(values.enableScheduling)
+                    }
+                  />
+                  <WorkspaceMemberProperty
+                    id="recipients"
+                    label={t("Notification Recipients")}
+                    accessor={(pipeline) => pipeline.recipients}
+                    slug={workspace.slug}
+                    multiple
+                    defaultValue="-"
+                    visible={(_, __, values) =>
+                      Boolean(values.enableScheduling || pipeline.schedule)
+                    }
+                  />
+                </>
+              ) : (
+                <p className="text-sm font-medium italic text-gray-500">
+                  {t("Pipeline with parameters cannot be scheduled")}
+                </p>
+              )}
+            </DataCard.FormSection>
           </DataCard>
 
           <div>
