@@ -49,7 +49,6 @@ const WorkspaceConnectionPage: NextPageWithLayout = ({
         input: {
           id: item.id,
           name: values.name,
-          slug: values.slug,
           description: values.description,
         },
       },
@@ -135,12 +134,13 @@ const WorkspaceConnectionPage: NextPageWithLayout = ({
                 <TextProperty id="name" label={t("Name")} accessor="name" />
                 <TextProperty
                   id="slug"
-                  label={t("Slug")}
+                  label={t("Identifier")}
+                  readonly
                   accessor="slug"
                   help={t(
-                    "The slug is used as the prefix for the environment variables in the notebooks"
+                    "The identifier is used as the prefix for the environment variables in the notebooks"
                   )}
-                  className="font-mono uppercase"
+                  className="font-mono"
                 />
                 <DescriptionList.Item label={t("Type")}>
                   <Badge className={type.color}>{type.label ?? "custom"}</Badge>

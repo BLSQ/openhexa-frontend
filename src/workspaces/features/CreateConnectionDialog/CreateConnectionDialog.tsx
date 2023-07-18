@@ -14,10 +14,7 @@ import Connections, {
   ConnectionForm,
   convertFieldsToInput,
 } from "workspaces/helpers/connections";
-import {
-  FieldForm,
-  getSlugFromName,
-} from "workspaces/helpers/connections/utils";
+import { FieldForm } from "workspaces/helpers/connections/utils";
 import Help from "workspaces/layouts/WorkspaceLayout/Help";
 import { CreateConnectionDialog_WorkspaceFragment } from "./CreateConnectionDialog.generated";
 import { gql } from "@apollo/client";
@@ -143,7 +140,7 @@ export default function CreateConnectionDialog({
         throw new Error(t("Unknown workspace"));
       } else if (errors.find((x) => x === CreateConnectionError.InvalidSlug)) {
         throw new Error(
-          t("The slug of the connection or one of the field is invalid")
+          t("One of the fields is invalid. Please check your inputs.")
         );
       } else if (
         errors.find((x) => x === CreateConnectionError.PermissionDenied)
@@ -157,11 +154,6 @@ export default function CreateConnectionDialog({
       form.resetForm();
     }
   }, [open, form]);
-
-  const slug = useMemo(
-    () => getSlugFromName(form.formData.name ?? ""),
-    [form.formData.name]
-  );
 
   useEffect(() => {
     if (open) {
@@ -221,14 +213,6 @@ export default function CreateConnectionDialog({
                 placeholder={t("Ex: My database server")}
                 max={40}
                 help={t("Maximum 40 characters")}
-                description={
-                  slug && (
-                    <span>
-                      Available as <code className="font-semibold">{slug}</code>{" "}
-                      in Jupyter and pipelines.
-                    </span>
-                  )
-                }
                 required
               />
               <Field

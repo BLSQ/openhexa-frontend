@@ -18,7 +18,6 @@ export type FieldForm = {
 export type ConnectionForm = {
   name: string;
   description?: string;
-  slug?: string;
   type: ConnectionType | null;
   [key: string]: any;
 };
@@ -53,16 +52,6 @@ export function convertFieldsToInput(
     secret: Boolean(f.secret),
     value: fields[f.code],
   }));
-}
-
-export function getSlugFromName(name: string | null) {
-  if (!name) {
-    return "";
-  }
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 }
 
 export function getUsageSnippets(
