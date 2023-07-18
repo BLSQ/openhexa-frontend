@@ -201,7 +201,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 accessor="schedule"
                 label={t("Schedule")}
                 help={t("The schedule value should follow the CRON syntax.")}
-                placeholder="00 15 * * *"
+                placeholder="0 15 * * *"
                 visible={(_, __, values) =>
                   Boolean(values.enableScheduling || pipeline.schedule)
                 }
