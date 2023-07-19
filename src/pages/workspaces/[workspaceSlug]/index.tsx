@@ -2,6 +2,7 @@ import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import MarkdownViewer from "core/components/MarkdownViewer";
+import Overflow from "core/components/Overflow/Overflow";
 import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
@@ -67,6 +68,15 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
           )}
         </WorkspaceLayout.Header>
         <WorkspaceLayout.PageContent>
+          <div className="relative mb-2 h-60 w-72 overflow-auto bg-white">
+            <div className="pointer-events-none sticky top-0 -mt-5 h-5 w-full bg-gradient-to-b from-white to-transparent"></div>
+            {workspace.description}
+            <div className="pointer-events-none sticky bottom-0 -mt-5 h-5 w-full bg-gradient-to-t from-white to-transparent"></div>
+          </div>
+          <Overflow className="my-8 h-24 w-1/4 " fromColor="from-gray-100">
+            {workspace.description}
+          </Overflow>
+
           <Block>
             <Block.Content>
               <MarkdownViewer>{workspace.description || ""}</MarkdownViewer>
