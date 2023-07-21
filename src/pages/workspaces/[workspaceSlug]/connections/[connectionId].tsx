@@ -142,9 +142,6 @@ const WorkspaceConnectionPage: NextPageWithLayout = ({
                   )}
                   className="font-mono"
                 />
-                <DescriptionList.Item label={t("Type")}>
-                  <Badge className={type.color}>{type.label ?? "custom"}</Badge>
-                </DescriptionList.Item>
                 <DateProperty
                   readonly
                   id="createdAt"
