@@ -3,15 +3,15 @@
 {
   "name": "OpenHexa Frontend",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node",
 
   "runArgs": ["--network=openhexa"],
-  
+
   "containerEnv": {
     "FALLBACK_URL": "https://api.demo.openhexa.org/",
     "GRAPHQL_ENDPOINT": "https://api.demo.openhexa.org/graphql/"
   },
-  
+
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
     "ghcr.io/devcontainers/features/git:1": "1.1.5"
