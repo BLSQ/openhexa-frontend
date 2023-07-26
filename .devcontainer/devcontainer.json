@@ -2,15 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
   "name": "OpenHexa Frontend",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "args": {
-      "VARIANT": "16-bullseye"
-    }
-  },
-
-  "runArgs": ["--network=openhexa"],
-
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
   "containerEnv": {
     "FALLBACK_URL": "https://api.demo.openhexa.org/",
     "GRAPHQL_ENDPOINT": "https://api.demo.openhexa.org/graphql/"
@@ -26,7 +18,7 @@
 
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "npm install",
-  "postAttachCommand": "npm run dev",
+  // "postAttachCommand": "npm run dev",
 
   // Configure tool-specific properties.
   // "customizations": {},
