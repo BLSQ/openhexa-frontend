@@ -696,6 +696,7 @@ export type CreateMembershipResult = {
 export type CreatePipelineInput = {
   code: Scalars['String']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  timeout?: InputMaybe<Scalars['Int']['input']>;
   workspaceSlug: Scalars['String']['input'];
 };
 
@@ -1080,6 +1081,21 @@ export type DeleteWorkspaceInput = {
   slug: Scalars['String']['input'];
 };
 
+export enum DeleteWorkspaceInvitationError {
+  InvitationNotFound = 'INVITATION_NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeleteWorkspaceInvitationInput = {
+  invitationId: Scalars['UUID']['input'];
+};
+
+export type DeleteWorkspaceInvitationResult = {
+  __typename?: 'DeleteWorkspaceInvitationResult';
+  errors: Array<DeleteWorkspaceInvitationError>;
+  success: Scalars['Boolean']['output'];
+};
+
 export enum DeleteWorkspaceMemberError {
   MembershipNotFound = 'MEMBERSHIP_NOT_FOUND',
   PermissionDenied = 'PERMISSION_DENIED'
@@ -1408,6 +1424,7 @@ export type Mutation = {
   deletePipelineVersion: DeletePipelineVersionResult;
   deleteTeam: DeleteTeamResult;
   deleteWorkspace: DeleteWorkspaceResult;
+  deleteWorkspaceInvitation: DeleteWorkspaceInvitationResult;
   deleteWorkspaceMember: DeleteWorkspaceMemberResult;
   denyAccessmodAccessRequest: DenyAccessmodAccessRequestResult;
   disableTwoFactor: DisableTwoFactorResult;
@@ -1581,6 +1598,11 @@ export type MutationDeleteTeamArgs = {
 
 export type MutationDeleteWorkspaceArgs = {
   input: DeleteWorkspaceInput;
+};
+
+
+export type MutationDeleteWorkspaceInvitationArgs = {
+  input: DeleteWorkspaceInvitationInput;
 };
 
 
@@ -1867,6 +1889,7 @@ export type PipelineVersionsArgs = {
 
 export enum PipelineError {
   InvalidConfig = 'INVALID_CONFIG',
+  InvalidTimeoutValue = 'INVALID_TIMEOUT_VALUE',
   PipelineAlreadyCompleted = 'PIPELINE_ALREADY_COMPLETED',
   PipelineAlreadyExists = 'PIPELINE_ALREADY_EXISTS',
   PipelineDoesNotSupportParameters = 'PIPELINE_DOES_NOT_SUPPORT_PARAMETERS',

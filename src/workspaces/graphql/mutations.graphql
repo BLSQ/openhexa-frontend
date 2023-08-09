@@ -127,3 +127,10 @@ mutation joinWorkspace($input: JoinWorkspaceInput!) {
     }
   }
 }
+
+mutation deleteWorkspaceInvitation($input: DeleteWorkspaceInvitationInput!) {
+  deleteWorkspaceInvitation(input: $input) {
+    success
+    errors
+  }
+}

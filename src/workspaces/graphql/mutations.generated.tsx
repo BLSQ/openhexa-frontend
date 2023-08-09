@@ -87,6 +87,13 @@ export type JoinWorkspaceMutationVariables = Types.Exact<{
 
 export type JoinWorkspaceMutation = { __typename?: 'Mutation', joinWorkspace: { __typename?: 'JoinWorkspaceResult', success: boolean, errors: Array<Types.JoinWorkspaceError>, workspace?: { __typename?: 'Workspace', slug: string } | null } };
 
+export type DeleteWorkspaceInvitationMutationVariables = Types.Exact<{
+  input: Types.DeleteWorkspaceInvitationInput;
+}>;
+
+
+export type DeleteWorkspaceInvitationMutation = { __typename?: 'Mutation', deleteWorkspaceInvitation: { __typename?: 'DeleteWorkspaceInvitationResult', success: boolean, errors: Array<Types.DeleteWorkspaceInvitationError> } };
+
 
 export const CreateWorkspaceDocument = gql`
     mutation createWorkspace($input: CreateWorkspaceInput!) {
@@ -541,3 +548,37 @@ export function useJoinWorkspaceMutation(baseOptions?: Apollo.MutationHookOption
 export type JoinWorkspaceMutationHookResult = ReturnType<typeof useJoinWorkspaceMutation>;
 export type JoinWorkspaceMutationResult = Apollo.MutationResult<JoinWorkspaceMutation>;
 export type JoinWorkspaceMutationOptions = Apollo.BaseMutationOptions<JoinWorkspaceMutation, JoinWorkspaceMutationVariables>;
+export const DeleteWorkspaceInvitationDocument = gql`
+    mutation deleteWorkspaceInvitation($input: DeleteWorkspaceInvitationInput!) {
+  deleteWorkspaceInvitation(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type DeleteWorkspaceInvitationMutationFn = Apollo.MutationFunction<DeleteWorkspaceInvitationMutation, DeleteWorkspaceInvitationMutationVariables>;
+
+/**
+ * __useDeleteWorkspaceInvitationMutation__
+ *
+ * To run a mutation, you first call `useDeleteWorkspaceInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWorkspaceInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWorkspaceInvitationMutation, { data, loading, error }] = useDeleteWorkspaceInvitationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteWorkspaceInvitationMutation(baseOptions?: Apollo.MutationHookOptions<DeleteWorkspaceInvitationMutation, DeleteWorkspaceInvitationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteWorkspaceInvitationMutation, DeleteWorkspaceInvitationMutationVariables>(DeleteWorkspaceInvitationDocument, options);
+      }
+export type DeleteWorkspaceInvitationMutationHookResult = ReturnType<typeof useDeleteWorkspaceInvitationMutation>;
+export type DeleteWorkspaceInvitationMutationResult = Apollo.MutationResult<DeleteWorkspaceInvitationMutation>;
+export type DeleteWorkspaceInvitationMutationOptions = Apollo.BaseMutationOptions<DeleteWorkspaceInvitationMutation, DeleteWorkspaceInvitationMutationVariables>;
