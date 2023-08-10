@@ -94,6 +94,13 @@ export type DeleteWorkspaceInvitationMutationVariables = Types.Exact<{
 
 export type DeleteWorkspaceInvitationMutation = { __typename?: 'Mutation', deleteWorkspaceInvitation: { __typename?: 'DeleteWorkspaceInvitationResult', success: boolean, errors: Array<Types.DeleteWorkspaceInvitationError> } };
 
+export type ResendWorkspaceInvitationMutationVariables = Types.Exact<{
+  input: Types.ResendWorkspaceInvitationInput;
+}>;
+
+
+export type ResendWorkspaceInvitationMutation = { __typename?: 'Mutation', resendWorkspaceInvitation: { __typename?: 'ResendWorkspaceInvitationResult', success: boolean, errors: Array<Types.ResendWorkspaceInvitationError> } };
+
 
 export const CreateWorkspaceDocument = gql`
     mutation createWorkspace($input: CreateWorkspaceInput!) {
@@ -582,3 +589,37 @@ export function useDeleteWorkspaceInvitationMutation(baseOptions?: Apollo.Mutati
 export type DeleteWorkspaceInvitationMutationHookResult = ReturnType<typeof useDeleteWorkspaceInvitationMutation>;
 export type DeleteWorkspaceInvitationMutationResult = Apollo.MutationResult<DeleteWorkspaceInvitationMutation>;
 export type DeleteWorkspaceInvitationMutationOptions = Apollo.BaseMutationOptions<DeleteWorkspaceInvitationMutation, DeleteWorkspaceInvitationMutationVariables>;
+export const ResendWorkspaceInvitationDocument = gql`
+    mutation resendWorkspaceInvitation($input: ResendWorkspaceInvitationInput!) {
+  resendWorkspaceInvitation(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type ResendWorkspaceInvitationMutationFn = Apollo.MutationFunction<ResendWorkspaceInvitationMutation, ResendWorkspaceInvitationMutationVariables>;
+
+/**
+ * __useResendWorkspaceInvitationMutation__
+ *
+ * To run a mutation, you first call `useResendWorkspaceInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendWorkspaceInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendWorkspaceInvitationMutation, { data, loading, error }] = useResendWorkspaceInvitationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useResendWorkspaceInvitationMutation(baseOptions?: Apollo.MutationHookOptions<ResendWorkspaceInvitationMutation, ResendWorkspaceInvitationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResendWorkspaceInvitationMutation, ResendWorkspaceInvitationMutationVariables>(ResendWorkspaceInvitationDocument, options);
+      }
+export type ResendWorkspaceInvitationMutationHookResult = ReturnType<typeof useResendWorkspaceInvitationMutation>;
+export type ResendWorkspaceInvitationMutationResult = Apollo.MutationResult<ResendWorkspaceInvitationMutation>;
+export type ResendWorkspaceInvitationMutationOptions = Apollo.BaseMutationOptions<ResendWorkspaceInvitationMutation, ResendWorkspaceInvitationMutationVariables>;

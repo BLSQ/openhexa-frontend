@@ -1319,6 +1319,7 @@ type Mutation {
   deleteWorkspaceMember(input: DeleteWorkspaceMemberInput!): DeleteWorkspaceMemberResult!
   generateWorkspaceToken(input: GenerateWorkspaceTokenInput!): GenerateWorkspaceTokenResult!
   joinWorkspace(input: JoinWorkspaceInput!): JoinWorkspaceResult!
+  resendWorkspaceInvitation(input: ResendWorkspaceInvitationInput!): ResendWorkspaceInvitationResult!
   deleteWorkspaceInvitation(input: DeleteWorkspaceInvitationInput!): DeleteWorkspaceInvitationResult!
   createConnection(input: CreateConnectionInput!): CreateConnectionResult!
   updateConnection(input: UpdateConnectionInput!): UpdateConnectionResult!
@@ -1639,6 +1640,21 @@ input RequestAccessmodAccessInput {
 type RequestAccessmodAccessInputResult {
   success: Boolean!
   errors: [RequestAccessmodAccessError!]!
+}
+
+enum ResendWorkspaceInvitationError {
+  INVITATION_NOT_FOUND
+  PERMISSION_DENIED
+  ALREADY_EXISTS
+}
+
+input ResendWorkspaceInvitationInput {
+  invitationId: UUID!
+}
+
+type ResendWorkspaceInvitationResult {
+  success: Boolean!
+  errors: [ResendWorkspaceInvitationError!]!
 }
 
 input ResetPasswordInput {

@@ -3,7 +3,7 @@ import Dialog from "core/components/Dialog";
 import useCacheKey from "core/hooks/useCacheKey";
 import { useState } from "react";
 import { useDeleteWorkspaceInvitationMutation } from "workspaces/graphql/mutations.generated";
-import { DeleteWorkspaceInvitation_WorkspaceInvitationFragment } from "./DeleteWorkspaceInvitation.generated";
+import { DeleteWorkspaceInvitation_WorkspaceInvitationFragment } from "./DeleteWorkspaceInvitationDialog.generated";
 import { DeleteWorkspaceInvitationError } from "graphql-types";
 import { useTranslation } from "react-i18next";
 import Button from "core/components/Button/Button";
@@ -16,7 +16,7 @@ type DeleteWorkspaceInvitationProps = {
 };
 
 const DeleteWorkspaceInvitationDialog = (
-  props: DeleteWorkspaceInvitationProps
+  props: DeleteWorkspaceInvitationProps,
 ) => {
   const { onClose, open, invitation } = props;
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,7 +46,7 @@ const DeleteWorkspaceInvitationDialog = (
 
     if (
       data.deleteWorkspaceInvitation.errors.includes(
-        DeleteWorkspaceInvitationError.PermissionDenied
+        DeleteWorkspaceInvitationError.PermissionDenied,
       )
     ) {
       throw new Error("You are not authorized to perform this action");
@@ -62,7 +62,7 @@ const DeleteWorkspaceInvitationDialog = (
             "By proceeding, the invitation link for {{email}} will no longer be usable.",
             {
               email: invitation.email,
-            }
+            },
           )}
         </p>
       </Dialog.Content>

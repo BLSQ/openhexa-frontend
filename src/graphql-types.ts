@@ -1447,6 +1447,7 @@ export type Mutation = {
   prepareObjectDownload: PrepareObjectDownloadResult;
   prepareObjectUpload: PrepareObjectUploadResult;
   requestAccessmodAccess: RequestAccessmodAccessInputResult;
+  resendWorkspaceInvitation: ResendWorkspaceInvitationResult;
   resetPassword: ResetPasswordResult;
   runDAG: RunDagResult;
   runPipeline: RunPipelineResult;
@@ -1703,6 +1704,11 @@ export type MutationPrepareObjectUploadArgs = {
 
 export type MutationRequestAccessmodAccessArgs = {
   input: RequestAccessmodAccessInput;
+};
+
+
+export type MutationResendWorkspaceInvitationArgs = {
+  input: ResendWorkspaceInvitationInput;
 };
 
 
@@ -2317,6 +2323,22 @@ export type RequestAccessmodAccessInput = {
 export type RequestAccessmodAccessInputResult = {
   __typename?: 'RequestAccessmodAccessInputResult';
   errors: Array<RequestAccessmodAccessError>;
+  success: Scalars['Boolean']['output'];
+};
+
+export enum ResendWorkspaceInvitationError {
+  AlreadyExists = 'ALREADY_EXISTS',
+  InvitationNotFound = 'INVITATION_NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type ResendWorkspaceInvitationInput = {
+  invitationId: Scalars['UUID']['input'];
+};
+
+export type ResendWorkspaceInvitationResult = {
+  __typename?: 'ResendWorkspaceInvitationResult';
+  errors: Array<ResendWorkspaceInvitationError>;
   success: Scalars['Boolean']['output'];
 };
 

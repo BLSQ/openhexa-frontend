@@ -134,3 +134,10 @@ mutation deleteWorkspaceInvitation($input: DeleteWorkspaceInvitationInput!) {
     errors
   }
 }
+
+mutation resendWorkspaceInvitation($input: ResendWorkspaceInvitationInput!) {
+  resendWorkspaceInvitation(input: $input) {
+    success
+    errors
+  }
+}
