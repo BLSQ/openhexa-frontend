@@ -1217,6 +1217,13 @@ export type GenerateWorkspaceTokenResult = {
   token?: Maybe<Scalars['String']['output']>;
 };
 
+export type GenericOutput = {
+  __typename?: 'GenericOutput';
+  name?: Maybe<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
+  uri: Scalars['String']['output'];
+};
+
 export type InviteWorkspaceMemberInput = {
   role: WorkspaceMembershipRole;
   userEmail: Scalars['String']['input'];
@@ -1936,12 +1943,7 @@ export enum PipelineRunOrderBy {
   ExecutionDateDesc = 'EXECUTION_DATE_DESC'
 }
 
-export type PipelineRunOutput = {
-  __typename?: 'PipelineRunOutput';
-  name?: Maybe<Scalars['String']['output']>;
-  type: Scalars['String']['output'];
-  uri: Scalars['String']['output'];
-};
+export type PipelineRunOutput = BucketObject | DatabaseTable | GenericOutput;
 
 export type PipelineRunPage = {
   __typename?: 'PipelineRunPage';
