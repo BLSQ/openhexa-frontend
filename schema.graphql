@@ -626,6 +626,7 @@ input CreatePipelineInput {
   code: String!
   name: String
   workspaceSlug: String!
+  timeout: Int
 }
 
 type CreatePipelineResult {
@@ -1383,6 +1384,7 @@ enum PipelineError {
   PIPELINE_ALREADY_EXISTS
   INVALID_CONFIG
   PIPELINE_ALREADY_COMPLETED
+  INVALID_TIMEOUT_VALUE
 }
 
 type PipelineParameter {

@@ -696,6 +696,7 @@ export type CreateMembershipResult = {
 export type CreatePipelineInput = {
   code: Scalars['String']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  timeout?: InputMaybe<Scalars['Int']['input']>;
   workspaceSlug: Scalars['String']['input'];
 };
 
@@ -1867,6 +1868,7 @@ export type PipelineVersionsArgs = {
 
 export enum PipelineError {
   InvalidConfig = 'INVALID_CONFIG',
+  InvalidTimeoutValue = 'INVALID_TIMEOUT_VALUE',
   PipelineAlreadyCompleted = 'PIPELINE_ALREADY_COMPLETED',
   PipelineAlreadyExists = 'PIPELINE_ALREADY_EXISTS',
   PipelineDoesNotSupportParameters = 'PIPELINE_DOES_NOT_SUPPORT_PARAMETERS',
