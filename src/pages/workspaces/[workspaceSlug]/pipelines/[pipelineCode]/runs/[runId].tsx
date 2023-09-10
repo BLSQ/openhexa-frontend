@@ -52,7 +52,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
 
   const config = useMemo(
     () => (data?.pipelineRun ? getPipelineRunConfig(data.pipelineRun) : []),
-    [data]
+    [data],
   );
 
   const refreshInterval = useMemo(() => {
@@ -123,14 +123,14 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
             </Breadcrumbs.Part>
             <Breadcrumbs.Part
               href={`/workspaces/${encodeURIComponent(
-                workspace.slug
+                workspace.slug,
               )}/pipelines`}
             >
               {t("Pipelines")}
             </Breadcrumbs.Part>
             <Breadcrumbs.Part
               href={`/workspaces/${encodeURIComponent(
-                workspace.slug
+                workspace.slug,
               )}/pipelines/${encodeURIComponent(run.pipeline.code)}`}
             >
               {run.pipeline.name}
@@ -166,25 +166,25 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                     {run.status === PipelineRunStatus.Success &&
                       t("Succeeded on {{relativeTime}}", {
                         relativeTime: DateTime.fromISO(
-                          run.executionDate
+                          run.executionDate,
                         ).toLocaleString(DateTime.DATETIME_SHORT),
                       })}
                     {run.status === PipelineRunStatus.Failed &&
                       t("Failed on {{relativeTime}}", {
                         relativeTime: DateTime.fromISO(
-                          run.executionDate
+                          run.executionDate,
                         ).toLocaleString(DateTime.DATETIME_SHORT),
                       })}
                     {run.status === PipelineRunStatus.Queued &&
                       t("Queued on {{relativeTime}}", {
                         relativeTime: DateTime.fromISO(
-                          run.executionDate
+                          run.executionDate,
                         ).toLocaleString(DateTime.DATETIME_SHORT),
                       })}
                     {run.status === PipelineRunStatus.Running &&
                       t("Started on {{relativeTime}}", {
                         relativeTime: DateTime.fromISO(
-                          run.executionDate
+                          run.executionDate,
                         ).toLocaleString(DateTime.DATETIME_SHORT),
                       })}
                   </div>
@@ -204,7 +204,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                 <DescriptionList.Item label={t("Pipeline")}>
                   <Link
                     href={`/workspaces/${encodeURIComponent(
-                      workspace.slug
+                      workspace.slug,
                     )}/pipelines/${encodeURIComponent(run.pipeline.code)}`}
                   >
                     {run.pipeline.name}
@@ -228,6 +228,14 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                 ) : null}
                 <DescriptionList.Item label={t("Version")}>
                   {run.version.number}
+                </DescriptionList.Item>
+                <DescriptionList.Item
+                  label={t("Timeout")}
+                  help={t("See documentation for more info.")}
+                >
+                  {run.version.timeout
+                    ? formatDuration(run.version.timeout)
+                    : "-"}
                 </DescriptionList.Item>
                 <DescriptionList.Item label={t("Notifications")}>
                   <Checkbox checked={run.sendMailNotifications} disabled />
