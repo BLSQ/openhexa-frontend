@@ -16,8 +16,10 @@ function DHIS2Form(props: { form: FormInstance<ConnectionForm> }) {
           name="url"
           type="url"
           required
-          description={t("The base url to access the API. It ends with /api/")}
-          placeholder="https://play.dhis2.org/2.35.3/api/"
+          description={t(
+            "The base url to access the API. Adding /api/ is not needed and might lead to issues when using our toolbox or other 3rd-party libraries.",
+          )}
+          placeholder="https://play.dhis2.org/2.35.3"
           label={t("API URL")}
         />
       </div>

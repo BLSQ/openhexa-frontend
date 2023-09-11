@@ -311,7 +311,7 @@
   "Template Description": "",
   "The \"Access key ID\" of the AWS user with access to the bucket. This can be found in the AWS console.": "",
   "The \"secret access key\" of the AWS user with access to the bucket. This can be found in the AWS console.": "",
-  "The base url to access the API. It ends with /api/": "",
+  "The base url to access the API. Adding /api/ is not needed and might lead to issues when using our toolbox or other 3rd-party libraries.": "",
   "The base url to access the Iaso instance.": "",
   "The credentials are required and have to be in JSON format": "",
   "The credentials are required if the bucket cannot be accessed publicly.": "",
