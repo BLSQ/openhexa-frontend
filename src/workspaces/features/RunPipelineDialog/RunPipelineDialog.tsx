@@ -102,7 +102,9 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       for (const parameter of version.parameters) {
         const val = fields[parameter.code];
         if (parameter.type === "int") {
-          if (isNaN(val)) {
+          if (parameter.multiple && parameter.required && !val.length) {
+            errors[parameter.code] = t("This field is required");
+          } else if (isNaN(val) && !parameter.multiple) {
             errors[parameter.code] = t("This field must be a number");
           } else if (!val?.toString() && parameter.required) {
             errors[parameter.code] = t("This field is required");
