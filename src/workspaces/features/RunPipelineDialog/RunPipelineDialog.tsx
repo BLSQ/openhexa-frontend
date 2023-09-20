@@ -7,7 +7,7 @@ import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
 import useCacheKey from "core/hooks/useCacheKey";
 import useForm from "core/hooks/useForm";
-import { PipelineVersion } from "graphql-types";
+import { PipelineParameter, PipelineVersion } from "graphql-types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,6 +22,26 @@ import {
 import Spinner from "core/components/Spinner";
 import { ensureArray } from "core/helpers/array";
 import Checkbox from "core/components/forms/Checkbox/Checkbox";
+import { ParameterField_ParameterFragment } from "./ParameterField.generated";
+
+const convertToPipelineInput = (
+  version: PipelineVersion,
+  fields: { [key: string]: any },
+): any => {
+  const _params: { [key: string]: any } = {};
+  for (const parameter of version.parameters) {
+    const val = fields[parameter.code];
+
+    if (parameter.type === "int" && parameter.multiple) {
+      _params[parameter.code] = val.map((v: string) => parseInt(v, 10));
+    } else if (parameter.type === "float" && parameter.multiple) {
+      _params[parameter.code] = val.map((v: string) => parseFloat(v));
+    } else {
+      _params[parameter.code] = val;
+    }
+  }
+  return _params;
+};
 
 type RunPipelineDialogProps = {
   open: boolean;
@@ -63,9 +83,10 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
       const { version, sendMailNotifications, ...params } = values;
+      const parameters = convertToPipelineInput(version, params);
       const run = await runPipeline(
         pipeline.id,
-        params,
+        parameters,
         version?.number,
         sendMailNotifications,
       );
@@ -102,8 +123,15 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       for (const parameter of version.parameters) {
         const val = fields[parameter.code];
         if (parameter.type === "int") {
-          if (parameter.multiple && parameter.required && !val.length) {
-            errors[parameter.code] = t("This field is required");
+          if (parameter.multiple && parameter.required) {
+            if (!val.length) {
+              errors[parameter.code] = t("This field is required");
+            } else if (val.some((v: string) => Number.isNaN(parseInt(v, 10)))) {
+              errors[parameter.code] = t(
+                "This field requires {{type}} values.",
+                { type: parameter.type },
+              );
+            }
           } else if (isNaN(val) && !parameter.multiple) {
             errors[parameter.code] = t("This field must be a number");
           } else if (!val?.toString() && parameter.required) {

@@ -23,26 +23,10 @@ const ParameterField = (props: ParameterFieldProps) => {
         return onChange([]);
       }
 
-      if (parameter.type === "int") {
-        if (parameter.multiple) {
-          const values = value.split("\n");
-          const lastElmnt = values.slice(-1)[0];
-          if (!lastElmnt) {
-            // linebreaks
-            return onChange(values);
-          }
-          const parsedValue = parseInt(lastElmnt, 10);
-          const intValues = values
-            .slice(0, values.length - 1)
-            .map((v: string) => parseInt(v, 10));
-          !parsedValue
-            ? onChange([...intValues.slice(0, intValues.length - 1)])
-            : onChange([...intValues, parsedValue]);
-        } else {
-          onChange(parseInt(value, 10));
-        }
-      } else if (parameter.type === "str" && parameter.multiple) {
+      if (parameter.multiple) {
         onChange(value.split("\n"));
+      } else if (parameter.type === "int" && value !== "") {
+        onChange(parseInt(value, 10));
       } else if (parameter.type === "float" && value !== "") {
         onChange(parseFloat(value));
       } else {
