@@ -83,6 +83,7 @@ const ParameterField = (props: ParameterFieldProps) => {
           onChange={(event) => {
             handleChange(event.target.value);
           }}
+          data-testid={`${parameter.code}-textarea`}
         />
         <small className="ml-2 text-gray-600">
           {t("Separate values with a new line")}
@@ -101,6 +102,7 @@ const ParameterField = (props: ParameterFieldProps) => {
           required={Boolean(parameter.required)}
           onChange={(event) => handleChange(event.target.value)}
           value={value ?? ""}
+          data-testid={`${parameter.code}-input`}
         />
       );
     case "str":
@@ -112,6 +114,7 @@ const ParameterField = (props: ParameterFieldProps) => {
           required={Boolean(parameter.required)}
           onChange={(event) => handleChange(event.target.value)}
           value={value ?? ""}
+          data-testid={`${parameter.code}-input`}
         />
       );
   }
