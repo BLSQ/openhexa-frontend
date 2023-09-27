@@ -7,7 +7,7 @@ import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
 import useCacheKey from "core/hooks/useCacheKey";
 import useForm from "core/hooks/useForm";
-import { PipelineParameter, PipelineVersion } from "graphql-types";
+import { PipelineVersion } from "graphql-types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,7 +22,6 @@ import {
 import Spinner from "core/components/Spinner";
 import { ensureArray } from "core/helpers/array";
 import Checkbox from "core/components/forms/Checkbox/Checkbox";
-import { ParameterField_ParameterFragment } from "./ParameterField.generated";
 
 const convertToPipelineInput = (
   version: PipelineVersion,
@@ -31,9 +30,16 @@ const convertToPipelineInput = (
   const _params: { [key: string]: any } = {};
   for (const parameter of version.parameters) {
     const val = fields[parameter.code];
-
     if (parameter.type === "int" && parameter.multiple) {
-      _params[parameter.code] = val.map((v: string) => parseInt(v, 10));
+      _params[parameter.code] = val
+        .filter((v: string) => v !== "")
+        .map((v: string) => parseInt(v, 10));
+    } else if (parameter.type === "str" && parameter.multiple) {
+      _params[parameter.code] = val
+        .join("\n")
+        .trim()
+        .split("\n")
+        .filter((s: string) => s !== "");
     } else if (parameter.type === "float" && parameter.multiple) {
       _params[parameter.code] = val.map((v: string) => parseFloat(v));
     } else {
@@ -126,7 +132,9 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           if (parameter.multiple && parameter.required) {
             if (!val.length) {
               errors[parameter.code] = t("This field is required");
-            } else if (val.some((v: string) => Number.isNaN(parseInt(v, 10)))) {
+            } else if (
+              val.some((v: string) => v !== "" && Number.isNaN(parseInt(v, 10)))
+            ) {
               errors[parameter.code] = t(
                 "This field requires {{type}} values.",
                 { type: parameter.type },
