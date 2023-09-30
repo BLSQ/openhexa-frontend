@@ -21,19 +21,13 @@ const ParameterField = (props: ParameterFieldProps) => {
     (value: any) => {
       if (parameter.multiple && (value === null || value === undefined)) {
         return onChange([]);
-      }
-
-      if (parameter.multiple) {
+      } else if (parameter.multiple) {
         onChange(value.split("\n"));
-      } else if (parameter.type === "int" && value !== "") {
-        onChange(parseInt(value, 10));
-      } else if (parameter.type === "float" && value !== "") {
-        onChange(parseFloat(value));
       } else {
         onChange(value);
       }
     },
-    [onChange, parameter.multiple, parameter.type],
+    [onChange, parameter.multiple],
   );
 
   if (parameter.type === "bool") {
@@ -84,7 +78,7 @@ const ParameterField = (props: ParameterFieldProps) => {
             handleChange(event.target.value);
           }}
           data-testid={`${parameter.code}-textarea`}
-        />
+        ></Textarea>
         <small className="ml-2 text-gray-600">
           {t("Separate values with a new line")}
         </small>

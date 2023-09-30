@@ -11,7 +11,10 @@ import { PipelineVersion } from "graphql-types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { runPipeline } from "workspaces/helpers/pipelines";
+import {
+  convertParametersToPipelineInput,
+  runPipeline,
+} from "workspaces/helpers/pipelines";
 import PipelineVersionPicker from "../PipelineVersionPicker";
 import ParameterField from "./ParameterField";
 import {
@@ -22,32 +25,6 @@ import {
 import Spinner from "core/components/Spinner";
 import { ensureArray } from "core/helpers/array";
 import Checkbox from "core/components/forms/Checkbox/Checkbox";
-
-const convertToPipelineInput = (
-  version: PipelineVersion,
-  fields: { [key: string]: any },
-): any => {
-  const _params: { [key: string]: any } = {};
-  for (const parameter of version.parameters) {
-    const val = fields[parameter.code];
-    if (parameter.type === "int" && parameter.multiple) {
-      _params[parameter.code] = val
-        .filter((v: string) => v !== "")
-        .map((v: string) => parseInt(v, 10));
-    } else if (parameter.type === "str" && parameter.multiple) {
-      _params[parameter.code] = val
-        .join("\n")
-        .trim()
-        .split("\n")
-        .filter((s: string) => s !== "");
-    } else if (parameter.type === "float" && parameter.multiple) {
-      _params[parameter.code] = val.map((v: string) => parseFloat(v));
-    } else {
-      _params[parameter.code] = val;
-    }
-  }
-  return _params;
-};
 
 type RunPipelineDialogProps = {
   open: boolean;
@@ -89,10 +66,9 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
       const { version, sendMailNotifications, ...params } = values;
-      const parameters = convertToPipelineInput(version, params);
       const run = await runPipeline(
         pipeline.id,
-        parameters,
+        convertParametersToPipelineInput(version, params),
         version?.number,
         sendMailNotifications,
       );
@@ -125,42 +101,26 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       if (!version) {
         return { version: t("The version is required") };
       }
-
+      const normalizedValues = convertParametersToPipelineInput(
+        version,
+        fields,
+      );
       for (const parameter of version.parameters) {
-        const val = fields[parameter.code];
-        if (parameter.type === "int") {
-          if (parameter.multiple && parameter.required) {
-            if (!val.length) {
-              errors[parameter.code] = t("This field is required");
-            } else if (
-              val.some((v: string) => v !== "" && Number.isNaN(parseInt(v, 10)))
-            ) {
-              errors[parameter.code] = t(
-                "This field requires {{type}} values.",
-                { type: parameter.type },
-              );
-            }
-          } else if (isNaN(val) && !parameter.multiple) {
-            errors[parameter.code] = t("This field must be a number");
-          } else if (!val?.toString() && parameter.required) {
+        const val = normalizedValues[parameter.code];
+        if (parameter.type === "int" || parameter.type === "float") {
+          if (ensureArray(val).length === 0 && parameter.required) {
             errors[parameter.code] = t("This field is required");
+          } else if (ensureArray(val).some((v) => isNaN(v))) {
+            errors[parameter.code] = t("This field must contain only numbers");
           }
         }
 
-        if (parameter.type === "float") {
-          if (isNaN(val)) {
-            errors[parameter.code] = t("This field must be a number");
-          } else if (!val?.toString() && parameter.required) {
-            errors[parameter.code] = t("This field is required");
-          }
-        }
-
-        if (parameter.type === "str" && parameter.required) {
-          if (parameter.multiple && ensureArray(val).length === 0) {
-            errors[parameter.code] = t("This field is required");
-          } else if (!fields[parameter.code]) {
-            errors[parameter.code] = t("This field is required");
-          }
+        if (
+          parameter.type === "str" &&
+          parameter.required &&
+          ensureArray(val).length === 0
+        ) {
+          errors[parameter.code] = t("This field is required");
         }
       }
       return errors;

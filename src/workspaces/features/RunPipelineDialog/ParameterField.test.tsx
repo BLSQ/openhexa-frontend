@@ -5,6 +5,7 @@ import ParameterField from "./ParameterField";
 
 describe("ParameterField", () => {
   it("renders a switch for boolean parameter", async () => {
+    const user = userEvent.setup();
     const onChange = jest.fn();
     const param = {
       code: "is_ok",
@@ -29,13 +30,14 @@ describe("ParameterField", () => {
     expect(switchButton.getAttribute("aria-checked")).toBe(
       param.default.toString(),
     );
-    await userEvent.click(switchButton);
+    await user.click(switchButton);
 
     expect(onChange).toHaveBeenCalledWith(!param.default);
   });
 
   it("renders number input for int param", async () => {
     const onChange = jest.fn();
+    const user = userEvent.setup();
     const param = {
       code: "int_param",
       name: "int",
@@ -56,15 +58,44 @@ describe("ParameterField", () => {
 
     const input = screen.getByTestId(`${param.code}-input`);
 
-    await userEvent.type(input, "This will not work");
+    await user.type(input, "This will not work");
     expect(onChange).not.toHaveBeenCalled();
 
-    await userEvent.type(input, "1");
-    expect(onChange).toHaveBeenCalledWith(1);
+    await user.type(input, "1");
+    expect(onChange).toHaveBeenCalledWith("1");
+  });
+
+  it("renders for multiple int param", async () => {
+    const onChange = jest.fn();
+    const user = userEvent.setup();
+    const param = {
+      code: "int_param",
+      name: "int",
+      type: "int",
+      default: "",
+      required: false,
+      choices: null,
+      multiple: true,
+    };
+
+    const { debug } = render(
+      <ParameterField
+        parameter={param}
+        value={param.default}
+        onChange={onChange}
+      />,
+    );
+
+    const input = screen.getByTestId(`${param.code}-textarea`);
+
+    await user.type(input, "123{enter}456");
+    expect(input).toHaveValue("123\n456");
+    expect(onChange).toHaveBeenLastCalledWith(["123", "456"]);
   });
 
   it("renders an input of type string", async () => {
     const onChange = jest.fn();
+    const user = userEvent.setup();
     const param = {
       code: "str_param",
       name: "str_param",
@@ -84,13 +115,14 @@ describe("ParameterField", () => {
     );
 
     const input = screen.getByTestId(`${param.code}-input`);
-    await userEvent.type(input, "This will work");
+    await user.type(input, "This will work");
 
     expect(onChange).toHaveBeenCalled();
   });
 
   it("renders a select if param have choices", async () => {
     const onChange = jest.fn();
+    const user = userEvent.setup();
     const param = {
       code: "choice_param",
       name: "choice__param",
@@ -100,8 +132,6 @@ describe("ParameterField", () => {
       choices: [1, 2, 3],
       multiple: false,
     };
-
-    const user = userEvent.setup();
 
     render(
       <ParameterField
@@ -114,7 +144,7 @@ describe("ParameterField", () => {
     await user.click(await screen.findByTestId("combobox-button"));
     await user.click(await screen.findByText("2"));
 
-    expect(onChange).toHaveBeenCalledWith(2);
+    expect(onChange).toHaveBeenCalledWith("2");
   });
 
   it("renders a textarea for param multiple", async () => {
@@ -140,7 +170,7 @@ describe("ParameterField", () => {
     );
 
     const textarea = screen.getByTestId(`${param.code}-textarea`);
-    await userEvent.type(textarea, "TEXT");
+    await user.type(textarea, "TEXT");
     expect(onChange).toHaveBeenCalled();
   });
 });
