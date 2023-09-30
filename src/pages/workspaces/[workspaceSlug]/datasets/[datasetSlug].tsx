@@ -220,7 +220,7 @@ const WorkspaceDatasetPage: NextPageWithLayout = (props: Props) => {
                         leadingIcon={<CloudArrowUpIcon className="h-4 w-4" />}
                         onClick={() => setUploadDialogOpen(true)}
                       >
-                        {t("Upload new version")}
+                        {t("Upload files")}
                       </Button>
                     )}
                 </div>

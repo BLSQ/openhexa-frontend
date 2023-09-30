@@ -103,30 +103,6 @@ const UploadDatasetVersionDialog = ({
         <Dialog.Content>
           <Tabs onChange={(index) => setTabIndex(index)}>
             <Tabs.Tab
-              label={t("From Pipelines & Jupyter")}
-              className={"space-y-2 pt-2"}
-            >
-              <p>
-                You can upload a new version of your dataset from Pipelines &
-                Jupyter using the following snippet.
-              </p>
-              <pre
-                className={
-                  "bg-slate-100 p-2 font-mono text-sm leading-6 whitespace-break-spaces"
-                }
-              >
-                from pathlib import Path
-                <br />
-                from openhexa.sdk import workspace
-                <br />
-                dataset = workspace.get_dataset(&quot;
-                {datasetLink.dataset.slug}&quot;)
-                <br />
-                dataset.create_version(&quot;v2&quot;,
-                [Path(&quot;/path/to/file.csv&quot;)])
-              </pre>
-            </Tabs.Tab>
-            <Tabs.Tab
               label={t("From your computer")}
               className={"space-y-4 pt-2"}
             >
@@ -147,6 +123,29 @@ const UploadDatasetVersionDialog = ({
                   )}
                 />
               </Field>
+            </Tabs.Tab>
+            <Tabs.Tab
+              label={t("From Pipelines & Jupyter")}
+              className={"space-y-2 pt-2"}
+            >
+              <p>
+                You can upload a new version of your dataset from Pipelines &
+                Jupyter using the following snippet.
+              </p>
+              <pre
+                className={
+                  "bg-slate-100 p-2 font-mono text-sm leading-6 whitespace-break-spaces"
+                }
+              >
+                from openhexa.sdk import workspace
+                <br />
+                dataset = workspace.get_dataset(&quot;
+                {datasetLink.dataset.slug}&quot;)
+                <br />
+                version = dataset.create_version(&quot;v2&quot;)
+                <br />
+                version.add_file(&quot;/path/to/file.csv&quot;)
+              </pre>
             </Tabs.Tab>
           </Tabs>
         </Dialog.Content>
