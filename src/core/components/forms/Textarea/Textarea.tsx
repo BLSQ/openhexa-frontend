@@ -17,6 +17,7 @@ const Textarea = (props: TextareaProps) => {
           : "border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500",
         className,
       )}
+      value={value}
       {...delegated}
     />
   );

@@ -88,8 +88,8 @@ describe("ParameterField", () => {
 
     const input = screen.getByTestId(`${param.code}-textarea`);
 
-    await user.type(input, "123{enter}456");
-    expect(input).toHaveValue("123\n456");
+    input.focus();
+    user.paste("123\n456");
     expect(onChange).toHaveBeenLastCalledWith(["123", "456"]);
   });
 
