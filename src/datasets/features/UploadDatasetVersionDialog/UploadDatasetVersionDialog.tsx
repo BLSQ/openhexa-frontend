@@ -102,10 +102,7 @@ const UploadDatasetVersionDialog = ({
         </Dialog.Title>
         <Dialog.Content>
           <Tabs onChange={(index) => setTabIndex(index)}>
-            <Tabs.Tab
-              label={t("From your computer")}
-              className={"space-y-4 pt-2"}
-            >
+            <Tabs.Tab label={t("Upload files")} className={"space-y-4 pt-2"}>
               <Field
                 name={"name"}
                 label={t("Name")}
@@ -124,10 +121,7 @@ const UploadDatasetVersionDialog = ({
                 />
               </Field>
             </Tabs.Tab>
-            <Tabs.Tab
-              label={t("From Pipelines & Jupyter")}
-              className={"space-y-2 pt-2"}
-            >
+            <Tabs.Tab label={t("Using the SDK")} className={"space-y-2 pt-2"}>
               <p>
                 You can upload a new version of your dataset from Pipelines &
                 Jupyter using the following snippet.
