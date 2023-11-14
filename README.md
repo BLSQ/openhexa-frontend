@@ -93,7 +93,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see
 the result. If you have followed the
 [backend development setup instructions](https://github.com/BLSQ/openhexa-app/#local-development),
 you should be able to log in with the listed credentials in those instructions:
-`root@openhexa.org`/`root` (please check if it hasn't been updated).
+`root@openhexa.org`/`root` (please [check](https://github.com/BLSQ/openhexa-app#local-development) if it hasn't 
+been updated).
 
 ### Configuration
 
