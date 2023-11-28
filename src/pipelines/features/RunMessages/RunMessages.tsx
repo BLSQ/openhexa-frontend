@@ -59,7 +59,10 @@ const RunMessages = (props: RunMessagesProps) => {
       </BaseColumn>
       <BaseColumn accessor="message" label={t("Message")} width={400}>
         {(value) => (
-          <MarkdownViewer className="w-max-[30ch] text-sm overflow-y-auto whitespace-pre-line break-words">
+          <MarkdownViewer
+            className="w-max-[30ch] text-sm overflow-y-auto whitespace-pre-line break-words"
+            allowedElements={["p", "a"]}
+          >
             {value}
           </MarkdownViewer>
         )}
