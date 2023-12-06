@@ -71,6 +71,7 @@ const RunMessages = (props: RunMessagesProps) => {
                 <a
                   {...attributes}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-500"
                 >
                   {content}
