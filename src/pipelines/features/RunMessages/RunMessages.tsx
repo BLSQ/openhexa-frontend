@@ -3,14 +3,16 @@ import Badge from "core/components/Badge";
 import Overflow from "core/components/Overflow";
 import Time from "core/components/Time";
 import useAutoScroll from "core/hooks/useAutoScroll";
+import { PipelineRunStatus } from "graphql-types";
 import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
+import Linkify from "linkify-react";
 import {
   RunMessages_DagRunFragment,
   RunMessages_RunFragment,
 } from "./RunMessages.generated";
-import { PipelineRunStatus } from "graphql-types";
+import Link from "core/components/Link";
 
 type RunMessagesProps = {
   run: RunMessages_DagRunFragment | RunMessages_RunFragment;
@@ -71,7 +73,20 @@ const RunMessages = (props: RunMessagesProps) => {
                   />
                 </td>
                 <td className="p-1.5 text-sm">
-                  <span>{message.message}</span>
+                  <Linkify
+                    as="span"
+                    options={{
+                      render: ({
+                        attributes,
+                        content,
+                      }: {
+                        attributes: any;
+                        content: any;
+                      }) => <Link {...attributes}>{content}</Link>,
+                    }}
+                  >
+                    {message.message}
+                  </Linkify>
                 </td>
               </tr>
             ))}
