@@ -277,7 +277,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
             <Block.Section title={t("Messages")}>
               <RunMessages run={run} />
             </Block.Section>
-            <Block.Section title={t("Logs")} collapsible>
+            <Block.Section title={t("Logs")} collapsible defaultOpen={false}>
               <RunLogs run={run} />
             </Block.Section>
           </Block>
