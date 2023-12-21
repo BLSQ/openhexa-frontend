@@ -278,7 +278,8 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
               </Block.Section>
             )}
             <Block.Section title={t("Messages")}>
-              <RunMessages run={run} />
+              {/* Set a ref to the component to recreate it completely when the run id changes.  */}
+              <RunMessages key={run.id} run={run} />
             </Block.Section>
             <Block.Section title={t("Logs")} collapsible defaultOpen={false}>
               <RunLogs run={run} />
