@@ -1,6 +1,7 @@
 {
   "(select specific version)": "",
   "{{files}} is not a valid file___one": "",
+  "{{files}} is not a valid file___many": "",
   "{{files}} is not a valid file___other": "",
   "{{value}}d": "",
   "{{value}}h": "",
@@ -36,6 +37,7 @@
   "An error occurred while linking this dataset": "",
   "An unexpected error ocurred.": "",
   "Approx. {{count}} row___one": "",
+  "Approx. {{count}} row___many": "",
   "Approx. {{count}} row___other": "",
   "Archive": "",
   "Archive {{name}}": "",

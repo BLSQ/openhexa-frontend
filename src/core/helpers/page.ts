@@ -35,14 +35,16 @@ export function createGetServerSideProps(options: CreateGetServerSideProps) {
   return async function (
     ctx: GetServerSidePropsContextWithUser,
   ): Promise<GetServerSidePropsResult<ServerSideProps>> {
-    const translations = await serverSideTranslations("en", i18n);
-
+    ctx.me = await getMe(ctx);
+    const translations = await serverSideTranslations(
+      ctx.me?.user?.language ?? "en",
+      i18n,
+    );
     let result = {
       props: {
         ...translations,
       },
     } as any;
-    ctx.me = await getMe(ctx);
 
     if (!ctx.me?.user && requireAuth) {
       return {
