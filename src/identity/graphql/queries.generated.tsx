@@ -13,7 +13,7 @@ export type GetUserQuery = { __typename?: 'Query', me: { __typename?: 'Me', hasT
 export type AccountPageQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type AccountPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', hasTwoFactorEnabled: boolean, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, dateJoined: any, displayName: string, id: string, email: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } };
+export type AccountPageQuery = { __typename?: 'Query', me: { __typename?: 'Me', hasTwoFactorEnabled: boolean, user?: { __typename?: 'User', firstName?: string | null, lastName?: string | null, dateJoined: any, displayName: string, id: string, email: string, language: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } };
 
 
 export const GetUserDocument = gql`
@@ -88,6 +88,7 @@ export const AccountPageDocument = gql`
       displayName
       id
       email
+      language
       ...User_user
     }
   }
