@@ -26,11 +26,6 @@ connect to an [OpenHEXA](https://github.com/BLSQ/openhexa-app) instance.
 The app communicates with OpenHEXA through its [GraphQL](https://graphql.org/) API, and uses the standard OpenHEXA
 cookie-based authentication.
 
-For more information about the technical aspects of OpenHEXA, you might be interested in the two following wiki pages:
-
-- [Installing OpenHEXA](https://github.com/BLSQ/openhexa/wiki/Installation-instructions)
-- [Technical Overview](https://github.com/BLSQ/openhexa/wiki/Technical-overview)
-
 ## Requirements
 
 The Frontend requires at least Node v16 and uses `npm` to manage its
