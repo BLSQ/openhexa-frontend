@@ -26,11 +26,6 @@ connect to an [OpenHEXA](https://github.com/BLSQ/openhexa-app) instance.
 The app communicates with OpenHEXA through its [GraphQL](https://graphql.org/) API, and uses the standard OpenHEXA
 cookie-based authentication.
 
-## Requirements
-
-The Frontend requires at least Node v16 and uses `npm` to manage its
-dependencies. Make sure [you upgrade to the last version of `npm`](https://docs.npmjs.com/try-the-latest-stable-version-of-npm).
-
 ## Docker image
 
 OpenHEXA FrontEnd is published as a Docker Image on Docker Hub:
@@ -54,7 +49,7 @@ section of our wiki gives an overview of the local development setup required to
 
 ### Requirements
 
-The Frontend component requires a recent (`v18+`) version of [Node.js](https://nodejs.org/).
+The Frontend component requires a recent (`v16` or newer) version of [Node.js](https://nodejs.org/).
 
 We recommend using [`nvm`](https://github.com/nvm-sh/nvm) to manage multiple versions of Node.
 
