@@ -2,6 +2,7 @@ import { getMe } from "identity/helpers/auth";
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { addApolloState, CustomApolloClient, getApolloClient } from "./apollo";
+import { getAcceptPreferredLocale } from "./i18n";
 
 interface GetServerSidePropsContextWithUser extends GetServerSidePropsContext {
   me: Awaited<ReturnType<typeof getMe>>;
@@ -37,7 +38,9 @@ export function createGetServerSideProps(options: CreateGetServerSideProps) {
   ): Promise<GetServerSidePropsResult<ServerSideProps>> {
     ctx.me = await getMe(ctx);
     const translations = await serverSideTranslations(
-      ctx.me?.user?.language ?? "en",
+      ctx.me?.user?.language ??
+        getAcceptPreferredLocale(ctx.req.headers) ??
+        "en",
       i18n,
     );
     let result = {
