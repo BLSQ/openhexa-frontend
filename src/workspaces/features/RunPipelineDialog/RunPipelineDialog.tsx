@@ -10,7 +10,7 @@ import useForm from "core/hooks/useForm";
 import { PipelineVersion } from "graphql-types";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import {
   convertParametersToPipelineInput,
   isConnectionParameter,
@@ -148,7 +148,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
         },
       });
     }
-  }, [open, form, fetch, props, pipeline]);
+  }, [open, form, fetch, props, pipeline.code, pipeline.workspace]);
 
   useEffect(() => {
     if (!form.formData.version && open) {

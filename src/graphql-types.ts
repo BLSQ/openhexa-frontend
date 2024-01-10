@@ -404,6 +404,7 @@ export type BucketObjectsArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
   prefix?: InputMaybe<Scalars['String']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type BucketObject = {
@@ -1112,6 +1113,22 @@ export type Datasource = {
   name: Scalars['String']['output'];
 };
 
+export enum DeclineWorkspaceInvitationError {
+  InvitationNotFound = 'INVITATION_NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type DeclineWorkspaceInvitationInput = {
+  invitationId: Scalars['UUID']['input'];
+};
+
+export type DeclineWorkspaceInvitationResult = {
+  __typename?: 'DeclineWorkspaceInvitationResult';
+  errors: Array<DeclineWorkspaceInvitationError>;
+  invitation?: Maybe<WorkspaceInvitation>;
+  success: Scalars['Boolean']['output'];
+};
+
 export enum DeleteAccessmodAnalysisError {
   DeleteFailed = 'DELETE_FAILED',
   NotFound = 'NOT_FOUND'
@@ -1396,27 +1413,6 @@ export type EnableTwoFactorResult = {
   verified?: Maybe<Scalars['Boolean']['output']>;
 };
 
-export type ExternalDashboard = {
-  __typename?: 'ExternalDashboard';
-  countries: Array<Country>;
-  createdAt: Scalars['DateTime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['UUID']['output'];
-  name: Scalars['String']['output'];
-  pictureUrl: Scalars['URL']['output'];
-  tags: Array<Tag>;
-  updatedAt: Scalars['DateTime']['output'];
-  url: Scalars['URL']['output'];
-};
-
-export type ExternalDashboardPage = {
-  __typename?: 'ExternalDashboardPage';
-  items: Array<ExternalDashboard>;
-  pageNumber: Scalars['Int']['output'];
-  totalItems: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
-};
-
 export type FeatureFlag = {
   __typename?: 'FeatureFlag';
   code: Scalars['String']['output'];
@@ -1494,24 +1490,20 @@ export enum InviteWorkspaceMembershipError {
 }
 
 export enum JoinWorkspaceError {
+  AlreadyAccepted = 'ALREADY_ACCEPTED',
   AlreadyExists = 'ALREADY_EXISTS',
-  ExpiredToken = 'EXPIRED_TOKEN',
-  InvalidCredentials = 'INVALID_CREDENTIALS',
-  InvalidToken = 'INVALID_TOKEN',
-  InvitationNotFound = 'INVITATION_NOT_FOUND'
+  InvitationNotFound = 'INVITATION_NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
 }
 
 export type JoinWorkspaceInput = {
-  confirmPassword: Scalars['String']['input'];
-  firstName: Scalars['String']['input'];
-  lastName: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  token: Scalars['String']['input'];
+  invitationId: Scalars['UUID']['input'];
 };
 
 export type JoinWorkspaceResult = {
   __typename?: 'JoinWorkspaceResult';
   errors: Array<JoinWorkspaceError>;
+  invitation?: Maybe<WorkspaceInvitation>;
   success: Scalars['Boolean']['output'];
   workspace?: Maybe<Workspace>;
 };
@@ -1676,6 +1668,7 @@ export type Mutation = {
   createPipeline: CreatePipelineResult;
   createTeam: CreateTeamResult;
   createWorkspace: CreateWorkspaceResult;
+  declineWorkspaceInvitation: DeclineWorkspaceInvitationResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
   deleteAccessmodFileset: DeleteAccessmodFilesetResult;
   deleteAccessmodProject: DeleteAccessmodProjectResult;
@@ -1715,6 +1708,7 @@ export type Mutation = {
   prepareObjectDownload: PrepareObjectDownloadResult;
   prepareObjectUpload: PrepareObjectUploadResult;
   prepareVersionFileDownload: PrepareVersionFileDownloadResult;
+  register: RegisterResult;
   requestAccessmodAccess: RequestAccessmodAccessInputResult;
   resendWorkspaceInvitation: ResendWorkspaceInvitationResult;
   resetPassword: ResetPasswordResult;
@@ -1730,11 +1724,11 @@ export type Mutation = {
   updateConnection: UpdateConnectionResult;
   updateDAG: UpdateDagResult;
   updateDataset: UpdateDatasetResult;
-  updateExternalDashboard: UpdateExternalDashboardResult;
   updateMembership: UpdateMembershipResult;
   updatePipeline: UpdatePipelineResult;
   updatePipelineProgress: UpdatePipelineProgressResult;
   updateTeam: UpdateTeamResult;
+  updateUser: UpdateUserResult;
   updateWorkspace: UpdateWorkspaceResult;
   updateWorkspaceMember: UpdateWorkspaceMemberResult;
   uploadPipeline: UploadPipelineResult;
@@ -1829,6 +1823,11 @@ export type MutationCreateTeamArgs = {
 
 export type MutationCreateWorkspaceArgs = {
   input: CreateWorkspaceInput;
+};
+
+
+export type MutationDeclineWorkspaceInvitationArgs = {
+  input: DeclineWorkspaceInvitationInput;
 };
 
 
@@ -2017,6 +2016,11 @@ export type MutationPrepareVersionFileDownloadArgs = {
 };
 
 
+export type MutationRegisterArgs = {
+  input: RegisterInput;
+};
+
+
 export type MutationRequestAccessmodAccessArgs = {
   input: RequestAccessmodAccessInput;
 };
@@ -2092,11 +2096,6 @@ export type MutationUpdateDatasetArgs = {
 };
 
 
-export type MutationUpdateExternalDashboardArgs = {
-  input: UpdateExternalDashboardInput;
-};
-
-
 export type MutationUpdateMembershipArgs = {
   input: UpdateMembershipInput;
 };
@@ -2114,6 +2113,11 @@ export type MutationUpdatePipelineProgressArgs = {
 
 export type MutationUpdateTeamArgs = {
   input: UpdateTeamInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  input: UpdateUserInput;
 };
 
 
@@ -2215,6 +2219,8 @@ export type Pipeline = {
   schedule?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
+  webhookEnabled: Scalars['Boolean']['output'];
+  webhookUrl?: Maybe<Scalars['String']['output']>;
   workspace?: Maybe<Workspace>;
 };
 
@@ -2234,6 +2240,7 @@ export type PipelineVersionsArgs = {
 export enum PipelineError {
   InvalidConfig = 'INVALID_CONFIG',
   InvalidTimeoutValue = 'INVALID_TIMEOUT_VALUE',
+  PermissionDenied = 'PERMISSION_DENIED',
   PipelineAlreadyCompleted = 'PIPELINE_ALREADY_COMPLETED',
   PipelineAlreadyExists = 'PIPELINE_ALREADY_EXISTS',
   PipelineDoesNotSupportParameters = 'PIPELINE_DOES_NOT_SUPPORT_PARAMETERS',
@@ -2321,7 +2328,8 @@ export enum PipelineRunStatus {
 
 export enum PipelineRunTrigger {
   Manual = 'manual',
-  Scheduled = 'scheduled'
+  Scheduled = 'scheduled',
+  Webhook = 'webhook'
 }
 
 export type PipelineTokenInput = {
@@ -2482,12 +2490,11 @@ export type Query = {
   datasetLinkBySlug?: Maybe<DatasetLink>;
   datasetVersion?: Maybe<DatasetVersion>;
   datasets: DatasetPage;
-  externalDashboard?: Maybe<ExternalDashboard>;
-  externalDashboards: ExternalDashboardPage;
   lastActivities: Array<Activity>;
   me: Me;
   notebooksUrl: Scalars['URL']['output'];
   organizations: Array<Organization>;
+  pendingWorkspaceInvitations: WorkspaceInvitationPage;
   pipeline?: Maybe<Pipeline>;
   pipelineByCode?: Maybe<Pipeline>;
   pipelineRun?: Maybe<PipelineRun>;
@@ -2627,13 +2634,8 @@ export type QueryDatasetsArgs = {
 };
 
 
-export type QueryExternalDashboardArgs = {
-  id: Scalars['UUID']['input'];
-};
-
-
-export type QueryExternalDashboardsArgs = {
-  page?: InputMaybe<Scalars['Int']['input']>;
+export type QueryPendingWorkspaceInvitationsArgs = {
+  page?: Scalars['Int']['input'];
   perPage?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -2691,6 +2693,28 @@ export type QueryWorkspacesArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
   query?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum RegisterError {
+  AlreadyLoggedIn = 'ALREADY_LOGGED_IN',
+  EmailTaken = 'EMAIL_TAKEN',
+  InvalidPassword = 'INVALID_PASSWORD',
+  InvalidToken = 'INVALID_TOKEN',
+  PasswordMismatch = 'PASSWORD_MISMATCH'
+}
+
+export type RegisterInput = {
+  firstName: Scalars['String']['input'];
+  invitationToken: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  password1: Scalars['String']['input'];
+  password2: Scalars['String']['input'];
+};
+
+export type RegisterResult = {
+  __typename?: 'RegisterResult';
+  errors?: Maybe<Array<RegisterError>>;
+  success: Scalars['Boolean']['output'];
 };
 
 export enum RequestAccessmodAccessError {
@@ -3077,25 +3101,6 @@ export type UpdateDatasetResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export enum UpdateExternalDashboardError {
-  Invalid = 'INVALID',
-  NotFound = 'NOT_FOUND'
-}
-
-export type UpdateExternalDashboardInput = {
-  countries?: InputMaybe<Array<CountryInput>>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['UUID']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type UpdateExternalDashboardResult = {
-  __typename?: 'UpdateExternalDashboardResult';
-  errors: Array<UpdateExternalDashboardError>;
-  externalDashboard?: Maybe<ExternalDashboard>;
-  success: Scalars['Boolean']['output'];
-};
-
 export enum UpdateMembershipError {
   InvalidRole = 'INVALID_ROLE',
   NotFound = 'NOT_FOUND',
@@ -3127,6 +3132,7 @@ export type UpdatePipelineInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   recipientIds?: InputMaybe<Array<Scalars['UUID']['input']>>;
   schedule?: InputMaybe<Scalars['String']['input']>;
+  webhookEnabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdatePipelineProgressInput = {
@@ -3162,6 +3168,24 @@ export type UpdateTeamResult = {
   errors: Array<UpdateTeamError>;
   success: Scalars['Boolean']['output'];
   team?: Maybe<Team>;
+};
+
+export enum UpdateUserError {
+  InvalidLanguage = 'INVALID_LANGUAGE',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+export type UpdateUserInput = {
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  language?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateUserResult = {
+  __typename?: 'UpdateUserResult';
+  errors: Array<UpdateUserError>;
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
 };
 
 export enum UpdateWorkspaceError {
@@ -3223,6 +3247,7 @@ export type User = {
   email: Scalars['String']['output'];
   firstName?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
+  language: Scalars['String']['output'];
   lastLogin?: Maybe<Scalars['DateTime']['output']>;
   lastName?: Maybe<Scalars['String']['output']>;
 };
@@ -3293,9 +3318,9 @@ export type WorkspaceDatasetsArgs = {
 
 
 export type WorkspaceInvitationsArgs = {
+  includeAccepted?: InputMaybe<Scalars['Boolean']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
-  status?: InputMaybe<WorkspaceInvitationStatus>;
 };
 
 
@@ -3309,7 +3334,7 @@ export type WorkspaceInvitation = {
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
-  invited_by?: Maybe<User>;
+  invitedBy?: Maybe<User>;
   role: WorkspaceMembershipRole;
   status: WorkspaceInvitationStatus;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -3326,6 +3351,7 @@ export type WorkspaceInvitationPage = {
 
 export enum WorkspaceInvitationStatus {
   Accepted = 'ACCEPTED',
+  Declined = 'DECLINED',
   Pending = 'PENDING'
 }
 

@@ -31,6 +31,7 @@ import {
   SidebarMenuQueryVariables,
   SidebarMenu_WorkspaceFragment,
 } from "./SidebarMenu.generated";
+import { logout } from "identity/helpers/auth";
 
 interface SidebarMenuProps {
   workspace: SidebarMenu_WorkspaceFragment;
@@ -76,6 +77,9 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   >(
     gql`
       query SidebarMenu($page: Int, $perPage: Int) {
+        pendingWorkspaceInvitations(page: 1, perPage: 1) {
+          totalItems
+        }
         workspaces(page: $page, perPage: $perPage) {
           totalItems
           items {
@@ -241,6 +245,13 @@ const SidebarMenu = (props: SidebarMenuProps) => {
             >
               <UserIcon className="h-5 w-5 text-gray-400 transition-all group-hover:text-gray-600" />
               {t("Account settings")}
+              {data?.pendingWorkspaceInvitations.totalItems ? (
+                <div className="ml-auto">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-pink-500">
+                    {data.pendingWorkspaceInvitations.totalItems}
+                  </span>
+                </div>
+              ) : null}
             </Link>
             {me.permissions.adminPanel && (
               <Link
@@ -267,17 +278,16 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                 className="group flex gap-2 px-4 py-2.5 text-gray-700 transition-all hover:bg-gray-100 hover:text-gray-800"
               >
                 <ArrowLeftCircleIcon className="h-5 w-5 text-gray-400 transition-all group-hover:text-gray-600" />
-                {t("Back to OpenHexa classic")}
+                {t("Back to OpenHEXA classic")}
               </Link>
             )}
-            <Link
-              href="/auth/logout"
-              noStyle
+            <button
+              onClick={() => logout()}
               className="group flex gap-2 px-4 py-2.5 text-red-600 transition-all hover:bg-gray-100 hover:text-gray-800"
             >
               <ArrowRightOnRectangleIcon className="h-5 w-5" />
               {t("Sign out")}
-            </Link>
+            </button>
           </section>
 
           {me.user && (

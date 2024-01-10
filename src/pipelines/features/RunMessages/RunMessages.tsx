@@ -1,14 +1,18 @@
 import { gql } from "@apollo/client";
 import Badge from "core/components/Badge";
-import DataGrid, { BaseColumn } from "core/components/DataGrid";
-import DateColumn from "core/components/DataGrid/DateColumn";
+import Link from "core/components/Link";
+import Spinner from "core/components/Spinner";
+import Time from "core/components/Time";
+import useAutoScroll from "core/hooks/useAutoScroll";
+import { PipelineRunStatus } from "graphql-types";
+import Linkify from "linkify-react";
 import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
+import { useRef } from "react";
 import {
   RunMessages_DagRunFragment,
   RunMessages_RunFragment,
 } from "./RunMessages.generated";
-import MarkdownViewer from "core/components/MarkdownViewer";
 
 type RunMessagesProps = {
   run: RunMessages_DagRunFragment | RunMessages_RunFragment;
@@ -16,6 +20,8 @@ type RunMessagesProps = {
 
 function getBadgeClassName(priority: string) {
   switch (priority) {
+    case "DEBUG":
+      return "bg-gray-50 text-gray-500";
     case "INFO":
       return "bg-sky-100 text-sky-600";
     case "WARNING":
@@ -30,44 +36,65 @@ function getBadgeClassName(priority: string) {
 const RunMessages = (props: RunMessagesProps) => {
   const { t } = useTranslation();
   const { run } = props;
-
-  if (run.messages.length === 0) {
-    return <p className="text-sm italic text-gray-600">{t("No messages")}</p>;
-  }
+  const ref = useRef<HTMLDivElement>(null);
+  useAutoScroll(ref, "smooth");
 
   return (
-    <DataGrid
-      data={run.messages}
-      sortable
-      totalItems={run.messages.length}
-      defaultPageSize={15}
-      className="overflow-hidden rounded-md border"
-    >
-      <DateColumn
-        accessor="timestamp"
-        label={t("Timestamp")}
-        format={DateTime.DATETIME_SHORT_WITH_SECONDS}
-        defaultValue="-"
-        className="max-w-[50ch] py-3"
-      />
-      <BaseColumn
-        accessor="priority"
-        label={t("Priority")}
-        className="max-w-[50ch] py-3"
-      >
-        {(value) => <Badge className={getBadgeClassName(value)}>{value}</Badge>}
-      </BaseColumn>
-      <BaseColumn accessor="message" label={t("Message")} width={400}>
-        {(value) => (
-          <MarkdownViewer
-            className="w-max-[30ch] text-sm overflow-y-auto whitespace-pre-line break-words"
-            allowedElements={["p", "a"]}
-          >
-            {value}
-          </MarkdownViewer>
-        )}
-      </BaseColumn>
-    </DataGrid>
+    <>
+      <div className="max-h-96 overflow-y-auto">
+        <div ref={ref}>
+          {run.messages.length === 0 &&
+          [PipelineRunStatus.Failed, PipelineRunStatus.Success].includes(
+            run.status as PipelineRunStatus,
+          ) ? (
+            <p className="text-sm italic text-gray-600">{t("No messages")}</p>
+          ) : (
+            <table className="table-fixed">
+              <tbody>
+                {run.messages.map((message, index) => (
+                  <tr key={index}>
+                    <td className="p-1">
+                      <Badge className={getBadgeClassName(message.priority)}>
+                        {message.priority}
+                      </Badge>
+                    </td>
+                    <td className="p-1">
+                      <Time
+                        className="text-sm text-gray-400"
+                        datetime={message.timestamp}
+                        format={DateTime.DATETIME_SHORT_WITH_SECONDS}
+                      />
+                    </td>
+                    <td className="p-1 text-sm">
+                      <Linkify
+                        as="span"
+                        options={{
+                          render: ({
+                            attributes,
+                            content,
+                          }: {
+                            attributes: any;
+                            content: any;
+                          }) => <Link {...attributes}>{content}</Link>,
+                        }}
+                      >
+                        {message.message}
+                      </Linkify>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+      {run.status === PipelineRunStatus.Running && (
+        <div className="flex items-center gap-1.5 text-gray-400 text-sm px-2 py-2">
+          <Spinner size="xs" />
+          {t("Waiting for messages...")}
+        </div>
+      )}
+    </>
   );
 };
 
@@ -75,6 +102,7 @@ RunMessages.fragments = {
   dagRun: gql`
     fragment RunMessages_dagRun on DAGRun {
       id
+      status
       messages {
         message
         timestamp
@@ -85,6 +113,7 @@ RunMessages.fragments = {
   run: gql`
     fragment RunMessages_run on PipelineRun {
       id
+      status
       messages {
         message
         timestamp

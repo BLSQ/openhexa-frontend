@@ -1,5 +1,5 @@
 <div align="center">
-   <img alt="OpenHexa Logo" src="https://raw.githubusercontent.com/BLSQ/openhexa-app/main/hexa/static/img/logo/logo_with_text_grey.svg" height="80">
+   <img alt="OpenHEXA Logo" src="https://raw.githubusercontent.com/BLSQ/openhexa-app/main/hexa/static/img/logo/logo_with_text_grey.svg" height="80">
 </div>
 <p align="center">
     <em>Open-source Data integration platform</em>
@@ -10,53 +10,50 @@
    </a>
 </p>
 
-OpenHexa Frontend Component
+OpenHEXA Frontend Component
 ===========================
 
-OpenHexa is an open-source data integration platform developed by [Bluesquare](https://bluesquarehub.com).
+OpenHEXA is an open-source data integration platform developed by [Bluesquare](https://bluesquarehub.com).
 
 Its goal is to facilitate data integration and analysis workflows, in particular in the context of public health
 projects.
 
-Please refer to the [OpenHexa wiki](https://github.com/BLSQ/openhexa/wiki/Home) for more information about OpenHexa.
+Please refer to the [OpenHEXA wiki](https://github.com/BLSQ/openhexa/wiki/Home) for more information about OpenHEXA.
 
-The OpenHexa `frontend` component is a [Next.js](https://Next.js.org/) application. It is a frontend app designed to
-connect to an [OpenHexa](https://github.com/BLSQ/openhexa-app) instance.
+The OpenHEXA `frontend` component is a [Next.js](https://Next.js.org/) application. It is a frontend app designed to
+connect to an [OpenHEXA](https://github.com/BLSQ/openhexa-app) instance.
 
-The app communicates with OpenHexa through its [GraphQL](https://graphql.org/) API, and uses the standard OpenHexa
+The app communicates with OpenHEXA through its [GraphQL](https://graphql.org/) API, and uses the standard OpenHEXA
 cookie-based authentication.
 
-For more information about the technical aspects of OpenHexa, you might be interested in the two following wiki pages:
+## Docker image
 
-- [Installing OpenHexa](https://github.com/BLSQ/openhexa/wiki/Installation-instructions)
-- [Technical Overview](https://github.com/BLSQ/openhexa/wiki/Technical-overview)
-
-## Requirements
-
-The Frontend requires at least Node v16 and uses `npm` to manage its
-dependencies. Make sure [you upgrade to the last version of `npm`](https://docs.npmjs.com/try-the-latest-stable-version-of-npm).
-
-## Container
-
-OpenHexa FrontEnd is published as a Docker Image on Docker Hub:
+OpenHEXA FrontEnd is published as a Docker Image on Docker Hub:
 [blsq/openhexa-frontend](https://hub.docker.com/r/blsq/openhexa-frontend)
 
-Run it as it follows:
+You can run the frontend component using the following command:
 
 ```bash
 docker run --rm -p 3000:3000 blsq/openhexa-frontend
 ```
 
 The server is then exposed at `http://localhost:3000`. However, it has to be
-configured so that it can find the backend and so on. If you're looking something
-working out of the box for local development, go to the next section.
+configured so that it can access the OpenHEXA backend (See [openhexa-app](https://github.com/BLSQ/openhexa-app)). 
+
+If you're looking something working out of the box for local development, go to the next section.
 
 ## Local development
 
+The [Installation instructions](https://github.com/BLSQ/openhexa/wiki/Installation-instructions#development-installation)
+section of our wiki gives an overview of the local development setup required to run OpenHEXA locally.
+
 ### Requirements
 
-We advise to use [`nvm` to manage multiple versions of Node](https://github.com/nvm-sh/nvm).
-If you use `nvm`, `npm` can be upgraded with
+The Frontend component requires a recent (`v16` or newer) version of [Node.js](https://nodejs.org/).
+
+We recommend using [`nvm`](https://github.com/nvm-sh/nvm) to manage multiple versions of Node.
+
+If you use `nvm`, `npm` can be installed using the following command:
 
 ```bash
 nvm install-latest-npm
@@ -76,11 +73,10 @@ npm install
 Then, copy `.env.local.dist` and adapt it to your needs:
 
 ```bash
-cp .env.local.dist .env.local
-nano .env.local
+cp .env.local.dist .env.local  # adapt the .env file with the required configuration values
 ```
 
-Before starting the server, the backend [openhexa-app](https://github.com/BLSQ/openhexa-app/)
+Before starting the server, the backend ([openhexa-app](https://github.com/BLSQ/openhexa-app/)) 
 should be up and running.
 
 Finally, run the development server:
@@ -106,7 +102,7 @@ The following environment variables should be provided at build time
 
 The following environment variables should be provided at run time:
 - `FALLBACK_URL`: the URL the traffic will be redirected to if Next.js cannot answer the request
-- `GRAPHQL_ENDPOINT`: the URL of the OpenHexa GraphQL API
+- `GRAPHQL_ENDPOINT`: the URL of the OpenHEXA GraphQL API
 - `SENTRY_TRACES_SAMPLE_RATE`: the [Sentry](https://sentry.io/) sampling rate of traces
 - `SENTRY_DSN`: the [Sentry](https://sentry.io/) DSN
 - `SENTRY_ENVIRONMENT`: the [Sentry](https://sentry.io/) environment tag

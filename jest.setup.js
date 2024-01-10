@@ -42,7 +42,7 @@ jest.mock("react", () => {
   };
 });
 
-jest.mock("react-i18next", () => ({
+jest.mock("next-i18next", () => ({
   I18nextProvider: jest.fn(),
   useTranslation: () => ({ t: (key) => key }),
   __esModule: true,
@@ -77,7 +77,3 @@ jest.mock("@headlessui/react", () => ({
   __esModule: true,
   ...jest.requireActual("@headlessui/react"),
 }));
-
-// https://github.com/remarkjs/react-markdown/issues/635
-// Mock remark-gfm
-jest.mock("remark-gfm", () => () => {});

@@ -1,5 +1,104 @@
 # Changelog
 
+## [0.42.1](https://github.com/BLSQ/openhexa-frontend/compare/0.42.0...0.42.1) (2024-01-08)
+
+
+### Bug Fixes
+
+* **i18n:** Fix placeholders ([7a4aaf9](https://github.com/BLSQ/openhexa-frontend/commit/7a4aaf947fd2076d2ba7fbf46b0a40a69cd7b180))
+* Missing fr translations ([914d4fc](https://github.com/BLSQ/openhexa-frontend/commit/914d4fc50e5ad4fe15a4f4e6dccd690c9cb54070))
+
+## [0.42.0](https://github.com/BLSQ/openhexa-frontend/compare/0.41.3...0.42.0) (2024-01-08)
+
+
+### Features
+
+* **Files:** Size options & Objects filtering ([#516](https://github.com/BLSQ/openhexa-frontend/issues/516)) ([ea89afe](https://github.com/BLSQ/openhexa-frontend/commit/ea89afefa8636ad6e35d2778e737e82f74ae8669))
+* **i18n:** Translate web app in French ([#518](https://github.com/BLSQ/openhexa-frontend/issues/518)) ([f70e1ef](https://github.com/BLSQ/openhexa-frontend/commit/f70e1ef3fe8b538a3692bb67c96941b2812d9049))
+* Register page & Decline invitations ([#513](https://github.com/BLSQ/openhexa-frontend/issues/513)) ([8e8ef5d](https://github.com/BLSQ/openhexa-frontend/commit/8e8ef5d3b37f7a797ef9cb77ec027a55594fb677))
+
+## [0.41.3](https://github.com/BLSQ/openhexa-frontend/compare/0.41.2...0.41.3) (2023-12-29)
+
+
+### Bug Fixes
+
+* use POST request for logout ([#514](https://github.com/BLSQ/openhexa-frontend/issues/514)) ([71eb61f](https://github.com/BLSQ/openhexa-frontend/commit/71eb61f2e36b172ff522645f91c3c82c4ec9e5a8))
+
+## [0.41.2](https://github.com/BLSQ/openhexa-frontend/compare/0.41.1...0.41.2) (2023-12-26)
+
+
+### Bug Fixes
+
+* Improve run messages ([#510](https://github.com/BLSQ/openhexa-frontend/issues/510)) ([1998ff9](https://github.com/BLSQ/openhexa-frontend/commit/1998ff956c6dd1c272e007a0ce5478c480c85930))
+* **Pipelines:** Add a 'Webhook' run trigger & Improve parameters display ([#509](https://github.com/BLSQ/openhexa-frontend/issues/509)) ([fc090e6](https://github.com/BLSQ/openhexa-frontend/commit/fc090e664c8d1b3ec870dfdd72881cdd04792086))
+
+## [0.41.1](https://github.com/BLSQ/openhexa-frontend/compare/0.41.0...0.41.1) (2023-12-19)
+
+
+### Bug Fixes
+
+* **Pipelines:** Use the feature flag to hide/show the webhook section ([ced62f3](https://github.com/BLSQ/openhexa-frontend/commit/ced62f3cca308bbc90434530054bb871a1500956))
+
+## [0.41.0](https://github.com/BLSQ/openhexa-frontend/compare/0.40.0...0.41.0) (2023-12-19)
+
+
+### Features
+
+* **Pipelines:** Add a webhook mechanism on the pipelines ([#507](https://github.com/BLSQ/openhexa-frontend/issues/507)) ([6b0a53a](https://github.com/BLSQ/openhexa-frontend/commit/6b0a53a210f1e08168974701cde08870f22cb8ea))
+
+
+### Miscellaneous
+
+* disable search for now ([#503](https://github.com/BLSQ/openhexa-frontend/issues/503)) ([723d646](https://github.com/BLSQ/openhexa-frontend/commit/723d64645c2caad8d717746c9b66f38919b75d57))
+
+## [0.40.0](https://github.com/BLSQ/openhexa-frontend/compare/0.39.0...0.40.0) (2023-12-14)
+
+
+### Features
+
+* **PipelineRun:** Improve messages list ([#502](https://github.com/BLSQ/openhexa-frontend/issues/502)) ([b13fef0](https://github.com/BLSQ/openhexa-frontend/commit/b13fef0bbcca3e6bc694a45476a3f35151e5da93))
+
+
+### Bug Fixes
+
+* **Overflow:** Fix overflow in vertical mode ([#501](https://github.com/BLSQ/openhexa-frontend/issues/501)) ([20ad684](https://github.com/BLSQ/openhexa-frontend/commit/20ad68403084cc33cb57569104dfed2479852388))
+* **Workspace:** Remove TOKEN_EXPIRED & Handle the need to authenticate in the join workspace workflow ([#499](https://github.com/BLSQ/openhexa-frontend/issues/499)) ([1ba5859](https://github.com/BLSQ/openhexa-frontend/commit/1ba585952db76a7d5eacf448a4d6b64777bd4b41))
+
+
+### Miscellaneous
+
+* **deps:** bump @graphql-codegen/typescript-react-apollo from 4.0.0 to 4.1.0 ([#486](https://github.com/BLSQ/openhexa-frontend/issues/486)) ([f27342f](https://github.com/BLSQ/openhexa-frontend/commit/f27342f4ab2ae5d312747a3ed0f8988a96b0a514))
+* **deps:** bump @uiw/react-codemirror from 4.21.13 to 4.21.21 ([#487](https://github.com/BLSQ/openhexa-frontend/issues/487)) ([7151c0a](https://github.com/BLSQ/openhexa-frontend/commit/7151c0aff819e6f7176afe460e5b4f4ba90ad5de))
+
+## [0.39.0](https://github.com/BLSQ/openhexa-frontend/compare/0.38.0...0.39.0) (2023-12-06)
+
+
+### Features
+
+* **PipelineRun:** use linkify-react for url parsing ([#497](https://github.com/BLSQ/openhexa-frontend/issues/497)) ([7f1699a](https://github.com/BLSQ/openhexa-frontend/commit/7f1699a0f70e5bcbf05dd6fefc18ee203c845db8))
+* **Workspaces:** increase workspace members page size to 10 ([#496](https://github.com/BLSQ/openhexa-frontend/issues/496)) ([bc541f9](https://github.com/BLSQ/openhexa-frontend/commit/bc541f94435fac87d5c02c27e055a726b67b960a))
+
+## [0.38.0](https://github.com/BLSQ/openhexa-frontend/compare/0.37.0...0.38.0) (2023-12-04)
+
+
+### Features
+
+* **Pipelines:** improve pipeline messages UX ([#489](https://github.com/BLSQ/openhexa-frontend/issues/489)) ([e75c929](https://github.com/BLSQ/openhexa-frontend/commit/e75c929926080e24654e624fa6fee90f8cc51333))
+
+
+### Bug Fixes
+
+* add missing 'remark-gfm' package ([01c79f4](https://github.com/BLSQ/openhexa-frontend/commit/01c79f4258d90f96a512f2343437577a65578f33))
+* **ConnectionPicker:** use id for connection identifier ([#493](https://github.com/BLSQ/openhexa-frontend/issues/493)) ([841e08b](https://github.com/BLSQ/openhexa-frontend/commit/841e08b1ec4ba224ce66d8f079292347a60e9d9e))
+
+
+### Miscellaneous
+
+* clean up ([#495](https://github.com/BLSQ/openhexa-frontend/issues/495)) ([2e1f57d](https://github.com/BLSQ/openhexa-frontend/commit/2e1f57d7653d298bf3103e447fbc3ea3d4cb91c0))
+* Delete vite.config.ts ([8efd278](https://github.com/BLSQ/openhexa-frontend/commit/8efd278a7c72840abbf487ec90b4e94e23b89b03))
+* **Nextjs:** Add a trailing slash to nextjs urls ([af709b2](https://github.com/BLSQ/openhexa-frontend/commit/af709b28e2474681463f08a8b9c2642759f55521))
+* remove ladle ([#491](https://github.com/BLSQ/openhexa-frontend/issues/491)) ([16b3081](https://github.com/BLSQ/openhexa-frontend/commit/16b30818bf646d28f36866b1712e55efb237adac))
+
 ## [0.37.0](https://github.com/BLSQ/openhexa-frontend/compare/0.36.10...0.37.0) (2023-11-24)
 
 

@@ -1,5 +1,7 @@
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
+import Button from "core/components/Button";
 import DescriptionList, {
   DescriptionListDisplayMode,
 } from "core/components/DescriptionList";
@@ -7,40 +9,37 @@ import Link from "core/components/Link";
 import Page from "core/components/Page";
 import Switch from "core/components/Switch";
 import Time from "core/components/Time";
+import Checkbox from "core/components/forms/Checkbox";
 import User from "core/features/User";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
+import useInterval from "core/hooks/useInterval";
 import {
-  ConnectionType,
   PipelineParameter,
   PipelineRunStatus,
   PipelineRunTrigger,
 } from "graphql-types";
+import { isNil } from "lodash";
 import { DateTime } from "luxon";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
 import RunLogs from "pipelines/features/RunLogs";
 import RunMessages from "pipelines/features/RunMessages";
 import { useCallback, useMemo, useState } from "react";
-import useInterval from "core/hooks/useInterval";
+import RunOutputsTable from "workspaces/features/RunOutputsTable";
+import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import {
-  useWorkspacePipelineRunPageQuery,
   WorkspacePipelineRunPageDocument,
   WorkspacePipelineRunPageQuery,
   WorkspacePipelineRunPageQueryVariables,
+  useWorkspacePipelineRunPageQuery,
 } from "workspaces/graphql/queries.generated";
 import {
   getPipelineRunConfig,
   isConnectionParameter,
 } from "workspaces/helpers/pipelines";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import Button from "core/components/Button";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
-import RunOutputsTable from "workspaces/features/RunOutputsTable";
-import Checkbox from "core/components/forms/Checkbox";
 
 type Props = {
   workspaceSlug: string;
@@ -49,7 +48,6 @@ type Props = {
 
 const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
-  const router = useRouter();
   const { data, refetch } = useWorkspacePipelineRunPageQuery({
     variables: { workspaceSlug: props.workspaceSlug, runId: props.runId },
   });
@@ -62,9 +60,9 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
   const refreshInterval = useMemo(() => {
     switch (data?.pipelineRun?.status) {
       case PipelineRunStatus.Queued:
-        return 1 * 1000;
+        return 0.5 * 1000; // 2 times per second
       case PipelineRunStatus.Running:
-        return 3 * 1000;
+        return 0.25 * 1000; // 4 times per second
       default:
         return null;
     }
@@ -95,7 +93,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
     }
     if (
       (entry.type === "int" || entry.type === "float") &&
-      entry.value !== null
+      !isNil(entry.value)
     ) {
       return entry.multiple ? entry.value.join(", ") : entry.value;
     }
@@ -116,8 +114,8 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
             href: "https://github.com/BLSQ/openhexa/wiki/User-manual#using-pipelines",
           },
           {
-            label: t("Writing OpenHexa pipelines"),
-            href: "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines",
+            label: t("Writing OpenHEXA pipelines"),
+            href: "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHEXA-pipelines",
           },
         ]}
       >
@@ -207,7 +205,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                     title={run.executionDate}
                     suppressHydrationWarning={true}
                   >
-                    <PipelineRunStatusBadge run={run} />
+                    <PipelineRunStatusBadge run={run} polling={false} />
                   </div>
                 </div>
               </div>
@@ -227,9 +225,11 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                   <Time datetime={run.executionDate} />
                 </DescriptionList.Item>
                 <DescriptionList.Item label={t("Trigger")}>
-                  {run.triggerMode === PipelineRunTrigger.Manual
-                    ? t("Manual")
-                    : t("Scheduled")}
+                  {run.triggerMode === PipelineRunTrigger.Manual && t("Manual")}
+                  {run.triggerMode === PipelineRunTrigger.Scheduled &&
+                    t("Scheduled")}
+                  {run.triggerMode === PipelineRunTrigger.Webhook &&
+                    t("Webhook")}
                 </DescriptionList.Item>
                 <DescriptionList.Item label={t("User")}>
                   {run.user ? <User user={run.user} /> : "-"}
@@ -278,9 +278,10 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
               </Block.Section>
             )}
             <Block.Section title={t("Messages")}>
-              <RunMessages run={run} />
+              {/* Set a ref to the component to recreate it completely when the run id changes.  */}
+              <RunMessages key={run.id} run={run} />
             </Block.Section>
-            <Block.Section title={t("Logs")} collapsible>
+            <Block.Section title={t("Logs")} collapsible defaultOpen={false}>
               <RunLogs run={run} />
             </Block.Section>
           </Block>

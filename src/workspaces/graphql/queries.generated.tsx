@@ -70,7 +70,7 @@ export type WorkspacePipelinePageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacePipelinePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipeline?: { __typename?: 'Pipeline', id: string, code: string, name?: string | null, description?: string | null, schedule?: string | null, permissions: { __typename?: 'PipelinePermissions', run: boolean, update: boolean, schedule: boolean, deleteVersion: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', name: string, code: string, required: boolean, help?: string | null, type: string, default?: any | null, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null } | null, recipients: Array<{ __typename?: 'PipelineRecipient', user: { __typename?: 'User', id: string, displayName: string } }>, runs: { __typename?: 'PipelineRunPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'PipelineRun', id: string, executionDate?: any | null, duration?: number | null, triggerMode?: Types.PipelineRunTrigger | null, status: Types.PipelineRunStatus, version: { __typename?: 'PipelineVersion', number: number, id: string }, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> }, workspace?: { __typename?: 'Workspace', slug: string } | null } | null };
+export type WorkspacePipelinePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipeline?: { __typename?: 'Pipeline', webhookUrl?: string | null, webhookEnabled: boolean, id: string, code: string, name?: string | null, description?: string | null, schedule?: string | null, permissions: { __typename?: 'PipelinePermissions', run: boolean, update: boolean, schedule: boolean, deleteVersion: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', name: string, code: string, required: boolean, help?: string | null, type: string, default?: any | null, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null } | null, recipients: Array<{ __typename?: 'PipelineRecipient', user: { __typename?: 'User', id: string, displayName: string } }>, runs: { __typename?: 'PipelineRunPage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'PipelineRun', id: string, executionDate?: any | null, duration?: number | null, triggerMode?: Types.PipelineRunTrigger | null, status: Types.PipelineRunStatus, version: { __typename?: 'PipelineVersion', number: number, id: string }, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null }> }, workspace?: { __typename?: 'Workspace', slug: string } | null } | null };
 
 export type WorkspacePipelineStartPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
@@ -85,7 +85,7 @@ export type WorkspacePipelineRunPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacePipelineRunPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, bucket: { __typename?: 'Bucket', name: string }, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipelineRun?: { __typename?: 'PipelineRun', id: string, timeout?: number | null, config: any, executionDate?: any | null, duration?: number | null, triggerMode?: Types.PipelineRunTrigger | null, sendMailNotifications: boolean, logs?: string | null, status: Types.PipelineRunStatus, version: { __typename?: 'PipelineVersion', number: number, id: string, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null }, pipeline: { __typename?: 'Pipeline', id: string, code: string, name?: string | null, workspace?: { __typename?: 'Workspace', slug: string } | null, permissions: { __typename?: 'PipelinePermissions', run: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', name: string, code: string, required: boolean, help?: string | null, type: string, default?: any | null, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null } | null }, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, outputs: Array<{ __typename: 'BucketObject', name: string, key: string, path: string, type: Types.BucketObjectType } | { __typename: 'DatabaseTable', tableName: string } | { __typename: 'GenericOutput', genericName?: string | null, genericType: string, genericUri: string }>, messages: Array<{ __typename?: 'PipelineRunMessage', message: string, timestamp?: any | null, priority: Types.MessagePriority }> } | null };
+export type WorkspacePipelineRunPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, bucket: { __typename?: 'Bucket', name: string }, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipelineRun?: { __typename?: 'PipelineRun', id: string, timeout?: number | null, config: any, executionDate?: any | null, duration?: number | null, triggerMode?: Types.PipelineRunTrigger | null, sendMailNotifications: boolean, status: Types.PipelineRunStatus, logs?: string | null, version: { __typename?: 'PipelineVersion', number: number, id: string, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null }, pipeline: { __typename?: 'Pipeline', id: string, code: string, name?: string | null, workspace?: { __typename?: 'Workspace', slug: string } | null, permissions: { __typename?: 'PipelinePermissions', run: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, number: number, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', name: string, code: string, required: boolean, help?: string | null, type: string, default?: any | null, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null } | null }, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, outputs: Array<{ __typename: 'BucketObject', name: string, key: string, path: string, type: Types.BucketObjectType } | { __typename: 'DatabaseTable', tableName: string } | { __typename: 'GenericOutput', genericName?: string | null, genericType: string, genericUri: string }>, messages: Array<{ __typename?: 'PipelineRunMessage', message: string, timestamp?: any | null, priority: Types.MessagePriority }> } | null };
 
 export type WorkspaceDatasetsPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
@@ -112,6 +112,7 @@ export type WorkspaceFilesPageQueryVariables = Types.Exact<{
   page: Types.Scalars['Int']['input'];
   perPage: Types.Scalars['Int']['input'];
   prefix: Types.Scalars['String']['input'];
+  query?: Types.InputMaybe<Types.Scalars['String']['input']>;
   ignoreHiddenFiles?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
 }>;
 
@@ -191,8 +192,13 @@ export function useWorkspacesPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacesPageQuery, WorkspacesPageQueryVariables>(WorkspacesPageDocument, options);
         }
+export function useWorkspacesPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacesPageQuery, WorkspacesPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspacesPageQuery, WorkspacesPageQueryVariables>(WorkspacesPageDocument, options);
+        }
 export type WorkspacesPageQueryHookResult = ReturnType<typeof useWorkspacesPageQuery>;
 export type WorkspacesPageLazyQueryHookResult = ReturnType<typeof useWorkspacesPageLazyQuery>;
+export type WorkspacesPageSuspenseQueryHookResult = ReturnType<typeof useWorkspacesPageSuspenseQuery>;
 export type WorkspacesPageQueryResult = Apollo.QueryResult<WorkspacesPageQuery, WorkspacesPageQueryVariables>;
 export const WorkspacePageDocument = gql`
     query WorkspacePage($slug: String!) {
@@ -245,8 +251,13 @@ export function useWorkspacePageLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePageQuery, WorkspacePageQueryVariables>(WorkspacePageDocument, options);
         }
+export function useWorkspacePageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePageQuery, WorkspacePageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspacePageQuery, WorkspacePageQueryVariables>(WorkspacePageDocument, options);
+        }
 export type WorkspacePageQueryHookResult = ReturnType<typeof useWorkspacePageQuery>;
 export type WorkspacePageLazyQueryHookResult = ReturnType<typeof useWorkspacePageLazyQuery>;
+export type WorkspacePageSuspenseQueryHookResult = ReturnType<typeof useWorkspacePageSuspenseQuery>;
 export type WorkspacePageQueryResult = Apollo.QueryResult<WorkspacePageQuery, WorkspacePageQueryVariables>;
 export const WorkspacePipelinesPageDocument = gql`
     query WorkspacePipelinesPage($workspaceSlug: String!, $page: Int, $perPage: Int) {
@@ -295,8 +306,13 @@ export function useWorkspacePipelinesPageLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelinesPageQuery, WorkspacePipelinesPageQueryVariables>(WorkspacePipelinesPageDocument, options);
         }
+export function useWorkspacePipelinesPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelinesPageQuery, WorkspacePipelinesPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspacePipelinesPageQuery, WorkspacePipelinesPageQueryVariables>(WorkspacePipelinesPageDocument, options);
+        }
 export type WorkspacePipelinesPageQueryHookResult = ReturnType<typeof useWorkspacePipelinesPageQuery>;
 export type WorkspacePipelinesPageLazyQueryHookResult = ReturnType<typeof useWorkspacePipelinesPageLazyQuery>;
+export type WorkspacePipelinesPageSuspenseQueryHookResult = ReturnType<typeof useWorkspacePipelinesPageSuspenseQuery>;
 export type WorkspacePipelinesPageQueryResult = Apollo.QueryResult<WorkspacePipelinesPageQuery, WorkspacePipelinesPageQueryVariables>;
 export const WorkspaceNotebooksPageDocument = gql`
     query WorkspaceNotebooksPage($workspaceSlug: String!) {
@@ -335,8 +351,13 @@ export function useWorkspaceNotebooksPageLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceNotebooksPageQuery, WorkspaceNotebooksPageQueryVariables>(WorkspaceNotebooksPageDocument, options);
         }
+export function useWorkspaceNotebooksPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceNotebooksPageQuery, WorkspaceNotebooksPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceNotebooksPageQuery, WorkspaceNotebooksPageQueryVariables>(WorkspaceNotebooksPageDocument, options);
+        }
 export type WorkspaceNotebooksPageQueryHookResult = ReturnType<typeof useWorkspaceNotebooksPageQuery>;
 export type WorkspaceNotebooksPageLazyQueryHookResult = ReturnType<typeof useWorkspaceNotebooksPageLazyQuery>;
+export type WorkspaceNotebooksPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceNotebooksPageSuspenseQuery>;
 export type WorkspaceNotebooksPageQueryResult = Apollo.QueryResult<WorkspaceNotebooksPageQuery, WorkspaceNotebooksPageQueryVariables>;
 export const WorkspacePipelinePageDocument = gql`
     query WorkspacePipelinePage($workspaceSlug: String!, $pipelineCode: String!, $page: Int = 1, $perPage: Int = 10) {
@@ -353,6 +374,8 @@ export const WorkspacePipelinePageDocument = gql`
       run
       update
     }
+    webhookUrl
+    webhookEnabled
     id
     code
     name
@@ -427,8 +450,13 @@ export function useWorkspacePipelinePageLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelinePageQuery, WorkspacePipelinePageQueryVariables>(WorkspacePipelinePageDocument, options);
         }
+export function useWorkspacePipelinePageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelinePageQuery, WorkspacePipelinePageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspacePipelinePageQuery, WorkspacePipelinePageQueryVariables>(WorkspacePipelinePageDocument, options);
+        }
 export type WorkspacePipelinePageQueryHookResult = ReturnType<typeof useWorkspacePipelinePageQuery>;
 export type WorkspacePipelinePageLazyQueryHookResult = ReturnType<typeof useWorkspacePipelinePageLazyQuery>;
+export type WorkspacePipelinePageSuspenseQueryHookResult = ReturnType<typeof useWorkspacePipelinePageSuspenseQuery>;
 export type WorkspacePipelinePageQueryResult = Apollo.QueryResult<WorkspacePipelinePageQuery, WorkspacePipelinePageQueryVariables>;
 export const WorkspacePipelineStartPageDocument = gql`
     query WorkspacePipelineStartPage($workspaceSlug: String!) {
@@ -464,8 +492,13 @@ export function useWorkspacePipelineStartPageLazyQuery(baseOptions?: Apollo.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelineStartPageQuery, WorkspacePipelineStartPageQueryVariables>(WorkspacePipelineStartPageDocument, options);
         }
+export function useWorkspacePipelineStartPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelineStartPageQuery, WorkspacePipelineStartPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspacePipelineStartPageQuery, WorkspacePipelineStartPageQueryVariables>(WorkspacePipelineStartPageDocument, options);
+        }
 export type WorkspacePipelineStartPageQueryHookResult = ReturnType<typeof useWorkspacePipelineStartPageQuery>;
 export type WorkspacePipelineStartPageLazyQueryHookResult = ReturnType<typeof useWorkspacePipelineStartPageLazyQuery>;
+export type WorkspacePipelineStartPageSuspenseQueryHookResult = ReturnType<typeof useWorkspacePipelineStartPageSuspenseQuery>;
 export type WorkspacePipelineStartPageQueryResult = Apollo.QueryResult<WorkspacePipelineStartPageQuery, WorkspacePipelineStartPageQueryVariables>;
 export const WorkspacePipelineRunPageDocument = gql`
     query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
@@ -547,8 +580,13 @@ export function useWorkspacePipelineRunPageLazyQuery(baseOptions?: Apollo.LazyQu
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelineRunPageQuery, WorkspacePipelineRunPageQueryVariables>(WorkspacePipelineRunPageDocument, options);
         }
+export function useWorkspacePipelineRunPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelineRunPageQuery, WorkspacePipelineRunPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspacePipelineRunPageQuery, WorkspacePipelineRunPageQueryVariables>(WorkspacePipelineRunPageDocument, options);
+        }
 export type WorkspacePipelineRunPageQueryHookResult = ReturnType<typeof useWorkspacePipelineRunPageQuery>;
 export type WorkspacePipelineRunPageLazyQueryHookResult = ReturnType<typeof useWorkspacePipelineRunPageLazyQuery>;
+export type WorkspacePipelineRunPageSuspenseQueryHookResult = ReturnType<typeof useWorkspacePipelineRunPageSuspenseQuery>;
 export type WorkspacePipelineRunPageQueryResult = Apollo.QueryResult<WorkspacePipelineRunPageQuery, WorkspacePipelineRunPageQueryVariables>;
 export const WorkspaceDatasetsPageDocument = gql`
     query WorkspaceDatasetsPage($workspaceSlug: String!, $page: Int, $perPage: Int, $query: String) {
@@ -627,8 +665,13 @@ export function useWorkspaceDatasetsPageLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatasetsPageQuery, WorkspaceDatasetsPageQueryVariables>(WorkspaceDatasetsPageDocument, options);
         }
+export function useWorkspaceDatasetsPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatasetsPageQuery, WorkspaceDatasetsPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceDatasetsPageQuery, WorkspaceDatasetsPageQueryVariables>(WorkspaceDatasetsPageDocument, options);
+        }
 export type WorkspaceDatasetsPageQueryHookResult = ReturnType<typeof useWorkspaceDatasetsPageQuery>;
 export type WorkspaceDatasetsPageLazyQueryHookResult = ReturnType<typeof useWorkspaceDatasetsPageLazyQuery>;
+export type WorkspaceDatasetsPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceDatasetsPageSuspenseQuery>;
 export type WorkspaceDatasetsPageQueryResult = Apollo.QueryResult<WorkspaceDatasetsPageQuery, WorkspaceDatasetsPageQueryVariables>;
 export const WorkspaceDatasetPageDocument = gql`
     query WorkspaceDatasetPage($workspaceSlug: String!, $datasetSlug: String!, $versionId: ID!, $isSpecificVersion: Boolean!) {
@@ -722,11 +765,16 @@ export function useWorkspaceDatasetPageLazyQuery(baseOptions?: Apollo.LazyQueryH
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatasetPageQuery, WorkspaceDatasetPageQueryVariables>(WorkspaceDatasetPageDocument, options);
         }
+export function useWorkspaceDatasetPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatasetPageQuery, WorkspaceDatasetPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceDatasetPageQuery, WorkspaceDatasetPageQueryVariables>(WorkspaceDatasetPageDocument, options);
+        }
 export type WorkspaceDatasetPageQueryHookResult = ReturnType<typeof useWorkspaceDatasetPageQuery>;
 export type WorkspaceDatasetPageLazyQueryHookResult = ReturnType<typeof useWorkspaceDatasetPageLazyQuery>;
+export type WorkspaceDatasetPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceDatasetPageSuspenseQuery>;
 export type WorkspaceDatasetPageQueryResult = Apollo.QueryResult<WorkspaceDatasetPageQuery, WorkspaceDatasetPageQueryVariables>;
 export const WorkspaceFilesPageDocument = gql`
-    query WorkspaceFilesPage($workspaceSlug: String!, $page: Int!, $perPage: Int!, $prefix: String!, $ignoreHiddenFiles: Boolean) {
+    query WorkspaceFilesPage($workspaceSlug: String!, $page: Int!, $perPage: Int!, $prefix: String!, $query: String, $ignoreHiddenFiles: Boolean) {
   workspace(slug: $workspaceSlug) {
     slug
     name
@@ -740,6 +788,7 @@ export const WorkspaceFilesPageDocument = gql`
         page: $page
         prefix: $prefix
         perPage: $perPage
+        query: $query
         ignoreHiddenFiles: $ignoreHiddenFiles
       ) {
         ...BucketExplorer_objects
@@ -769,6 +818,7 @@ ${BucketExplorer_ObjectsFragmentDoc}`;
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
  *      prefix: // value for 'prefix'
+ *      query: // value for 'query'
  *      ignoreHiddenFiles: // value for 'ignoreHiddenFiles'
  *   },
  * });
@@ -781,8 +831,13 @@ export function useWorkspaceFilesPageLazyQuery(baseOptions?: Apollo.LazyQueryHoo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceFilesPageQuery, WorkspaceFilesPageQueryVariables>(WorkspaceFilesPageDocument, options);
         }
+export function useWorkspaceFilesPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceFilesPageQuery, WorkspaceFilesPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceFilesPageQuery, WorkspaceFilesPageQueryVariables>(WorkspaceFilesPageDocument, options);
+        }
 export type WorkspaceFilesPageQueryHookResult = ReturnType<typeof useWorkspaceFilesPageQuery>;
 export type WorkspaceFilesPageLazyQueryHookResult = ReturnType<typeof useWorkspaceFilesPageLazyQuery>;
+export type WorkspaceFilesPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceFilesPageSuspenseQuery>;
 export type WorkspaceFilesPageQueryResult = Apollo.QueryResult<WorkspaceFilesPageQuery, WorkspaceFilesPageQueryVariables>;
 export const WorkspaceDatabasesPageDocument = gql`
     query WorkspaceDatabasesPage($workspaceSlug: String!, $page: Int, $perPage: Int) {
@@ -835,8 +890,13 @@ export function useWorkspaceDatabasesPageLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatabasesPageQuery, WorkspaceDatabasesPageQueryVariables>(WorkspaceDatabasesPageDocument, options);
         }
+export function useWorkspaceDatabasesPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatabasesPageQuery, WorkspaceDatabasesPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceDatabasesPageQuery, WorkspaceDatabasesPageQueryVariables>(WorkspaceDatabasesPageDocument, options);
+        }
 export type WorkspaceDatabasesPageQueryHookResult = ReturnType<typeof useWorkspaceDatabasesPageQuery>;
 export type WorkspaceDatabasesPageLazyQueryHookResult = ReturnType<typeof useWorkspaceDatabasesPageLazyQuery>;
+export type WorkspaceDatabasesPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceDatabasesPageSuspenseQuery>;
 export type WorkspaceDatabasesPageQueryResult = Apollo.QueryResult<WorkspaceDatabasesPageQuery, WorkspaceDatabasesPageQueryVariables>;
 export const WorkspaceDatabaseTablePageDocument = gql`
     query WorkspaceDatabaseTablePage($workspaceSlug: String!, $tableName: String!) {
@@ -887,8 +947,13 @@ export function useWorkspaceDatabaseTablePageLazyQuery(baseOptions?: Apollo.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>(WorkspaceDatabaseTablePageDocument, options);
         }
+export function useWorkspaceDatabaseTablePageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>(WorkspaceDatabaseTablePageDocument, options);
+        }
 export type WorkspaceDatabaseTablePageQueryHookResult = ReturnType<typeof useWorkspaceDatabaseTablePageQuery>;
 export type WorkspaceDatabaseTablePageLazyQueryHookResult = ReturnType<typeof useWorkspaceDatabaseTablePageLazyQuery>;
+export type WorkspaceDatabaseTablePageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceDatabaseTablePageSuspenseQuery>;
 export type WorkspaceDatabaseTablePageQueryResult = Apollo.QueryResult<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>;
 export const ConnectionsPageDocument = gql`
     query ConnectionsPage($workspaceSlug: String!) {
@@ -942,8 +1007,13 @@ export function useConnectionsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ConnectionsPageQuery, ConnectionsPageQueryVariables>(ConnectionsPageDocument, options);
         }
+export function useConnectionsPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConnectionsPageQuery, ConnectionsPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ConnectionsPageQuery, ConnectionsPageQueryVariables>(ConnectionsPageDocument, options);
+        }
 export type ConnectionsPageQueryHookResult = ReturnType<typeof useConnectionsPageQuery>;
 export type ConnectionsPageLazyQueryHookResult = ReturnType<typeof useConnectionsPageLazyQuery>;
+export type ConnectionsPageSuspenseQueryHookResult = ReturnType<typeof useConnectionsPageSuspenseQuery>;
 export type ConnectionsPageQueryResult = Apollo.QueryResult<ConnectionsPageQuery, ConnectionsPageQueryVariables>;
 export const ConnectionPageDocument = gql`
     query ConnectionPage($workspaceSlug: String!, $connectionId: UUID!) {
@@ -999,8 +1069,13 @@ export function useConnectionPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ConnectionPageQuery, ConnectionPageQueryVariables>(ConnectionPageDocument, options);
         }
+export function useConnectionPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConnectionPageQuery, ConnectionPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ConnectionPageQuery, ConnectionPageQueryVariables>(ConnectionPageDocument, options);
+        }
 export type ConnectionPageQueryHookResult = ReturnType<typeof useConnectionPageQuery>;
 export type ConnectionPageLazyQueryHookResult = ReturnType<typeof useConnectionPageLazyQuery>;
+export type ConnectionPageSuspenseQueryHookResult = ReturnType<typeof useConnectionPageSuspenseQuery>;
 export type ConnectionPageQueryResult = Apollo.QueryResult<ConnectionPageQuery, ConnectionPageQueryVariables>;
 export const CheckWorkspaceAvailabilityDocument = gql`
     query CheckWorkspaceAvailability($slug: String!) {
@@ -1034,6 +1109,11 @@ export function useCheckWorkspaceAvailabilityLazyQuery(baseOptions?: Apollo.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<CheckWorkspaceAvailabilityQuery, CheckWorkspaceAvailabilityQueryVariables>(CheckWorkspaceAvailabilityDocument, options);
         }
+export function useCheckWorkspaceAvailabilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CheckWorkspaceAvailabilityQuery, CheckWorkspaceAvailabilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CheckWorkspaceAvailabilityQuery, CheckWorkspaceAvailabilityQueryVariables>(CheckWorkspaceAvailabilityDocument, options);
+        }
 export type CheckWorkspaceAvailabilityQueryHookResult = ReturnType<typeof useCheckWorkspaceAvailabilityQuery>;
 export type CheckWorkspaceAvailabilityLazyQueryHookResult = ReturnType<typeof useCheckWorkspaceAvailabilityLazyQuery>;
+export type CheckWorkspaceAvailabilitySuspenseQueryHookResult = ReturnType<typeof useCheckWorkspaceAvailabilitySuspenseQuery>;
 export type CheckWorkspaceAvailabilityQueryResult = Apollo.QueryResult<CheckWorkspaceAvailabilityQuery, CheckWorkspaceAvailabilityQueryVariables>;

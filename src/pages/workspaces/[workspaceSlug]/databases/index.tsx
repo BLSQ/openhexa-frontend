@@ -51,11 +51,11 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
           },
           {
             label: t("Using the workspace database in pipelines"),
-            href: "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines#using-the-workspace-database",
+            href: "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHEXA-pipelines#using-the-workspace-database",
           },
           {
             label: t("Using the workspace database in notebooks"),
-            href: "https://github.com/BLSQ/openhexa/wiki/Using-notebooks-in-OpenHexa#using-the-workspace-database",
+            href: "https://github.com/BLSQ/openhexa/wiki/Using-notebooks-in-OpenHEXA#using-the-workspace-database",
           },
         ]}
       >
@@ -92,7 +92,7 @@ const WorkspaceDatabasesPage: NextPageWithLayout = (props: Props) => {
               className="max-w-[50ch] py-3"
               textClassName="font-medium text-gray-600"
               id="name"
-              label="Name"
+              label={t("Name")}
             >
               {(value) => (
                 <Link

@@ -1,7 +1,8 @@
-import { PlayIcon } from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon, PlayIcon } from "@heroicons/react/24/outline";
 import Block from "core/components/Block/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
+import Clipboard from "core/components/Clipboard";
 import DataCard from "core/components/DataCard";
 import RenderProperty from "core/components/DataCard/RenderProperty";
 import SwitchProperty from "core/components/DataCard/SwitchProperty";
@@ -19,6 +20,7 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
 import { PipelineRecipient, PipelineRunTrigger } from "graphql-types";
+import useFeature from "identity/hooks/useFeature";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
@@ -49,6 +51,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const router = useRouter();
   const [isVersionsDialogOpen, setVersionsDialogOpen] = useState(false);
   const [isRunPipelineDialogOpen, setRunPipelineDialogOpen] = useState(false);
+  const [isWebhookFeatureEnabled] = useFeature("pipeline_webhook");
   const { data } = useWorkspacePipelinePageQuery({
     variables: {
       workspaceSlug,
@@ -78,6 +81,12 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     });
   };
 
+  const onSaveWebhook = async (values: any) => {
+    await updatePipeline(pipeline.id, {
+      webhookEnabled: values.webhookEnabled,
+    });
+  };
+
   return (
     <Page title={pipeline.name ?? t("Pipeline run")}>
       <WorkspaceLayout
@@ -88,8 +97,8 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             href: "https://github.com/BLSQ/openhexa/wiki/User-manual#using-pipelines",
           },
           {
-            label: t("Writing OpenHexa pipelines"),
-            href: "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHexa-pipelines",
+            label: t("Writing OpenHEXA pipelines"),
+            href: "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHEXA-pipelines",
           },
         ]}
       >
@@ -235,6 +244,43 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 </p>
               )}
             </DataCard.FormSection>
+            {isWebhookFeatureEnabled ? (
+              <DataCard.FormSection title={t("Webhook")} onSave={onSaveWebhook}>
+                <p>
+                  {t(
+                    "You can use a webhook to trigger this pipeline from an external system using a POST request.",
+                  )}
+                </p>
+                <div className="flex">
+                  <ExclamationCircleIcon className="inline-block w-6 h-6 text-yellow-500 mr-1.5" />
+                  {t(
+                    "Webhooks are experimental and don't require any form of authentication for now: anyone with the URL will be able to trigger this pipeline",
+                  )}
+                </div>
+                <SwitchProperty
+                  id="webhookEnabled"
+                  label={t("Enabled")}
+                  accessor={"webhookEnabled"}
+                />
+                <RenderProperty
+                  visible={(_, isEdited) =>
+                    !isEdited && Boolean(pipeline.webhookUrl)
+                  }
+                  readonly
+                  id="webhookUrl"
+                  label={t("URL")}
+                  accessor="webhookUrl"
+                >
+                  {(property) => (
+                    <div className="flex gap-1.5">
+                      <Clipboard value={property.displayValue}>
+                        {property.displayValue}
+                      </Clipboard>
+                    </div>
+                  )}
+                </RenderProperty>
+              </DataCard.FormSection>
+            ) : null}
           </DataCard>
 
           <div>
@@ -282,9 +328,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 >
                   {(value) => (
                     <span>
-                      {value === PipelineRunTrigger.Scheduled
-                        ? t("Scheduled")
-                        : t("Manual")}
+                      {value === PipelineRunTrigger.Scheduled && t("Scheduled")}
+                      {value === PipelineRunTrigger.Manual && t("Manual")}
+                      {value === PipelineRunTrigger.Webhook && t("Webhook")}
                     </span>
                   )}
                 </BaseColumn>

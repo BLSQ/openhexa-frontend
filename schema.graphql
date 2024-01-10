@@ -349,7 +349,7 @@ type Avatar {
 
 type Bucket {
   name: String!
-  objects(prefix: String, page: Int = 1, perPage: Int = 15, ignoreHiddenFiles: Boolean = true): BucketObjectPage!
+  objects(prefix: String, page: Int = 1, perPage: Int = 15, query: String, ignoreHiddenFiles: Boolean = true): BucketObjectPage!
   object(key: String!): BucketObject
 }
 
@@ -937,6 +937,21 @@ scalar Date
 
 scalar DateTime
 
+enum DeclineWorkspaceInvitationError {
+  INVITATION_NOT_FOUND
+  PERMISSION_DENIED
+}
+
+input DeclineWorkspaceInvitationInput {
+  invitationId: UUID!
+}
+
+type DeclineWorkspaceInvitationResult {
+  success: Boolean!
+  invitation: WorkspaceInvitation
+  errors: [DeclineWorkspaceInvitationError!]!
+}
+
 enum DeleteAccessmodAnalysisError {
   NOT_FOUND
   DELETE_FAILED
@@ -1224,25 +1239,6 @@ type EnableTwoFactorResult {
   errors: [EnableTwoFactorError!]
 }
 
-type ExternalDashboard {
-  id: UUID!
-  name: String!
-  url: URL!
-  pictureUrl: URL!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  description: String
-  countries: [Country!]!
-  tags: [Tag!]!
-}
-
-type ExternalDashboardPage {
-  items: [ExternalDashboard!]!
-  pageNumber: Int!
-  totalPages: Int!
-  totalItems: Int!
-}
-
 type FeatureFlag {
   code: String!
   config: JSON!
@@ -1316,24 +1312,20 @@ enum InviteWorkspaceMembershipError {
 }
 
 enum JoinWorkspaceError {
-  EXPIRED_TOKEN
-  INVALID_TOKEN
   ALREADY_EXISTS
-  INVALID_CREDENTIALS
+  ALREADY_ACCEPTED
+  PERMISSION_DENIED
   INVITATION_NOT_FOUND
 }
 
 input JoinWorkspaceInput {
-  token: String!
-  firstName: String!
-  lastName: String!
-  password: String!
-  confirmPassword: String!
+  invitationId: UUID!
 }
 
 type JoinWorkspaceResult {
   success: Boolean!
   workspace: Workspace
+  invitation: WorkspaceInvitation
   errors: [JoinWorkspaceError!]!
 }
 
@@ -1471,10 +1463,12 @@ enum MessagePriority {
 scalar MovingSpeeds
 
 type Mutation {
+  register(input: RegisterInput!): RegisterResult!
   login(input: LoginInput!): LoginResult!
   logout: LogoutResult!
   resetPassword(input: ResetPasswordInput!): ResetPasswordResult!
   setPassword(input: SetPasswordInput!): SetPasswordResult!
+  updateUser(input: UpdateUserInput!): UpdateUserResult!
   verifyDevice(input: VerifyDeviceInput!): VerifyDeviceResult!
   generateChallenge: GenerateChallengeResult!
   enableTwoFactor(input: EnableTwoFactorInput): EnableTwoFactorResult!
@@ -1511,7 +1505,6 @@ type Mutation {
   requestAccessmodAccess(input: RequestAccessmodAccessInput!): RequestAccessmodAccessInputResult!
   approveAccessmodAccessRequest(input: ApproveAccessmodAccessRequestInput!): ApproveAccessmodAccessRequestResult!
   denyAccessmodAccessRequest(input: DenyAccessmodAccessRequestInput!): DenyAccessmodAccessRequestResult!
-  updateExternalDashboard(input: UpdateExternalDashboardInput!): UpdateExternalDashboardResult!
   launchNotebookServer(input: LaunchNotebookServerInput!): LaunchNotebookServerResult!
   createPipeline(input: CreatePipelineInput!): CreatePipelineResult!
   updatePipeline(input: UpdatePipelineInput!): UpdatePipelineResult!
@@ -1532,6 +1525,7 @@ type Mutation {
   deleteWorkspaceMember(input: DeleteWorkspaceMemberInput!): DeleteWorkspaceMemberResult!
   generateWorkspaceToken(input: GenerateWorkspaceTokenInput!): GenerateWorkspaceTokenResult!
   joinWorkspace(input: JoinWorkspaceInput!): JoinWorkspaceResult!
+  declineWorkspaceInvitation(input: DeclineWorkspaceInvitationInput!): DeclineWorkspaceInvitationResult!
   resendWorkspaceInvitation(input: ResendWorkspaceInvitationInput!): ResendWorkspaceInvitationResult!
   deleteWorkspaceInvitation(input: DeleteWorkspaceInvitationInput!): DeleteWorkspaceInvitationResult!
   createConnection(input: CreateConnectionInput!): CreateConnectionResult!
@@ -1630,6 +1624,8 @@ type Pipeline {
   runs(page: Int, perPage: Int, orderBy: PipelineRunOrderBy): PipelineRunPage!
   versions(page: Int, perPage: Int): PipelineVersionPage!
   recipients: [PipelineRecipient!]!
+  webhookEnabled: Boolean!
+  webhookUrl: String
 }
 
 enum PipelineError {
@@ -1641,6 +1637,7 @@ enum PipelineError {
   INVALID_CONFIG
   PIPELINE_ALREADY_COMPLETED
   INVALID_TIMEOUT_VALUE
+  PERMISSION_DENIED
 }
 
 type PipelineParameter {
@@ -1717,6 +1714,7 @@ enum PipelineRunStatus {
 enum PipelineRunTrigger {
   scheduled
   manual
+  webhook
 }
 
 type PipelinesPage {
@@ -1863,8 +1861,6 @@ type Query {
   country(code: String, alpha3: String): Country
   boundaries(country_code: String!, level: String!): [WHOBoundary!]!
   countries: [Country!]!
-  externalDashboards(page: Int, perPage: Int): ExternalDashboardPage!
-  externalDashboard(id: UUID!): ExternalDashboard
   notebooksUrl: URL!
   totalNotebooks: Int!
   lastActivities: [Activity!]!
@@ -1874,6 +1870,7 @@ type Query {
   pipelineRun(id: UUID!): PipelineRun
   workspace(slug: String!): Workspace
   workspaces(query: String, page: Int, perPage: Int): WorkspacePage!
+  pendingWorkspaceInvitations(page: Int! = 1, perPage: Int = 10): WorkspaceInvitationPage!
   databaseTable(id: String!): DatabaseTable
   connection(id: UUID!): Connection
   dataset(id: ID!): Dataset
@@ -1881,6 +1878,27 @@ type Query {
   datasetLink(id: ID!): DatasetLink
   datasetLinkBySlug(workspaceSlug: String!, datasetSlug: String!): DatasetLink
   datasets(query: String, page: Int = 1, perPage: Int = 15): DatasetPage!
+}
+
+enum RegisterError {
+  ALREADY_LOGGED_IN
+  EMAIL_TAKEN
+  INVALID_TOKEN
+  PASSWORD_MISMATCH
+  INVALID_PASSWORD
+}
+
+input RegisterInput {
+  password1: String!
+  password2: String!
+  firstName: String!
+  lastName: String!
+  invitationToken: String!
+}
+
+type RegisterResult {
+  success: Boolean!
+  errors: [RegisterError!]
 }
 
 enum RequestAccessmodAccessError {
@@ -2240,24 +2258,6 @@ type UpdateDatasetResult {
   errors: [UpdateDatasetError!]!
 }
 
-enum UpdateExternalDashboardError {
-  INVALID
-  NOT_FOUND
-}
-
-input UpdateExternalDashboardInput {
-  id: UUID!
-  description: String
-  name: String
-  countries: [CountryInput!]
-}
-
-type UpdateExternalDashboardResult {
-  success: Boolean!
-  errors: [UpdateExternalDashboardError!]!
-  externalDashboard: ExternalDashboard
-}
-
 enum UpdateMembershipError {
   PERMISSION_DENIED
   NOT_FOUND
@@ -2288,6 +2288,7 @@ input UpdatePipelineInput {
   schedule: String
   description: String
   recipientIds: [UUID!]
+  webhookEnabled: Boolean
 }
 
 input UpdatePipelineProgressInput {
@@ -2320,6 +2321,23 @@ type UpdateTeamResult {
   team: Team
   success: Boolean!
   errors: [UpdateTeamError!]!
+}
+
+enum UpdateUserError {
+  PERMISSION_DENIED
+  INVALID_LANGUAGE
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+  language: String
+}
+
+type UpdateUserResult {
+  success: Boolean!
+  user: User
+  errors: [UpdateUserError!]!
 }
 
 enum UpdateWorkspaceError {
@@ -2378,6 +2396,7 @@ type User {
   firstName: String
   lastName: String
   displayName: String!
+  language: String!
   avatar: Avatar!
   dateJoined: DateTime!
   lastLogin: DateTime
@@ -2430,7 +2449,7 @@ type Workspace {
   updatedAt: DateTime
   createdBy: User!
   connections: [Connection!]!
-  invitations(status: WorkspaceInvitationStatus, page: Int, perPage: Int): WorkspaceInvitationPage!
+  invitations(includeAccepted: Boolean, page: Int, perPage: Int): WorkspaceInvitationPage!
   database: Database!
   bucket: Bucket!
   datasets(pinned: Boolean, query: String, page: Int = 1, perPage: Int = 15): DatasetLinkPage!
@@ -2442,7 +2461,7 @@ type WorkspaceInvitation {
   workspace: Workspace!
   role: WorkspaceMembershipRole!
   status: WorkspaceInvitationStatus!
-  invited_by: User
+  invitedBy: User
   createdAt: DateTime!
   updatedAt: DateTime
 }
@@ -2456,6 +2475,7 @@ type WorkspaceInvitationPage {
 
 enum WorkspaceInvitationStatus {
   PENDING
+  DECLINED
   ACCEPTED
 }
 
