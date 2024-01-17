@@ -169,6 +169,7 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
     user {
       ...User_user
     }
+    ...RunDatasetVersionsTable_run
     ...RunOutputsTable_run
     ...RunPipelineDialog_run
     ...RunMessages_run

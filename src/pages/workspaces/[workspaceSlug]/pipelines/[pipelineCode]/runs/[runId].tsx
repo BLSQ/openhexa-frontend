@@ -2,6 +2,8 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
+import DataGrid, { BaseColumn } from "core/components/DataGrid";
+import { TextColumn } from "core/components/DataGrid/TextColumn";
 import DescriptionList, {
   DescriptionListDisplayMode,
 } from "core/components/DescriptionList";
@@ -27,6 +29,7 @@ import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
 import RunLogs from "pipelines/features/RunLogs";
 import RunMessages from "pipelines/features/RunMessages";
 import { useCallback, useMemo, useState } from "react";
+import RunDatasetVersionsTable from "workspaces/features/RunDatasetVersionsTable/";
 import RunOutputsTable from "workspaces/features/RunOutputsTable";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import {
@@ -267,15 +270,26 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
             </Block.Section>
 
             {isFinished && (
-              <Block.Section title={"Outputs"}>
-                {run.outputs.length > 0 ? (
-                  <RunOutputsTable workspace={workspace} run={run} />
-                ) : (
-                  <p className="text-sm italic text-gray-600">
-                    {t("No outputs")}
-                  </p>
-                )}
-              </Block.Section>
+              <>
+                <Block.Section title={"Outputs"}>
+                  {run.outputs.length > 0 ? (
+                    <RunOutputsTable workspace={workspace} run={run} />
+                  ) : (
+                    <p className="text-sm italic text-gray-600">
+                      {t("No outputs")}
+                    </p>
+                  )}
+                </Block.Section>
+                <Block.Section title={"Dataset versions"}>
+                  {run.datasetVersion.length > 0 ? (
+                    <RunDatasetVersionsTable workspace={workspace} run={run} />
+                  ) : (
+                    <p className="text-sm italic text-gray-600">
+                      {t("No versions linked to this run")}
+                    </p>
+                  )}
+                </Block.Section>
+              </>
             )}
             <Block.Section title={t("Messages")}>
               {/* Set a ref to the component to recreate it completely when the run id changes.  */}
