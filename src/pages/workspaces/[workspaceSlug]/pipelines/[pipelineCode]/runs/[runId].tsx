@@ -270,26 +270,22 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
             </Block.Section>
 
             {isFinished && (
-              <>
-                <Block.Section title={"Outputs"}>
-                  {run.outputs.length > 0 ? (
-                    <RunOutputsTable workspace={workspace} run={run} />
-                  ) : (
+              <Block.Section title={"Outputs"}>
+                {run.outputs.length === 0 &&
+                  run.datasetVersions.length === 0 && (
                     <p className="text-sm italic text-gray-600">
                       {t("No outputs")}
                     </p>
                   )}
-                </Block.Section>
-                <Block.Section title={"Dataset versions"}>
-                  {run.datasetVersion.length > 0 ? (
-                    <RunDatasetVersionsTable workspace={workspace} run={run} />
-                  ) : (
-                    <p className="text-sm italic text-gray-600">
-                      {t("No versions linked to this run")}
-                    </p>
+                <div className="flex flex-col space-y-4">
+                  {run.outputs.length > 0 && (
+                    <RunOutputsTable workspace={workspace} run={run} />
                   )}
-                </Block.Section>
-              </>
+                  {run.datasetVersions.length > 0 && (
+                    <RunDatasetVersionsTable workspace={workspace} run={run} />
+                  )}
+                </div>
+              </Block.Section>
             )}
             <Block.Section title={t("Messages")}>
               {/* Set a ref to the component to recreate it completely when the run id changes.  */}

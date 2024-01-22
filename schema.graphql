@@ -1683,7 +1683,7 @@ type PipelineRun {
   code: String!
   sendMailNotifications: Boolean!
   timeout: Int
-  datasetVersion: [DatasetVersion!]!
+  datasetVersions: [DatasetVersion!]!
 }
 
 type PipelineRunMessage {

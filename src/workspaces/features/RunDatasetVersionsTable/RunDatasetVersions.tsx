@@ -20,15 +20,15 @@ const RunDatasetVersionsTable = (props: RunDatasetVersionsTableProps) => {
   const { run, workspace } = props;
   const { t } = useTranslation();
 
-  if (!run.datasetVersion.length) {
+  if (!run.datasetVersions.length) {
     return null;
   }
 
   return (
     <DataGrid
-      data={run.datasetVersion}
-      defaultPageSize={run.datasetVersion.length}
-      totalItems={run.datasetVersion.length}
+      data={run.datasetVersions}
+      defaultPageSize={run.datasetVersions.length}
+      totalItems={run.datasetVersions.length}
       className="rounded-md border"
     >
       <TextColumn accessor={"name"} label={t("Name")} />
@@ -38,7 +38,7 @@ const RunDatasetVersionsTable = (props: RunDatasetVersionsTableProps) => {
         accessor="createdAt"
         id="createdAt"
         label={t("Created at")}
-        format={DateTime.DATETIME_FULL_WITH_SECONDS}
+        format={DateTime.DATETIME_MED_WITH_SECONDS}
       />
       <BaseColumn className="text-right">
         {(item) => (
@@ -71,7 +71,7 @@ RunDatasetVersionsTable.fragments = {
 
   run: gql`
     fragment RunDatasetVersionsTable_run on PipelineRun {
-      datasetVersion {
+      datasetVersions {
         id
         name
         createdAt

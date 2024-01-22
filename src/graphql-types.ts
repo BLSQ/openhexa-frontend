@@ -2281,7 +2281,7 @@ export type PipelineRun = {
   __typename?: 'PipelineRun';
   code: Scalars['String']['output'];
   config: Scalars['JSON']['output'];
-  datasetVersion: Array<DatasetVersion>;
+  datasetVersions: Array<DatasetVersion>;
   duration?: Maybe<Scalars['Int']['output']>;
   executionDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['UUID']['output'];
