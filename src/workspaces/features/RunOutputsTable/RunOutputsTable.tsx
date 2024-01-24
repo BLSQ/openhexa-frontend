@@ -8,7 +8,6 @@ import {
 import Button from "core/components/Button";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import Link from "core/components/Link";
-import { PipelineRunOutput } from "graphql-types";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "next-i18next";
 import DownloadBucketObject from "../DownloadBucketObject";
@@ -16,7 +15,7 @@ import {
   RunOutputsTable_RunFragment,
   RunOutputsTable_WorkspaceFragment,
 } from "./RunOutputsTable.generated";
-import { TextColumn } from "core/components/DataGrid/TextColumn";
+import { renderOutputType } from "workspaces/helpers/pipelines";
 
 type RunOutputsTableProps = {
   run: RunOutputsTable_RunFragment;
@@ -82,7 +81,7 @@ const RunOutputsTable = (props: RunOutputsTableProps) => {
     [workspace, t],
   );
 
-  const renderOutputIcon = useCallback((typename: any) => {
+  const renderOutputIcon = useCallback((typename: string | undefined) => {
     switch (typename) {
       case "BucketObject":
         return <DocumentIcon className="w-4" />;
@@ -99,7 +98,7 @@ const RunOutputsTable = (props: RunOutputsTableProps) => {
     return [...run.outputs, ...run.datasetVersions];
   }, [run.outputs, run.datasetVersions]);
 
-  if (!run.outputs.length) {
+  if (!data.length) {
     return null;
   }
 
@@ -109,6 +108,7 @@ const RunOutputsTable = (props: RunOutputsTableProps) => {
       defaultPageSize={data.length}
       totalItems={data.length}
       className="rounded-md border"
+      fixedLayout={false}
     >
       <BaseColumn label={t("Name")}>
         {(output) => {
@@ -118,13 +118,26 @@ const RunOutputsTable = (props: RunOutputsTableProps) => {
               {output.__typename == "DatabaseTable" && output.tableName}
               {output.__typename == "BucketObject" &&
                 output.path.slice(workspace.bucket.name.length + 1)}
-              {output.__typename == "DatasetVersion" && output.name}
+              {output.__typename == "DatasetVersion" && (
+                <>
+                  {output.name}
+                  <span className="text-gray-400 text-sm">
+                    {output.dataset.name}
+                  </span>
+                </>
+              )}
               {output.__typename == "GenericOutput" && output.genericName}
             </div>
           );
         }}
       </BaseColumn>
-      <TextColumn name="type" label={t("Type")} accessor="__typename" />
+      <BaseColumn id="type" label={t("Type")}>
+        {(output) => (
+          <div className="flex h-full items-center gap-1.5 text-gray-600">
+            {renderOutputType(output.__typename)}
+          </div>
+        )}
+      </BaseColumn>
       <BaseColumn id="actions" className="text-right">
         {(output) => renderOutputAction(output)}
       </BaseColumn>
@@ -168,6 +181,7 @@ RunOutputsTable.fragments = {
         name
         dataset {
           slug
+          name
         }
       }
     }
