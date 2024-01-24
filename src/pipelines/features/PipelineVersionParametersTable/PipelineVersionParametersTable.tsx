@@ -1,9 +1,5 @@
 import { gql } from "@apollo/client";
 import {
-  PipelineVersionParametersTable_PipelineFragment,
-  PipelineVersionParametersTable_VersionFragment,
-} from "./PipelineVersionParametersTable.generated";
-import {
   Table,
   TableBody,
   TableCell,
@@ -11,6 +7,7 @@ import {
   TableRow,
 } from "core/components/Table";
 import { useTranslation } from "next-i18next";
+import { PipelineVersionParametersTable_VersionFragment } from "./PipelineVersionParametersTable.generated";
 
 type PipelineVersionParametersTableProps = {
   version: PipelineVersionParametersTable_VersionFragment;
