@@ -77,6 +77,7 @@ query WorkspacePipelinePage(
     ...RunPipelineDialog_pipeline
     ...DeletePipelineVersion_pipeline
     ...PipelineVersionPicker_pipeline
+    ...DownloadPipelineVersion_pipeline
     permissions {
       run
       update
@@ -96,6 +97,7 @@ query WorkspacePipelinePage(
       number
       ...PipelineVersionPicker_version
       ...PipelineVersionParametersTable_version
+      ...DownloadPipelineVersion_version
     }
     recipients {
       user {
@@ -126,6 +128,38 @@ query WorkspacePipelinePage(
       totalItems
       totalPages
       pageNumber
+    }
+  }
+}
+
+query WorkspacePipelineVersionsPage(
+  $workspaceSlug: String!
+  $pipelineCode: String!
+  $page: Int!
+) {
+  workspace(slug: $workspaceSlug) {
+    slug
+    name
+    ...WorkspaceLayout_workspace
+  }
+  pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
+    code
+    name
+    currentVersion {
+      id
+    }
+    versions(page: $page, perPage: 15) {
+      items {
+        id
+        number
+        createdAt
+        user {
+          ...User_user
+        }
+        ...PipelineVersionParametersTable_version
+      }
+      totalItems
+      totalPages
     }
   }
 }
@@ -322,7 +356,7 @@ query WorkspaceFilesPage(
         ...BucketExplorer_objects
       }
     }
-    permissions{
+    permissions {
       createObject
     }
   }

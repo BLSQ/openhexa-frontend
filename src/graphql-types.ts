@@ -2503,6 +2503,7 @@ export type Query = {
   pipeline?: Maybe<Pipeline>;
   pipelineByCode?: Maybe<Pipeline>;
   pipelineRun?: Maybe<PipelineRun>;
+  pipelineVersion?: Maybe<PipelineVersion>;
   pipelines: PipelinesPage;
   search: SearchQueryResult;
   team?: Maybe<Team>;
@@ -2657,6 +2658,11 @@ export type QueryPipelineByCodeArgs = {
 
 
 export type QueryPipelineRunArgs = {
+  id: Scalars['UUID']['input'];
+};
+
+
+export type QueryPipelineVersionArgs = {
   id: Scalars['UUID']['input'];
 };
 

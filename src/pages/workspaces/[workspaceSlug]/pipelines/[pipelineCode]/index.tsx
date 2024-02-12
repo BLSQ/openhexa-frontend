@@ -13,11 +13,10 @@ import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
 import DataGrid from "core/components/DataGrid/DataGrid";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import UserColumn from "core/components/DataGrid/UserColumn";
-import { DescriptionListDisplayMode } from "core/components/DescriptionList";
 import DescriptionList from "core/components/DescriptionList/DescriptionList";
 import Link from "core/components/Link";
 import Page from "core/components/Page";
-import { Table, TableBody, TableRow } from "core/components/Table";
+import Spinner from "core/components/Spinner";
 import Time from "core/components/Time/Time";
 import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
@@ -27,11 +26,11 @@ import { PipelineRecipient, PipelineRunTrigger } from "graphql-types";
 import useFeature from "identity/hooks/useFeature";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import DownloadPipelineVersion from "pipelines/features/DownloadPipelineVersion/DownloadPipelineVersion";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
 import PipelineVersionParametersTable from "pipelines/features/PipelineVersionParametersTable/PipelineVersionParametersTable";
 import { useState } from "react";
 import CronProperty from "workspaces/features/CronProperty";
-import PipelineVersionPicker from "workspaces/features/PipelineVersionPicker/PipelineVersionPicker";
 import PipelineVersionsDialog from "workspaces/features/PipelineVersionsDialog";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import WorkspaceMemberProperty from "workspaces/features/WorkspaceMemberProperty/";
@@ -137,6 +136,19 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               </Breadcrumbs.Part>
             </Breadcrumbs>
             <div className="flex items-center gap-2">
+              {pipeline.currentVersion && (
+                <DownloadPipelineVersion
+                  pipeline={pipeline}
+                  version={pipeline.currentVersion}
+                >
+                  {({ onClick, isDownloading }) => (
+                    <Button onClick={onClick} variant="secondary">
+                      {isDownloading && <Spinner size="sm" />}
+                      {t("Download code")}
+                    </Button>
+                  )}
+                </DownloadPipelineVersion>
+              )}
               {pipeline.permissions.run && (
                 <Button
                   leadingIcon={<PlayIcon className="w-4" />}
@@ -185,14 +197,21 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               collapsible={false}
               title={() => (
                 <div className="flex flex-1 gap-2 items-center">
-                  <h4 className="font-medium">{t("Versions")}</h4>
+                  <h4 className="font-medium">{t("Current version")}</h4>
                   <div className="flex-1"></div>
-                  <PipelineVersionPicker
-                    required
-                    value={displayedVersion}
-                    onChange={(version) => setDisplayedVersion(version)}
-                    pipeline={pipeline}
-                  />
+                  <Link
+                    className="text-sm"
+                    href={{
+                      pathname:
+                        "/workspaces/[workspaceSlug]/pipelines/[pipelineCode]/versions",
+                      query: {
+                        workspaceSlug: workspace.slug,
+                        pipelineCode: pipeline.code,
+                      },
+                    }}
+                  >
+                    {t("View all versions")}
+                  </Link>
                 </div>
               )}
             >
