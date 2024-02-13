@@ -1,15 +1,11 @@
-import Badge from "core/components/Badge";
-import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import DescriptionList from "core/components/DescriptionList";
 import Page from "core/components/Page";
-import Time from "core/components/Time";
-import Title from "core/components/Title";
+import Pagination from "core/components/Pagination";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import PipelineVersionCard from "pipelines/features/PipelineVersionCard";
-import PipelineVersionParametersTable from "pipelines/features/PipelineVersionParametersTable";
 import {
   WorkspacePipelineVersionsPageDocument,
   WorkspacePipelineVersionsPageQuery,
@@ -22,11 +18,13 @@ type Props = {
   workspaceSlug: string;
   pipelineCode: string;
   page: number;
+  perPage: number;
 };
 const PipelineVersionsPage: NextPageWithLayout<Props> = ({
   workspaceSlug,
   pipelineCode,
   page,
+  perPage,
 }) => {
   const { t } = useTranslation();
 
@@ -35,12 +33,15 @@ const PipelineVersionsPage: NextPageWithLayout<Props> = ({
       workspaceSlug,
       pipelineCode,
       page,
+      perPage,
     },
   });
 
+  const router = useRouter();
   if (!data?.workspace || !data?.pipeline) {
     return null;
   }
+
   const { workspace, pipeline } = data;
   return (
     <Page title={t("")}>
@@ -99,6 +100,21 @@ const PipelineVersionsPage: NextPageWithLayout<Props> = ({
           {data.pipeline.versions.items.map((version) => (
             <PipelineVersionCard key={version.id} version={version} />
           ))}
+          <Pagination
+            totalItems={data.pipeline.versions.totalItems}
+            page={page}
+            perPage={perPage}
+            countItems={data.pipeline.versions.items.length}
+            onChange={(page) =>
+              router.push({
+                pathname: router.pathname,
+                query: {
+                  ...router.query,
+                  page,
+                },
+              })
+            }
+          />
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
     </Page>
@@ -112,6 +128,7 @@ export const getServerSideProps = createGetServerSideProps({
   async getServerSideProps(ctx, client) {
     await WorkspaceLayout.prefetch(ctx, client);
     const page = parseInt(ctx.query.page as string, 10) || 1;
+    const PER_PAGE = 15;
     const { data } = await client.query<
       WorkspacePipelineVersionsPageQuery,
       WorkspacePipelineVersionsPageQueryVariables
@@ -121,6 +138,7 @@ export const getServerSideProps = createGetServerSideProps({
         workspaceSlug: ctx.params!.workspaceSlug as string,
         pipelineCode: ctx.params!.pipelineCode as string,
         page,
+        perPage: PER_PAGE,
       },
     });
 
@@ -132,6 +150,7 @@ export const getServerSideProps = createGetServerSideProps({
         workspaceSlug: ctx.params!.workspaceSlug,
         pipelineCode: ctx.params!.pipelineCode,
         page,
+        perPage: PER_PAGE,
       },
     };
   },

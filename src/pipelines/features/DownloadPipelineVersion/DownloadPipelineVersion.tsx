@@ -1,14 +1,10 @@
 import { gql } from "@apollo/client";
-import {
-  DownloadPipelineVersion_PipelineFragment,
-  DownloadPipelineVersion_VersionFragment,
-} from "./DownloadPipelineVersion.generated";
+import { DownloadPipelineVersion_VersionFragment } from "./DownloadPipelineVersion.generated";
 import { downloadPipelineVersion } from "pipelines/helpers/pipeline";
 import { set } from "lodash";
 import { useState } from "react";
 
 type DownloadPipelineVersionProps = {
-  pipeline: DownloadPipelineVersion_PipelineFragment;
   version: DownloadPipelineVersion_VersionFragment;
   children({
     onClick,
@@ -35,12 +31,10 @@ DownloadPipelineVersion.fragments = {
     fragment DownloadPipelineVersion_version on PipelineVersion {
       id
       number
-    }
-  `,
-  pipeline: gql`
-    fragment DownloadPipelineVersion_pipeline on Pipeline {
-      id
-      code
+      pipeline {
+        id
+        code
+      }
     }
   `,
 };

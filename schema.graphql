@@ -1748,6 +1748,7 @@ type PipelineVersion {
   number: Int!
   createdAt: DateTime!
   parameters: [PipelineParameter!]!
+  isLatestVersion: Boolean!
   zipfile: String!
   timeout: Int
 }

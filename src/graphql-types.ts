@@ -2353,6 +2353,7 @@ export type PipelineVersion = {
   __typename?: 'PipelineVersion';
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['UUID']['output'];
+  isLatestVersion: Scalars['Boolean']['output'];
   number: Scalars['Int']['output'];
   parameters: Array<PipelineParameter>;
   pipeline: Pipeline;

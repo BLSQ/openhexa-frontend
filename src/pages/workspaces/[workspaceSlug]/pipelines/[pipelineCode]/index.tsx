@@ -137,10 +137,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             </Breadcrumbs>
             <div className="flex items-center gap-2">
               {pipeline.currentVersion && (
-                <DownloadPipelineVersion
-                  pipeline={pipeline}
-                  version={pipeline.currentVersion}
-                >
+                <DownloadPipelineVersion version={pipeline.currentVersion}>
                   {({ onClick, isDownloading }) => (
                     <Button onClick={onClick} variant="secondary">
                       {isDownloading && <Spinner size="sm" />}
@@ -215,12 +212,12 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 </div>
               )}
             >
-              {displayedVersion ? (
+              {pipeline.currentVersion ? (
                 <>
                   <DescriptionList>
                     <DescriptionList.Item label={t("Identifier")}>
-                      <code>{displayedVersion.number}</code>
-                      {displayedVersion.id === pipeline.currentVersion?.id && (
+                      <code>{pipeline.currentVersion.number}</code>
+                      {pipeline.currentVersion.id && (
                         <Badge
                           className="ml-2 text-gray-500 text-sm"
                           borderColor="border-gray-300"
@@ -230,21 +227,10 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                       )}
                     </DescriptionList.Item>
                     <DescriptionList.Item label={t("Created at")}>
-                      <Time datetime={displayedVersion.createdAt} />
+                      <Time datetime={pipeline.currentVersion.createdAt} />
                     </DescriptionList.Item>
                     <DescriptionList.Item label={t("Created by")}>
-                      {displayedVersion.user?.displayName ?? "-"}
-                    </DescriptionList.Item>
-                    <DescriptionList.Item label={t("Parameters")}>
-                      {displayedVersion.parameters.length === 0 ? (
-                        <span className="">-</span>
-                      ) : (
-                        <div className="rounded-md overflow-hidden border border-gray-100">
-                          <PipelineVersionParametersTable
-                            version={displayedVersion}
-                          />
-                        </div>
-                      )}
+                      {pipeline.currentVersion.user?.displayName ?? "-"}
                     </DescriptionList.Item>
                   </DescriptionList>
                 </>
