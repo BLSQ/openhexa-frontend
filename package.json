@@ -19,7 +19,7 @@
     "codegen": "find ./src -type f -name \"*.generated.tsx\" -delete && graphql-codegen --config codegen.yml",
     "i18n:extract": "i18next",
     "i18n:translate": "node ./scripts/translate.mjs ./public/locales",
-    "i18n:validate": "node ./scripts/validate-i18n.mjs"
+    "i18n:validate": "i18next && node ./scripts/validate-i18n.mjs"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
