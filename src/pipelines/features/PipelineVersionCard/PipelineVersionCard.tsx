@@ -29,14 +29,7 @@ const PipelineVersionCard = ({
           <span className="font-bold text-xl">
             {t("Version")} {version.number}
           </span>{" "}
-          <span className="text-gray-400">
-            <Trans>
-              on{" "}
-              <span>
-                <Time datetime={version.createdAt} format={DateTime.DATE_MED} />
-              </span>
-            </Trans>
-          </span>
+          <span className="text-gray-400"></span>
         </div>
         {version.isLatestVersion && (
           <Badge

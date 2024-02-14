@@ -232,7 +232,6 @@
   "Notebooks": "Notebooks",
   "Notification Recipients": "Notification Recipients",
   "Notifications": "Notifications",
-  "on <2><0></0></2>": "on <2><0></0></2>",
   "One of the fields is invalid. Please check your inputs.": "One of the fields is invalid. Please check your inputs.",
   "Only letters, numbers, dashes and underscores are allowed. 'code' and 'description' are protected words and cannot be used.": "Only letters, numbers, dashes and underscores are allowed. 'code' and 'description' are protected words and cannot be used.",
   "Open in Airflow": "Open in Airflow",
