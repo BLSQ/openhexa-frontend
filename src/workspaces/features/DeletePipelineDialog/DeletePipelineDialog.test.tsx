@@ -2,59 +2,44 @@ import { faker } from "@faker-js/faker";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { TestApp } from "core/helpers/testutils";
+
+import DeletePipelineDialog from "./DeletePipelineDialog";
 import {
-  DeletePipelineVersionDocument,
-  useDeletePipelineVersionMutation,
+  DeletePipelineDocument,
+  useDeletePipelineMutation,
 } from "workspaces/graphql/mutations.generated";
-import DeletePipelineVersionDialog from "./DeletePipelineVersionDialog";
 
 jest.mock("workspaces/graphql/mutations.generated", () => ({
   ...jest.requireActual("workspaces/graphql/mutations.generated"),
   __esModule: true,
-  useDeletePipelineVersionMutation: jest.fn().mockReturnValue([]),
+  useDeletePipelineMutation: jest.fn().mockReturnValue([]),
 }));
 
 const PIPELINE = {
   id: faker.datatype.uuid(),
   code: faker.science.chemicalElement().name,
 };
-const VERSION = {
-  id: faker.datatype.uuid(),
-  number: faker.datatype.number(),
+const WORKSPACE = {
+  slug: faker.lorem.slug(5),
 };
-const useDeletePipelineVersionMutationMock =
-  useDeletePipelineVersionMutation as jest.Mock;
+const useDeletePipelineMutationMock = useDeletePipelineMutation as jest.Mock;
 
-describe("DeletePipelineVersionDialog", () => {
+describe("DeletePipelineDialog", () => {
   const onClose = jest.fn();
   beforeEach(() => {
-    useDeletePipelineVersionMutationMock.mockClear();
-  });
-
-  it("is not displayed ", async () => {
-    const { container } = render(
-      <DeletePipelineVersionDialog
-        open={false}
-        pipeline={PIPELINE}
-        version={VERSION}
-        onClose={() => {}}
-      />,
-    );
-    const dialog = await screen.queryByRole("dialog");
-    expect(dialog).not.toBeInTheDocument();
-    expect(onClose).not.toHaveBeenCalled();
-    expect(container).toMatchSnapshot();
+    useDeletePipelineMutationMock.mockClear();
   });
 
   it("is displayed when open is true", async () => {
     const { container } = render(
       <TestApp mocks={[]}>
-        <DeletePipelineVersionDialog
-          open={true}
+        <DeletePipelineDialog
+          open
           pipeline={PIPELINE}
-          version={VERSION}
+          workspace={WORKSPACE}
           onClose={() => {}}
         />
+        ,
       </TestApp>,
     );
 
@@ -64,11 +49,11 @@ describe("DeletePipelineVersionDialog", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("Delete a pipeline version ", async () => {
+  it("Delete a pipeline ", async () => {
     const { useArchiveWorkspaceMutation } = jest.requireActual(
       "workspaces/graphql/mutations.generated",
     );
-    useDeletePipelineVersionMutationMock.mockImplementation(
+    useDeletePipelineMutationMock.mockImplementation(
       useArchiveWorkspaceMutation,
     );
 
@@ -76,17 +61,16 @@ describe("DeletePipelineVersionDialog", () => {
     const mocks = [
       {
         request: {
-          query: DeletePipelineVersionDocument,
+          query: DeletePipelineDocument,
           variables: {
             input: {
-              pipelineId: PIPELINE.id,
-              versionId: VERSION.id,
+              id: PIPELINE.id,
             },
           },
         },
         result: {
           data: {
-            archiveWorkspace: {
+            deletePipeline: {
               success: true,
               errors: [],
             },
@@ -96,14 +80,15 @@ describe("DeletePipelineVersionDialog", () => {
     ];
     render(
       <TestApp mocks={mocks}>
-        <DeletePipelineVersionDialog
-          open={true}
+        <DeletePipelineDialog
+          open={false}
           pipeline={PIPELINE}
-          version={VERSION}
+          workspace={WORKSPACE}
           onClose={() => {}}
         />
+        ,
       </TestApp>,
     );
-    expect(useDeletePipelineVersionMutation).toHaveBeenCalled();
+    expect(useDeletePipelineMutation).toHaveBeenCalled();
   });
 });
