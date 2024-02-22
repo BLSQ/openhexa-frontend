@@ -61,6 +61,7 @@
   "By source": "Par source",
   "By type": "Par type",
   "Cancel": "Annuler",
+  "Cannot delete a running or queued pipeline.": "Impossible de supprimer un pipeline en cours d'exécution ou en file d'attente.",
   "Catalog": "Catalogue",
   "Check your inbox and enter the token you received to enable the two-factor authentication.": "Vérifiez votre boîte de réception et saisissez le jeton que vous avez reçu pour activer l'authentification à deux facteurs.",
   "Check your inbox and type the token you received to disable the two-factor authentication.": "Vérifiez votre boîte de réception et saisissez le jeton que vous avez reçu pour désactiver l'authentification à deux facteurs.",

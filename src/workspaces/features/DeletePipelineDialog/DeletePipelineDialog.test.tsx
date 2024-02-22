@@ -24,10 +24,13 @@ const WORKSPACE = {
 };
 const useDeletePipelineMutationMock = useDeletePipelineMutation as jest.Mock;
 
+const windowAlertSpy = jest.spyOn(window, "alert").mockImplementation(() => {});
+
 describe("DeletePipelineDialog", () => {
   const onClose = jest.fn();
   beforeEach(() => {
     useDeletePipelineMutationMock.mockClear();
+    windowAlertSpy.mockClear();
   });
 
   it("is displayed when open is true", async () => {
@@ -49,7 +52,7 @@ describe("DeletePipelineDialog", () => {
     expect(container).toMatchSnapshot();
   });
 
-  it("Delete a pipeline ", async () => {
+  it("Deletes a pipeline ", async () => {
     const { useArchiveWorkspaceMutation } = jest.requireActual(
       "workspaces/graphql/mutations.generated",
     );
@@ -57,7 +60,6 @@ describe("DeletePipelineDialog", () => {
       useArchiveWorkspaceMutation,
     );
 
-    const user = userEvent.setup();
     const mocks = [
       {
         request: {
@@ -90,5 +92,48 @@ describe("DeletePipelineDialog", () => {
       </TestApp>,
     );
     expect(useDeletePipelineMutation).toHaveBeenCalled();
+    expect(windowAlertSpy).not.toHaveBeenCalled();
+  });
+  it("Shows an alert if an error occurs ", async () => {
+    const { useArchiveWorkspaceMutation } = jest.requireActual(
+      "workspaces/graphql/mutations.generated",
+    );
+    useDeletePipelineMutationMock.mockImplementation(
+      useArchiveWorkspaceMutation,
+    );
+
+    const mocks = [
+      {
+        request: {
+          query: DeletePipelineDocument,
+          variables: {
+            input: {
+              id: PIPELINE.id,
+            },
+          },
+        },
+        result: {
+          data: {
+            deletePipeline: {
+              success: false,
+              errors: [],
+            },
+          },
+        },
+      },
+    ];
+    render(
+      <TestApp mocks={mocks}>
+        <DeletePipelineDialog
+          open={false}
+          pipeline={PIPELINE}
+          workspace={WORKSPACE}
+          onClose={() => {}}
+        />
+        ,
+      </TestApp>,
+    );
+    expect(useDeletePipelineMutation).toHaveBeenCalled();
+    expect(windowAlertSpy).not.toHaveBeenCalled();
   });
 });

@@ -55,7 +55,8 @@ const DeletePipelineDialog = (props: DeletePipelineDialogProps) => {
       clearCache();
     }
     if (data.deletePipeline.errors.includes(PipelineError.PermissionDenied)) {
-      throw new Error("You are not authorized to perform this action");
+      setIsSubmitting(false);
+      window.alert(t("Cannot delete a running or queued pipeline."));
     }
   };
 
