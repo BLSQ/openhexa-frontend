@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.46.0](https://github.com/BLSQ/openhexa-frontend/compare/0.45.2...0.46.0) (2024-03-14)
+
+
+### Features
+
+* **Pipelines:** allow user to delete pipeline ([#569](https://github.com/BLSQ/openhexa-frontend/issues/569)) ([1c55dfb](https://github.com/BLSQ/openhexa-frontend/commit/1c55dfb950eef3e1d7d534686c2d3a203294c23b))
+
 ## [0.45.2](https://github.com/BLSQ/openhexa-frontend/compare/0.45.1...0.45.2) (2024-02-26)
 
 
