@@ -149,7 +149,7 @@ export async function runPipeline(
       }
     `,
     variables: {
-      input: { id: pipelineId, config, version, sendMailNotifications },
+      input: { id: pipelineId, config, versionId, sendMailNotifications },
     },
     update: (cache, { data }) => {
       if (!data || !data.runPipeline.run) {
