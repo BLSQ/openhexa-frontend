@@ -126,7 +126,7 @@ export function getCronExpressionDescription(
 export async function runPipeline(
   pipelineId: string,
   config: any,
-  version?: number,
+  versionId?: string,
   sendMailNotifications?: boolean,
 ) {
   const client = getApolloClient();
