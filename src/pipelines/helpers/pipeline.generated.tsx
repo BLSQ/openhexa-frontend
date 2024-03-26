@@ -15,7 +15,7 @@ export type GetPipelineVersionQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetPipelineVersionQuery = { __typename?: 'Query', pipelineVersion?: { __typename?: 'PipelineVersion', id: string, number: number, zipfile: string, pipeline: { __typename?: 'Pipeline', code: string } } | null };
+export type GetPipelineVersionQuery = { __typename?: 'Query', pipelineVersion?: { __typename?: 'PipelineVersion', id: string, name: string, zipfile: string, pipeline: { __typename?: 'Pipeline', code: string } } | null };
 
 
 export const RunPipelineDocument = gql`
@@ -64,7 +64,7 @@ export const GetPipelineVersionDocument = gql`
     query GetPipelineVersion($versionId: UUID!) {
   pipelineVersion(id: $versionId) {
     id
-    number
+    name
     pipeline {
       code
     }
@@ -89,7 +89,7 @@ export const GetPipelineVersionDocument = gql`
  *   },
  * });
  */
-export function useGetPipelineVersionQuery(baseOptions: Apollo.QueryHookOptions<GetPipelineVersionQuery, GetPipelineVersionQueryVariables>) {
+export function useGetPipelineVersionQuery(baseOptions: Apollo.QueryHookOptions<GetPipelineVersionQuery, GetPipelineVersionQueryVariables> & ({ variables: GetPipelineVersionQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetPipelineVersionQuery, GetPipelineVersionQueryVariables>(GetPipelineVersionDocument, options);
       }
