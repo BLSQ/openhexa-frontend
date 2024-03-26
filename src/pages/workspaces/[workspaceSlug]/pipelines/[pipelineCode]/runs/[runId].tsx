@@ -255,7 +255,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                   </DescriptionList.Item>
                 ) : null}
                 <DescriptionList.Item label={t("Version")}>
-                  {run.version.number}
+                  {run.version.name}
                 </DescriptionList.Item>
                 <DescriptionList.Item
                   label={t("Timeout")}
