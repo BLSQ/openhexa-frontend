@@ -15,21 +15,21 @@ jest.mock("@apollo/client", () => ({
 const useQueryMock = useQuery as jest.Mock;
 
 const WORKSPACE = {
-  slug: faker.datatype.uuid(),
+  slug: faker.string.uuid(),
   datasets: {
     items: [
       {
-        id: faker.datatype.uuid(),
+        id: faker.string.uuid(),
         dataset: {
           slug: faker.lorem.slug(5),
-          name: faker.datatype.string(10),
+          name: faker.string.sample(10),
         },
       },
       {
-        id: faker.datatype.uuid(),
+        id: faker.string.uuid(),
         dataset: {
           slug: faker.lorem.slug(5),
-          name: faker.datatype.string(10),
+          name: faker.string.sample(10),
         },
       },
     ],
