@@ -1,4 +1,5 @@
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
+import { StopIcon } from "@heroicons/react/24/solid";
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
@@ -29,6 +30,7 @@ import RunMessages from "pipelines/features/RunMessages";
 import { useCallback, useMemo, useState } from "react";
 import RunOutputsTable from "workspaces/features/RunOutputsTable";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
+import StopPipelineDialog from "workspaces/features/StopPipelineDialog";
 import {
   WorkspacePipelineRunPageDocument,
   WorkspacePipelineRunPageQuery,
@@ -72,6 +74,8 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
     refetch();
   }, [refetch]);
   const [isRunPipelineDialogOpen, setIsRunPipelineDialogOpen] = useState(false);
+  const [isStopPipelineDialogOpen, setIsStopPipelineDialogOpen] =
+    useState(false);
 
   useInterval(onRefetch, refreshInterval);
 
@@ -82,6 +86,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
   const isFinished = [
     PipelineRunStatus.Failed,
     PipelineRunStatus.Success,
+    PipelineRunStatus.Stopped,
   ].includes(run.status);
 
   const hasOutputs = run.datasetVersions.length + run.outputs.length > 0;
@@ -177,6 +182,15 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
               {t("Run again")}
             </Button>
           )}
+          {!isFinished && (
+            <Button
+              leadingIcon={<StopIcon className="h-4 w-4" />}
+              className="bg-red-500 hover:bg-red-700 focus:ring-red-500"
+              onClick={() => setIsStopPipelineDialogOpen(true)}
+            >
+              {t("Stop")}
+            </Button>
+          )}
         </WorkspaceLayout.Header>
 
         <WorkspaceLayout.PageContent>
@@ -213,6 +227,12 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                           run.executionDate,
                         ).toLocaleString(DateTime.DATETIME_SHORT),
                       })}
+                    {run.status === PipelineRunStatus.Stopped &&
+                      t("Stopped on {{relativeTime}}", {
+                        relativeTime: DateTime.fromISO(
+                          run.executionDate,
+                        ).toLocaleString(DateTime.DATETIME_SHORT),
+                      })}
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -220,7 +240,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                     title={run.executionDate}
                     suppressHydrationWarning={true}
                   >
-                    <PipelineRunStatusBadge run={run} polling={false} />
+                    <PipelineRunStatusBadge run={run} />
                   </div>
                 </div>
               </div>
@@ -254,6 +274,11 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                     {formatDuration(run.duration)}
                   </DescriptionList.Item>
                 ) : null}
+                {run.stoppedBy && (
+                  <DescriptionList.Item label={t("Stopped by")}>
+                    <User user={run.stoppedBy} />
+                  </DescriptionList.Item>
+                )}
                 <DescriptionList.Item label={t("Version")}>
                   {run.version.number}
                 </DescriptionList.Item>
@@ -306,6 +331,12 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
         open={isRunPipelineDialogOpen}
         onClose={() => setIsRunPipelineDialogOpen(false)}
         pipeline={run.pipeline}
+        run={run}
+      />
+      <StopPipelineDialog
+        open={isStopPipelineDialogOpen}
+        pipeline={run.pipeline}
+        onClose={() => setIsStopPipelineDialogOpen(false)}
         run={run}
       />
     </Page>
