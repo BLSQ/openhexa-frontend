@@ -1,10 +1,8 @@
-import DatasetPicker from "./DatasetPicker";
-import { queryByRole, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { MockedProvider } from "@apollo/client/testing";
-import { faker } from "@faker-js/faker";
 import { useQuery } from "@apollo/client";
-import { ConnectionType } from "graphql-types";
+import { faker } from "@faker-js/faker";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import DatasetPicker from "./DatasetPicker";
 
 jest.mock("@apollo/client", () => ({
   __esModule: true,
@@ -22,14 +20,14 @@ const WORKSPACE = {
         id: faker.string.uuid(),
         dataset: {
           slug: faker.lorem.slug(5),
-          name: faker.string.sample(10),
+          name: "Dataset 1",
         },
       },
       {
         id: faker.string.uuid(),
         dataset: {
           slug: faker.lorem.slug(5),
-          name: faker.string.sample(10),
+          name: "Dataset 2",
         },
       },
     ],

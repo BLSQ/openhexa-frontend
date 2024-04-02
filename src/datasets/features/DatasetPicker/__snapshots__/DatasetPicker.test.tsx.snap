@@ -112,7 +112,7 @@ exports[`DatasetPicker display all dataset 1`] = `
             <span
               class="flex-1 truncate"
             >
-              !s;Oz6DQGz
+              Dataset 1
             </span>
           </div>
         </li>
@@ -149,7 +149,7 @@ exports[`DatasetPicker display all dataset 1`] = `
             <span
               class="flex-1 truncate"
             >
-              =Y_=fK!Z_}
+              Dataset 2
             </span>
           </div>
         </li>
