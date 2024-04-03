@@ -54,7 +54,7 @@
   "Are you sure you want to delete the dataset \"{{name}}\"? It will make it unavailable for all workspaces.": "Are you sure you want to delete the dataset \"{{name}}\"? It will make it unavailable for all workspaces.",
   "Automatic": "Automatic",
   "Back": "Back",
-  "Be aware that this action is irreversible and you cannot resume the execution. It can lead to an inconsistent state if there was any database or filesystem operation.": "Be aware that this action is irreversible and you cannot resume the execution. It can lead to an inconsistent state if there was any database or filesystem operation.",
+  "Be aware that this action is irreversible and the execution cannot be resumed. It can lead to an inconsistent state if there was any database or filesystem operation.": "Be aware that this action is irreversible and the execution cannot be resumed. It can lead to an inconsistent state if there was any database or filesystem operation.",
   "Breadcrumbs": "Breadcrumbs",
   "Bucket name": "Bucket name",
   "By proceeding, the invitation link for {{email}} will no longer be usable.": "By proceeding, the invitation link for {{email}} will no longer be usable.",

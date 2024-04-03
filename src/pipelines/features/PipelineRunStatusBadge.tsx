@@ -24,6 +24,7 @@ const PipelineRunStatusBadge = (props: PipelineRunStatusBadgeProps) => {
   let className = useMemo(() => {
     switch (run.status) {
       case DagRunStatus.Stopped:
+        return "bg-yellow-100 text-gray-600";
       case DagRunStatus.Failed:
         return "bg-red-100 text-red-500";
       case DagRunStatus.Queued:

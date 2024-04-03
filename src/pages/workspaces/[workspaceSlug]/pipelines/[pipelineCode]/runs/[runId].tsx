@@ -27,7 +27,7 @@ import { useTranslation } from "next-i18next";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
 import RunLogs from "pipelines/features/RunLogs";
 import RunMessages from "pipelines/features/RunMessages";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import RunOutputsTable from "workspaces/features/RunOutputsTable";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import StopPipelineDialog from "workspaces/features/StopPipelineDialog";
@@ -78,6 +78,12 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
     useState(false);
 
   useInterval(onRefetch, refreshInterval);
+
+  useEffect(() => {
+    if (data?.pipelineRun?.status === PipelineRunStatus.Stopped) {
+      refetch();
+    }
+  }, [data, refetch]);
 
   if (!data?.workspace || !data.pipelineRun) {
     return null;
@@ -182,7 +188,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
               {t("Run again")}
             </Button>
           )}
-          {!isFinished && (
+          {!isFinished && run.pipeline.permissions.stopPipeline && (
             <Button
               leadingIcon={<StopIcon className="h-4 w-4" />}
               className="bg-red-500 hover:bg-red-700 focus:ring-red-500"

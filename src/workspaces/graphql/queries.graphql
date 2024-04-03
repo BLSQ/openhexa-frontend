@@ -199,6 +199,9 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
       id
       code
       name
+      permissions {
+        stopPipeline
+      }
       ...RunPipelineDialog_pipeline
     }
     user {

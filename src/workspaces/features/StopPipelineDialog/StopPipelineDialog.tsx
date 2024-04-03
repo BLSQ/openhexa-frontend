@@ -47,8 +47,8 @@ const StopPipelineDialog = (props: StopPipelineDialogProps) => {
 
     if (data.stopPipeline.success) {
       setIsSubmitting(false);
-      router.reload();
       clearCache();
+      onClose();
     }
     if (data.stopPipeline.errors.includes(PipelineError.PermissionDenied)) {
       throw new Error("You are not authorized to perform this action");
@@ -63,8 +63,8 @@ const StopPipelineDialog = (props: StopPipelineDialogProps) => {
       <Dialog.Content className="space-y-4">
         <p>
           <Trans>
-            Be aware that this action is irreversible and you cannot resume the
-            execution. It can lead to an inconsistent state if there was any
+            Be aware that this action is irreversible and the execution cannot
+            be resumed. It can lead to an inconsistent state if there was any
             database or filesystem operation.
           </Trans>
         </p>
