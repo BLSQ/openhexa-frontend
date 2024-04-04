@@ -62,6 +62,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
   const refreshInterval = useMemo(() => {
     switch (data?.pipelineRun?.status) {
       case PipelineRunStatus.Queued:
+      case PipelineRunStatus.Terminating:
         return 0.5 * 1000; // 2 times per second
       case PipelineRunStatus.Running:
         return 0.25 * 1000; // 4 times per second
@@ -70,31 +71,24 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
     }
   }, [data]);
 
-  const onRefetch = useCallback(() => {
-    refetch();
-  }, [refetch]);
   const [isRunPipelineDialogOpen, setIsRunPipelineDialogOpen] = useState(false);
   const [isStopPipelineDialogOpen, setIsStopPipelineDialogOpen] =
     useState(false);
 
-  useInterval(onRefetch, refreshInterval);
+  useInterval(useCallback(refetch, [refetch]), refreshInterval);
 
-  useEffect(() => {
-    if (data?.pipelineRun?.status === PipelineRunStatus.Stopped) {
-      refetch();
-    }
-  }, [data, refetch]);
+  const isFinished =
+    data?.pipelineRun &&
+    [
+      PipelineRunStatus.Failed,
+      PipelineRunStatus.Success,
+      PipelineRunStatus.Stopped,
+    ].includes(data.pipelineRun.status);
 
   if (!data?.workspace || !data.pipelineRun) {
     return null;
   }
   const { workspace, pipelineRun: run } = data;
-  const isFinished = [
-    PipelineRunStatus.Failed,
-    PipelineRunStatus.Success,
-    PipelineRunStatus.Stopped,
-  ].includes(run.status);
-
   const hasOutputs = run.datasetVersions.length + run.outputs.length > 0;
 
   const renderParameterValue = (entry: PipelineParameter & { value: any }) => {
