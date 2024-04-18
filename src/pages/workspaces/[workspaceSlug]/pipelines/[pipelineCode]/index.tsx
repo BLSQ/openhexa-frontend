@@ -3,7 +3,6 @@ import {
   PlayIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import Badge from "core/components/Badge";
 import Block from "core/components/Block/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
@@ -32,11 +31,9 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import DownloadPipelineVersion from "pipelines/features/DownloadPipelineVersion/DownloadPipelineVersion";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
-import PipelineVersionParametersTable from "pipelines/features/PipelineVersionParametersTable/PipelineVersionParametersTable";
 import { useState } from "react";
 import CronProperty from "workspaces/features/CronProperty";
 import DeletePipelineDialog from "workspaces/features/DeletePipelineDialog";
-import PipelineVersionsDialog from "workspaces/features/PipelineVersionsDialog";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import WorkspaceMemberProperty from "workspaces/features/WorkspaceMemberProperty/";
 import {
@@ -59,7 +56,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const { pipelineCode, workspaceSlug, page, perPage } = props;
   const { t } = useTranslation();
   const router = useRouter();
-  const [isVersionsDialogOpen, setVersionsDialogOpen] = useState(false);
   const [isRunPipelineDialogOpen, setRunPipelineDialogOpen] = useState(false);
   const [isDeletePipelineDialogOpen, setDeletePipelineDialogOpen] =
     useState(false);
@@ -72,10 +68,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
       perPage,
     },
   });
-  const [displayedVersion, setDisplayedVersion] = useState(
-    data?.pipeline?.currentVersion ?? null,
-  );
-
   if (!data?.workspace || !data?.pipeline) {
     return null;
   }
@@ -210,7 +202,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               collapsible={false}
               title={() => (
                 <div className="flex flex-1 gap-2 items-center">
-                  <h4 className="font-medium">{t("Current version")}</h4>
+                  <h4 className="font-medium">{t("Version")}</h4>
                   <div className="flex-1"></div>
                   <Link
                     className="text-sm"
@@ -231,17 +223,24 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               {pipeline.currentVersion ? (
                 <>
                   <DescriptionList>
-                    <DescriptionList.Item label={t("Identifier")}>
-                      <code>{pipeline.currentVersion.number}</code>
-                      {pipeline.currentVersion.id && (
-                        <Badge
-                          className="ml-2 text-gray-500 text-sm"
-                          borderColor="border-gray-300"
-                        >
-                          {t("Latest version")}
-                        </Badge>
-                      )}
+                    <DescriptionList.Item label={t("Name")}>
+                      {pipeline.currentVersion.name}
                     </DescriptionList.Item>
+                    {pipeline.currentVersion.description && (
+                      <DescriptionList.Item label={t("Description")} fullWidth>
+                        {pipeline.currentVersion.description}
+                      </DescriptionList.Item>
+                    )}
+                    {pipeline.currentVersion.externalLink && (
+                      <DescriptionList.Item label={t("External link")}>
+                        <Link
+                          href={pipeline.currentVersion.externalLink}
+                          target={"_blank"}
+                        >
+                          {pipeline.currentVersion.externalLink}
+                        </Link>
+                      </DescriptionList.Item>
+                    )}
                     <DescriptionList.Item label={t("Created at")}>
                       <Time datetime={pipeline.currentVersion.createdAt} />
                     </DescriptionList.Item>
@@ -432,11 +431,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
           </div>
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
-      <PipelineVersionsDialog
-        pipeline={pipeline}
-        open={isVersionsDialogOpen}
-        onClose={() => setVersionsDialogOpen(false)}
-      />
       <RunPipelineDialog
         open={isRunPipelineDialogOpen}
         onClose={() => setRunPipelineDialogOpen(false)}

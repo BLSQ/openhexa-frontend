@@ -126,7 +126,7 @@ export function getCronExpressionDescription(
 export async function runPipeline(
   pipelineId: string,
   config: any,
-  version?: number,
+  versionId?: string,
   sendMailNotifications?: boolean,
 ) {
   const client = getApolloClient();
@@ -149,7 +149,7 @@ export async function runPipeline(
       }
     `,
     variables: {
-      input: { id: pipelineId, config, version, sendMailNotifications },
+      input: { id: pipelineId, config, versionId, sendMailNotifications },
     },
     update: (cache, { data }) => {
       if (!data || !data.runPipeline.run) {
@@ -220,4 +220,29 @@ export function renderOutputType(typename: string | undefined) {
     default:
       return "-";
   }
+}
+
+export async function deletePipelineVersion(versionId: string) {
+  const client = getApolloClient();
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation DeletePipelineVersion($input: DeletePipelineVersionInput!) {
+        deletePipelineVersion(input: $input) {
+          success
+          errors
+        }
+      }
+    `,
+    variables: { input: { id: versionId } },
+  });
+
+  if (data.deletePipelineVersion.success) {
+    return true;
+  }
+
+  if (data.deletePipelineVersion.errors.includes("PERMISSION_DENIED")) {
+    throw new Error("You are not authorized to perform this action");
+  }
+
+  throw new Error("Failed to delete pipeline version");
 }

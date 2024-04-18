@@ -73,9 +73,7 @@ query WorkspacePipelinePage(
   }
 
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
-    ...PipelineVersionsDialog_pipeline
     ...RunPipelineDialog_pipeline
-    ...DeletePipelineVersion_pipeline
     ...PipelineVersionPicker_pipeline
     permissions {
       run
@@ -92,7 +90,9 @@ query WorkspacePipelinePage(
     schedule
     currentVersion {
       id
-      number
+      name
+      description
+      externalLink
       ...PipelineVersionPicker_version
       ...PipelineVersionParametersTable_version
       ...DownloadPipelineVersion_version
@@ -107,12 +107,11 @@ query WorkspacePipelinePage(
       items {
         id
         version {
-          number
+          name
           createdAt
           user {
             ...User_user
           }
-          ...DeletePipelineVersion_version
         }
         executionDate
         duration
@@ -142,6 +141,7 @@ query WorkspacePipelineVersionsPage(
     ...WorkspaceLayout_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
+    id
     code
     name
     currentVersion {
@@ -177,7 +177,7 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
   pipelineRun(id: $runId) {
     id
     version {
-      number
+      name
       parameters {
         code
         name
@@ -199,9 +199,15 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
       id
       code
       name
+      permissions {
+        stopPipeline
+      }
       ...RunPipelineDialog_pipeline
     }
     user {
+      ...User_user
+    }
+    stoppedBy {
       ...User_user
     }
     ...RunOutputsTable_run
