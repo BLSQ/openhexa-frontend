@@ -3,21 +3,23 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
 import useDebounce from "core/hooks/useDebounce";
 import { Combobox } from "core/components/forms/Combobox";
-import { WorkspaceNotebooksPickerQuery } from "./NotebooksPicker.generated";
+import { ObjectPickerQuery } from "./ObjectPicker.generated";
 
-export type NotebookPickerOption = { key: string; path: string; name: string };
+export type ObjectPickerOption = { key: string; path: string; name: string };
 
-type NotebooksPickerProps = {
-  value?: NotebookPickerOption;
+type ObjectPickerProps = {
+  value?: ObjectPickerOption;
+  filter?: string;
   workspaceSlug: string;
   placeholder?: string;
-  onChange(value: NotebookPickerOption): void;
+  onChange(value: ObjectPickerOption): void;
   required?: boolean;
   disabled?: boolean;
   withPortal?: boolean;
+  ignoreHiddenFiles?: boolean;
 };
 
-const NotebooksPickerProps = (props: NotebooksPickerProps) => {
+const ObjectPicker = (props: ObjectPickerProps) => {
   const { t } = useTranslation();
   const {
     workspaceSlug,
@@ -26,21 +28,31 @@ const NotebooksPickerProps = (props: NotebooksPickerProps) => {
     required = false,
     withPortal = false,
     onChange,
-    placeholder = t("Select Notebook"),
+    filter = "",
+    ignoreHiddenFiles = true,
+    placeholder = t("Select Object"),
   } = props;
+
   const [page, setPage] = useState(1);
 
-  const { data, loading } = useQuery<WorkspaceNotebooksPickerQuery>(
+  const { data, loading } = useQuery<ObjectPickerQuery>(
     gql`
-      query WorkspaceNotebooksPicker(
+      query ObjectPicker(
         $slug: String!
         $query: String!
         $page: Int
+        $ignoreHiddenFiles: Boolean
+        $ignoreDelimiter: Boolean
       ) {
         workspace(slug: $slug) {
           slug
           bucket {
-            objects(query: $query, page: $page) {
+            objects(
+              query: $query
+              page: $page
+              ignoreHiddenFiles: $ignoreHiddenFiles
+              ignoreDelimiter: $ignoreDelimiter
+            ) {
               items {
                 name
                 key
@@ -52,7 +64,15 @@ const NotebooksPickerProps = (props: NotebooksPickerProps) => {
         }
       }
     `,
-    { variables: { slug: workspaceSlug, query: ".ipynb", page: page } },
+    {
+      variables: {
+        slug: workspaceSlug,
+        query: filter,
+        page: page,
+        ignoreHiddenFiles: ignoreHiddenFiles,
+        ignoreDelimiter: true,
+      },
+    },
   );
 
   const [query, setQuery] = useState("");
@@ -63,7 +83,7 @@ const NotebooksPickerProps = (props: NotebooksPickerProps) => {
 
     return (
       data?.workspace?.bucket.objects.items.filter(
-        (item: NotebookPickerOption) => {
+        (item: ObjectPickerOption) => {
           return item.name.toLowerCase().includes(lowercaseQuery);
         },
       ) ?? []
@@ -71,14 +91,14 @@ const NotebooksPickerProps = (props: NotebooksPickerProps) => {
   }, [data, debouncedQuery]);
 
   const displayValue = useCallback(
-    (option: NotebookPickerOption) => (option ? option.name : ""),
+    (option: ObjectPickerOption) => (option ? option.name : ""),
     [],
   );
 
   const comboBoxValue = useMemo(() => {
     return (
       options.find(
-        (option: NotebookPickerOption) => option.path === value?.path,
+        (option: ObjectPickerOption) => option.path === value?.path,
       ) ?? null
     );
   }, [value, options]);
@@ -99,13 +119,14 @@ const NotebooksPickerProps = (props: NotebooksPickerProps) => {
       onClose={useCallback(() => setQuery(""), [])}
       disabled={disabled}
     >
-      {options.map((option: NotebookPickerOption) => (
+      {options.map((option: ObjectPickerOption) => (
         <Combobox.CheckOption key={option.key} value={option}>
-          {option.name}
+          {option.name}{" "}
+          <span className="font-light text-xs">{`(${option.key})`}</span>
         </Combobox.CheckOption>
       ))}
     </Combobox>
   );
 };
 
-export default NotebooksPickerProps;
+export default ObjectPicker;

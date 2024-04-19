@@ -385,6 +385,7 @@ export type BucketObjectArgs = {
 
 
 export type BucketObjectsArgs = {
+  ignoreDelimiter?: InputMaybe<Scalars['Boolean']['input']>;
   ignoreHiddenFiles?: InputMaybe<Scalars['Boolean']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
@@ -707,6 +708,7 @@ export type CreateMembershipResult = {
 export type CreatePipelineInput = {
   code: Scalars['String']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  notebook?: InputMaybe<Scalars['String']['input']>;
   workspaceSlug: Scalars['String']['input'];
 };
 
@@ -1245,8 +1247,7 @@ export enum DeletePipelineVersionError {
 }
 
 export type DeletePipelineVersionInput = {
-  pipelineId: Scalars['UUID']['input'];
-  versionId: Scalars['UUID']['input'];
+  id: Scalars['UUID']['input'];
 };
 
 export type DeletePipelineVersionResult = {
@@ -2176,6 +2177,7 @@ export type Pipeline = {
   recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
+  type: PipelineType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
   webhookEnabled: Scalars['Boolean']['output'];
@@ -2227,11 +2229,8 @@ export type PipelinePermissions = {
   __typename?: 'PipelinePermissions';
   createVersion: Scalars['Boolean']['output'];
   delete: Scalars['Boolean']['output'];
-  /** @deprecated Use 'delete' field in 'PipelineVersionPermissions' instead */
-  deleteVersion: Scalars['Boolean']['output'];
   run: Scalars['Boolean']['output'];
   schedule: Scalars['Boolean']['output'];
-  /** @deprecated Use 'stop' field in 'PipelinePermissions' instead */
   stopPipeline: Scalars['Boolean']['output'];
   update: Scalars['Boolean']['output'];
 };
@@ -2314,6 +2313,11 @@ export type PipelineTokenResult = {
   token?: Maybe<Scalars['String']['output']>;
 };
 
+export enum PipelineType {
+  Default = 'DEFAULT',
+  Notebook = 'NOTEBOOK'
+}
+
 export type PipelineVersion = {
   __typename?: 'PipelineVersion';
   createdAt: Scalars['DateTime']['output'];
@@ -2343,7 +2347,6 @@ export type PipelineVersionPage = {
 export type PipelineVersionPermissions = {
   __typename?: 'PipelineVersionPermissions';
   delete: Scalars['Boolean']['output'];
-  stop: Scalars['Boolean']['output'];
   update: Scalars['Boolean']['output'];
 };
 

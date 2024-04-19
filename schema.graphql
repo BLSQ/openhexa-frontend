@@ -336,7 +336,7 @@ scalar BigInt
 
 type Bucket {
   name: String!
-  objects(prefix: String, page: Int = 1, perPage: Int = 15, query: String, ignoreHiddenFiles: Boolean = true): BucketObjectPage!
+  objects(prefix: String, page: Int = 1, perPage: Int = 15, query: String, ignoreDelimiter: Boolean = false, ignoreHiddenFiles: Boolean = true): BucketObjectPage!
   object(key: String!): BucketObject
 }
 
@@ -638,6 +638,7 @@ input CreatePipelineInput {
   code: String!
   name: String
   workspaceSlug: String!
+  notebook: String
 }
 
 type CreatePipelineResult {
@@ -1063,8 +1064,7 @@ enum DeletePipelineVersionError {
 }
 
 input DeletePipelineVersionInput {
-  pipelineId: UUID!
-  versionId: UUID!
+  id: UUID!
 }
 
 type DeletePipelineVersionResult {
@@ -1581,6 +1581,7 @@ type Pipeline {
   recipients: [PipelineRecipient!]!
   webhookEnabled: Boolean!
   webhookUrl: String
+  type: PipelineType!
 }
 
 enum PipelineError {
@@ -1615,8 +1616,7 @@ type PipelinePermissions {
   run: Boolean!
   schedule: Boolean!
   createVersion: Boolean!
-  stopPipeline: Boolean! @deprecated(reason: "Use 'stop' field in 'PipelinePermissions' instead")
-  deleteVersion: Boolean! @deprecated(reason: "Use 'delete' field in 'PipelineVersionPermissions' instead")
+  stopPipeline: Boolean!
 }
 
 type PipelineRecipient {
@@ -1699,6 +1699,11 @@ type PipelineTokenResult {
   token: String
 }
 
+enum PipelineType {
+  DEFAULT
+  NOTEBOOK
+}
+
 type PipelineVersion {
   id: UUID!
   user: User
@@ -1725,7 +1730,6 @@ type PipelineVersionPage {
 type PipelineVersionPermissions {
   update: Boolean!
   delete: Boolean!
-  stop: Boolean!
 }
 
 input PrepareAccessmodFileDownloadInput {

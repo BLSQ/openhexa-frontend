@@ -222,6 +222,13 @@ export function renderOutputType(typename: string | undefined) {
   }
 }
 
+export function toSpinalCase(str: string) {
+  return str
+    .replace(/(?!^)([A-Z])/g, " $1")
+    .replace(/[^A-Za-z0-9]/g, "-")
+    .toLowerCase();
+}
+
 export async function deletePipelineVersion(versionId: string) {
   const client = getApolloClient();
   const { data } = await client.mutate({
