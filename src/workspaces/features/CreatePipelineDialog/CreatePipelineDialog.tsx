@@ -31,22 +31,19 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
   const router = useRouter();
   const [tabIndex, setTabIndex] = useState<number | null>(0);
 
-  const [selectedNotebook, setSelectedNotebook] =
-    useState<ObjectPickerOption>();
   const [mutate] = useCreatePipelineMutation();
 
   const form = useForm<{ notebook: ObjectPickerOption }>({
     onSubmit: async (values) => {
-      console.log("called");
       const { notebook } = values;
-
       const code = toSpinalCase(notebook.name.split(".")[0]);
+
       const { data } = await mutate({
         variables: {
           input: {
             code,
             name: notebook.name,
-            notebook: notebook.key,
+            notebookPath: notebook.key,
             workspaceSlug: workspace.slug,
           },
         },
@@ -86,36 +83,6 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
     }
   }, [open, form]);
 
-  const createNotebookPipeline = async () => {
-    if (selectedNotebook) {
-      const code = toSpinalCase(selectedNotebook?.name.split(".")[0]);
-      const { data } = await mutate({
-        variables: {
-          input: {
-            code,
-            name: selectedNotebook.name,
-            notebook: selectedNotebook.path,
-            workspaceSlug: workspace.slug,
-          },
-        },
-      });
-      if (data?.createPipeline.success && data.createPipeline.pipeline) {
-        const pipeline = data.createPipeline.pipeline;
-        console.log(pipeline);
-      } else if (
-        data?.createPipeline.errors.includes(
-          PipelineError.PipelineAlreadyExists,
-        )
-      ) {
-        throw new Error(
-          t("A pipeline with the selected notebook already exist"),
-        );
-      } else {
-        throw new Error(t("An error occurred while linking this dataset"));
-      }
-    }
-  };
-
   const [token, setToken] = useState<null | string>(null);
   const [generateToken] = useMutation<GenerateWorkspaceTokenMutation>(
     gql`
@@ -150,9 +117,12 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
           <Tabs onChange={(index) => setTabIndex(index)}>
             <Tabs.Tab label={t("From Notebook")} className={"space-y-2 pt-2"}>
               <p className="mb-6">
-                {t(
-                  "You can use a Notebook to be run as a pipeline. This is the easiest way to create a pipeline",
-                )}
+                <Trans>
+                  You can use a Notebook from the workspace file system to be
+                  run as a pipeline. This is the easiest way to create a
+                  pipeline. Keep in my mind that Notebooks are not versioned. If
+                  a user changes the notebook, the pipeline will be updated.
+                </Trans>
               </p>
               <>
                 <Field
@@ -228,7 +198,7 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
           </Tabs>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onClick={onClose} variant="outlined">
+          <Button onClick={onClose} type="button" variant="outlined">
             {t("Close")}
           </Button>
           {tabIndex === 0 && (

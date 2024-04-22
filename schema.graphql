@@ -638,7 +638,7 @@ input CreatePipelineInput {
   code: String!
   name: String
   workspaceSlug: String!
-  notebook: String
+  notebookPath: String
 }
 
 type CreatePipelineResult {

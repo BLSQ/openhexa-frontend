@@ -3,7 +3,10 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
 import useDebounce from "core/hooks/useDebounce";
 import { Combobox } from "core/components/forms/Combobox";
-import { ObjectPickerQuery } from "./ObjectPicker.generated";
+import {
+  ObjectPickerQuery,
+  ObjectPickerQueryVariables,
+} from "./ObjectPicker.generated";
 
 export type ObjectPickerOption = { key: string; path: string; name: string };
 
@@ -33,14 +36,16 @@ const ObjectPicker = (props: ObjectPickerProps) => {
     placeholder = t("Select Object"),
   } = props;
 
-  const [page, setPage] = useState(1);
-
-  const { data, loading } = useQuery<ObjectPickerQuery>(
+  const [perPage, setPerPage] = useState(2);
+  const { data, loading } = useQuery<
+    ObjectPickerQuery,
+    ObjectPickerQueryVariables
+  >(
     gql`
       query ObjectPicker(
         $slug: String!
         $query: String!
-        $page: Int
+        $perPage: Int
         $ignoreHiddenFiles: Boolean
         $ignoreDelimiter: Boolean
       ) {
@@ -49,7 +54,7 @@ const ObjectPicker = (props: ObjectPickerProps) => {
           bucket {
             objects(
               query: $query
-              page: $page
+              perPage: $perPage
               ignoreHiddenFiles: $ignoreHiddenFiles
               ignoreDelimiter: $ignoreDelimiter
             ) {
@@ -68,7 +73,7 @@ const ObjectPicker = (props: ObjectPickerProps) => {
       variables: {
         slug: workspaceSlug,
         query: filter,
-        page: page,
+        perPage: perPage,
         ignoreHiddenFiles: ignoreHiddenFiles,
         ignoreDelimiter: true,
       },
@@ -77,6 +82,14 @@ const ObjectPicker = (props: ObjectPickerProps) => {
 
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
+
+  const hasNextPage = useMemo(() => {
+    return data?.workspace?.bucket.objects.hasNextPage || false;
+  }, [data]);
+
+  const showMore = useCallback(() => {
+    setPerPage((perPage) => perPage * 2);
+  }, []);
 
   const options = useMemo(() => {
     const lowercaseQuery = debouncedQuery.toLowerCase();
@@ -125,6 +138,16 @@ const ObjectPicker = (props: ObjectPickerProps) => {
           <span className="font-light text-xs">{`(${option.key})`}</span>
         </Combobox.CheckOption>
       ))}
+      {hasNextPage && (
+        <div className="pb-2 text-center">
+          <button
+            onClick={() => showMore()}
+            className="ml-4 inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-400"
+          >
+            {t("Show more")}
+          </button>
+        </div>
+      )}
     </Combobox>
   );
 };

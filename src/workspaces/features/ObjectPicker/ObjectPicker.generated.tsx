@@ -6,7 +6,7 @@ const defaultOptions = {} as const;
 export type ObjectPickerQueryVariables = Types.Exact<{
   slug: Types.Scalars['String']['input'];
   query: Types.Scalars['String']['input'];
-  page?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  perPage?: Types.InputMaybe<Types.Scalars['Int']['input']>;
   ignoreHiddenFiles?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
   ignoreDelimiter?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
 }>;
@@ -16,13 +16,13 @@ export type ObjectPickerQuery = { __typename?: 'Query', workspace?: { __typename
 
 
 export const ObjectPickerDocument = gql`
-    query ObjectPicker($slug: String!, $query: String!, $page: Int, $ignoreHiddenFiles: Boolean, $ignoreDelimiter: Boolean) {
+    query ObjectPicker($slug: String!, $query: String!, $perPage: Int, $ignoreHiddenFiles: Boolean, $ignoreDelimiter: Boolean) {
   workspace(slug: $slug) {
     slug
     bucket {
       objects(
         query: $query
-        page: $page
+        perPage: $perPage
         ignoreHiddenFiles: $ignoreHiddenFiles
         ignoreDelimiter: $ignoreDelimiter
       ) {
@@ -52,7 +52,7 @@ export const ObjectPickerDocument = gql`
  *   variables: {
  *      slug: // value for 'slug'
  *      query: // value for 'query'
- *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *      ignoreHiddenFiles: // value for 'ignoreHiddenFiles'
  *      ignoreDelimiter: // value for 'ignoreDelimiter'
  *   },
