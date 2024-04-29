@@ -2,22 +2,21 @@ import { gql, useMutation } from "@apollo/client";
 import Button from "core/components/Button/Button";
 import Dialog from "core/components/Dialog";
 import Link from "core/components/Link";
+import Tabs from "core/components/Tabs";
 import Field from "core/components/forms/Field/Field";
+import Textarea from "core/components/forms/Textarea/Textarea";
+import useForm from "core/hooks/useForm";
+import { PipelineError } from "graphql-types";
+import { Trans, useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useTranslation, Trans } from "next-i18next";
+import { useCreatePipelineMutation } from "workspaces/graphql/mutations.generated";
+import { toSpinalCase } from "workspaces/helpers/pipelines";
+import BucketObjectPicker from "../BucketObjectPicker";
 import {
   CreatePipelineDialog_WorkspaceFragment,
   GenerateWorkspaceTokenMutation,
 } from "./CreatePipelineDialog.generated";
-import Textarea from "core/components/forms/Textarea/Textarea";
-import Tabs from "core/components/Tabs";
-import { toSpinalCase } from "workspaces/helpers/pipelines";
-import { ObjectPickerOption } from "../ObjectPicker/ObjectPicker";
-import ObjectPicker from "../ObjectPicker";
-import { useCreatePipelineMutation } from "workspaces/graphql/mutations.generated";
-import { PipelineError } from "graphql-types";
-import { useRouter } from "next/router";
-import useForm from "core/hooks/useForm";
 
 type CreatePipelineDialogProps = {
   open: boolean;
@@ -131,13 +130,9 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
                   required
                   error={form.touched.notebook && form.errors.notebook}
                 >
-                  <ObjectPicker
-                    filter="ipynb"
-                    placeholder="Select Notebook"
-                    workspaceSlug={workspace.slug}
-                    onChange={(value) => form.setFieldValue("notebook", value)}
-                    withPortal
-                    value={form.formData.notebook}
+                  <BucketObjectPicker
+                    placeholder={t("Select a JupyterLab notebook")}
+                    workspace={workspace}
                   />
                 </Field>
                 {form.submitError && (
@@ -216,7 +211,9 @@ CreatePipelineDialog.fragments = {
   workspace: gql`
     fragment CreatePipelineDialog_workspace on Workspace {
       slug
+      ...BucketObjectPicker_workspace
     }
+    ${BucketObjectPicker.fragments.workspace}
   `,
 };
 

@@ -5,31 +5,31 @@ import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type ObjectPickerQueryVariables = Types.Exact<{
   slug: Types.Scalars['String']['input'];
-  query: Types.Scalars['String']['input'];
+  page?: Types.InputMaybe<Types.Scalars['Int']['input']>;
   perPage?: Types.InputMaybe<Types.Scalars['Int']['input']>;
-  ignoreHiddenFiles?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
-  ignoreDelimiter?: Types.InputMaybe<Types.Scalars['Boolean']['input']>;
 }>;
 
 
-export type ObjectPickerQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, bucket: { __typename?: 'Bucket', objects: { __typename?: 'BucketObjectPage', hasNextPage: boolean, items: Array<{ __typename?: 'BucketObject', name: string, key: string, path: string }> } } } | null };
+export type ObjectPickerQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, bucket: { __typename?: 'Bucket', objects: { __typename?: 'BucketObjectPage', hasNextPage: boolean, items: Array<{ __typename?: 'BucketObject', name: string, key: string, path: string, type: Types.BucketObjectType }> } } } | null };
 
+export type BucketObjectPicker_WorkspaceFragment = { __typename?: 'Workspace', slug: string };
 
+export const BucketObjectPicker_WorkspaceFragmentDoc = gql`
+    fragment BucketObjectPicker_workspace on Workspace {
+  slug
+}
+    `;
 export const ObjectPickerDocument = gql`
-    query ObjectPicker($slug: String!, $query: String!, $perPage: Int, $ignoreHiddenFiles: Boolean, $ignoreDelimiter: Boolean) {
+    query ObjectPicker($slug: String!, $page: Int, $perPage: Int) {
   workspace(slug: $slug) {
     slug
     bucket {
-      objects(
-        query: $query
-        perPage: $perPage
-        ignoreHiddenFiles: $ignoreHiddenFiles
-        ignoreDelimiter: $ignoreDelimiter
-      ) {
+      objects(page: $page, perPage: $perPage) {
         items {
           name
           key
           path
+          type
         }
         hasNextPage
       }
@@ -51,10 +51,8 @@ export const ObjectPickerDocument = gql`
  * const { data, loading, error } = useObjectPickerQuery({
  *   variables: {
  *      slug: // value for 'slug'
- *      query: // value for 'query'
+ *      page: // value for 'page'
  *      perPage: // value for 'perPage'
- *      ignoreHiddenFiles: // value for 'ignoreHiddenFiles'
- *      ignoreDelimiter: // value for 'ignoreDelimiter'
  *   },
  * });
  */

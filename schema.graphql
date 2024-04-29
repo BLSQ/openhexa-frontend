@@ -1700,8 +1700,8 @@ type PipelineTokenResult {
 }
 
 enum PipelineType {
-  DEFAULT
-  NOTEBOOK
+  zipFile
+  notebook
 }
 
 type PipelineVersion {

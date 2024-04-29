@@ -2314,8 +2314,8 @@ export type PipelineTokenResult = {
 };
 
 export enum PipelineType {
-  Default = 'DEFAULT',
-  Notebook = 'NOTEBOOK'
+  Notebook = 'notebook',
+  ZipFile = 'zipFile'
 }
 
 export type PipelineVersion = {
