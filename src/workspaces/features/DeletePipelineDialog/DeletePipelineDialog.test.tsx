@@ -53,12 +53,10 @@ describe("DeletePipelineDialog", () => {
   });
 
   it("Deletes a pipeline ", async () => {
-    const { useArchiveWorkspaceMutation } = jest.requireActual(
+    const { useDeletePipelineMutation } = jest.requireActual(
       "workspaces/graphql/mutations.generated",
     );
-    useDeletePipelineMutationMock.mockImplementation(
-      useArchiveWorkspaceMutation,
-    );
+    useDeletePipelineMutationMock.mockImplementation(useDeletePipelineMutation);
 
     const mocks = [
       {
@@ -91,16 +89,14 @@ describe("DeletePipelineDialog", () => {
         ,
       </TestApp>,
     );
-    expect(useDeletePipelineMutation).toHaveBeenCalled();
+    expect(useDeletePipelineMutationMock).toHaveBeenCalled();
     expect(windowAlertSpy).not.toHaveBeenCalled();
   });
   it("Shows an alert if an error occurs ", async () => {
-    const { useArchiveWorkspaceMutation } = jest.requireActual(
+    const { useDeletePipelineMutation } = jest.requireActual(
       "workspaces/graphql/mutations.generated",
     );
-    useDeletePipelineMutationMock.mockImplementation(
-      useArchiveWorkspaceMutation,
-    );
+    useDeletePipelineMutationMock.mockImplementation(useDeletePipelineMutation);
 
     const mocks = [
       {
@@ -133,7 +129,7 @@ describe("DeletePipelineDialog", () => {
         ,
       </TestApp>,
     );
-    expect(useDeletePipelineMutation).toHaveBeenCalled();
+    expect(useDeletePipelineMutationMock).toHaveBeenCalled();
     expect(windowAlertSpy).not.toHaveBeenCalled();
   });
 });

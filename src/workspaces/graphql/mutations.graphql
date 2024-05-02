@@ -118,8 +118,8 @@ mutation deletePipeline($input: DeletePipelineInput!) {
   }
 }
 
-mutation stopPipeline($input: StopPipelineInput!){
-  stopPipeline(input: $input){
+mutation stopPipeline($input: StopPipelineInput!) {
+  stopPipeline(input: $input) {
     success
     errors
   }
@@ -175,6 +175,15 @@ mutation deleteWorkspaceInvitation($input: DeleteWorkspaceInvitationInput!) {
 
 mutation resendWorkspaceInvitation($input: ResendWorkspaceInvitationInput!) {
   resendWorkspaceInvitation(input: $input) {
+    success
+    errors
+  }
+}
+
+mutation deleteWorkspaceDatabaseTable(
+  $input: DeleteWorkspaceDatabaseTableInput!
+) {
+  deleteWorkspaceDatabaseTable(input: $input) {
     success
     errors
   }
