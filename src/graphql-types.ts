@@ -385,7 +385,6 @@ export type BucketObjectArgs = {
 
 
 export type BucketObjectsArgs = {
-  ignoreDelimiter?: InputMaybe<Scalars['Boolean']['input']>;
   ignoreHiddenFiles?: InputMaybe<Scalars['Boolean']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
@@ -2173,6 +2172,7 @@ export type Pipeline = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
+  notebookPath?: Maybe<Scalars['String']['output']>;
   permissions: PipelinePermissions;
   recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
@@ -2199,6 +2199,7 @@ export type PipelineVersionsArgs = {
 };
 
 export enum PipelineError {
+  CannotUpdateNotebookPipeline = 'CANNOT_UPDATE_NOTEBOOK_PIPELINE',
   FileNotFound = 'FILE_NOT_FOUND',
   InvalidConfig = 'INVALID_CONFIG',
   InvalidTimeoutValue = 'INVALID_TIMEOUT_VALUE',
@@ -2261,7 +2262,7 @@ export type PipelineRun = {
   timeout?: Maybe<Scalars['Int']['output']>;
   triggerMode?: Maybe<PipelineRunTrigger>;
   user?: Maybe<User>;
-  version: PipelineVersion;
+  version?: Maybe<PipelineVersion>;
 };
 
 export type PipelineRunMessage = {

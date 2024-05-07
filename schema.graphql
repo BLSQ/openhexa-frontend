@@ -336,7 +336,7 @@ scalar BigInt
 
 type Bucket {
   name: String!
-  objects(prefix: String, page: Int = 1, perPage: Int = 15, query: String, ignoreDelimiter: Boolean = false, ignoreHiddenFiles: Boolean = true): BucketObjectPage!
+  objects(prefix: String, page: Int = 1, perPage: Int = 15, query: String, ignoreHiddenFiles: Boolean = true): BucketObjectPage!
   object(key: String!): BucketObject
 }
 
@@ -1582,6 +1582,7 @@ type Pipeline {
   webhookEnabled: Boolean!
   webhookUrl: String
   type: PipelineType!
+  notebookPath: String
 }
 
 enum PipelineError {
@@ -1597,6 +1598,7 @@ enum PipelineError {
   PERMISSION_DENIED
   FILE_NOT_FOUND
   TABLE_NOT_FOUND
+  CANNOT_UPDATE_NOTEBOOK_PIPELINE
 }
 
 type PipelineParameter {
@@ -1629,7 +1631,7 @@ type PipelineRun {
   run_id: UUID!
   user: User
   pipeline: Pipeline!
-  version: PipelineVersion!
+  version: PipelineVersion
   config: JSON!
   status: PipelineRunStatus!
   executionDate: DateTime

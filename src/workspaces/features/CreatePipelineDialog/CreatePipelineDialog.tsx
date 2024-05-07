@@ -6,7 +6,7 @@ import Tabs from "core/components/Tabs";
 import Field from "core/components/forms/Field/Field";
 import Textarea from "core/components/forms/Textarea/Textarea";
 import useForm from "core/hooks/useForm";
-import { PipelineError } from "graphql-types";
+import { BucketObjectType, PipelineError } from "graphql-types";
 import { Trans, useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -32,17 +32,16 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
 
   const [mutate] = useCreatePipelineMutation();
 
-  const form = useForm<{ notebook: ObjectPickerOption }>({
+  const form = useForm<{ notebookObject: any; name: string }>({
     onSubmit: async (values) => {
-      const { notebook } = values;
-      const code = toSpinalCase(notebook.name.split(".")[0]);
+      const { notebookObject } = values;
 
       const { data } = await mutate({
         variables: {
           input: {
-            code,
-            name: notebook.name,
-            notebookPath: notebook.key,
+            code: toSpinalCase(values.name.toLowerCase()),
+            name: values.name,
+            notebookPath: notebookObject.key,
             workspaceSlug: workspace.slug,
           },
         },
@@ -64,13 +63,13 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
           t("A pipeline with the selected notebook already exist"),
         );
       } else {
-        throw new Error(t("An error occurred while linking this dataset"));
+        throw new Error(t("An error occurred while creating the pipeline."));
       }
     },
     validate(values) {
       const errors: any = {};
-      if (!values.notebook) {
-        errors.notebook = t("You have to select a notebook");
+      if (!values.notebookObject) {
+        errors.notebookObject = t("You have to select a notebook");
       }
       return errors;
     },
@@ -123,22 +122,41 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
                   a user changes the notebook, the pipeline will be updated.
                 </Trans>
               </p>
-              <>
+              <div className="grid gap-6">
                 <Field
-                  name={"notebook"}
+                  name="name"
+                  label={t("Pipeline Name")}
+                  required
+                  placeholder={t("My Pipeline")}
+                  error={form.touched.name && form.errors.name}
+                  value={form.formData.name}
+                  onChange={form.handleInputChange}
+                />
+                <Field
+                  name={"notebookObject"}
                   label={t("Notebook")}
                   required
-                  error={form.touched.notebook && form.errors.notebook}
+                  error={
+                    form.touched.notebookObject && form.errors.notebookObject
+                  }
                 >
                   <BucketObjectPicker
-                    placeholder={t("Select a JupyterLab notebook")}
+                    onChange={(value) =>
+                      form.setFieldValue("notebookObject", value)
+                    }
+                    value={form.formData.notebookObject?.key}
+                    exclude={(item) =>
+                      item.type === BucketObjectType.File &&
+                      !item.name.endsWith(".ipynb")
+                    }
+                    placeholder={t("Select a Jupyter notebook")}
                     workspace={workspace}
                   />
                 </Field>
                 {form.submitError && (
                   <p className={"text-sm text-red-500"}>{form.submitError}</p>
                 )}
-              </>
+              </div>
             </Tabs.Tab>
             <Tabs.Tab
               label={t("From OpenHEXA CLI")}
@@ -191,6 +209,9 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
               </Field>
             </Tabs.Tab>
           </Tabs>
+          {form.submitError && (
+            <p className={"text-sm text-red-500"}>{form.submitError}</p>
+          )}
         </Dialog.Content>
         <Dialog.Actions>
           <Button onClick={onClose} type="button" variant="outlined">

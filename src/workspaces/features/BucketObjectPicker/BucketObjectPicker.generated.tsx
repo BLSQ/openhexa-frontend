@@ -7,10 +7,11 @@ export type ObjectPickerQueryVariables = Types.Exact<{
   slug: Types.Scalars['String']['input'];
   page?: Types.InputMaybe<Types.Scalars['Int']['input']>;
   perPage?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  prefix?: Types.InputMaybe<Types.Scalars['String']['input']>;
 }>;
 
 
-export type ObjectPickerQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, bucket: { __typename?: 'Bucket', objects: { __typename?: 'BucketObjectPage', hasNextPage: boolean, items: Array<{ __typename?: 'BucketObject', name: string, key: string, path: string, type: Types.BucketObjectType }> } } } | null };
+export type ObjectPickerQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, bucket: { __typename?: 'Bucket', objects: { __typename?: 'BucketObjectPage', pageNumber: number, hasNextPage: boolean, items: Array<{ __typename?: 'BucketObject', name: string, key: string, path: string, type: Types.BucketObjectType, updatedAt?: any | null }> } } } | null };
 
 export type BucketObjectPicker_WorkspaceFragment = { __typename?: 'Workspace', slug: string };
 
@@ -20,17 +21,19 @@ export const BucketObjectPicker_WorkspaceFragmentDoc = gql`
 }
     `;
 export const ObjectPickerDocument = gql`
-    query ObjectPicker($slug: String!, $page: Int, $perPage: Int) {
+    query ObjectPicker($slug: String!, $page: Int, $perPage: Int, $prefix: String) {
   workspace(slug: $slug) {
     slug
     bucket {
-      objects(page: $page, perPage: $perPage) {
+      objects(page: $page, perPage: $perPage, prefix: $prefix) {
         items {
           name
           key
           path
           type
+          updatedAt
         }
+        pageNumber
         hasNextPage
       }
     }
@@ -53,6 +56,7 @@ export const ObjectPickerDocument = gql`
  *      slug: // value for 'slug'
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
+ *      prefix: // value for 'prefix'
  *   },
  * });
  */
