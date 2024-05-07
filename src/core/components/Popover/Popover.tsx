@@ -5,7 +5,7 @@ import { ReactElement, useState } from "react";
 import { usePopper } from "react-popper";
 
 type PopoverProps = {
-  trigger: ReactElement;
+  trigger: React.ComponentProps<typeof HeadlessPopover.Button>["children"];
   placement?: Placement;
   className?: string;
   as?: any;
