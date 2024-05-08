@@ -13,7 +13,6 @@ const config = {
     optimizePackageImports: ["next-i18next", "luxon"],
   },
   publicRuntimeConfig: {
-    GRAPHQL_ENDPOINT: process.env.GRAPHQL_ENDPOINT,
     SENTRY_TRACES_SAMPLE_RATE: process.env.SENTRY_TRACES_SAMPLE_RATE
       ? parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE)
       : 1,

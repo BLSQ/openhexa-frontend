@@ -6,7 +6,7 @@
   },
   "scripts": {
     "dev": "npm-run-all --parallel next 'codegen -- --watch'",
-    "next": "node server/index.mjs",
+    "next": "next",
     "build": "next build",
     "build:ci": "CI=1 next build",
     "start": "NODE_ENV=production node server/index.mjs",

@@ -32,6 +32,22 @@ RUN --mount=type=bind,from=deps,source=/code/node_modules,target=/code/node_modu
 RUN rm -rf /code/.next/cache
 
 #
+## ----------- Dev -----------
+    FROM builder AS dev
+
+    WORKDIR /code
+    
+    ENV NEXT_TELEMETRY_DISABLED 1
+    ENV NODE_ENV=development
+    ENV PORT 3000
+    
+    COPY . /code/
+    
+    RUN npm install
+    
+    CMD ["npm", "run", "dev"]
+
+#
 ## ----------- Runner -----------
 FROM base AS runner
 
@@ -49,7 +65,6 @@ COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/package.json ./package
 COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/next.config.js ./
 COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/next-i18next.config.js ./
 COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/.next ./.next
-COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/server ./server
 
 USER ${APP_USER}
 ENV PORT 3000
