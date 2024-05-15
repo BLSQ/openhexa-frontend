@@ -9,6 +9,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 const { i18n } = require("./next-i18next.config");
 
 const config = {
+  output: "standalone",
   experimental: {
     optimizePackageImports: ["next-i18next", "luxon"],
   },

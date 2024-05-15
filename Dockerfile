@@ -23,7 +23,6 @@ ARG SENTRY_AUTH_TOKEN
 ENV SENTRY_RELEASE=${RELEASE}
 ENV NEXT_PUBLIC_RELEASE=${RELEASE}
 ENV CI=1
-ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY --link . /code/
@@ -58,9 +57,10 @@ WORKDIR /code
 ARG APP=/code
 ENV APP_USER=runner
 ENV NEXT_TELEMETRY_DISABLED 1
-RUN addgroup -S $APP_USER \
-    && adduser -S $APP_USER -G $APP_USER \
-    && mkdir -p ${APP}
+RUN addgroup --system --gid 1001 $APP_USER \
+    && adduser --system --uid 1001 $APP_USER \
+    && mkdir .next \
+    && chown ${APP_USER}:${APP_USER} .next
 
 ENV NODE_ENV=production
 
@@ -69,14 +69,12 @@ ENV NEXT_PUBLIC_SENTRY_DSN=${SENTRY_DSN}
 ENV NEXT_PUBLIC_SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
 ENV NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE=${SENTRY_TRACES_SAMPLE_RATE}
 
-COPY --from=deps    --chown=${APP_USER}:${APP_USER} /code/node_modules ./node_modules
 COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/public ./public
-COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/package.json ./package.json
-COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/next.config.js ./
-COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/next-i18next.config.js ./
-COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/.next ./.next
+COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/.next/standalone ./
+COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/.next/static ./.next/static
 
 USER ${APP_USER}
 ENV PORT 3000
+EXPOSE ${PORT}
 
-CMD [ "npm", "start" ]
+CMD HOSTNAME="0.0.0.0" node server.js
