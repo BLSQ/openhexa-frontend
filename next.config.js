@@ -12,13 +12,6 @@ const config = {
   experimental: {
     optimizePackageImports: ["next-i18next", "luxon"],
   },
-  publicRuntimeConfig: {
-    SENTRY_TRACES_SAMPLE_RATE: process.env.SENTRY_TRACES_SAMPLE_RATE
-      ? parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE)
-      : 1,
-    SENTRY_DSN: process.env.SENTRY_DSN,
-    SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT,
-  },
 
   // Sentry tree shaking configuration
   webpack: (config, { webpack }) => {

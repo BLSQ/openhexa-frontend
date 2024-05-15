@@ -9,7 +9,9 @@ RUN --mount=type=cache,target=/var/cache/apk/ \
      apk add libc6-compat python3 make g++
 
 COPY package.json package-lock.json /code/
-RUN npm ci --ignore-scripts --no-audit --no-fund
+RUN --mount=type=cache,target=~/.npm \
+    npm set progress=false && npm config set depth 0 && \
+    npm ci --ignore-scripts --no-audit --no-fund
 
 ## ----------- Builder -----------
 FROM base AS builder
@@ -21,6 +23,7 @@ ARG SENTRY_AUTH_TOKEN
 ENV SENTRY_RELEASE=${RELEASE}
 ENV NEXT_PUBLIC_RELEASE=${RELEASE}
 ENV CI=1
+ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY --link . /code/
@@ -33,19 +36,19 @@ RUN rm -rf /code/.next/cache
 
 #
 ## ----------- Dev -----------
-    FROM builder AS dev
+FROM builder AS dev
 
-    WORKDIR /code
-    
-    ENV NEXT_TELEMETRY_DISABLED 1
-    ENV NODE_ENV=development
-    ENV PORT 3000
-    
-    COPY . /code/
-    
-    RUN npm install
-    
-    CMD ["npm", "run", "dev"]
+WORKDIR /code
+
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=development
+ENV PORT 3000
+
+COPY . /code/
+
+RUN npm install
+
+CMD ["npm", "run", "dev"]
 
 #
 ## ----------- Runner -----------
@@ -58,6 +61,13 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup -S $APP_USER \
     && adduser -S $APP_USER -G $APP_USER \
     && mkdir -p ${APP}
+
+ENV NODE_ENV=production
+
+# Re-export the environment variables or the client side of nextjs
+ENV NEXT_PUBLIC_SENTRY_DSN=${SENTRY_DSN}
+ENV NEXT_PUBLIC_SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT}
+ENV NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE=${SENTRY_TRACES_SAMPLE_RATE}
 
 COPY --from=deps    --chown=${APP_USER}:${APP_USER} /code/node_modules ./node_modules
 COPY --from=builder --chown=${APP_USER}:${APP_USER} /code/public ./public
