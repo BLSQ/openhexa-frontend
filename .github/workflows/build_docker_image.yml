@@ -3,6 +3,9 @@ name: Build OpenHEXA Frontend
 on:
   release:
     types: [ published ]
+  pull_request:
+  push:
+    branches: [ main ]
   workflow_dispatch:
     inputs:
       tag:
@@ -92,3 +95,23 @@ jobs:
           build-args: |
             "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
             "RELEASE=${{ steps.version.outputs.number }}"
+
+      - name: Build and push (pull request)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: |
+            blsq/openhexa-frontend:pr-${{ github.event.pull_request.number }}
+          cache-from: type=registry,ref=blsq/openhexa-frontend:buildcache
+      
+      - name: Build and push (main branch)
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            blsq/openhexa-frontend:main
+          cache-from: type=registry,ref=blsq/openhexa-frontend:buildcache
