@@ -50,6 +50,13 @@ jobs:
         with:
           path: code-next-cache
           key: code-.next-cache-${{ hashFiles('Dockerfile') }}
+      
+      - name: Cache ~.npm
+        id: cache-home-npm-cache
+        uses: actions/cache@v3
+        with:
+          path: code-.npm-cache
+          key: code-.npm-cache-${{ hashFiles('Dockerfile') }}
   
       - name: inject var-cache-apk into docker
         uses: reproducible-containers/buildkit-cache-dance@v2.1.4
@@ -64,6 +71,13 @@ jobs:
           cache-source: code-next-cache
           cache-target: /code/.next/cache
           skip-extraction: ${{ steps.cache-code-next-cache.outputs.cache-hit }}
+      
+      - name: inject ~/.npm into docker
+        uses: reproducible-containers/buildkit-cache-dance@v2.1.4
+        with:
+          cache-source: code-.npm-cache
+          cache-target: ~/.npm
+          skip-extraction: ${{ steps.cache-home-npm-cache.outputs.cache-hit }}
 
       - name: Build and push (release)
         if: ${{ github.event_name == 'release' }}
