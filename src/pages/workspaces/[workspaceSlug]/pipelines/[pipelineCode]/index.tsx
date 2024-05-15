@@ -25,7 +25,7 @@ import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
-import { PipelineRecipient, PipelineRunTrigger } from "graphql-types";
+import { PipelineRecipient, PipelineRunTrigger } from "graphql/types";
 import useFeature from "identity/hooks/useFeature";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
