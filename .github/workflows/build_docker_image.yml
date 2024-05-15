@@ -101,7 +101,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: false
+          push: true
           tags: |
             blsq/openhexa-frontend:pr-${{ github.event.pull_request.number }}
           cache-from: type=registry,ref=blsq/openhexa-frontend:buildcache
