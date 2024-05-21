@@ -103,10 +103,10 @@ export const WorkspaceFilesPage: NextPageWithLayout = (props: Props) => {
 
   const onChangeHiddenFiles = (checked: boolean, onClose: () => void) => {
     if (checked) {
+      setCookie("show-hidden-files", true);
+    } else {
       // We don't want to show hidden files
       deleteCookie("show-hidden-files");
-    } else {
-      setCookie("show-hidden-files", true);
     }
     window.location.reload();
     onClose();
@@ -181,14 +181,14 @@ export const WorkspaceFilesPage: NextPageWithLayout = (props: Props) => {
               {({ close }) => (
                 <div>
                   <Switch
-                    checked={ignoreHiddenFiles}
+                    checked={!ignoreHiddenFiles}
                     onChange={(checked) => onChangeHiddenFiles(checked, close)}
                     labelClassName="whitespace-nowrap"
-                    label={t("Hide hidden files")}
+                    label={t("Show hidden files")}
                   />
                   <p className="mt-1 text-sm text-gray-500">
                     {t(
-                      'This will hide files and directories starting by a "." (dot)',
+                      'This will show files and directories starting with a "." (dot)',
                     )}
                   </p>
                 </div>
