@@ -17,6 +17,10 @@ query WorkspacePage($slug: String!) {
       flag
       name
     }
+    homepage {
+      fullWidth
+      ...WebPage_page
+    }
     permissions {
       delete
       update

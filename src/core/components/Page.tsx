@@ -1,8 +1,8 @@
 import Head from "next/head";
-import { ReactNode, useMemo } from "react";
+import { ReactElement, ReactNode, useMemo } from "react";
 
 type Props = {
-  children: ReactNode;
+  children: ReactNode | ReactElement;
   title?: string;
 };
 

@@ -1558,6 +1558,20 @@ input ParameterInput {
   choices: [Generic!]
 }
 
+enum ParameterType {
+  bool
+  int
+  str
+  float
+  dataset
+  dhis2
+  postgresql
+  iaso
+  s3
+  gcs
+  custom
+}
+
 enum PermissionMode {
   OWNER
   EDITOR
@@ -1621,7 +1635,7 @@ enum PipelineError {
 type PipelineParameter {
   code: String!
   name: String!
-  type: String!
+  type: ParameterType!
   multiple: Boolean!
   required: Boolean!
   default: Generic
@@ -2428,6 +2442,19 @@ type VerifyDeviceResult {
   errors: [VerifyDeviceError!]
 }
 
+type WebPage {
+  id: UUID!
+  title: String!
+  description: String
+  url: String!
+  fullWidth: Boolean!
+  height: String
+  width: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  workspace: Workspace!
+}
+
 type WHOBoundary {
   id: String!
   name: String!
@@ -2461,6 +2488,7 @@ type Workspace {
   createdBy: User!
   connections: [Connection!]!
   invitations(includeAccepted: Boolean, page: Int, perPage: Int): WorkspaceInvitationPage!
+  homepage: WebPage
   database: Database!
   bucket: Bucket!
   datasets(pinned: Boolean, query: String, page: Int = 1, perPage: Int = 15): DatasetLinkPage!

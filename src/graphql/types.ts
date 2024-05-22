@@ -2083,6 +2083,20 @@ export type ParameterInput = {
   type: Scalars["String"]["input"];
 };
 
+export enum ParameterType {
+  Bool = "bool",
+  Custom = "custom",
+  Dataset = "dataset",
+  Dhis2 = "dhis2",
+  Float = "float",
+  Gcs = "gcs",
+  Iaso = "iaso",
+  Int = "int",
+  Postgresql = "postgresql",
+  S3 = "s3",
+  Str = "str",
+}
+
 export enum PermissionMode {
   Editor = "EDITOR",
   Owner = "OWNER",
@@ -2165,7 +2179,7 @@ export type PipelineParameter = {
   multiple: Scalars["Boolean"]["output"];
   name: Scalars["String"]["output"];
   required: Scalars["Boolean"]["output"];
-  type: Scalars["String"]["output"];
+  type: ParameterType;
 };
 
 export type PipelinePermissions = {
@@ -3189,6 +3203,20 @@ export type WhoRegion = {
   name: Scalars["String"]["output"];
 };
 
+export type WebPage = {
+  __typename?: "WebPage";
+  createdAt: Scalars["DateTime"]["output"];
+  description?: Maybe<Scalars["String"]["output"]>;
+  fullWidth: Scalars["Boolean"]["output"];
+  height?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["UUID"]["output"];
+  title: Scalars["String"]["output"];
+  updatedAt: Scalars["DateTime"]["output"];
+  url: Scalars["String"]["output"];
+  width?: Maybe<Scalars["String"]["output"]>;
+  workspace: Workspace;
+};
+
 export type Workspace = {
   __typename?: "Workspace";
   bucket: Bucket;
@@ -3200,6 +3228,7 @@ export type Workspace = {
   datasets: DatasetLinkPage;
   description?: Maybe<Scalars["String"]["output"]>;
   dockerImage?: Maybe<Scalars["String"]["output"]>;
+  homepage?: Maybe<WebPage>;
   invitations: WorkspaceInvitationPage;
   members: WorkspaceMembershipPage;
   name: Scalars["String"]["output"];

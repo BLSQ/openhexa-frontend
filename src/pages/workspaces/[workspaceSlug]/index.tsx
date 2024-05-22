@@ -1,15 +1,13 @@
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import Button from "core/components/Button";
 import MarkdownViewer from "core/components/MarkdownViewer";
-import Overflow from "core/components/Overflow/Overflow";
 import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import useCacheKey from "core/hooks/useCacheKey";
+import WebPage from "embeds/WebPage";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
-import UpdateDescriptionDialog from "workspaces/features/UpdateDescriptionDialog";
 import {
   useWorkspacePageQuery,
   WorkspacePageDocument,
@@ -28,7 +26,6 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
 
   useCacheKey("workspace", () => refetch());
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data, refetch } = useWorkspacePageQuery({
     variables: { slug: props.workspaceSlug },
   });
@@ -63,24 +60,25 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
               {workspace.name}
             </Breadcrumbs.Part>
           </Breadcrumbs>
-          {workspace.permissions.update && (
-            <Button onClick={() => setIsDialogOpen(true)}>{t("Edit")}</Button>
-          )}
         </WorkspaceLayout.Header>
-        <WorkspaceLayout.PageContent>
-          <Block>
-            <Block.Content>
-              <MarkdownViewer>{workspace.description || ""}</MarkdownViewer>
-            </Block.Content>
-          </Block>
-        </WorkspaceLayout.PageContent>
-        <UpdateDescriptionDialog
-          open={isDialogOpen}
-          workspace={workspace}
-          onClose={() => {
-            setIsDialogOpen(false);
-          }}
-        />
+        {workspace.homepage && workspace.homepage.fullWidth && (
+          <WebPage page={workspace.homepage} showRefresh />
+        )}
+        {workspace.homepage && !workspace.homepage.fullWidth && (
+          <WorkspaceLayout.PageContent>
+            <WebPage page={workspace.homepage} showRefresh />
+          </WorkspaceLayout.PageContent>
+        )}
+
+        {!workspace.homepage && (
+          <WorkspaceLayout.PageContent>
+            <Block>
+              <Block.Content>
+                <MarkdownViewer>{workspace.description || ""}</MarkdownViewer>
+              </Block.Content>
+            </Block>
+          </WorkspaceLayout.PageContent>
+        )}
       </WorkspaceLayout>
     </Page>
   );

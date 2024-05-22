@@ -8,6 +8,7 @@ import {
   ComponentProps,
   createContext,
   ReactElement,
+  ReactNode,
   useEffect,
   useState,
 } from "react";
@@ -17,7 +18,7 @@ import PageContent from "./PageContent";
 import Sidebar from "./Sidebar";
 import { WorkspaceLayout_WorkspaceFragment } from "./WorkspaceLayout.generated";
 type WorkspaceLayoutProps = {
-  children: ReactElement | ReactElement[];
+  children: ReactElement | ReactElement[] | ReactNode | ReactNode[];
   className?: string;
   workspace: WorkspaceLayout_WorkspaceFragment;
   forceCompactSidebar?: boolean;
@@ -92,7 +93,7 @@ const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
         >
           <main
             className={clsx(
-              "flex flex-1 flex-col transition-all mb-12", // The margin bottom is to avoid the Help button to hide the content of the page while at the bottom
+              "flex flex-1 flex-col transition-all h-full mb-12", // The margin bottom is to avoid the Help button to hide the content of the page while at the bottom
               className,
             )}
           >
