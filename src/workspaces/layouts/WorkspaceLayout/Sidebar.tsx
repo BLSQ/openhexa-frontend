@@ -7,6 +7,7 @@ import {
   CircleStackIcon,
   Cog6ToothIcon,
   FolderOpenIcon,
+  GlobeAltIcon,
   HomeIcon,
   Square2StackIcon,
   SwatchIcon,
@@ -122,6 +123,12 @@ const Sidebar = (props: SidebarProps) => {
                 compact={!isSidebarOpen}
               />
             )}
+            <NavItem
+              href={`/workspaces/${encodeURIComponent(slug)}/pages`}
+              Icon={GlobeAltIcon}
+              label={t("Pages")}
+              compact={!isSidebarOpen}
+            />
             <NavItem
               href={`/workspaces/${encodeURIComponent(slug)}/connections`}
               Icon={SwatchIcon}
