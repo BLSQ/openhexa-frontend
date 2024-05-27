@@ -34,21 +34,15 @@ type Props = {
   prefix: string;
   workspaceSlug: string;
   searchQuery: string;
-  ignoreHiddenFiles: boolean;
+  showHiddenFiles: boolean;
 };
 
 const ENTRIES_PER_PAGE = 20;
 
 export const WorkspaceFilesPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
-  const {
-    page,
-    prefix,
-    searchQuery,
-    workspaceSlug,
-    perPage,
-    ignoreHiddenFiles,
-  } = props;
+  const { page, prefix, searchQuery, workspaceSlug, perPage, showHiddenFiles } =
+    props;
   const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [isCreateFolderDialogOpen, setCreateFolderDialogOpen] = useState(false);
   const router = useRouter();
@@ -61,7 +55,7 @@ export const WorkspaceFilesPage: NextPageWithLayout = (props: Props) => {
       prefix,
       query: searchQuery,
       perPage,
-      ignoreHiddenFiles,
+      ignoreHiddenFiles: showHiddenFiles,
     },
   });
 
@@ -181,7 +175,7 @@ export const WorkspaceFilesPage: NextPageWithLayout = (props: Props) => {
               {({ close }) => (
                 <div>
                   <Switch
-                    checked={!ignoreHiddenFiles}
+                    checked={!showHiddenFiles}
                     onChange={(checked) => onChangeHiddenFiles(checked, close)}
                     labelClassName="whitespace-nowrap"
                     label={t("Show hidden files")}
@@ -252,7 +246,7 @@ export const getServerSideProps = createGetServerSideProps({
     const perPage = ctx.query?.perPage
       ? parseInt(ctx.query.perPage as string, 10)
       : ENTRIES_PER_PAGE;
-    const ignoreHiddenFiles = getCookie("show-hidden-files", ctx) === undefined;
+    const showHiddenFiles = getCookie("show-hidden-files", ctx) === undefined;
     const { data } = await client.query<
       WorkspaceFilesPageQuery,
       WorkspaceFilesPageQueryVariables
@@ -264,7 +258,7 @@ export const getServerSideProps = createGetServerSideProps({
         prefix,
         query: searchQuery,
         perPage,
-        ignoreHiddenFiles,
+        ignoreHiddenFiles: showHiddenFiles,
       },
     });
 
@@ -280,7 +274,7 @@ export const getServerSideProps = createGetServerSideProps({
         perPage,
         prefix,
         searchQuery,
-        ignoreHiddenFiles,
+        showHiddenFiles,
         workspaceSlug: ctx.params?.workspaceSlug,
       },
     };
