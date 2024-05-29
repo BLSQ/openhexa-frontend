@@ -1,4 +1,4 @@
-import { CloudArrowUpIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { CloudArrowUpIcon, PlusIcon } from "vv";
 import Block from "core/components/Block/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";

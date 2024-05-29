@@ -113,18 +113,18 @@ export const PipelineCurrentVersionDocument = gql`
  *   },
  * });
  */
-export function usePipelineCurrentVersionQuery(baseOptions: Apollo.QueryHookOptions<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables> & ({ variables: PipelineCurrentVersionQueryVariables; skip?: boolean; } | { skip: boolean; })) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables>(PipelineCurrentVersionDocument, options);
-}
+export function usePipelineCurrentVersionQuery(baseOptions: Apollo.QueryHookOptions<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables> & ({ variables: PipelineCurrentVersionQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables>(PipelineCurrentVersionDocument, options);
+      }
 export function usePipelineCurrentVersionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables>(PipelineCurrentVersionDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables>(PipelineCurrentVersionDocument, options);
+        }
 export function usePipelineCurrentVersionSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useSuspenseQuery<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables>(PipelineCurrentVersionDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<PipelineCurrentVersionQuery, PipelineCurrentVersionQueryVariables>(PipelineCurrentVersionDocument, options);
+        }
 export type PipelineCurrentVersionQueryHookResult = ReturnType<typeof usePipelineCurrentVersionQuery>;
 export type PipelineCurrentVersionLazyQueryHookResult = ReturnType<typeof usePipelineCurrentVersionLazyQuery>;
 export type PipelineCurrentVersionSuspenseQueryHookResult = ReturnType<typeof usePipelineCurrentVersionSuspenseQuery>;

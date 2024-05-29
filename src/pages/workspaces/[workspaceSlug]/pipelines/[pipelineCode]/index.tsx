@@ -1,4 +1,5 @@
 import {
+  Cog6ToothIcon,
   ExclamationCircleIcon,
   PlayIcon,
   TrashIcon,
@@ -58,7 +59,6 @@ import {
   updatePipeline,
   isConnectionParameter,
   getPipelineVersionConfig,
-  updatePipelineVersion,
   convertParametersToPipelineInput,
 } from "workspaces/helpers/pipelines";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
@@ -71,6 +71,7 @@ import Field from "core/components/forms/Field";
 import ParameterField from "workspaces/features/RunPipelineDialog/ParameterField";
 import useForm from "core/hooks/useForm";
 import { ensureArray } from "core/helpers/array";
+import PipelineVersionConfigDialog from "workspaces/features/PipelineVersionConfigDialog";
 
 type Props = {
   page: number;
@@ -85,6 +86,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const router = useRouter();
   const [isDeletePipelineDialogOpen, setDeletePipelineDialogOpen] =
     useState(false);
+
+  const [isVersionConfigDialogOpen, setVersionConfigDialogOpen] =
+    useState(false);
   const [isWebhookFeatureEnabled] = useFeature("pipeline_webhook");
   const { data } = useWorkspacePipelinePageQuery({
     variables: {
@@ -95,6 +99,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     },
   });
 
+  if (!data?.workspace || !data?.pipeline) {
+    return null;
+  }
   const { workspace, pipeline } = data;
 
   const onSavePipeline = async (values: any) => {
@@ -104,11 +111,10 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     });
   };
 
-  const onSavePipelineVersion = async (value: any) => {
-    await updatePipelineVersion(value.id, {
-      config: value.config,
-    });
-  };
+  const currentVersion = data.pipeline?.currentVersion;
+  const config = currentVersion ? getPipelineVersionConfig(currentVersion) : [];
+
+  const onSavePipelineVersion = async (value: any) => {};
   const onSaveScheduling = async (values: any) => {
     await updatePipeline(pipeline.id, {
       schedule: values.enableScheduling ? values.schedule : null,
@@ -119,16 +125,13 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
 
   const renderParameterValue = (entry: PipelineParameter & { value: any }) => {
     if (entry.type === "str" && entry.value) {
-      console.log(entry);
-      return (
-        <TextProperty
-          id="code"
-          accessor={"code"}
-          label={t("Name")}
-          visible={true}
-        />
-      );
-      //return entry.multiple ? entry.value.join(", ") : entry.value;
+      <TextProperty
+        id="name"
+        accessor={"name"}
+        label={t("Name")}
+        visible={true}
+      />;
+      return entry.multiple ? entry.value.join(", ") : entry.value;
     }
     if (entry.type === "bool") {
       return <Switch checked={entry.value} disabled />;
@@ -157,60 +160,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     return "-";
   };
 
-  const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
-    async onSubmit(values) {
-      const { version, ...params } = values;
-      console.log("Submitting version ", version);
-    },
-    getInitialState() {
-      let state: any = {
-        version: null,
-      };
-      return state;
-    },
-    validate(values) {
-      const errors = {} as any;
-      const { version, ...fields } = values;
-      if (!version) {
-        return { version: t("The version is required") };
-      }
-      const normalizedValues = convertParametersToPipelineInput(
-        version,
-        fields,
-      );
-      for (const parameter of version.parameters) {
-        const val = normalizedValues[parameter.code];
-        if (parameter.type === "int" || parameter.type === "float") {
-          if (ensureArray(val).length === 0 && parameter.required) {
-            errors[parameter.code] = t("This field is required");
-          } else if (ensureArray(val).some((v) => isNaN(v))) {
-            errors[parameter.code] = t("This field must contain only numbers");
-          }
-        }
-
-        if (
-          ["str", "dataset"].includes(parameter.type) &&
-          parameter.required &&
-          ensureArray(val).length === 0
-        ) {
-          errors[parameter.code] = t("This field is required");
-        }
-        if (
-          isConnectionParameter(parameter.type) &&
-          parameter.required &&
-          !val
-        ) {
-          errors[parameter.code] = t("This field is required");
-        }
-      }
-      return errors;
-    },
-  });
-
-  const config = useMemo(() => {
-    const currentVersion = data.pipeline?.currentVersion;
-    return currentVersion ? getPipelineVersionConfig(currentVersion) : [];
-  }, [data.pipeline?.currentVersion]);
   const onSaveWebhook = async (values: any) => {
     await updatePipeline(pipeline.id, {
       webhookEnabled: values.webhookEnabled,
@@ -377,6 +326,12 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                     >
                       {t("View all versions")}
                     </Link>
+                    <Button
+                      leadingIcon={<Cog6ToothIcon className="h-4 w-4" />}
+                      onClick={() => setVersionConfigDialogOpen(true)}
+                    >
+                      {t("Config Version")}
+                    </Button>
                   </div>
                 )}
               >
@@ -411,6 +366,11 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                         {pipeline.currentVersion.user?.displayName ?? "-"}
                       </DescriptionList.Item>
                     </DescriptionList>
+                    <PipelineVersionConfigDialog
+                      pipeliveVersion={pipeline.currentVersion}
+                      onClose={() => setVersionConfigDialogOpen(false)}
+                      open={isVersionConfigDialogOpen}
+                    ></PipelineVersionConfigDialog>
                   </>
                 ) : (
                   <span className="italic text-sm text-gray-500">
@@ -439,35 +399,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 </Block.Section>
               )}
             </DataCard.FormSection>
-            <DataCard.FormSection>
-              <div
-                className={clsx(
-                  "grid gap-x-3 gap-y-4",
-                  config.length > 4 && "grid-cols-2 gap-x-5",
-                )}
-              >
-                {config.map((param, i) => (
-                  <Field
-                    required={param.required || param.type === "bool"}
-                    key={i}
-                    name={param.code}
-                    label={param.name}
-                    help={param.help}
-                    error={form.touched[param.code] && form.errors[param.code]}
-                  >
-                    <ParameterField
-                      parameter={param}
-                      value={form.formData[param.code]}
-                      onChange={(value: any) => {
-                        form.setFieldValue(param.code, value);
-                      }}
-                      workspaceSlug={pipeline.workspace?.slug}
-                    />
-                  </Field>
-                ))}
-              </div>
-            </DataCard.FormSection>
-
             <DataCard.FormSection
               title={t("Scheduling")}
               onSave={

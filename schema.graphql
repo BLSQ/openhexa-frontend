@@ -2304,6 +2304,11 @@ input UpdatePipelineVersionInput {
   name: String
   description: String
   externalLink: URL
+  config: JSON
+}
+input UpdatePipelineVersionConfigInput {
+  id: UUID!
+  config: JSON
 }
 
 type UpdatePipelineVersionResult {

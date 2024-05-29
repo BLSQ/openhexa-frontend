@@ -3027,16 +3027,21 @@ export type UpdatePipelineResult = {
   success: Scalars["Boolean"]["output"];
 };
 
+export type UpdatePipelineVersionConfigInput = {
+  config?: InputMaybe<Scalars["JSON"]["input"]>;
+  id: Scalars["UUID"]["input"];
+};
+
 export enum UpdatePipelineVersionError {
   NotFound = "NOT_FOUND",
   PermissionDenied = "PERMISSION_DENIED",
 }
 
 export type UpdatePipelineVersionInput = {
+  config?: InputMaybe<Scalars["JSON"]["input"]>;
   description?: InputMaybe<Scalars["String"]["input"]>;
   externalLink?: InputMaybe<Scalars["URL"]["input"]>;
   id: Scalars["UUID"]["input"];
-  config: Scalars["JSON"]["input"];
   name?: InputMaybe<Scalars["String"]["input"]>;
 };
 

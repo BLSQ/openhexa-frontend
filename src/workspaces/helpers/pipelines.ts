@@ -222,7 +222,9 @@ export function getPipelineVersionConfig(
 export function updatePipelineVersion(
   pipelineId: string,
   values: Omit<UpdateWorkspacePipelineMutationVariables["input"], "id">,
-);
+) {
+  console.log("Updating pipeline version");
+}
 
 export function renderOutputType(typename: string | undefined) {
   switch (typename) {
