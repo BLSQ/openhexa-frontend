@@ -203,12 +203,26 @@ export function getPipelineRunConfig(run: {
 }) {
   const config = run.config || {};
   const parameters = run.version?.parameters || [];
-
   return parameters.map((param: any) => ({
     value: config[param.code],
     ...param,
   })) as (PipelineParameter & { value: any })[];
 }
+export function getPipelineVersionConfig(
+  version: { parameters: Omit<PipelineParameter, "__typename">[] } | null,
+) {
+  const config = version?.config || {};
+  const parameters = version?.parameters || [];
+  return parameters.map((param: any) => ({
+    value: config[param.code],
+    ...param,
+  })) as (PipelineParameter & { value: any })[];
+}
+
+export function updatePipelineVersion(
+  pipelineId: string,
+  values: Omit<UpdateWorkspacePipelineMutationVariables["input"], "id">,
+);
 
 export function renderOutputType(typename: string | undefined) {
   switch (typename) {

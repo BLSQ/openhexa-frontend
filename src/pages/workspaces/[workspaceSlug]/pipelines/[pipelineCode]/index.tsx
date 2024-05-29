@@ -26,17 +26,21 @@ import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
+import { isNil } from "lodash";
+
+import { DescriptionListDisplayMode } from "core/components/DescriptionList/helpers";
 import {
   PipelineRecipient,
   PipelineRunTrigger,
   PipelineType,
+  PipelineVersion,
 } from "graphql/types";
 import useFeature from "identity/hooks/useFeature";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import DownloadPipelineVersion from "pipelines/features/DownloadPipelineVersion/DownloadPipelineVersion";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import CronProperty from "workspaces/features/CronProperty";
 import DeletePipelineDialog from "workspaces/features/DeletePipelineDialog";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
@@ -47,11 +51,26 @@ import {
   WorkspacePipelinePageQueryVariables,
   useWorkspacePipelinePageQuery,
 } from "workspaces/graphql/queries.generated";
+import { PipelineParameter } from "graphql/types";
+import Switch from "core/components/Switch/Switch";
 import {
   formatPipelineType,
   updatePipeline,
+  isConnectionParameter,
+  getPipelineVersionConfig,
+  updatePipelineVersion,
+  convertParametersToPipelineInput,
 } from "workspaces/helpers/pipelines";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
+import PipelineVersionCard from "pipelines/features/PipelineVersionCard";
+
+import { da, tr } from "@faker-js/faker";
+import { version } from "os";
+import clsx from "clsx";
+import Field from "core/components/forms/Field";
+import ParameterField from "workspaces/features/RunPipelineDialog/ParameterField";
+import useForm from "core/hooks/useForm";
+import { ensureArray } from "core/helpers/array";
 
 type Props = {
   page: number;
@@ -75,9 +94,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
       perPage,
     },
   });
-  if (!data?.workspace || !data?.pipeline) {
-    return null;
-  }
+
   const { workspace, pipeline } = data;
 
   const onSavePipeline = async (values: any) => {
@@ -87,6 +104,11 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     });
   };
 
+  const onSavePipelineVersion = async (value: any) => {
+    await updatePipelineVersion(value.id, {
+      config: value.config,
+    });
+  };
   const onSaveScheduling = async (values: any) => {
     await updatePipeline(pipeline.id, {
       schedule: values.enableScheduling ? values.schedule : null,
@@ -95,6 +117,100 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     });
   };
 
+  const renderParameterValue = (entry: PipelineParameter & { value: any }) => {
+    if (entry.type === "str" && entry.value) {
+      console.log(entry);
+      return (
+        <TextProperty
+          id="code"
+          accessor={"code"}
+          label={t("Name")}
+          visible={true}
+        />
+      );
+      //return entry.multiple ? entry.value.join(", ") : entry.value;
+    }
+    if (entry.type === "bool") {
+      return <Switch checked={entry.value} disabled />;
+    }
+    if (
+      (entry.type === "int" || entry.type === "float") &&
+      !isNil(entry.value)
+    ) {
+      return entry.multiple ? entry.value.join(", ") : entry.value;
+    }
+    if (isConnectionParameter(entry.type) && entry.value) {
+      return entry.value;
+    }
+    if (entry.type === "dataset") {
+      return (
+        <Link
+          href={`/workspaces/${encodeURIComponent(
+            workspace.slug,
+          )}/datasets/${encodeURIComponent(entry.value)}`}
+        >
+          {entry.value}
+        </Link>
+      );
+    }
+
+    return "-";
+  };
+
+  const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
+    async onSubmit(values) {
+      const { version, ...params } = values;
+      console.log("Submitting version ", version);
+    },
+    getInitialState() {
+      let state: any = {
+        version: null,
+      };
+      return state;
+    },
+    validate(values) {
+      const errors = {} as any;
+      const { version, ...fields } = values;
+      if (!version) {
+        return { version: t("The version is required") };
+      }
+      const normalizedValues = convertParametersToPipelineInput(
+        version,
+        fields,
+      );
+      for (const parameter of version.parameters) {
+        const val = normalizedValues[parameter.code];
+        if (parameter.type === "int" || parameter.type === "float") {
+          if (ensureArray(val).length === 0 && parameter.required) {
+            errors[parameter.code] = t("This field is required");
+          } else if (ensureArray(val).some((v) => isNaN(v))) {
+            errors[parameter.code] = t("This field must contain only numbers");
+          }
+        }
+
+        if (
+          ["str", "dataset"].includes(parameter.type) &&
+          parameter.required &&
+          ensureArray(val).length === 0
+        ) {
+          errors[parameter.code] = t("This field is required");
+        }
+        if (
+          isConnectionParameter(parameter.type) &&
+          parameter.required &&
+          !val
+        ) {
+          errors[parameter.code] = t("This field is required");
+        }
+      }
+      return errors;
+    },
+  });
+
+  const config = useMemo(() => {
+    const currentVersion = data.pipeline?.currentVersion;
+    return currentVersion ? getPipelineVersionConfig(currentVersion) : [];
+  }, [data.pipeline?.currentVersion]);
   const onSaveWebhook = async (values: any) => {
     await updatePipeline(pipeline.id, {
       webhookEnabled: values.webhookEnabled,
@@ -303,6 +419,55 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 )}
               </DataCard.Section>
             )}
+            <DataCard.FormSection
+              title="Parameters Configuration"
+              collapsible={false}
+              onSave={onSavePipelineVersion}
+            >
+              {pipeline.type === PipelineType.ZipFile && (
+                <Block.Section title={t("Parameters")}>
+                  <DescriptionList
+                    columns={2}
+                    displayMode={DescriptionListDisplayMode.LABEL_ABOVE}
+                  >
+                    {config.map((entry) => (
+                      <DescriptionList.Item key={entry.name} label={entry.name}>
+                        {renderParameterValue(entry)}
+                      </DescriptionList.Item>
+                    ))}
+                  </DescriptionList>
+                </Block.Section>
+              )}
+            </DataCard.FormSection>
+            <DataCard.FormSection>
+              <div
+                className={clsx(
+                  "grid gap-x-3 gap-y-4",
+                  config.length > 4 && "grid-cols-2 gap-x-5",
+                )}
+              >
+                {config.map((param, i) => (
+                  <Field
+                    required={param.required || param.type === "bool"}
+                    key={i}
+                    name={param.code}
+                    label={param.name}
+                    help={param.help}
+                    error={form.touched[param.code] && form.errors[param.code]}
+                  >
+                    <ParameterField
+                      parameter={param}
+                      value={form.formData[param.code]}
+                      onChange={(value: any) => {
+                        form.setFieldValue(param.code, value);
+                      }}
+                      workspaceSlug={pipeline.workspace?.slug}
+                    />
+                  </Field>
+                ))}
+              </div>
+            </DataCard.FormSection>
+
             <DataCard.FormSection
               title={t("Scheduling")}
               onSave={

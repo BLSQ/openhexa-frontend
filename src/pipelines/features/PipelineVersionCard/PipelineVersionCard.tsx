@@ -26,7 +26,7 @@ import { isValidUrl } from "core/helpers";
 import DeletePipelineVersionTrigger from "workspaces/features/DeletePipelineVersionTrigger";
 
 type PipelineVersionCardProps = {
-  version: PipelineVersionCard_VersionFragment;
+  version: PipelineVersionCard_VersionFragment | undefined;
   onClickRun?: () => void;
 };
 
@@ -190,7 +190,7 @@ PipelineVersionCard.fragments = {
       externalLink
       isLatestVersion
       createdAt
-
+      config
       user {
         displayName
       }

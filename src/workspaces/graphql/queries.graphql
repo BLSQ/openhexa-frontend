@@ -96,6 +96,7 @@ query WorkspacePipelinePage(
       id
       name
       description
+      config
       externalLink
       ...PipelineVersionPicker_version
       ...PipelineVersionParametersTable_version

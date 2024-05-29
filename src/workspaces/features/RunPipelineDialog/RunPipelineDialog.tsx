@@ -72,6 +72,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           currentVersion {
             name
             createdAt
+            config
             user {
               displayName
             }

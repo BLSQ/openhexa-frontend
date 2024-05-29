@@ -2263,6 +2263,7 @@ export enum PipelineType {
 
 export type PipelineVersion = {
   __typename?: "PipelineVersion";
+  config?: Maybe<Scalars["JSON"]["output"]>;
   createdAt: Scalars["DateTime"]["output"];
   description?: Maybe<Scalars["String"]["output"]>;
   externalLink?: Maybe<Scalars["URL"]["output"]>;
@@ -3035,6 +3036,7 @@ export type UpdatePipelineVersionInput = {
   description?: InputMaybe<Scalars["String"]["input"]>;
   externalLink?: InputMaybe<Scalars["URL"]["input"]>;
   id: Scalars["UUID"]["input"];
+  config: Scalars["JSON"]["input"];
   name?: InputMaybe<Scalars["String"]["input"]>;
 };
 
