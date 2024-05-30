@@ -111,9 +111,8 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
     if (version) {
       form.resetForm();
       form.setFieldValue("version", version);
-      console.log("Setting pipeline paramter value");
       version.parameters.map((param) => {
-        if (pipeliveVersion?.config[param.code] !== null) {
+        if (pipeliveVersion?.config[param.code] !== undefined) {
           form.setFieldValue(
             param.code,
             pipeliveVersion.config[param.code],
@@ -125,8 +124,6 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
       });
     }
   }, [form, form.formData.version]);
-
-  const parameters = form.formData.version?.parameters ?? [];
 
   return (
     <Dialog open={open} onClose={onClose}>
