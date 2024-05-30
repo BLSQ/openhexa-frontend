@@ -14,9 +14,11 @@ import Field from "core/components/forms/Field";
 import Button from "core/components/Button";
 import clsx from "clsx";
 import { version } from "os";
+import ParameterField from "../RunPipelineDialog/ParameterField";
+import { UpdatePipelineVersionConfigFragment } from "./PipelineVersionConfigDialog.generated";
 
 type PipliveVersionConfigProps = {
-  pipeliveVersion: PipelineConfigVersionDialog_VersionFragment;
+  pipeliveVersion: PipelineVersion;
   onClose(): void;
   open: boolean;
 };
@@ -31,10 +33,20 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
         success
         errors
         pipelineVersion {
-          ...PipelineConfigVersionDialog_VersionFragment
+          id
+          name
+          description
+          externalLink
+          isLatestVersion
+          createdAt
+          config
+          parameters {
+            ...ParameterField_parameter
+          }
         }
       }
     }
+    ${ParameterField.fragments.parameter}
   `);
 
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
@@ -127,13 +139,33 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
               parameters.length > 4 && "grip-cols-2 gap-x-5",
             )}
           >
-            {
-              //pipeliveVersion.
-            }
+            {pipeliveVersion.parameters.map((param, i) => (
+              <Field
+                required={param.required || param.type === "bool"}
+                key={i}
+                name={param.code}
+                label={param.name}
+                help={param.help}
+                error={form.touched[param.code] && form.errors[param.code]}
+              >
+                <ParameterField
+                  parameter={param}
+                  value={form.formData[param.code]}
+                  onChange={(value: any) => {
+                    form.setFieldValue(param.code, value);
+                  }}
+                ></ParameterField>
+              </Field>
+            ))}
           </div>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onClick={onClose} variant={"outlined"}></Button>
+          <Button onClick={onClose} variant={"outlined"}>
+            {t("Cancel")}
+          </Button>
+          <Button disabled={form.isSubmitting} type="submit">
+            {t("Save")}
+          </Button>
         </Dialog.Actions>
       </form>
     </Dialog>
@@ -142,7 +174,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
 
 PipelineVersionConfigDialog.fragments = {
   version: gql`
-    fragment PipelineConfigVersionDialog_Version on PipelineVersion {
+    fragment UpdatePipelineVersionConfig on PipelineVersion {
       id
       name
       description
@@ -151,14 +183,10 @@ PipelineVersionConfigDialog.fragments = {
       createdAt
       config
       parameters {
-        code
-        name
-        type
-        multiple
-        required
-        help
+        ...ParameterField_parameter
       }
     }
+    ${ParameterField.fragments.parameter}
   `,
 };
 

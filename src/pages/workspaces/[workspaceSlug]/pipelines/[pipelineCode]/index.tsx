@@ -125,12 +125,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
 
   const renderParameterValue = (entry: PipelineParameter & { value: any }) => {
     if (entry.type === "str" && entry.value) {
-      <TextProperty
-        id="name"
-        accessor={"name"}
-        label={t("Name")}
-        visible={true}
-      />;
       return entry.multiple ? entry.value.join(", ") : entry.value;
     }
     if (entry.type === "bool") {
@@ -330,7 +324,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                       leadingIcon={<Cog6ToothIcon className="h-4 w-4" />}
                       onClick={() => setVersionConfigDialogOpen(true)}
                     >
-                      {t("Config Version")}
+                      {t("Set Parameters")}
                     </Button>
                   </div>
                 )}
@@ -366,6 +360,26 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                         {pipeline.currentVersion.user?.displayName ?? "-"}
                       </DescriptionList.Item>
                     </DescriptionList>
+                    <DescriptionList>
+                      {pipeline.type === PipelineType.ZipFile && (
+                        <Block.Section title={t("Parameters")}>
+                          <DescriptionList
+                            columns={2}
+                            displayMode={DescriptionListDisplayMode.LABEL_ABOVE}
+                          >
+                            {config.map((entry) => (
+                              <DescriptionList.Item
+                                key={entry.name}
+                                label={entry.name}
+                              >
+                                {renderParameterValue(entry)}
+                              </DescriptionList.Item>
+                            ))}
+                          </DescriptionList>
+                        </Block.Section>
+                      )}
+                    </DescriptionList>
+
                     <PipelineVersionConfigDialog
                       pipeliveVersion={pipeline.currentVersion}
                       onClose={() => setVersionConfigDialogOpen(false)}
@@ -379,26 +393,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 )}
               </DataCard.Section>
             )}
-            <DataCard.FormSection
-              title="Parameters Configuration"
-              collapsible={false}
-              onSave={onSavePipelineVersion}
-            >
-              {pipeline.type === PipelineType.ZipFile && (
-                <Block.Section title={t("Parameters")}>
-                  <DescriptionList
-                    columns={2}
-                    displayMode={DescriptionListDisplayMode.LABEL_ABOVE}
-                  >
-                    {config.map((entry) => (
-                      <DescriptionList.Item key={entry.name} label={entry.name}>
-                        {renderParameterValue(entry)}
-                      </DescriptionList.Item>
-                    ))}
-                  </DescriptionList>
-                </Block.Section>
-              )}
-            </DataCard.FormSection>
             <DataCard.FormSection
               title={t("Scheduling")}
               onSave={

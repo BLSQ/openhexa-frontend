@@ -1,6 +1,7 @@
 import * as Types from '../../../graphql/types';
 
 import { gql } from '@apollo/client';
+import { ParameterField_ParameterFragmentDoc } from '../RunPipelineDialog/ParameterField.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type UpdatePipelineVersionConfigMutationVariables = Types.Exact<{
@@ -8,12 +9,12 @@ export type UpdatePipelineVersionConfigMutationVariables = Types.Exact<{
 }>;
 
 
-export type UpdatePipelineVersionConfigMutation = { __typename?: 'Mutation', updatePipelineVersion: { __typename?: 'UpdatePipelineVersionResult', success: boolean, errors: Array<Types.UpdatePipelineVersionError> } };
+export type UpdatePipelineVersionConfigMutation = { __typename?: 'Mutation', updatePipelineVersion: { __typename?: 'UpdatePipelineVersionResult', success: boolean, errors: Array<Types.UpdatePipelineVersionError>, pipelineVersion?: { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, externalLink?: any | null, isLatestVersion: boolean, createdAt: any, config?: any | null, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }> } | null } };
 
-export type PipelineConfigVersionDialog_VersionFragment = { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, externalLink?: any | null, isLatestVersion: boolean, createdAt: any, config?: any | null, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, type: string, multiple: boolean, required: boolean, help?: string | null }> };
+export type UpdatePipelineVersionConfigFragment = { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, externalLink?: any | null, isLatestVersion: boolean, createdAt: any, config?: any | null, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }> };
 
-export const PipelineConfigVersionDialog_VersionFragmentDoc = gql`
-    fragment PipelineConfigVersionDialog_Version on PipelineVersion {
+export const UpdatePipelineVersionConfigFragmentDoc = gql`
+    fragment UpdatePipelineVersionConfig on PipelineVersion {
   id
   name
   description
@@ -22,23 +23,30 @@ export const PipelineConfigVersionDialog_VersionFragmentDoc = gql`
   createdAt
   config
   parameters {
-    code
-    name
-    type
-    multiple
-    required
-    help
+    ...ParameterField_parameter
   }
 }
-    `;
+    ${ParameterField_ParameterFragmentDoc}`;
 export const UpdatePipelineVersionConfigDocument = gql`
     mutation UpdatePipelineVersionConfig($input: UpdatePipelineVersionInput!) {
   updatePipelineVersion(input: $input) {
     success
     errors
+    pipelineVersion {
+      id
+      name
+      description
+      externalLink
+      isLatestVersion
+      createdAt
+      config
+      parameters {
+        ...ParameterField_parameter
+      }
+    }
   }
 }
-    `;
+    ${ParameterField_ParameterFragmentDoc}`;
 export type UpdatePipelineVersionConfigMutationFn = Apollo.MutationFunction<UpdatePipelineVersionConfigMutation, UpdatePipelineVersionConfigMutationVariables>;
 
 /**
