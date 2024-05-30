@@ -13,7 +13,6 @@ import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
 import Button from "core/components/Button";
 import clsx from "clsx";
-import { version } from "os";
 import ParameterField from "../RunPipelineDialog/ParameterField";
 type PipliveVersionConfigProps = {
   pipeliveVersion: PipelineVersion;
@@ -51,7 +50,15 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
       const { version, ...params } = values;
-      console.log("Submitting version ", version);
+      const { data } = await updatePipeliveVersionConfig({
+        variables: {
+          input: {
+            id: version.id,
+            config: convertParametersToPipelineInput(version, params),
+          },
+        },
+      });
+      console.log("Data after update : ", data);
     },
     getInitialState() {
       let state: any = {
@@ -120,7 +127,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
   }, [form, form.formData.version]);
 
   const parameters = form.formData.version?.parameters ?? [];
-  console.log(pipeliveVersion);
+
   return (
     <Dialog open={open} onClose={onClose}>
       <form onSubmit={form.handleSubmit}>
@@ -128,16 +135,10 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
           {t("Change version configration")}
         </Dialog.Title>
         <Dialog.Content className="space-y-4">
-          <Field
-            name="Name"
-            label={t("Name")}
-            value={form.formData.name}
-            onChange={form.handleInputChange}
-          ></Field>
           <div
             className={clsx(
               "grid gap-x-3 gap-y-4",
-              parameters.length > 4 && "grip-cols-2 gap-x-5",
+              pipeliveVersion.parameters.length > 4 && "grip-cols-2 gap-x-5",
             )}
           >
             {pipeliveVersion.parameters.map((param, i) => (
