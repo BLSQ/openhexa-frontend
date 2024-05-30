@@ -15,16 +15,15 @@ import Button from "core/components/Button";
 import clsx from "clsx";
 import { version } from "os";
 import ParameterField from "../RunPipelineDialog/ParameterField";
-import { UpdatePipelineVersionConfigFragment } from "./PipelineVersionConfigDialog.generated";
-
 type PipliveVersionConfigProps = {
   pipeliveVersion: PipelineVersion;
+  workspaceSlug: string;
   onClose(): void;
   open: boolean;
 };
 
 const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
-  const { pipeliveVersion, onClose, open } = props;
+  const { pipeliveVersion, onClose, open, workspaceSlug } = props;
   const { t } = useTranslation();
 
   const [updatePipeliveVersionConfig] = useMutation(gql`
@@ -56,7 +55,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
     },
     getInitialState() {
       let state: any = {
-        version: null,
+        version: pipeliveVersion,
       };
       return state;
     },
@@ -101,9 +100,11 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
 
   useEffect(() => {
     const version = form.formData.version;
+
     if (version) {
       form.resetForm();
       form.setFieldValue("version", version);
+      console.log("Setting pipeline paramter value");
       version.parameters.map((param) => {
         if (pipeliveVersion?.config[param.code] !== null) {
           form.setFieldValue(
@@ -119,7 +120,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
   }, [form, form.formData.version]);
 
   const parameters = form.formData.version?.parameters ?? [];
-
+  console.log(pipeliveVersion);
   return (
     <Dialog open={open} onClose={onClose}>
       <form onSubmit={form.handleSubmit}>
@@ -154,6 +155,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
                   onChange={(value: any) => {
                     form.setFieldValue(param.code, value);
                   }}
+                  workspaceSlug={workspaceSlug}
                 ></ParameterField>
               </Field>
             ))}
@@ -173,8 +175,8 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
 };
 
 PipelineVersionConfigDialog.fragments = {
-  version: gql`
-    fragment UpdatePipelineVersionConfig on PipelineVersion {
+  update: gql`
+    fragment PipelineVersionConfig_update on PipelineVersion {
       id
       name
       description

@@ -382,6 +382,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
 
                     <PipelineVersionConfigDialog
                       pipeliveVersion={pipeline.currentVersion}
+                      workspaceSlug={workspaceSlug}
                       onClose={() => setVersionConfigDialogOpen(false)}
                       open={isVersionConfigDialogOpen}
                     ></PipelineVersionConfigDialog>

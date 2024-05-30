@@ -11,10 +11,10 @@ export type UpdatePipelineVersionConfigMutationVariables = Types.Exact<{
 
 export type UpdatePipelineVersionConfigMutation = { __typename?: 'Mutation', updatePipelineVersion: { __typename?: 'UpdatePipelineVersionResult', success: boolean, errors: Array<Types.UpdatePipelineVersionError>, pipelineVersion?: { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, externalLink?: any | null, isLatestVersion: boolean, createdAt: any, config?: any | null, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }> } | null } };
 
-export type UpdatePipelineVersionConfigFragment = { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, externalLink?: any | null, isLatestVersion: boolean, createdAt: any, config?: any | null, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }> };
+export type PipelineVersionConfig_UpdateFragment = { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, externalLink?: any | null, isLatestVersion: boolean, createdAt: any, config?: any | null, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: string, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }> };
 
-export const UpdatePipelineVersionConfigFragmentDoc = gql`
-    fragment UpdatePipelineVersionConfig on PipelineVersion {
+export const PipelineVersionConfig_UpdateFragmentDoc = gql`
+    fragment PipelineVersionConfig_update on PipelineVersion {
   id
   name
   description
