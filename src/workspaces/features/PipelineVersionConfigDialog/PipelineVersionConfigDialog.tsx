@@ -5,15 +5,18 @@ import {
   convertParametersToPipelineInput,
   isConnectionParameter,
 } from "workspaces/helpers/pipelines";
+
 import useForm from "core/hooks/useForm";
 import { PipelineVersion } from "graphql/types";
 import { ensureArray } from "core/helpers/array";
 import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
 import Button from "core/components/Button";
+import clsx from "clsx";
+import { version } from "os";
 
 type PipliveVersionConfigProps = {
-  pipeliveVersion: PipelineConfigVersionDialog_Version;
+  pipeliveVersion: PipelineConfigVersionDialog_VersionFragment;
   onClose(): void;
   open: boolean;
 };
@@ -28,7 +31,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
         success
         errors
         pipelineVersion {
-          ...PipelineConfigVersionDialog_Version
+          ...PipelineConfigVersionDialog_VersionFragment
         }
       }
     }
@@ -118,7 +121,16 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
             value={form.formData.name}
             onChange={form.handleInputChange}
           ></Field>
-          <div></div>
+          <div
+            className={clsx(
+              "grid gap-x-3 gap-y-4",
+              parameters.length > 4 && "grip-cols-2 gap-x-5",
+            )}
+          >
+            {
+              //pipeliveVersion.
+            }
+          </div>
         </Dialog.Content>
         <Dialog.Actions>
           <Button onClick={onClose} variant={"outlined"}></Button>
