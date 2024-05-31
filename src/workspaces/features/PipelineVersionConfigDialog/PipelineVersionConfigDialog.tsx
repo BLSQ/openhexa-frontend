@@ -7,7 +7,7 @@ import {
 } from "workspaces/helpers/pipelines";
 
 import useForm from "core/hooks/useForm";
-import { PipelineVersion } from "graphql/types";
+import { PipelineVersion, UpdatePipelineVersionError } from "graphql/types";
 import { ensureArray } from "core/helpers/array";
 import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
@@ -58,6 +58,11 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
           },
         },
       });
+      if (data?.errors?.includes(UpdatePipelineVersionError.PermissionDenied)) {
+        throw new Error("You cannot update this version.");
+      } else if (!data?.updatePipelineVersion.success) {
+        throw new Error("An error occurred while updating the version.");
+      }
       onClose();
     },
     getInitialState() {

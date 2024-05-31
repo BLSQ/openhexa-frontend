@@ -1,5 +1,4 @@
 import {
-  Cog6ToothIcon,
   ExclamationCircleIcon,
   PlayIcon,
   TrashIcon,
@@ -27,9 +26,7 @@ import Title from "core/components/Title";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
-import { isNil } from "lodash";
 
-import { DescriptionListDisplayMode } from "core/components/DescriptionList/helpers";
 import {
   PipelineRecipient,
   PipelineRunTrigger,
@@ -51,13 +48,9 @@ import {
   WorkspacePipelinePageQueryVariables,
   useWorkspacePipelinePageQuery,
 } from "workspaces/graphql/queries.generated";
-import { PipelineParameter } from "graphql/types";
-import Switch from "core/components/Switch/Switch";
 import {
   formatPipelineType,
   updatePipeline,
-  isConnectionParameter,
-  getPipelineVersionConfig,
 } from "workspaces/helpers/pipelines";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import PipelineVersionConfigDialog from "workspaces/features/PipelineVersionConfigDialog";
@@ -101,46 +94,12 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     });
   };
 
-  const currentVersion = data.pipeline?.currentVersion;
-  const config = currentVersion ? getPipelineVersionConfig(currentVersion) : [];
-
   const onSaveScheduling = async (values: any) => {
     await updatePipeline(pipeline.id, {
       schedule: values.enableScheduling ? values.schedule : null,
       recipientIds:
         values.recipients?.map((r: PipelineRecipient) => r.user.id) ?? [],
     });
-  };
-
-  const renderParameterValue = (entry: PipelineParameter & { value: any }) => {
-    if (entry.type === "str" && entry.value) {
-      return entry.multiple ? entry.value.join(", ") : entry.value;
-    }
-    if (entry.type === "bool") {
-      return <Switch checked={entry.value} disabled />;
-    }
-    if (
-      (entry.type === "int" || entry.type === "float") &&
-      !isNil(entry.value)
-    ) {
-      return entry.multiple ? entry.value.join(", ") : entry.value;
-    }
-    if (isConnectionParameter(entry.type) && entry.value) {
-      return entry.value;
-    }
-    if (entry.type === "dataset") {
-      return (
-        <Link
-          href={`/workspaces/${encodeURIComponent(
-            workspace.slug,
-          )}/datasets/${encodeURIComponent(entry.value)}`}
-        >
-          {entry.value}
-        </Link>
-      );
-    }
-
-    return "-";
   };
 
   const onSaveWebhook = async (values: any) => {
@@ -361,7 +320,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                         className="text-right flex-grow"
                         onClick={() => setVersionConfigDialogOpen(true)}
                       >
-                        {t("Edit")}
+                        {t("Edit config")}
                       </Button>
                     </div>
                     <PipelineVersionConfigDialog

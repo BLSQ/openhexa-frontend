@@ -24,14 +24,20 @@ import {
 import { UpdatePipelineVersionError } from "graphql/types";
 import { isValidUrl } from "core/helpers";
 import DeletePipelineVersionTrigger from "workspaces/features/DeletePipelineVersionTrigger";
+import { useState } from "react";
+import PipelineVersionConfigDialog from "workspaces/features/PipelineVersionConfigDialog";
 
 type PipelineVersionCardProps = {
   version: PipelineVersionCard_VersionFragment | undefined;
+  workspaceSlug: string;
   onClickRun?: () => void;
 };
 
-const PipelineVersionCard = ({ version }: PipelineVersionCardProps) => {
+const PipelineVersionCard = (props: PipelineVersionCardProps) => {
   const { t } = useTranslation();
+  const { version, workspaceSlug } = props;
+  const [isVersionConfigDialogOpen, setVersionConfigDialogOpen] =
+    useState(false);
   const [updateVersion] = useMutation<
     UpdatePipelineVersionMutation,
     UpdatePipelineVersionMutationVariables
@@ -153,8 +159,22 @@ const PipelineVersionCard = ({ version }: PipelineVersionCardProps) => {
             </Block.Section>
           </div>
         )}
+        <PipelineVersionConfigDialog
+          pipeliveVersion={version}
+          workspaceSlug={workspaceSlug}
+          onClose={() => setVersionConfigDialogOpen(false)}
+          open={isVersionConfigDialogOpen}
+        ></PipelineVersionConfigDialog>
         <Block.Section>
           <div className="flex justify-end items-center gap-2">
+            <Block.Content>
+              <Button
+                className="text-right flex-grow"
+                onClick={() => setVersionConfigDialogOpen(true)}
+              >
+                {t("Edit config")}
+              </Button>
+            </Block.Content>
             <DeletePipelineVersionTrigger version={version}>
               {({ onClick }) => (
                 <Button
