@@ -145,7 +145,10 @@ const PipelineVersionCard = ({ version }: PipelineVersionCardProps) => {
           <div className="border-gray-100 border-t-2">
             <Block.Section title={t("Parameters")} collapsible={false}>
               <div className="rounded-md overflow-hidden border border-gray-100">
-                <PipelineVersionParametersTable version={version} />
+                <PipelineVersionParametersTable
+                  version={version}
+                  config={version?.config}
+                />
               </div>
             </Block.Section>
           </div>

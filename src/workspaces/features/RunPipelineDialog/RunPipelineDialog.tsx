@@ -27,6 +27,7 @@ import {
   RunPipelineDialog_PipelineFragment,
   RunPipelineDialog_RunFragment,
 } from "./RunPipelineDialog.generated";
+import { version } from "os";
 
 type RunPipelineDialogProps = {
   children(onClick: () => void): React.ReactNode;
@@ -111,6 +112,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
         sendMailNotifications: false,
       };
       if ("run" in props && props.run.version) {
+        console.log("Got run in props");
         state = {
           ...state,
           ...props.run.config,
@@ -118,8 +120,14 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
         };
       } else if ("version" in props) {
         state.version = props.version;
+      } else if (props.pipeline.currentVersion !== undefined) {
+        state = {
+          ...state,
+          ...props.pipeline.currentVersion.config,
+          version: props.pipeline.currentVersion,
+        };
       }
-
+      console.log("Initiale state is", state);
       return state;
     },
     validate(values) {
@@ -187,13 +195,22 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
     if (version) {
       form.resetForm();
       form.setFieldValue("version", version);
+      console.log("Working with version", version);
       version.parameters.map((param) => {
         if ("run" in props && props.run?.config[param.code] !== null) {
           form.setFieldValue(param.code, props.run.config[param.code], false);
+        } else if (version.config[param.code] !== undefined) {
+          console.log(
+            "Setting param values from config",
+            param.code,
+            version.config[param.code],
+          );
+          form.setFieldValue(param.code, version.config[param.code], false);
         } else {
           form.setFieldValue(param.code, param.default, false);
         }
       });
+      console.log("Form is ", form);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, form.formData.version]);

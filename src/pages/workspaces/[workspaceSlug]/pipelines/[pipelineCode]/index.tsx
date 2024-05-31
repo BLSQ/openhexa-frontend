@@ -34,14 +34,13 @@ import {
   PipelineRecipient,
   PipelineRunTrigger,
   PipelineType,
-  PipelineVersion,
 } from "graphql/types";
 import useFeature from "identity/hooks/useFeature";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import DownloadPipelineVersion from "pipelines/features/DownloadPipelineVersion/DownloadPipelineVersion";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import CronProperty from "workspaces/features/CronProperty";
 import DeletePipelineDialog from "workspaces/features/DeletePipelineDialog";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
@@ -59,19 +58,10 @@ import {
   updatePipeline,
   isConnectionParameter,
   getPipelineVersionConfig,
-  convertParametersToPipelineInput,
 } from "workspaces/helpers/pipelines";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import PipelineVersionCard from "pipelines/features/PipelineVersionCard";
-
-import { da, tr } from "@faker-js/faker";
-import { version } from "os";
-import clsx from "clsx";
-import Field from "core/components/forms/Field";
-import ParameterField from "workspaces/features/RunPipelineDialog/ParameterField";
-import useForm from "core/hooks/useForm";
-import { ensureArray } from "core/helpers/array";
 import PipelineVersionConfigDialog from "workspaces/features/PipelineVersionConfigDialog";
+import PipelineVersionParametersTable from "pipelines/features/PipelineVersionParametersTable";
 
 type Props = {
   page: number;
@@ -114,7 +104,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const currentVersion = data.pipeline?.currentVersion;
   const config = currentVersion ? getPipelineVersionConfig(currentVersion) : [];
 
-  const onSavePipelineVersion = async (value: any) => {};
   const onSaveScheduling = async (values: any) => {
     await updatePipeline(pipeline.id, {
       schedule: values.enableScheduling ? values.schedule : null,
@@ -320,66 +309,61 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                     >
                       {t("View all versions")}
                     </Link>
-                    <Button
-                      leadingIcon={<Cog6ToothIcon className="h-4 w-4" />}
-                      onClick={() => setVersionConfigDialogOpen(true)}
-                    >
-                      {t("Set Parameters")}
-                    </Button>
                   </div>
                 )}
               >
                 {pipeline.currentVersion ? (
                   <>
-                    <DescriptionList>
-                      <DescriptionList.Item label={t("Name")}>
-                        {pipeline.currentVersion.name}
-                      </DescriptionList.Item>
-                      {pipeline.currentVersion.description && (
-                        <DescriptionList.Item
-                          label={t("Description")}
-                          fullWidth
-                        >
-                          {pipeline.currentVersion.description}
+                    <div className={"grip-cols-2 gap-x-5"}>
+                      <DescriptionList>
+                        <DescriptionList.Item label={t("Name")}>
+                          {pipeline.currentVersion.name}
                         </DescriptionList.Item>
-                      )}
-                      {pipeline.currentVersion.externalLink && (
-                        <DescriptionList.Item label={t("External link")}>
-                          <Link
-                            href={pipeline.currentVersion.externalLink}
-                            target={"_blank"}
+                        {pipeline.currentVersion.description && (
+                          <DescriptionList.Item
+                            label={t("Description")}
+                            fullWidth
                           >
-                            {pipeline.currentVersion.externalLink}
-                          </Link>
+                            {pipeline.currentVersion.description}
+                          </DescriptionList.Item>
+                        )}
+                        {pipeline.currentVersion.externalLink && (
+                          <DescriptionList.Item label={t("External link")}>
+                            <Link
+                              href={pipeline.currentVersion.externalLink}
+                              target={"_blank"}
+                            >
+                              {pipeline.currentVersion.externalLink}
+                            </Link>
+                          </DescriptionList.Item>
+                        )}
+                        <DescriptionList.Item label={t("Created at")}>
+                          <Time datetime={pipeline.currentVersion.createdAt} />
                         </DescriptionList.Item>
-                      )}
-                      <DescriptionList.Item label={t("Created at")}>
-                        <Time datetime={pipeline.currentVersion.createdAt} />
-                      </DescriptionList.Item>
-                      <DescriptionList.Item label={t("Created by")}>
-                        {pipeline.currentVersion.user?.displayName ?? "-"}
-                      </DescriptionList.Item>
-                    </DescriptionList>
-                    <DescriptionList>
-                      {pipeline.type === PipelineType.ZipFile && (
-                        <Block.Section title={t("Parameters")}>
-                          <DescriptionList
-                            columns={2}
-                            displayMode={DescriptionListDisplayMode.LABEL_ABOVE}
-                          >
-                            {config.map((entry) => (
-                              <DescriptionList.Item
-                                key={entry.name}
-                                label={entry.name}
-                              >
-                                {renderParameterValue(entry)}
-                              </DescriptionList.Item>
-                            ))}
-                          </DescriptionList>
-                        </Block.Section>
-                      )}
-                    </DescriptionList>
+                        <DescriptionList.Item label={t("Created by")}>
+                          {pipeline.currentVersion.user?.displayName ?? "-"}
+                        </DescriptionList.Item>
+                      </DescriptionList>
+                      <Title level={5} className="pt-4">
+                        {" "}
+                        Parameters{" "}
+                      </Title>
 
+                      {pipeline.currentVersion.parameters.length > 0 && (
+                        <div className="border-gray-100 border-t-2">
+                          <PipelineVersionParametersTable
+                            version={pipeline.currentVersion}
+                            config={pipeline.currentVersion.config}
+                          />
+                        </div>
+                      )}
+                      <Button
+                        className="text-right flex-grow"
+                        onClick={() => setVersionConfigDialogOpen(true)}
+                      >
+                        {t("Edit")}
+                      </Button>
+                    </div>
                     <PipelineVersionConfigDialog
                       pipeliveVersion={pipeline.currentVersion}
                       workspaceSlug={workspaceSlug}

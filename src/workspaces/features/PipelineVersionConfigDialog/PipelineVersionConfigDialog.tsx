@@ -58,7 +58,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
           },
         },
       });
-      console.log("Data after update : ", data);
+      onClose();
     },
     getInitialState() {
       let state: any = {

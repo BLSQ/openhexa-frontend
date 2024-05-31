@@ -11,12 +11,13 @@ import { PipelineVersionParametersTable_VersionFragment } from "./PipelineVersio
 
 type PipelineVersionParametersTableProps = {
   version: PipelineVersionParametersTable_VersionFragment;
+  config: JSON | undefined;
 };
 
 const PipelineVersionParametersTable = (
   props: PipelineVersionParametersTableProps,
 ) => {
-  const { version } = props;
+  const { version, config } = props;
   const { t } = useTranslation();
   return (
     <Table>
@@ -36,6 +37,9 @@ const PipelineVersionParametersTable = (
           </TableCell>
           <TableCell spacing="tight" heading>
             {t("Multiple")}
+          </TableCell>
+          <TableCell spacing="tight" heading>
+            {t("Config")}
           </TableCell>
         </TableRow>
       </TableHead>
@@ -57,6 +61,9 @@ const PipelineVersionParametersTable = (
             </TableCell>
             <TableCell spacing="tight" className="py-1">
               {parameter.multiple ? t("Yes") : t("No")}
+            </TableCell>
+            <TableCell spacing="tight" className="py-1">
+              {config[parameter.code] ? config[parameter.code] : null}
             </TableCell>
           </TableRow>
         ))}
