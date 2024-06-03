@@ -74,7 +74,6 @@ describe("RunPipelineDialog", () => {
     ]);
 
     const user = userEvent.setup();
-
     render(
       <RunPipelineDialog pipeline={pipeline}>
         {(onClick) => (
@@ -88,7 +87,7 @@ describe("RunPipelineDialog", () => {
     await submitForm(user);
     expect(runPipelineMock).toHaveBeenCalledWith(
       pipeline.id,
-      { is_ok: null },
+      { is_ok: undefined },
       pipeline.currentVersion.id,
       false,
     );
