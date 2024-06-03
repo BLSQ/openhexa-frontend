@@ -15,17 +15,17 @@ import Button from "core/components/Button";
 import clsx from "clsx";
 import ParameterField from "../RunPipelineDialog/ParameterField";
 type PipliveVersionConfigProps = {
-  pipeliveVersion: PipelineVersion;
+  pipelineVersion: PipelineVersion;
   workspaceSlug: string;
   onClose(): void;
   open: boolean;
 };
 
 const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
-  const { pipeliveVersion, onClose, open, workspaceSlug } = props;
+  const { pipelineVersion, onClose, open, workspaceSlug } = props;
   const { t } = useTranslation();
 
-  const [updatePipeliveVersionConfig] = useMutation(gql`
+  const [updatepipelineVersionConfig] = useMutation(gql`
     mutation UpdatePipelineVersionConfig($input: UpdatePipelineVersionInput!) {
       updatePipelineVersion(input: $input) {
         success
@@ -50,7 +50,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
   const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
     async onSubmit(values) {
       const { version, ...params } = values;
-      const { data } = await updatePipeliveVersionConfig({
+      const { data } = await updatepipelineVersionConfig({
         variables: {
           input: {
             id: version.id,
@@ -67,7 +67,7 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
     },
     getInitialState() {
       let state: any = {
-        version: pipeliveVersion,
+        version: pipelineVersion,
       };
       return state;
     },
@@ -117,10 +117,10 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
       form.resetForm();
       form.setFieldValue("version", version);
       version.parameters.map((param) => {
-        if (pipeliveVersion?.config[param.code] !== undefined) {
+        if (pipelineVersion?.config[param.code] !== undefined) {
           form.setFieldValue(
             param.code,
-            pipeliveVersion.config[param.code],
+            pipelineVersion.config[param.code],
             false,
           );
         } else {
@@ -140,10 +140,10 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
           <div
             className={clsx(
               "grid gap-x-3 gap-y-4",
-              pipeliveVersion.parameters.length > 4 && "grip-cols-2 gap-x-5",
+              pipelineVersion.parameters.length > 4 && "grip-cols-2 gap-x-5",
             )}
           >
-            {pipeliveVersion.parameters.map((param, i) => (
+            {pipelineVersion.parameters.map((param, i) => (
               <Field
                 required={param.required || param.type === "bool"}
                 key={i}

@@ -160,7 +160,7 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
           </div>
         )}
         <PipelineVersionConfigDialog
-          pipeliveVersion={version}
+          pipelineVersion={version}
           workspaceSlug={workspaceSlug}
           onClose={() => setVersionConfigDialogOpen(false)}
           open={isVersionConfigDialogOpen}
