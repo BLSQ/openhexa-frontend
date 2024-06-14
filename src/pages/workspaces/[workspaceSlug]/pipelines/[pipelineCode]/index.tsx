@@ -1,6 +1,5 @@
 import {
   ExclamationCircleIcon,
-  ExclamationTriangleIcon,
   PlayIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
@@ -27,7 +26,6 @@ import Tooltip from "core/components/Tooltip";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
-
 import {
   PipelineRecipient,
   PipelineRunTrigger,
@@ -42,6 +40,7 @@ import PipelineVersionParametersTable from "pipelines/features/PipelineVersionPa
 import { useMemo, useState } from "react";
 import CronProperty from "workspaces/features/CronProperty";
 import DeletePipelineDialog from "workspaces/features/DeletePipelineDialog";
+import GeneratePipelineWebhookUrlDialog from "workspaces/features/GeneratePipelineWebhookUrlDialog";
 import PipelineVersionConfigDialog from "workspaces/features/PipelineVersionConfigDialog";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import WorkspaceMemberProperty from "workspaces/features/WorkspaceMemberProperty/";
@@ -72,6 +71,8 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     useState(false);
 
   const [isVersionConfigDialogOpen, setVersionConfigDialogOpen] =
+    useState(false);
+  const [isGenerateWebhookUrlDialogOpen, setIsGenerateWebhookUrlDialogOpen] =
     useState(false);
   const [isWebhookFeatureEnabled] = useFeature("pipeline_webhook");
   const { data } = useWorkspacePipelinePageQuery({
@@ -104,6 +105,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   if (!data?.workspace || !data?.pipeline) {
     return null;
   }
+
   const { workspace, pipeline } = data;
 
   const onSavePipeline = async (values: any) => {
@@ -385,9 +387,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             {isWebhookFeatureEnabled ? (
               <DataCard.FormSection
                 title={t("Webhook")}
-                onSave={onSaveWebhook}
-                collapsible
                 defaultOpen={false}
+                onSave={pipeline.permissions.update ? onSaveWebhook : undefined}
+                collapsible={false}
               >
                 <div className="text-gray-700">
                   <p className="text-sm">
@@ -395,7 +397,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                       "You can use a webhook to trigger this pipeline from an external system using a POST request.",
                     )}
                   </p>
-                  <div className="mt-2 flex  items-center text-sm">
+                  <div className="mt-2 flex items-center text-sm">
                     <ExclamationCircleIcon className="inline-block w-6 h-6 text-yellow-500 mr-1.5" />
                     {t(
                       "Webhooks are experimental and don't require any form of authentication for now: anyone with the URL will be able to trigger this pipeline",
@@ -417,13 +419,34 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   accessor="webhookUrl"
                 >
                   {(property) => (
-                    <div className="flex gap-1.5">
-                      <Clipboard value={property.displayValue}>
+                    <div className="flex gap-1">
+                      <p className="max-w-[80ch] text-ellipsis overflow-hidden">
                         {property.displayValue}
-                      </Clipboard>
+                      </p>
+                      <Clipboard value={property.displayValue} />
                     </div>
                   )}
                 </RenderProperty>
+                {pipeline.permissions.update && (
+                  <div>
+                    <p className="text-sm text-gray-500 flex items-center gap-x-1.5">
+                      <Button
+                        size="sm"
+                        className="max-w-fit"
+                        variant="secondary"
+                        onClick={() => setIsGenerateWebhookUrlDialogOpen(true)}
+                      >
+                        {t("Generate new url")}
+                      </Button>
+                      {t("This will create a new url for the webhook.")}
+                    </p>
+                    <GeneratePipelineWebhookUrlDialog
+                      onClose={() => setIsGenerateWebhookUrlDialogOpen(false)}
+                      pipeline={pipeline}
+                      open={isGenerateWebhookUrlDialogOpen}
+                    />
+                  </div>
+                )}
               </DataCard.FormSection>
             ) : null}
           </DataCard>
