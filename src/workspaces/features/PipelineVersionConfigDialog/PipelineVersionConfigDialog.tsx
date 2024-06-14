@@ -1,155 +1,131 @@
 import { gql, useMutation } from "@apollo/client";
-import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import {
-  convertParametersToPipelineInput,
-  isConnectionParameter,
-} from "workspaces/helpers/pipelines";
+import { Trans, useTranslation } from "next-i18next";
+import { useEffect, useMemo } from "react";
+import { convertParametersToPipelineInput } from "workspaces/helpers/pipelines";
 
-import useForm from "core/hooks/useForm";
-import { PipelineVersion, UpdatePipelineVersionError } from "graphql/types";
-import { ensureArray } from "core/helpers/array";
+import clsx from "clsx";
+import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
-import Button from "core/components/Button";
-import clsx from "clsx";
+import useForm from "core/hooks/useForm";
+import { PipelineParameter, UpdatePipelineVersionError } from "graphql/types";
 import ParameterField from "../RunPipelineDialog/ParameterField";
-type PipliveVersionConfigProps = {
-  pipelineVersion: PipelineVersion;
-  workspaceSlug: string;
+import { PipelineVersionConfigDialog_VersionFragment } from "./PipelineVersionConfigDialog.generated";
+
+type PipelineVersionConfigProps = {
+  version: PipelineVersionConfigDialog_VersionFragment;
   onClose(): void;
   open: boolean;
 };
 
-const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
-  const { pipelineVersion, onClose, open, workspaceSlug } = props;
+const PipelineVersionConfigDialog = (props: PipelineVersionConfigProps) => {
+  const { version, onClose, open } = props;
   const { t } = useTranslation();
 
-  const [updatepipelineVersionConfig] = useMutation(gql`
+  const [updateConfig] = useMutation(gql`
     mutation UpdatePipelineVersionConfig($input: UpdatePipelineVersionInput!) {
       updatePipelineVersion(input: $input) {
         success
         errors
         pipelineVersion {
           id
-          name
-          description
-          externalLink
-          isLatestVersion
-          createdAt
           config
-          parameters {
-            ...ParameterField_parameter
-          }
         }
       }
     }
-    ${ParameterField.fragments.parameter}
   `);
+  const isParameterRequired = (param: PipelineParameter) => {
+    // We only consider a parameter required if it is required and the pipeline has a schedule.
+    // Users can still run the pipeline manually without by filling in the required parameters.
+    return version.pipeline.schedule && param.required;
+  };
 
-  const form = useForm<{ version: PipelineVersion; [key: string]: any }>({
+  const form = useForm<{ [key: string]: any }>({
+    validate(values) {
+      const errors = {} as any;
+      for (const param of version.parameters) {
+        if (
+          isParameterRequired(param) &&
+          (values[param.code] === null ||
+            values[param.code] === "" ||
+            values[param.code] === undefined ||
+            values[param.code] === false) // Required boolean parameter has to be set to true...
+        ) {
+          errors[param.code] = t(
+            "This parameter is required for scheduling the pipeline.",
+          );
+        }
+      }
+      return errors;
+    },
     async onSubmit(values) {
-      const { version, ...params } = values;
-      const { data } = await updatepipelineVersionConfig({
+      const { data } = await updateConfig({
         variables: {
           input: {
             id: version.id,
-            config: convertParametersToPipelineInput(version, params),
+            config: convertParametersToPipelineInput(version, values),
           },
         },
       });
       if (data?.errors?.includes(UpdatePipelineVersionError.PermissionDenied)) {
-        throw new Error("You cannot update this version.");
+        throw new Error("You cannot update this version's configuration.");
       } else if (!data?.updatePipelineVersion.success) {
         throw new Error("An error occurred while updating the version.");
       }
       onClose();
     },
     getInitialState() {
-      let state: any = {
-        version: pipelineVersion,
-      };
-      return state;
-    },
-    validate(values) {
-      const errors = {} as any;
-      const { version, ...fields } = values;
-      if (!version) {
-        return { version: t("The version is required") };
+      let initialValues: any = {};
+      for (const param of version.parameters) {
+        initialValues[param.code] = version.config[param.code] ?? param.default;
       }
-      const normalizedValues = convertParametersToPipelineInput(
-        version,
-        fields,
-      );
-      for (const parameter of version.parameters) {
-        const val = normalizedValues[parameter.code];
-        if (parameter.type === "int" || parameter.type === "float") {
-          if (ensureArray(val).length === 0 && parameter.required) {
-            errors[parameter.code] = t("This field is required");
-          } else if (ensureArray(val).some((v) => isNaN(v))) {
-            errors[parameter.code] = t("This field must contain only numbers");
-          }
-        }
-
-        if (
-          ["str", "dataset"].includes(parameter.type) &&
-          parameter.required &&
-          ensureArray(val).length === 0
-        ) {
-          errors[parameter.code] = t("This field is required");
-        }
-        if (
-          isConnectionParameter(parameter.type) &&
-          parameter.required &&
-          !val
-        ) {
-          errors[parameter.code] = t("This field is required");
-        }
-      }
-      return errors;
+      return initialValues;
     },
   });
 
   useEffect(() => {
-    const version = form.formData.version;
-
-    if (version) {
-      form.resetForm();
-      form.setFieldValue("version", version);
-      version.parameters.map((param) => {
-        if (pipelineVersion?.config[param.code] !== undefined) {
-          form.setFieldValue(
-            param.code,
-            pipelineVersion.config[param.code],
-            false,
-          );
-        } else {
-          form.setFieldValue(param.code, param.default, false);
-        }
-      });
-    }
-  }, [form, form.formData.version]);
+    form.resetForm();
+  }, [form, version, open]);
 
   return (
     <Dialog open={open} onClose={onClose}>
       <form onSubmit={form.handleSubmit}>
         <Dialog.Title onClose={onClose}>
-          {t("Change version configration")}
+          {t("Set default configuration")}
         </Dialog.Title>
         <Dialog.Content className="space-y-4">
+          <p className="text-sm">
+            <Trans>
+              Set the default configuration for this version. These values will
+              be used when running the pipeline manually or via a schedule.
+              <br />
+              Users are able to change the values when running the pipeline
+              manually.
+              <br />
+            </Trans>
+          </p>
+          {version.pipeline.schedule && (
+            <p className="text-sm">
+              <Trans>
+                Fill in the required parameters to keep the scheduling of your
+                pipeline active.
+              </Trans>
+            </p>
+          )}
           <div
             className={clsx(
               "grid gap-x-3 gap-y-4",
-              pipelineVersion.parameters.length > 4 && "grip-cols-2 gap-x-5",
+              version.parameters.length > 4 && "grip-cols-2 gap-x-5",
             )}
           >
-            {pipelineVersion.parameters.map((param, i) => (
+            {version.parameters.map((param, i) => (
               <Field
-                required={param.required || param.type === "bool"}
+                showOptional={Boolean(version.pipeline.schedule)}
                 key={i}
                 name={param.code}
                 label={param.name}
                 help={param.help}
+                required={isParameterRequired(param)}
                 error={form.touched[param.code] && form.errors[param.code]}
               >
                 <ParameterField
@@ -158,8 +134,8 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
                   onChange={(value: any) => {
                     form.setFieldValue(param.code, value);
                   }}
-                  workspaceSlug={workspaceSlug}
-                ></ParameterField>
+                  workspaceSlug={version.pipeline.workspace.slug}
+                />
               </Field>
             ))}
           </div>
@@ -178,8 +154,8 @@ const PipelineVersionConfigDialog = (props: PipliveVersionConfigProps) => {
 };
 
 PipelineVersionConfigDialog.fragments = {
-  update: gql`
-    fragment PipelineVersionConfig_update on PipelineVersion {
+  version: gql`
+    fragment PipelineVersionConfigDialog_version on PipelineVersion {
       id
       name
       description
@@ -187,6 +163,13 @@ PipelineVersionConfigDialog.fragments = {
       isLatestVersion
       createdAt
       config
+      pipeline {
+        id
+        schedule
+        workspace {
+          slug
+        }
+      }
       parameters {
         ...ParameterField_parameter
       }

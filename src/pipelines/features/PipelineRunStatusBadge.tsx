@@ -20,7 +20,7 @@ type PipelineRunStatusBadgeProps = {
 
 const PipelineRunStatusBadge = (props: PipelineRunStatusBadgeProps) => {
   const { run, polling = true } = props;
-  usePipelineRunPoller(polling ? (run as any).id : null);
+  usePipelineRunPoller(run, polling);
   let className = useMemo(() => {
     switch (run.status) {
       case DagRunStatus.Stopped:
@@ -62,7 +62,9 @@ PipelineRunStatusBadge.fragments = {
     fragment PipelineRunStatusBadge_run on PipelineRun {
       id
       status
+      ...usePipelineRunPoller_run
     }
+    ${usePipelineRunPoller.fragments.run}
   `,
 };
 

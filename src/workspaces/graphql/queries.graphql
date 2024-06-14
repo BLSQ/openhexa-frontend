@@ -101,6 +101,7 @@ query WorkspacePipelinePage(
       ...PipelineVersionPicker_version
       ...PipelineVersionParametersTable_version
       ...DownloadPipelineVersion_version
+      ...PipelineVersionConfigDialog_version
     }
     recipients {
       user {

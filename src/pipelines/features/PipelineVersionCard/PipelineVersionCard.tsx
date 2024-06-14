@@ -11,9 +11,13 @@ import Link from "core/components/Link";
 import Spinner from "core/components/Spinner";
 import Time from "core/components/Time";
 import Input from "core/components/forms/Input";
+import { isValidUrl } from "core/helpers";
 import { ItemProvider } from "core/hooks/useItemContext";
+import { UpdatePipelineVersionError } from "graphql/types";
 import { DateTime } from "luxon";
 import { Trans, useTranslation } from "next-i18next";
+import { useState } from "react";
+import DeletePipelineVersionTrigger from "workspaces/features/DeletePipelineVersionTrigger";
 import DownloadPipelineVersion from "../DownloadPipelineVersion";
 import PipelineVersionParametersTable from "../PipelineVersionParametersTable";
 import {
@@ -21,11 +25,6 @@ import {
   UpdatePipelineVersionMutation,
   UpdatePipelineVersionMutationVariables,
 } from "./PipelineVersionCard.generated";
-import { UpdatePipelineVersionError } from "graphql/types";
-import { isValidUrl } from "core/helpers";
-import DeletePipelineVersionTrigger from "workspaces/features/DeletePipelineVersionTrigger";
-import { useState } from "react";
-import PipelineVersionConfigDialog from "workspaces/features/PipelineVersionConfigDialog";
 
 type PipelineVersionCardProps = {
   version: PipelineVersionCard_VersionFragment | undefined;
@@ -151,30 +150,13 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
           <div className="border-gray-100 border-t-2">
             <Block.Section title={t("Parameters")} collapsible={false}>
               <div className="rounded-md overflow-hidden border border-gray-100">
-                <PipelineVersionParametersTable
-                  version={version}
-                  config={version?.config}
-                />
+                <PipelineVersionParametersTable version={version} />
               </div>
             </Block.Section>
           </div>
         )}
-        <PipelineVersionConfigDialog
-          pipelineVersion={version}
-          workspaceSlug={workspaceSlug}
-          onClose={() => setVersionConfigDialogOpen(false)}
-          open={isVersionConfigDialogOpen}
-        ></PipelineVersionConfigDialog>
         <Block.Section>
           <div className="flex justify-end items-center gap-2">
-            <Block.Content>
-              <Button
-                className="text-right flex-grow"
-                onClick={() => setVersionConfigDialogOpen(true)}
-              >
-                {t("Edit config")}
-              </Button>
-            </Block.Content>
             <DeletePipelineVersionTrigger version={version}>
               {({ onClick }) => (
                 <Button

@@ -2083,6 +2083,20 @@ export type ParameterInput = {
   type: Scalars["String"]["input"];
 };
 
+export enum ParameterType {
+  Bool = "bool",
+  Custom = "custom",
+  Dataset = "dataset",
+  Dhis2 = "dhis2",
+  Float = "float",
+  Gcs = "gcs",
+  Iaso = "iaso",
+  Int = "int",
+  Postgresql = "postgresql",
+  S3 = "s3",
+  Str = "str",
+}
+
 export enum PermissionMode {
   Editor = "EDITOR",
   Owner = "OWNER",
@@ -2126,7 +2140,7 @@ export type Pipeline = {
   versions: PipelineVersionPage;
   webhookEnabled: Scalars["Boolean"]["output"];
   webhookUrl?: Maybe<Scalars["String"]["output"]>;
-  workspace?: Maybe<Workspace>;
+  workspace: Workspace;
 };
 
 export type PipelineRunsArgs = {
@@ -2165,7 +2179,7 @@ export type PipelineParameter = {
   multiple: Scalars["Boolean"]["output"];
   name: Scalars["String"]["output"];
   required: Scalars["Boolean"]["output"];
-  type: Scalars["String"]["output"];
+  type: ParameterType;
 };
 
 export type PipelinePermissions = {
@@ -2996,6 +3010,7 @@ export type UpdateMembershipResult = {
 
 export enum UpdatePipelineError {
   InvalidConfig = "INVALID_CONFIG",
+  MissingVersionConfig = "MISSING_VERSION_CONFIG",
   NotFound = "NOT_FOUND",
   PermissionDenied = "PERMISSION_DENIED",
 }
@@ -3025,11 +3040,6 @@ export type UpdatePipelineResult = {
   errors: Array<UpdatePipelineError>;
   pipeline?: Maybe<Pipeline>;
   success: Scalars["Boolean"]["output"];
-};
-
-export type UpdatePipelineVersionConfigInput = {
-  config?: InputMaybe<Scalars["JSON"]["input"]>;
-  id: Scalars["UUID"]["input"];
 };
 
 export enum UpdatePipelineVersionError {
@@ -3126,6 +3136,7 @@ export type UpdateWorkspaceResult = {
 };
 
 export type UploadPipelineInput = {
+  config?: InputMaybe<Scalars["JSON"]["input"]>;
   description?: InputMaybe<Scalars["String"]["input"]>;
   externalLink?: InputMaybe<Scalars["URL"]["input"]>;
   name: Scalars["String"]["input"];

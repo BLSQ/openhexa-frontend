@@ -1558,6 +1558,20 @@ input ParameterInput {
   choices: [Generic!]
 }
 
+enum ParameterType {
+  bool
+  int
+  str
+  float
+  dataset
+  dhis2
+  postgresql
+  iaso
+  s3
+  gcs
+  custom
+}
+
 enum PermissionMode {
   OWNER
   EDITOR
@@ -1586,7 +1600,7 @@ type Pipeline {
   name: String
   code: String!
   permissions: PipelinePermissions!
-  workspace: Workspace
+  workspace: Workspace!
   config: JSON!
   schedule: String
   description: String
@@ -1621,7 +1635,7 @@ enum PipelineError {
 type PipelineParameter {
   code: String!
   name: String!
-  type: String!
+  type: ParameterType!
   multiple: Boolean!
   required: Boolean!
   default: Generic
@@ -2267,6 +2281,7 @@ enum UpdatePipelineError {
   NOT_FOUND
   PERMISSION_DENIED
   INVALID_CONFIG
+  MISSING_VERSION_CONFIG
 }
 
 input UpdatePipelineInput {
@@ -2304,10 +2319,6 @@ input UpdatePipelineVersionInput {
   name: String
   description: String
   externalLink: URL
-  config: JSON
-}
-input UpdatePipelineVersionConfigInput {
-  id: UUID!
   config: JSON
 }
 
@@ -2393,6 +2404,7 @@ input UploadPipelineInput {
   description: String
   externalLink: URL
   parameters: [ParameterInput!]!
+  config: JSON
   zipfile: String!
   timeout: Int
 }
