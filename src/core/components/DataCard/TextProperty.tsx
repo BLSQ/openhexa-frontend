@@ -35,6 +35,7 @@ const TextProperty = (props: TextPropertyProps) => {
           />
         ) : (
           <Input
+            fullWidth
             value={property.formValue ?? ""}
             onChange={(e) => property.setValue(e.target.value)}
             required={property.required}

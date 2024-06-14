@@ -101,11 +101,7 @@ const PipelineVersionsPage: NextPageWithLayout<Props> = ({
             </div>
           )}
           {data.pipeline.versions.items.map((version) => (
-            <PipelineVersionCard
-              key={version.id}
-              version={version}
-              workspaceSlug={workspaceSlug}
-            />
+            <PipelineVersionCard key={version.id} version={version} />
           ))}
           <Pagination
             totalItems={data.pipeline.versions.totalItems}

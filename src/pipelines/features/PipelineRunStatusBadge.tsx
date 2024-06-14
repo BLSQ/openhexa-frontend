@@ -4,17 +4,12 @@ import Badge from "core/components/Badge";
 import Spinner from "core/components/Spinner";
 import { DagRunStatus } from "graphql/types";
 import { formatDAGRunStatus } from "pipelines/helpers/format";
-import { useMemo } from "react";
-import {
-  PipelineRunStatusBadge_DagRunFragment,
-  PipelineRunStatusBadge_RunFragment,
-} from "./PipelineRunStatusBadge.generated";
 import usePipelineRunPoller from "pipelines/hooks/usePipelineRunPoller";
+import { useMemo } from "react";
+import { PipelineRunStatusBadge_RunFragment } from "./PipelineRunStatusBadge.generated";
 
 type PipelineRunStatusBadgeProps = {
-  run:
-    | PipelineRunStatusBadge_DagRunFragment
-    | PipelineRunStatusBadge_RunFragment;
+  run: any | PipelineRunStatusBadge_RunFragment; // 'any' the time that we remove the legacy pipelines
   polling?: boolean;
 };
 

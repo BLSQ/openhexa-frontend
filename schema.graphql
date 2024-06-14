@@ -2079,7 +2079,7 @@ type Pipeline {
   name: String
   code: String!
   permissions: PipelinePermissions!
-  workspace: Workspace
+  workspace: Workspace!
   config: JSON!
   schedule: String
   description: String

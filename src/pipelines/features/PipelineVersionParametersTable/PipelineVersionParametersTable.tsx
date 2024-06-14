@@ -49,7 +49,8 @@ const PipelineVersionParametersTable = ({
               {parameter.multiple ? t("Yes") : t("No")}
             </TableCell>
             <TableCell className="py-1">
-              {version.config[parameter.code]?.toString() || "-"}
+              {(version.config && version.config[parameter.code]?.toString()) ||
+                "-"}
             </TableCell>
           </TableRow>
         ))}

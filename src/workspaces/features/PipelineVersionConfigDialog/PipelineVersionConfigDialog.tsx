@@ -37,7 +37,7 @@ const PipelineVersionConfigDialog = (props: PipelineVersionConfigProps) => {
   const isParameterRequired = (param: PipelineParameter) => {
     // We only consider a parameter required if it is required and the pipeline has a schedule.
     // Users can still run the pipeline manually without by filling in the required parameters.
-    return version.pipeline.schedule && param.required;
+    return Boolean(version.pipeline.schedule && param.required);
   };
 
   const form = useForm<{ [key: string]: any }>({

@@ -2445,7 +2445,7 @@ export type Pipeline = {
   versions: PipelineVersionPage;
   webhookEnabled: Scalars["Boolean"]["output"];
   webhookUrl?: Maybe<Scalars["String"]["output"]>;
-  workspace?: Maybe<Workspace>;
+  workspace: Workspace;
 };
 
 /** Represents a pipeline. */

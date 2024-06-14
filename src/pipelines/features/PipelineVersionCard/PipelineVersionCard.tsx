@@ -27,16 +27,13 @@ import {
 } from "./PipelineVersionCard.generated";
 
 type PipelineVersionCardProps = {
-  version: PipelineVersionCard_VersionFragment | undefined;
-  workspaceSlug: string;
+  version: PipelineVersionCard_VersionFragment;
   onClickRun?: () => void;
 };
 
 const PipelineVersionCard = (props: PipelineVersionCardProps) => {
   const { t } = useTranslation();
-  const { version, workspaceSlug } = props;
-  const [isVersionConfigDialogOpen, setVersionConfigDialogOpen] =
-    useState(false);
+  const { version } = props;
   const [updateVersion] = useMutation<
     UpdatePipelineVersionMutation,
     UpdatePipelineVersionMutationVariables
@@ -77,8 +74,8 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
 
   return (
     <ItemProvider item={version}>
-      <Block>
-        <Block.Header className="flex gap-4 items-center border-gray-100 border-b-2">
+      <Block className="divide-y-2 divide-gray-100">
+        <Block.Header className="flex gap-4 items-center ">
           <div className="flex-1">
             <span className="font-bold text-xl">
               {t("Version")} {version.name}
@@ -126,6 +123,7 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
                 {section.isEdited ? (
                   <Input
                     name="externalLink"
+                    fullWidth
                     type="url"
                     value={property.formValue}
                     onChange={(e) => property.setValue(e.target.value)}
@@ -147,13 +145,15 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
           />
         </DataCard.FormSection>
         {version.parameters.length > 0 && (
-          <div className="border-gray-100 border-t-2">
-            <Block.Section title={t("Parameters")} collapsible={false}>
-              <div className="rounded-md overflow-hidden border border-gray-100">
-                <PipelineVersionParametersTable version={version} />
-              </div>
-            </Block.Section>
-          </div>
+          <Block.Section
+            title={t("Parameters")}
+            collapsible
+            defaultOpen={false}
+          >
+            <div className="rounded-md overflow-hidden border border-gray-100">
+              <PipelineVersionParametersTable version={version} />
+            </div>
+          </Block.Section>
         )}
         <Block.Section>
           <div className="flex justify-end items-center gap-2">
@@ -195,7 +195,6 @@ PipelineVersionCard.fragments = {
       externalLink
       isLatestVersion
       createdAt
-      config
       user {
         displayName
       }
