@@ -149,13 +149,14 @@ function FormSection<F extends { [key: string]: any }>(
       acc[def.id] = getProperty<F>(def, item, form, isEdited);
       return acc;
     }, {});
-    // form.validate();
-  }, [definitions, item, form, form.formData, isEdited]);
-
-  const toggleEdit = useCallback(() => {
     form.resetForm();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [definitions, item, isEdited]);
+
+  const toggleEdit = () => {
     setEdited((prev) => !prev);
-  }, [form]);
+  };
 
   const section = {
     item,
