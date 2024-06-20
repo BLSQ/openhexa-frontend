@@ -108,6 +108,9 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const form = useForm<{ [key: string]: any }>({
     async onSubmit(values) {
       const { sendMailNotifications, ...params } = values;
+      if (!activeVersion) {
+        throw new Error("No active version found");
+      }
       const run = await runPipeline(
         pipeline.id,
         convertParametersToPipelineInput(activeVersion!, params),

@@ -220,17 +220,6 @@ export function getPipelineRunConfig(run: {
     ...param,
   })) as (PipelineParameter & { value: any })[];
 }
-export function getPipelineVersionConfig(
-  version: { parameters: Omit<PipelineParameter, "__typename">[] } | null,
-) {
-  const config = version?.config || {};
-  const parameters = version?.parameters || [];
-  return parameters.map((param: any) => ({
-    value: config[param.code],
-    ...param,
-  })) as (PipelineParameter & { value: any })[];
-}
-
 export function renderOutputType(typename: string | undefined) {
   switch (typename) {
     case "BucketObject":
