@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.49.3](https://github.com/BLSQ/openhexa-frontend/compare/0.49.2...0.49.3) (2024-06-28)
+
+
+### Bug Fixes
+
+* **Connections:** check if connection fields is defined ([#637](https://github.com/BLSQ/openhexa-frontend/issues/637)) ([9f1234b](https://github.com/BLSQ/openhexa-frontend/commit/9f1234b3b06633a54298d62e9742839d329369ef))
+
 ## [0.49.2](https://github.com/BLSQ/openhexa-frontend/compare/0.49.1...0.49.2) (2024-06-28)
 
 
