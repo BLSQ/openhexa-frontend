@@ -1,44 +1,60 @@
-import { trackPageView } from "core/helpers/analytics";
+import { pageView } from "core/helpers/analytics";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-
-const EXCLUDED_PATHS = [
-  "static",
-  "CheckWorkspaceAvailability",
-  "SidebarMenu",
-  "auth",
-];
+import type { NextFetchEvent, NextRequest } from "next/server";
 
 // This middleware will rewrite the request to the fallback server
-export function middleware(request: NextRequest) {
-  const srcUrl = new URL(request.url);
-
+export function middleware(request: NextRequest, event: NextFetchEvent) {
   if (
-    srcUrl.pathname.startsWith("/graphql") &&
-    !EXCLUDED_PATHS.some((path) => srcUrl.pathname.includes(path))
+    [
+      "/graphql",
+      "/auth/logout",
+      "/static/",
+      "/admin/",
+      "/analytics/track",
+    ].some((path) => request.nextUrl.pathname.startsWith(path))
   ) {
-    trackPageView(request);
-  }
-
-  if (srcUrl.pathname.startsWith("/analytics")) {
-    // remove the trailing slash
-    const pathname = srcUrl.pathname.replace(/\/$/, "");
     return NextResponse.rewrite(
-      new URL(pathname, process.env.OPENHEXA_BACKEND_URL),
+      new URL(
+        request.nextUrl.pathname + request.nextUrl.search,
+        process.env.OPENHEXA_BACKEND_URL,
+      ),
     );
   }
 
-  return NextResponse.rewrite(
-    new URL(srcUrl.pathname + srcUrl.search, process.env.OPENHEXA_BACKEND_URL),
-  );
+  event.waitUntil(pageView(request));
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/graphql/:path*" /* GraphQL */,
-    "/admin/:path*" /* Django Admin */,
-    "/static/:path*" /* Static files of Django */,
-    "/auth/logout",
-    "/analytics/events",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - images (image files)
+     */
+    {
+      source: "/((?!api|_next/static|_next/image|images|favicon.ico).*)",
+      missing: [
+        { type: "header", key: "next-router-prefetch" },
+        { type: "header", key: "purpose", value: "prefetch" },
+      ],
+    },
+
+    {
+      source: "/((?!api|_next/static|_next/image|images|favicon.ico).*)",
+      has: [
+        { type: "header", key: "next-router-prefetch" },
+        { type: "header", key: "purpose", value: "prefetch" },
+      ],
+    },
+
+    {
+      source: "/((?!api|_next/static|_next/image|images|favicon.ico).*)",
+      has: [{ type: "header", key: "x-present" }],
+      missing: [{ type: "header", key: "x-missing", value: "prefetch" }],
+    },
   ],
 };
