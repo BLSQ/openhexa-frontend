@@ -716,8 +716,11 @@ export type CreateDatasetVersionFileResult = {
   /** The created file object */
   file?: Maybe<DatasetVersionFile>;
   success: Scalars["Boolean"]["output"];
-  /** The URL to upload the file to */
-  uploadUrl?: Maybe<Scalars["String"]["output"]>;
+  /**
+   * The URL to upload the file to
+   * @deprecated moved to dedicated generateDatasetUploadUrl mutation
+   */
+  uploadUrl: Scalars["String"]["output"];
 };
 
 /** Input for creating a dataset version. */
@@ -1049,6 +1052,13 @@ export type DatasetVersionsArgs = {
   perPage?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
+/** Metadata for dataset file */
+export type DatasetFileMetadata = {
+  __typename?: "DatasetFileMetadata";
+  sample: Scalars["JSON"]["output"];
+  status: FileMetadataStatus;
+};
+
 /** A link of a dataset with a workspace. */
 export type DatasetLink = {
   __typename?: "DatasetLink";
@@ -1130,6 +1140,7 @@ export type DatasetVersionFile = {
   contentType: Scalars["String"]["output"];
   createdAt: Scalars["DateTime"]["output"];
   createdBy?: Maybe<User>;
+  fileMetadata?: Maybe<DatasetFileMetadata>;
   filename: Scalars["String"]["output"];
   id: Scalars["ID"]["output"];
   uri: Scalars["String"]["output"];
@@ -1544,6 +1555,13 @@ export type FeatureFlag = {
   config: Scalars["JSON"]["output"];
 };
 
+/** Statuses that can occur when generating file metadata */
+export enum FileMetadataStatus {
+  Failed = "FAILED",
+  Finished = "FINISHED",
+  Processing = "PROCESSING",
+}
+
 /** The GenerateChallengeError enum represents the possible errors that can occur during the generateChallenge mutation. */
 export enum GenerateChallengeError {
   ChallengeError = "CHALLENGE_ERROR",
@@ -1555,6 +1573,21 @@ export type GenerateChallengeResult = {
   __typename?: "GenerateChallengeResult";
   errors?: Maybe<Array<GenerateChallengeError>>;
   success: Scalars["Boolean"]["output"];
+};
+
+/** Input for creating un upload link for the file */
+export type GenerateDatasetUploadUrlInput = {
+  contentType: Scalars["String"]["input"];
+  uri: Scalars["String"]["input"];
+  versionId: Scalars["ID"]["input"];
+};
+
+/** Result of creating an upload url */
+export type GenerateDatasetUploadUrlResult = {
+  __typename?: "GenerateDatasetUploadUrlResult";
+  errors: Array<CreateDatasetVersionFileError>;
+  success: Scalars["Boolean"]["output"];
+  uploadUrl?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** Possible errors when generating a new database password. */
@@ -1914,6 +1947,8 @@ export type Mutation = {
   enableTwoFactor: EnableTwoFactorResult;
   /** Generates a challenge for two-factor authentication. */
   generateChallenge: GenerateChallengeResult;
+  /** Create dataset version file upload url. */
+  generateDatasetUploadUrl: GenerateDatasetUploadUrlResult;
   /** Generates a new password for a database. */
   generateNewDatabasePassword: GenerateNewDatabasePasswordResult;
   generatePipelineWebhookUrl: GeneratePipelineWebhookUrlResult;
@@ -2139,6 +2174,10 @@ export type MutationDisableTwoFactorArgs = {
 
 export type MutationEnableTwoFactorArgs = {
   input?: InputMaybe<EnableTwoFactorInput>;
+};
+
+export type MutationGenerateDatasetUploadUrlArgs = {
+  input: GenerateDatasetUploadUrlInput;
 };
 
 export type MutationGenerateNewDatabasePasswordArgs = {
@@ -2775,6 +2814,8 @@ export type Query = {
   datasetLinkBySlug?: Maybe<DatasetLink>;
   /** Get a dataset by its slug. */
   datasetVersion?: Maybe<DatasetVersion>;
+  /** Get a dataset file by its id  */
+  datasetVersionFile?: Maybe<DatasetVersionFile>;
   /** Search datasets. */
   datasets: DatasetPage;
   /** Retrieves the currently authenticated user. */
@@ -2854,7 +2895,8 @@ export type QueryConnectionArgs = {
 };
 
 export type QueryConnectionBySlugArgs = {
-  slug: Scalars["String"]["input"];
+  connectionSlug: Scalars["String"]["input"];
+  workspaceSlug: Scalars["String"]["input"];
 };
 
 export type QueryCountryArgs = {
@@ -2893,6 +2935,10 @@ export type QueryDatasetLinkBySlugArgs = {
 };
 
 export type QueryDatasetVersionArgs = {
+  id: Scalars["ID"]["input"];
+};
+
+export type QueryDatasetVersionFileArgs = {
   id: Scalars["ID"]["input"];
 };
 

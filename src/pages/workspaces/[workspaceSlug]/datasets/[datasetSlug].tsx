@@ -37,16 +37,23 @@ import DeleteDatasetTrigger from "datasets/features/DeleteDatasetTrigger";
 import RenderProperty from "core/components/DataCard/RenderProperty";
 import Clipboard from "core/components/Clipboard";
 import { trackEvent } from "core/helpers/analytics";
+import Tabs from "core/components/Tabs";
+import Block from "core/components/Block";
+import Title from "core/components/Title";
+import DatasetExplorer from "datasets/features/DatasetExplorer";
+import { capitalize } from "lodash";
 
 type Props = {
   datasetSlug: string;
   workspaceSlug: string;
   versionId: string;
   isSpecificVersion: boolean;
+  tabIndex: number;
 };
 
 const WorkspaceDatasetPage: NextPageWithLayout = (props: Props) => {
-  const { datasetSlug, workspaceSlug, isSpecificVersion, versionId } = props;
+  const { datasetSlug, workspaceSlug, isSpecificVersion, versionId, tabIndex } =
+    props;
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -79,6 +86,13 @@ const WorkspaceDatasetPage: NextPageWithLayout = (props: Props) => {
     router.push({
       pathname: router.pathname,
       query: { ...router.query, version: version?.id },
+    });
+  };
+
+  const onTabChange = (index: number) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, tabIndex: index },
     });
   };
 
@@ -134,6 +148,15 @@ const WorkspaceDatasetPage: NextPageWithLayout = (props: Props) => {
             </Breadcrumbs.Part>
           </Breadcrumbs>
           <PinDatasetButton link={datasetLink} />
+          {datasetLink.dataset.permissions.createVersion &&
+            isWorkspaceSource && (
+              <Button
+                leadingIcon={<PlusIcon className="h-4 w-4" />}
+                onClick={() => setUploadDialogOpen(true)}
+              >
+                {t("Create new version")}
+              </Button>
+            )}
           {isWorkspaceSource && datasetLink.dataset.permissions.delete && (
             <DeleteDatasetTrigger
               dataset={datasetLink.dataset}
@@ -147,7 +170,6 @@ const WorkspaceDatasetPage: NextPageWithLayout = (props: Props) => {
               {({ onClick }) => (
                 <Button
                   variant={"danger"}
-                  size={"sm"}
                   onClick={onClick}
                   leadingIcon={<TrashIcon className="w-4" />}
                 >
@@ -157,156 +179,170 @@ const WorkspaceDatasetPage: NextPageWithLayout = (props: Props) => {
             </DeleteDatasetTrigger>
           )}
         </WorkspaceLayout.Header>
-
-        <WorkspaceLayout.PageContent className="space-y-6">
-          <DataCard
-            item={datasetLink.dataset}
-            className="divide-y-2 divide-gray-100"
-          >
-            <DataCard.FormSection
-              title={datasetLink.dataset.name}
-              onSave={
-                datasetLink.dataset.permissions.update && isWorkspaceSource
-                  ? onSave
-                  : undefined
-              }
-              collapsible={false}
-            >
-              <TextProperty
-                id="name"
-                accessor={"name"}
-                label={t("Name")}
-                visible={(_, isEditing) => isEditing}
-              />
-              <TextProperty
-                id="description"
-                accessor={"description"}
-                label={t("Description")}
-                defaultValue="Empty description"
-                hideLabel
-                markdown
-              />
-              <RenderProperty
-                id="slug"
-                accessor="slug"
-                label={t("Identifier")}
-                help={t(
-                  "The identifier is used to reference the dataset in the SDK and notebooks",
-                )}
-                readonly
-              >
-                {(property) => (
-                  <div className="font-mono">
-                    <Clipboard value={property.displayValue}>
-                      {property.displayValue}
-                    </Clipboard>
-                  </div>
-                )}
-              </RenderProperty>
-              <DateProperty
-                id={"createdAt"}
-                label={t("Created at")}
-                accessor={"createdAt"}
-                readonly
-              />
-              <UserProperty
-                id={"createdBy"}
-                readonly
-                label={t("Created by")}
-                accessor={"createdBy"}
-              />
-              <TextProperty
-                readonly
-                id={"workspace"}
-                accessor={"workspace.name"}
-                label={t("Source workspace")}
-              />
-            </DataCard.FormSection>
-            <DataCard.Section
-              title={() => (
-                <div className="flex flex-1 gap-2 items-center justify-between">
-                  <h4 className="flex-1 font-medium">
-                    {!version && t("Versions")}
-                    {version &&
-                      version.id === datasetLink.dataset.latestVersion?.id &&
-                      t("Latest version")}
-                    {version &&
-                      version.id !== datasetLink.dataset.latestVersion?.id &&
-                      t("Version {{version}}", { version: version.name })}
-                  </h4>
-                  {datasetLink.dataset.latestVersion && (
-                    <DatasetVersionPicker
-                      onChange={onChangeVersion}
-                      dataset={datasetLink.dataset}
-                      version={version}
-                      className="w-40"
-                    />
-                  )}
-                  {datasetLink.dataset.permissions.createVersion &&
-                    isWorkspaceSource && (
-                      <Button
-                        leadingIcon={<PlusIcon className="h-4 w-4" />}
-                        onClick={() => setUploadDialogOpen(true)}
-                      >
-                        {t("Create new version")}
-                      </Button>
-                    )}
-                </div>
+        <WorkspaceLayout.PageContent>
+          <Block className="py-4 min-h-[70vh]">
+            <Block.Header className="flex gap-4 items-center justify-between">
+              {capitalize(datasetLink.dataset.name)}
+              {version && (
+                <DatasetVersionPicker
+                  onChange={onChangeVersion}
+                  dataset={datasetLink.dataset}
+                  version={version}
+                  className="w-40"
+                />
               )}
-              collapsible={false}
-            >
-              {version ? (
-                <>
-                  <DescriptionList>
-                    <DescriptionList.Item label={t("Name")}>
-                      {version.name}
-                    </DescriptionList.Item>
-                    <DescriptionList.Item label={t("Created at")}>
-                      <Time datetime={version.createdAt} />
-                    </DescriptionList.Item>
-                    <DescriptionList.Item label={t("Created by")}>
-                      {version.createdBy?.displayName ?? "-"}
-                    </DescriptionList.Item>
-                  </DescriptionList>
-
-                  <div className="mt-6 -mx-6">
-                    <DatasetVersionFilesDataGrid
-                      version={version}
-                      perPage={10}
-                    />
-                  </div>
-                </>
-              ) : (
-                <p className={"italic text-gray-500"}>
-                  {t(
-                    "This dataset has no version. Upload a new version using your browser or the SDK to see it here.",
-                  )}
-                </p>
-              )}
-            </DataCard.Section>
-            {isWorkspaceSource ? (
-              <DataCard.Section
-                title={() => (
-                  <div className={"flex items-center justify-between w-full"}>
-                    <h4 className={"font-medium"}>{t("Access Management")}</h4>
-                    {workspace.permissions.update && (
-                      <Button
-                        leadingIcon={<LinkIcon className={"h-4 w-4"} />}
-                        onClick={() => setLinkDialogOpen(true)}
+            </Block.Header>
+            <Block.Content className="space-y-2">
+              <Tabs defaultIndex={tabIndex} onChange={onTabChange}>
+                <Tabs.Tab
+                  label={t("Description")}
+                  className="space-y-2 border-red-400"
+                >
+                  <DataCard
+                    item={datasetLink.dataset}
+                    className="divide-y-2 space-y-2 divide-gray-100 shadow-none"
+                  >
+                    <DataCard.FormSection
+                      title={t("General informations")}
+                      onSave={
+                        datasetLink.dataset.permissions.update &&
+                        isWorkspaceSource
+                          ? onSave
+                          : undefined
+                      }
+                      collapsible={false}
+                      className="-ml-5"
+                    >
+                      <TextProperty
+                        id="name"
+                        accessor={"name"}
+                        label={t("Name")}
+                        visible={(_, isEditing) => isEditing}
+                      />
+                      <TextProperty
+                        id="description"
+                        accessor={"description"}
+                        label={t("Description")}
+                        defaultValue="Empty description"
+                        hideLabel
+                        markdown
+                      />
+                      <RenderProperty
+                        id="slug"
+                        accessor="slug"
+                        label={t("Identifier")}
+                        help={t(
+                          "The identifier is used to reference the dataset in the SDK and notebooks",
+                        )}
+                        readonly
                       >
-                        {t("Share with a workspace")}
-                      </Button>
-                    )}
-                  </div>
+                        {(property) => (
+                          <div className="font-mono">
+                            <Clipboard value={property.displayValue}>
+                              {property.displayValue}
+                            </Clipboard>
+                          </div>
+                        )}
+                      </RenderProperty>
+                      <DateProperty
+                        id={"createdAt"}
+                        label={t("Created at")}
+                        accessor={"createdAt"}
+                        readonly
+                      />
+                      <UserProperty
+                        id={"createdBy"}
+                        readonly
+                        label={t("Created by")}
+                        accessor={"createdBy"}
+                      />
+                      <TextProperty
+                        readonly
+                        id={"workspace"}
+                        accessor={"workspace.name"}
+                        label={t("Source workspace")}
+                      />
+                    </DataCard.FormSection>
+                    <DataCard.Section
+                      title={() => (
+                        <div className="flex flex-1 gap-2 items-center justify-between">
+                          <h4 className="flex-1 font-medium">
+                            {!version && t("Versions")}
+                            {version &&
+                              version.id ===
+                                datasetLink.dataset.latestVersion?.id &&
+                              t("Latest version")}
+                            {version &&
+                              version.id !==
+                                datasetLink.dataset.latestVersion?.id &&
+                              t("Version {{version}}", {
+                                version: version.name,
+                              })}
+                          </h4>
+                        </div>
+                      )}
+                      collapsible={false}
+                      className="-ml-5"
+                    >
+                      {version ? (
+                        <>
+                          <DescriptionList>
+                            <DescriptionList.Item label={t("Name")}>
+                              {version.name}
+                            </DescriptionList.Item>
+                            <DescriptionList.Item label={t("Created at")}>
+                              <Time datetime={version.createdAt} />
+                            </DescriptionList.Item>
+                            <DescriptionList.Item label={t("Created by")}>
+                              {version.createdBy?.displayName ?? "-"}
+                            </DescriptionList.Item>
+                          </DescriptionList>
+
+                          <div className="mt-6 -mx-6">
+                            <DatasetVersionFilesDataGrid
+                              version={version}
+                              perPage={10}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <p className={"italic text-gray-500"}>
+                          {t(
+                            "This dataset has no version. Upload a new version using your browser or the SDK to see it here.",
+                          )}
+                        </p>
+                      )}
+                    </DataCard.Section>
+                  </DataCard>
+                </Tabs.Tab>
+                {version && (
+                  <Tabs.Tab label={t("Data files")} className="space-y-5 py-2">
+                    <DatasetExplorer version={version} />
+                  </Tabs.Tab>
                 )}
-                collapsible={false}
-              >
-                <div className={"-mx-6"}>
-                  <DatasetLinksDataGrid dataset={datasetLink.dataset} />
-                </div>
-              </DataCard.Section>
-            ) : null}
-          </DataCard>
+                {isWorkspaceSource ? (
+                  <Tabs.Tab
+                    label={t("Access Management")}
+                    className={"space-y-2 px-5"}
+                  >
+                    <div className={"flex flex justify-end"}>
+                      {workspace.permissions.update && (
+                        <Button
+                          leadingIcon={<LinkIcon className={"h-4 w-4"} />}
+                          onClick={() => setLinkDialogOpen(true)}
+                        >
+                          {t("Share with a workspace")}
+                        </Button>
+                      )}
+                    </div>
+                    <div className={"-mx-6"}>
+                      <DatasetLinksDataGrid dataset={datasetLink.dataset} />
+                    </div>
+                  </Tabs.Tab>
+                ) : null}
+              </Tabs>
+            </Block.Content>
+          </Block>
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
 

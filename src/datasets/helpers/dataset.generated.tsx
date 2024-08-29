@@ -22,7 +22,7 @@ export type CreateDatasetVersionFileMutationVariables = Types.Exact<{
 }>;
 
 
-export type CreateDatasetVersionFileMutation = { __typename?: 'Mutation', createDatasetVersionFile: { __typename?: 'CreateDatasetVersionFileResult', uploadUrl?: string | null, success: boolean, errors: Array<Types.CreateDatasetVersionFileError> } };
+export type CreateDatasetVersionFileMutation = { __typename?: 'Mutation', createDatasetVersionFile: { __typename?: 'CreateDatasetVersionFileResult', uploadUrl: string, success: boolean, errors: Array<Types.CreateDatasetVersionFileError> } };
 
 export type DeleteDatasetLinkMutationVariables = Types.Exact<{
   input: Types.DeleteDatasetLinkInput;
