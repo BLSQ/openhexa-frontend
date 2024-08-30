@@ -5,7 +5,7 @@ import { DatasetFileType } from "./DatasetFilesExplorer/DatasetFilesExplorer";
 import { DatasetVersion } from "graphql/types";
 import DatasetFileSummary from "./DatasetFileSummary";
 import Tabs from "core/components/Tabs";
-import DatasetFilesDataGrid from "./DatasetFileDataGrid";
+import DatasetFileDataGrid from "./DatasetFileDataGrid";
 import Block from "core/components/Block";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
@@ -27,16 +27,6 @@ const DatasetExplorer = ({ version }: DatasetExplorerProps) => {
     setSelectedFile(null);
   }, [version]);
 
-  if (!version) {
-    return (
-      <p className="italic text-gray-500">
-        {t(
-          "This dataset has no version. Upload a new version using your browser or the SDK to see it here.",
-        )}
-      </p>
-    );
-  }
-
   return (
     <div className="grid grid-cols-4 gap-4">
       <DatasetFilesExplorer version={version} onClick={onFileSelected} />
@@ -47,7 +37,7 @@ const DatasetExplorer = ({ version }: DatasetExplorerProps) => {
             <Block className="py-2 px-4 space-y-8">
               <Tabs>
                 <Tabs.Tab label={t("Sample")} className="h-full">
-                  <DatasetFilesDataGrid file={selectedFile} />
+                  <DatasetFileDataGrid file={selectedFile} />
                 </Tabs.Tab>
               </Tabs>
             </Block>

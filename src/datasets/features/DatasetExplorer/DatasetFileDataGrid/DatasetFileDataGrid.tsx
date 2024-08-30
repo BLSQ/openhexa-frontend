@@ -36,19 +36,20 @@ const DatasetFilesDataGrid = (props: DatasetFilesDataGridProps) => {
     `,
     { variables: { id: file.id } },
   );
+
   const fileMetadata = data?.datasetVersionFile?.fileMetadata;
 
   const sample = useMemo(() => {
     if (fileMetadata?.sample) {
       try {
         const parsedData = JSON.parse(fileMetadata.sample);
-        if (Array.isArray(parsedData) && parsedData.length > 0) {
+        if (Array.isArray(parsedData)) {
           const columns = Object.keys(parsedData[0]);
           setDisplayColumns(columns);
           return parsedData;
         }
       } catch (error) {
-        console.error("Error parsing sample data:", error);
+        console.log("Error parsing sample data:", error);
       }
     }
     return [];

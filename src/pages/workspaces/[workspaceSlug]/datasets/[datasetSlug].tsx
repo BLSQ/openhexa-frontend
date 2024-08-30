@@ -320,7 +320,7 @@ const WorkspaceDatasetPage: NextPageWithLayout = (props: Props) => {
                     <DatasetExplorer version={version} />
                   </Tabs.Tab>
                 )}
-                {isWorkspaceSource ? (
+                {isWorkspaceSource && (
                   <Tabs.Tab
                     label={t("Access Management")}
                     className={"space-y-2 px-5"}
@@ -339,7 +339,7 @@ const WorkspaceDatasetPage: NextPageWithLayout = (props: Props) => {
                       <DatasetLinksDataGrid dataset={datasetLink.dataset} />
                     </div>
                   </Tabs.Tab>
-                ) : null}
+                )}
               </Tabs>
             </Block.Content>
           </Block>
