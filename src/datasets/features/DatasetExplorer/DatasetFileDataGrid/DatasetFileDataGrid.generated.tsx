@@ -8,7 +8,7 @@ export type DatasetFilesDataGridQueryVariables = Types.Exact<{
 }>;
 
 
-export type DatasetFilesDataGridQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, fileMetadata?: { __typename?: 'DatasetFileMetadata', sample: any, status: Types.FileMetadataStatus } | null } | null };
+export type DatasetFilesDataGridQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null } | null } | null };
 
 export type DatasetFileDataGrid_FileFragment = { __typename?: 'DatasetVersionFile', id: string };
 
@@ -21,9 +21,8 @@ export const DatasetFilesDataGridDocument = gql`
     query DatasetFilesDataGrid($id: ID!) {
   datasetVersionFile(id: $id) {
     id
-    fileMetadata {
+    fileSample {
       sample
-      status
     }
   }
 }

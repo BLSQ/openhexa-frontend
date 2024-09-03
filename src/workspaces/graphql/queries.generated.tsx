@@ -149,6 +149,13 @@ export type WorkspaceDatabaseTablePageQueryVariables = Types.Exact<{
 
 export type WorkspaceDatabaseTablePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', deleteDatabaseTable: boolean, manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, database: { __typename?: 'Database', table?: { __typename?: 'DatabaseTable', name: string, count?: number | null, columns: Array<{ __typename?: 'TableColumn', name: string, type: string }> } | null }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null };
 
+export type WorkspaceDatasetFilePageQueryVariables = Types.Exact<{
+  fileId: Types.Scalars['ID']['input'];
+}>;
+
+
+export type WorkspaceDatasetFilePageQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, uri: string, filename: string, createdAt: any, contentType: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null } | null } | null };
+
 export type ConnectionsPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
 }>;
@@ -1059,6 +1066,53 @@ export type WorkspaceDatabaseTablePageQueryHookResult = ReturnType<typeof useWor
 export type WorkspaceDatabaseTablePageLazyQueryHookResult = ReturnType<typeof useWorkspaceDatabaseTablePageLazyQuery>;
 export type WorkspaceDatabaseTablePageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceDatabaseTablePageSuspenseQuery>;
 export type WorkspaceDatabaseTablePageQueryResult = Apollo.QueryResult<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>;
+export const WorkspaceDatasetFilePageDocument = gql`
+    query WorkspaceDatasetFilePage($fileId: ID!) {
+  datasetVersionFile(id: $fileId) {
+    id
+    uri
+    filename
+    createdAt
+    contentType
+    fileSample {
+      sample
+    }
+  }
+}
+    `;
+
+/**
+ * __useWorkspaceDatasetFilePageQuery__
+ *
+ * To run a query within a React component, call `useWorkspaceDatasetFilePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkspaceDatasetFilePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkspaceDatasetFilePageQuery({
+ *   variables: {
+ *      fileId: // value for 'fileId'
+ *   },
+ * });
+ */
+export function useWorkspaceDatasetFilePageQuery(baseOptions: Apollo.QueryHookOptions<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables> & ({ variables: WorkspaceDatasetFilePageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>(WorkspaceDatasetFilePageDocument, options);
+      }
+export function useWorkspaceDatasetFilePageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>(WorkspaceDatasetFilePageDocument, options);
+        }
+export function useWorkspaceDatasetFilePageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>(WorkspaceDatasetFilePageDocument, options);
+        }
+export type WorkspaceDatasetFilePageQueryHookResult = ReturnType<typeof useWorkspaceDatasetFilePageQuery>;
+export type WorkspaceDatasetFilePageLazyQueryHookResult = ReturnType<typeof useWorkspaceDatasetFilePageLazyQuery>;
+export type WorkspaceDatasetFilePageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceDatasetFilePageSuspenseQuery>;
+export type WorkspaceDatasetFilePageQueryResult = Apollo.QueryResult<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>;
 export const ConnectionsPageDocument = gql`
     query ConnectionsPage($workspaceSlug: String!) {
   workspace(slug: $workspaceSlug) {

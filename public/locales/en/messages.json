@@ -390,6 +390,7 @@
   "This action cannot be undone.": "This action cannot be undone.",
   "This action will replace the current password of the workspace database.": "This action will replace the current password of the workspace database.",
   "This dataset has no version. Upload a new version using your browser or the SDK to see it here.": "This dataset has no version. Upload a new version using your browser or the SDK to see it here.",
+  "This dataset has no version. Upload a new version using your browser or the SDK to view your files.": "This dataset has no version. Upload a new version using your browser or the SDK to view your files.",
   "This dataset is already linked to this workspace": "This dataset is already linked to this workspace",
   "This email address is already taken. Please login instead.": "This email address is already taken. Please login instead.",
   "This field is required": "This field is required",

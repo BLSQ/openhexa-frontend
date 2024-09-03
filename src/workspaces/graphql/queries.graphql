@@ -419,6 +419,18 @@ query WorkspaceDatabaseTablePage($workspaceSlug: String!, $tableName: String!) {
   }
 }
 
+query WorkspaceDatasetFilePage($fileId: ID!) {
+  datasetVersionFile(id: $fileId) {
+    id
+    uri
+    filename
+    createdAt
+    contentType
+    fileSample {
+      sample
+    }
+  }
+}
 query ConnectionsPage($workspaceSlug: String!) {
   workspace(slug: $workspaceSlug) {
     slug

@@ -392,6 +392,7 @@
   "This action cannot be undone.": "Cette action ne peut être annulée.",
   "This action will replace the current password of the workspace database.": "Cette action remplacera le mot de passe actuel de la base de données du workspace.",
   "This dataset has no version. Upload a new version using your browser or the SDK to see it here.": "Ce jeu de données n'a pas de version. Téléchargez une nouvelle version en utilisant votre navigateur ou le SDK pour la voir ici.",
+  "This dataset has no version. Upload a new version using your browser or the SDK to view your files.": "Ce jeu de données n'a pas de version. Téléchargez une nouvelle version en utilisant votre navigateur ou le SDK pour visualiser vos fichiers.",
   "This dataset is already linked to this workspace": "Ce jeu de données est déjà lié à ce workspace",
   "This email address is already taken. Please login instead.": "Cette adresse e-mail est déjà prise. Veuillez vous connecter à la place.",
   "This field is required": "Ce champ est obligatoire",

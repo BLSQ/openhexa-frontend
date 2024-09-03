@@ -27,9 +27,8 @@ const DatasetFilesDataGrid = (props: DatasetFilesDataGridProps) => {
       query DatasetFilesDataGrid($id: ID!) {
         datasetVersionFile(id: $id) {
           id
-          fileMetadata {
+          fileSample {
             sample
-            status
           }
         }
       }
@@ -37,12 +36,12 @@ const DatasetFilesDataGrid = (props: DatasetFilesDataGridProps) => {
     { variables: { id: file.id } },
   );
 
-  const fileMetadata = data?.datasetVersionFile?.fileMetadata;
+  const fileSample = data?.datasetVersionFile?.fileSample;
 
   const sample = useMemo(() => {
-    if (fileMetadata?.sample) {
+    if (fileSample?.sample) {
       try {
-        const parsedData = JSON.parse(fileMetadata.sample);
+        const parsedData = JSON.parse(fileSample.sample);
         if (Array.isArray(parsedData)) {
           const columns = Object.keys(parsedData[0]);
           setDisplayColumns(columns);
@@ -53,7 +52,7 @@ const DatasetFilesDataGrid = (props: DatasetFilesDataGridProps) => {
       }
     }
     return [];
-  }, [fileMetadata]);
+  }, [fileSample]);
 
   return (
     <div>

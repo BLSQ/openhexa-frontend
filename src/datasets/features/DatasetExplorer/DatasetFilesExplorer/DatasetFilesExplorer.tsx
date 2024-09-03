@@ -4,14 +4,14 @@ import {
   DatasetFilesExplorerQuery,
   DatasetFilesExplorerQueryVariables,
 } from "./DatasetFilesExplorer.generated";
-import { DatasetFileMetadata, DatasetVersion } from "graphql/types";
+import { DatasetFileSample, DatasetVersion } from "graphql/types";
 import Block from "core/components/Block";
 import { useState } from "react";
 
 export type DatasetFileType = {
   id: string;
   filename: string;
-  metatada?: DatasetFileMetadata;
+  metatada?: DatasetFileSample;
 };
 
 type DatasetFilesExplorerProps = {
@@ -22,7 +22,6 @@ type DatasetFilesExplorerProps = {
 const DatasetFilesExplorer = (props: DatasetFilesExplorerProps) => {
   const { t } = useTranslation();
   const { version, onClick } = props;
-  const [page, setPage] = useState(1);
 
   const { data, refetch } = useQuery<
     DatasetFilesExplorerQuery,
@@ -66,7 +65,7 @@ const DatasetFilesExplorer = (props: DatasetFilesExplorerProps) => {
   }
 
   return (
-    <Block className="shadow-none space-y-4 overflow-y-scroll">
+    <Block className="shadow-none space-y-4 h-96 overflow-y-scroll">
       <Block.Header>
         <span className="text-gray-500">{t("Filename")}</span>
       </Block.Header>

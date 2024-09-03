@@ -544,6 +544,11 @@ type CreateAccessmodZonalStatisticsResult {
   errors: [CreateAccessmodZonalStatisticsError!]!
 }
 
+type CreateAttributeResult {
+  success: Boolean!
+  errors: [MetadataCreateAttributeError!]!
+}
+
 """Errors that can occur when creating a folder in a workspace's bucket."""
 enum CreateBucketFolderError {
   ALREADY_EXISTS
@@ -935,12 +940,14 @@ type Dataset {
   version(id: ID!): DatasetVersion
   latestVersion: DatasetVersion
   links(page: Int = 1, perPage: Int = 15): DatasetLinkPage!
+  metadata: MetadataObject
 }
 
-"""Metadata for dataset file"""
-type DatasetFileMetadata {
-  sample: JSON!
-  status: FileMetadataStatus!
+"""File sample for dataset file"""
+type DatasetFileSample {
+  sample: JSON
+  status: FileSampleStatus!
+  statusReason: String
 }
 
 """A link of a dataset with a workspace."""
@@ -1004,6 +1011,7 @@ type DatasetVersion {
   permissions: DatasetVersionPermissions!
   fileByName(name: String!): DatasetVersionFile
   files(page: Int = 1, perPage: Int = 15): DatasetVersionFilePage!
+  metadata: MetadataObject
 }
 
 """A file in a dataset version."""
@@ -1014,7 +1022,8 @@ type DatasetVersionFile {
   createdAt: DateTime!
   createdBy: User
   contentType: String!
-  fileMetadata: DatasetFileMetadata
+  fileSample: DatasetFileSample
+  metadata: MetadataObject
 }
 
 """A page of dataset version files."""
@@ -1122,6 +1131,11 @@ type DeleteAccessmodProjectMemberResult {
 type DeleteAccessmodProjectResult {
   success: Boolean!
   errors: [DeleteAccessmodProjectError!]!
+}
+
+type DeleteAttributeResult {
+  success: Boolean!
+  errors: [MetadataDeleteAttributeError!]!
 }
 
 """
@@ -1242,6 +1256,13 @@ type DeleteMembershipResult {
 
   """The list of errors that occurred during the deleteMembership mutation."""
   errors: [DeleteMembershipError!]!
+}
+
+"""Input to delete custom attribute"""
+input DeleteMetadataAttributeInput {
+  id: UUID!
+  modelType: String!
+  key: String!
 }
 
 """Represents the input for deleting a pipeline."""
@@ -1433,6 +1454,11 @@ type DisableTwoFactorResult {
   errors: [DisableTwoFactorError!]
 }
 
+type EditAttributeResult {
+  success: Boolean!
+  errors: [MetadataEditAttributeError!]!
+}
+
 """
 The EnableTwoFactorError enum represents the possible errors that can occur during the enableTwoFactor mutation.
 """
@@ -1466,8 +1492,8 @@ type FeatureFlag {
   config: JSON!
 }
 
-"""Statuses that can occur when generating file metadata"""
-enum FileMetadataStatus {
+"""Statuses that can occur when generating file sample"""
+enum FileSampleStatus {
   PROCESSING
   FAILED
   FINISHED
@@ -1670,6 +1696,9 @@ type LinkDatasetResult {
   errors: [LinkDatasetError!]!
 }
 
+"""Union of all linked to metadata object types"""
+union LinkedObject = DatasetVersionFile | DatasetVersion | Dataset
+
 """
 The LoginError enum represents the possible errors that can occur during the login process.
 """
@@ -1821,6 +1850,56 @@ enum MessagePriority {
   CRITICAL
 }
 
+"""Generic metadata attribute"""
+type MetadataAttribute {
+  id: UUID!
+  key: String!
+  value: JSON
+  system: Boolean!
+}
+
+"""
+Input to add or edit a custom attribute, empty field for value is accepted
+"""
+input MetadataAttributeInput {
+  id: UUID!
+  modelType: String!
+  key: String!
+  value: JSON
+}
+
+"""Errors that can occur when creating an attribute."""
+enum MetadataCreateAttributeError {
+  PERMISSION_DENIED
+  MODEL_TYPE_NOT_FOUND
+  MODEL_NOT_FOUND
+  DUPLICATE_KEY
+}
+
+"""Errors that can occur when deleting an attribute."""
+enum MetadataDeleteAttributeError {
+  PERMISSION_DENIED
+  MODEL_TYPE_NOT_FOUND
+  MODEL_NOT_FOUND
+  METADATA_OBJECT_NOT_FOUND
+  METADATA_ATTRIBUTE_NOT_FOUND
+}
+
+"""Errors that can occur when editing an attribute."""
+enum MetadataEditAttributeError {
+  PERMISSION_DENIED
+  MODEL_TYPE_NOT_FOUND
+  MODEL_NOT_FOUND
+  METADATA_OBJECT_NOT_FOUND
+}
+
+"""Generic metadata object"""
+type MetadataObject {
+  id: UUID!
+  linkedObject: LinkedObject
+  attributes: [MetadataAttribute!]!
+}
+
 scalar MovingSpeeds
 
 type Mutation {
@@ -1943,6 +2022,15 @@ type Mutation {
   createConnection(input: CreateConnectionInput!): CreateConnectionResult!
   updateConnection(input: UpdateConnectionInput!): UpdateConnectionResult!
   deleteConnection(input: DeleteConnectionInput!): DeleteConnectionResult!
+
+  """Add a custom attribute to an object instane"""
+  addMetadataToObject(input: MetadataAttributeInput!): CreateAttributeResult!
+
+  """Delete an attribute from an object instance"""
+  deleteMetadataFromObject(input: DeleteMetadataAttributeInput!): DeleteAttributeResult!
+
+  """Edit metadata attribute for an object instance"""
+  editMetadataForObject(input: MetadataAttributeInput!): EditAttributeResult!
 
   """Generates a new password for a database."""
   generateNewDatabasePassword(input: GenerateNewDatabasePasswordInput!): GenerateNewDatabasePasswordResult!

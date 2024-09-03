@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DatasetFilesExplorer from "./DatasetFilesExplorer";
 import { DatasetFileType } from "./DatasetFilesExplorer/DatasetFilesExplorer";
 import { DatasetVersion } from "graphql/types";
@@ -8,36 +8,67 @@ import Tabs from "core/components/Tabs";
 import DatasetFileDataGrid from "./DatasetFileDataGrid";
 import Block from "core/components/Block";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/router";
+import { gql, useQuery } from "@apollo/client";
+import {
+  WorkspaceDatasetFilePageQuery,
+  WorkspaceDatasetFilePageQueryVariables,
+} from "workspaces/graphql/queries.generated";
 
 type DatasetExplorerProps = {
-  version: Pick<DatasetVersion, "id">;
+  version: Pick<DatasetVersion, "id"> | null;
+  fileId?: string;
 };
 
-const DatasetExplorer = ({ version }: DatasetExplorerProps) => {
+const DatasetExplorer = ({ version, fileId = "" }: DatasetExplorerProps) => {
+  const router = useRouter();
   const { t } = useTranslation();
   const [selectedFile, setSelectedFile] = useState<DatasetFileType | null>(
     null,
   );
 
   const onFileSelected = (file: DatasetFileType) => {
-    setSelectedFile(file);
+    router.push({
+      pathname: `${router.pathname}`,
+      query: { ...router.query, version: version?.id, fileId: file.id },
+    });
   };
 
-  useEffect(() => {
-    setSelectedFile(null);
-  }, [version]);
+  const { data } = useQuery<
+    WorkspaceDatasetFilePageQuery,
+    WorkspaceDatasetFilePageQueryVariables
+  >(
+    gql`
+      query WorkspaceDatasetFileExplorer($fileId: ID!) {
+        datasetVersionFile(id: $fileId) {
+          id
+          uri
+          filename
+          createdAt
+          contentType
+        }
+      }
+    `,
+    { variables: { fileId: fileId } },
+  );
+
+  const file = data?.datasetVersionFile;
+
+  if (!version) {
+    return null;
+  }
 
   return (
     <div className="grid grid-cols-4 gap-4">
       <DatasetFilesExplorer version={version} onClick={onFileSelected} />
       <div className="col-span-3 py-2 space-y-4">
-        {selectedFile ? (
+        {file ? (
           <>
-            <DatasetFileSummary file={selectedFile} />
+            <DatasetFileSummary file={file} />
             <Block className="py-2 px-4 space-y-8">
               <Tabs>
                 <Tabs.Tab label={t("Sample")} className="h-full">
-                  <DatasetFileDataGrid file={selectedFile} />
+                  <DatasetFileDataGrid file={file} />
                 </Tabs.Tab>
               </Tabs>
             </Block>
@@ -54,5 +85,7 @@ const DatasetExplorer = ({ version }: DatasetExplorerProps) => {
     </div>
   );
 };
+
+DatasetExplorer;
 
 export default DatasetExplorer;
