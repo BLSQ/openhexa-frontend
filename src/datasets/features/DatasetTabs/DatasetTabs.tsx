@@ -2,37 +2,33 @@ import React, { ReactElement, useMemo } from "react";
 import { useRouter } from "next/router";
 import Tabs from "core/components/Tabs";
 import { useTranslation } from "next-i18next";
-import { DatasetVersion } from "graphql/types";
+import { gql } from "@apollo/client";
+import { DatasetTabs_DatasetlinkFragment } from "./DatasetTabs.generated";
 
 type DatasetTabsProps = {
   currentTab?: string;
-  datasetSlug: string;
-  version?: Pick<DatasetVersion, "id"> | null;
-  workspaceSlug: string;
-  isWorkspaceSource?: boolean;
+  datasetLink: DatasetTabs_DatasetlinkFragment;
   children: ReactElement;
 };
 
 const TABS = ["", "files", "management"];
 
 const DatasetTabs = (props: DatasetTabsProps) => {
-  const {
-    currentTab,
-    datasetSlug,
-    version,
-    workspaceSlug,
-    isWorkspaceSource = false,
-    children,
-  } = props;
+  const { currentTab, datasetLink, children } = props;
   const router = useRouter();
   const { t } = useTranslation();
 
+  const { dataset, workspace } = datasetLink;
+
   const onTabChange = (index: number) => {
     const selectedTab = TABS[index];
-    const query = version ? { version: version?.id } : {};
+    if (selectedTab !== "files") {
+      delete router.query["fileId"];
+    }
+
     router.push({
-      pathname: `/workspaces/${workspaceSlug}/datasets/${datasetSlug}/${selectedTab}`,
-      query: query,
+      pathname: `/workspaces/[workspaceSlug]/datasets/[datasetSlug]/${selectedTab}`,
+      query: { ...router.query },
     });
   };
   const tabIndex: number = useMemo(() => {
@@ -40,6 +36,8 @@ const DatasetTabs = (props: DatasetTabsProps) => {
       ? TABS.indexOf(currentTab)
       : 0;
   }, []);
+
+  const isWorkspaceSource = workspace.slug === dataset.workspace?.slug;
 
   return (
     <Tabs defaultIndex={tabIndex} onChange={onTabChange}>
@@ -58,4 +56,20 @@ const DatasetTabs = (props: DatasetTabsProps) => {
   );
 };
 
+DatasetTabs.fragments = {
+  datasetLink: gql`
+    fragment DatasetTabs_datasetlink on DatasetLink {
+      id
+      dataset {
+        slug
+        workspace {
+          slug
+        }
+      }
+      workspace {
+        slug
+      }
+    }
+  `,
+};
 export default DatasetTabs;
