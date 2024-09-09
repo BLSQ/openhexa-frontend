@@ -27,11 +27,14 @@ import { DeleteDatasetTrigger_DatasetFragmentDoc } from '../../datasets/features
 import { DatasetLinksDataGrid_DatasetFragmentDoc } from '../../datasets/features/DatasetLinksDataGrid/DatasetLinksDataGrid.generated';
 import { DatasetVersionPicker_DatasetFragmentDoc, DatasetVersionPicker_VersionFragmentDoc } from '../../datasets/features/DatasetVersionPicker/DatasetVersionPicker.generated';
 import { DatasetVersionFilesDataGrid_VersionFragmentDoc } from '../../datasets/features/DatasetVersionFilesDataGrid/DatasetVersionFilesDataGrid.generated';
+import { DatasetFilesExplorer_VersionFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFilesExplorer/DatasetFilesExplorer.generated';
 import { BucketExplorer_WorkspaceFragmentDoc, BucketExplorer_ObjectsFragmentDoc } from '../features/BucketExplorer/BucketExplorer.generated';
 import { UploadObjectDialog_WorkspaceFragmentDoc } from '../features/UploadObjectDialog/UploadObjectDialog.generated';
 import { CreateBucketFolderDialog_WorkspaceFragmentDoc } from '../features/CreateBucketFolderDialog/CreateBucketFolderDialog.generated';
 import { DatabaseVariablesSection_WorkspaceFragmentDoc } from '../features/DatabaseVariablesSection/DatabaseVariablesSection.generated';
 import { DatabaseTableDataGrid_TableFragmentDoc, DatabaseTableDataGrid_WorkspaceFragmentDoc } from '../features/DatabaseTableDataGrid/DatabaseTableDataGrid.generated';
+import { DatasetFileSummary_FileFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFileSummary/DatasetFileSummary.generated';
+import { DatasetFileDataGrid_FileFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFileDataGrid/DatasetFileDataGrid.generated';
 import { CreateConnectionDialog_WorkspaceFragmentDoc } from '../features/CreateConnectionDialog/CreateConnectionDialog.generated';
 import { ConnectionUsageSnippets_ConnectionFragmentDoc } from '../features/ConnectionUsageSnippets/ConnectionUsageSnippets.generated';
 import { ConnectionFieldsSection_ConnectionFragmentDoc } from '../features/ConnectionFieldsSection/ConnectionFieldsSection.generated';
@@ -816,6 +819,7 @@ export const WorkspaceDatasetPageDocument = gql`
         createdAt
         ...DatasetVersionFilesDataGrid_version
         ...DatasetVersionPicker_version
+        ...DatasetFilesExplorer_version
       }
       version(id: $versionId) @include(if: $isSpecificVersion) {
         createdBy {
@@ -824,6 +828,7 @@ export const WorkspaceDatasetPageDocument = gql`
         createdAt
         ...DatasetVersionFilesDataGrid_version
         ...DatasetVersionPicker_version
+        ...DatasetFilesExplorer_version
       }
       permissions {
         update
@@ -841,7 +846,8 @@ ${DatasetLinksDataGrid_DatasetFragmentDoc}
 ${DatasetVersionPicker_DatasetFragmentDoc}
 ${User_UserFragmentDoc}
 ${DatasetVersionFilesDataGrid_VersionFragmentDoc}
-${DatasetVersionPicker_VersionFragmentDoc}`;
+${DatasetVersionPicker_VersionFragmentDoc}
+${DatasetFilesExplorer_VersionFragmentDoc}`;
 
 /**
  * __useWorkspaceDatasetPageQuery__
@@ -1074,12 +1080,12 @@ export const WorkspaceDatasetFilePageDocument = gql`
     filename
     createdAt
     contentType
-    fileSample {
-      sample
-    }
+    ...DatasetFileSummary_file
+    ...DatasetFileDataGrid_file
   }
 }
-    `;
+    ${DatasetFileSummary_FileFragmentDoc}
+${DatasetFileDataGrid_FileFragmentDoc}`;
 
 /**
  * __useWorkspaceDatasetFilePageQuery__

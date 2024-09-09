@@ -85,6 +85,9 @@ DatasetFilesDataGrid.fragments = {
   version: gql`
     fragment DatasetFileDataGrid_file on DatasetVersionFile {
       id
+      fileSample {
+        sample
+      }
     }
   `,
 };

@@ -4,14 +4,12 @@ import {
   DatasetFilesExplorerQuery,
   DatasetFilesExplorerQueryVariables,
 } from "./DatasetFilesExplorer.generated";
-import { DatasetFileSample, DatasetVersion } from "graphql/types";
+import { DatasetVersion } from "graphql/types";
 import Block from "core/components/Block";
-import { useState } from "react";
 
 export type DatasetFileType = {
   id: string;
   filename: string;
-  metatada?: DatasetFileSample;
 };
 
 type DatasetFilesExplorerProps = {
