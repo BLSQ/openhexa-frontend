@@ -6,25 +6,25 @@ import { useTranslation } from "next-i18next";
 import { useMemo, useState } from "react";
 import {
   DatasetFileDataGrid_FileFragment,
-  DatasetFilesDataGridQuery,
-  DatasetFilesDataGridQueryVariables,
+  DatasetFileDataGridQuery,
+  DatasetFileDataGridQueryVariables,
 } from "./DatasetFileDataGrid.generated";
 
-type DatasetFilesDataGridProps = {
+type DatasetFileDataGridProps = {
   file: DatasetFileDataGrid_FileFragment;
 };
 
-const DatasetFilesDataGrid = (props: DatasetFilesDataGridProps) => {
+const DatasetFileDataGrid = (props: DatasetFileDataGridProps) => {
   const { file } = props;
   const { t } = useTranslation();
 
   const [displayColumns, setDisplayColumns] = useState<string[]>([]);
   const { data } = useQuery<
-    DatasetFilesDataGridQuery,
-    DatasetFilesDataGridQueryVariables
+    DatasetFileDataGridQuery,
+    DatasetFileDataGridQueryVariables
   >(
     gql`
-      query DatasetFilesDataGrid($id: ID!) {
+      query DatasetFileDataGrid($id: ID!) {
         datasetVersionFile(id: $id) {
           id
           fileSample {
@@ -81,15 +81,12 @@ const DatasetFilesDataGrid = (props: DatasetFilesDataGridProps) => {
   );
 };
 
-DatasetFilesDataGrid.fragments = {
+DatasetFileDataGrid.fragments = {
   version: gql`
     fragment DatasetFileDataGrid_file on DatasetVersionFile {
       id
-      fileSample {
-        sample
-      }
     }
   `,
 };
 
-export default DatasetFilesDataGrid;
+export default DatasetFileDataGrid;

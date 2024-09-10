@@ -21,8 +21,7 @@ import useCacheKey from "core/hooks/useCacheKey";
 import RenderProperty from "core/components/DataCard/RenderProperty";
 import Clipboard from "core/components/Clipboard";
 import { trackEvent } from "core/helpers/analytics";
-import DatasetTabs from "datasets/features/DatasetTabs/DatasetTabs";
-import DatasetLayout from "datasets/features/layouts/DatasetLayout";
+import DatasetLayout from "datasets/layouts/DatasetLayout";
 
 export type WorkspaceDatabasePageProps = {
   datasetSlug: string;
@@ -74,114 +73,112 @@ const WorkspaceDatasetPage: NextPageWithLayout = (
   return (
     <Page title={datasetLink.dataset.name ?? t("Dataset")}>
       <DatasetLayout datasetLink={data.datasetLink} workspace={workspace}>
-        <DatasetTabs datasetLink={datasetLink}>
-          <DataCard
-            item={datasetLink.dataset}
-            className="divide-y-2 space-y-2 divide-gray-100 shadow-none"
+        <DataCard
+          item={datasetLink.dataset}
+          className="divide-y-2 space-y-2 divide-gray-100 shadow-none"
+        >
+          <DataCard.FormSection
+            title={t("General informations")}
+            onSave={
+              datasetLink.dataset.permissions.update && isWorkspaceSource
+                ? onSave
+                : undefined
+            }
+            collapsible={false}
+            className="-ml-5"
           >
-            <DataCard.FormSection
-              title={t("General informations")}
-              onSave={
-                datasetLink.dataset.permissions.update && isWorkspaceSource
-                  ? onSave
-                  : undefined
-              }
-              collapsible={false}
-              className="-ml-5"
+            <TextProperty
+              id="name"
+              accessor={"name"}
+              label={t("Name")}
+              visible={(_, isEditing) => isEditing}
+            />
+            <TextProperty
+              id="description"
+              accessor={"description"}
+              label={t("Description")}
+              defaultValue="Empty description"
+              hideLabel
+              markdown
+            />
+            <RenderProperty
+              id="slug"
+              accessor="slug"
+              label={t("Identifier")}
+              help={t(
+                "The identifier is used to reference the dataset in the SDK and notebooks",
+              )}
+              readonly
             >
-              <TextProperty
-                id="name"
-                accessor={"name"}
-                label={t("Name")}
-                visible={(_, isEditing) => isEditing}
-              />
-              <TextProperty
-                id="description"
-                accessor={"description"}
-                label={t("Description")}
-                defaultValue="Empty description"
-                hideLabel
-                markdown
-              />
-              <RenderProperty
-                id="slug"
-                accessor="slug"
-                label={t("Identifier")}
-                help={t(
-                  "The identifier is used to reference the dataset in the SDK and notebooks",
-                )}
-                readonly
-              >
-                {(property) => (
-                  <div className="font-mono">
-                    <Clipboard value={property.displayValue}>
-                      {property.displayValue}
-                    </Clipboard>
-                  </div>
-                )}
-              </RenderProperty>
-              <DateProperty
-                id={"createdAt"}
-                label={t("Created at")}
-                accessor={"createdAt"}
-                readonly
-              />
-              <UserProperty
-                id={"createdBy"}
-                readonly
-                label={t("Created by")}
-                accessor={"createdBy"}
-              />
-              <TextProperty
-                readonly
-                id={"workspace"}
-                accessor={"workspace.name"}
-                label={t("Source workspace")}
-              />
-            </DataCard.FormSection>
-            <DataCard.Section
-              title={() => (
-                <div className="flex flex-1 gap-2 items-center justify-between">
-                  <h4 className="flex-1 font-medium">
-                    {!version && t("Versions")}
-                    {version &&
-                      version.id === datasetLink.dataset.latestVersion?.id &&
-                      t("Latest version")}
-                    {version &&
-                      version.id !== datasetLink.dataset.latestVersion?.id &&
-                      t("Version {{version}}", {
-                        version: version.name,
-                      })}
-                  </h4>
+              {(property) => (
+                <div className="font-mono">
+                  <Clipboard value={property.displayValue}>
+                    {property.displayValue}
+                  </Clipboard>
                 </div>
               )}
-              collapsible={false}
-              className="-ml-5"
-            >
-              {version ? (
-                <>
-                  <DescriptionList>
-                    <DescriptionList.Item label={t("Name")}>
-                      {version.name}
-                    </DescriptionList.Item>
-                    <DescriptionList.Item label={t("Created at")}>
-                      <Time datetime={version.createdAt} />
-                    </DescriptionList.Item>
-                    <DescriptionList.Item label={t("Created by")}>
-                      {version.createdBy?.displayName ?? "-"}
-                    </DescriptionList.Item>
-                  </DescriptionList>
-                </>
-              ) : (
-                <p className={"italic text-gray-500"}>
-                  {t(
-                    "This dataset has no version. Upload a new version using your browser or the SDK to see it here.",
-                  )}
-                </p>
-              )}
-            </DataCard.Section>
-          </DataCard>
-        </DatasetTabs>
+            </RenderProperty>
+            <DateProperty
+              id={"createdAt"}
+              label={t("Created at")}
+              accessor={"createdAt"}
+              readonly
+            />
+            <UserProperty
+              id={"createdBy"}
+              readonly
+              label={t("Created by")}
+              accessor={"createdBy"}
+            />
+            <TextProperty
+              readonly
+              id={"workspace"}
+              accessor={"workspace.name"}
+              label={t("Source workspace")}
+            />
+          </DataCard.FormSection>
+          <DataCard.Section
+            title={() => (
+              <div className="flex flex-1 gap-2 items-center justify-between">
+                <h4 className="flex-1 font-medium">
+                  {!version && t("Versions")}
+                  {version &&
+                    version.id === datasetLink.dataset.latestVersion?.id &&
+                    t("Latest version")}
+                  {version &&
+                    version.id !== datasetLink.dataset.latestVersion?.id &&
+                    t("Version {{version}}", {
+                      version: version.name,
+                    })}
+                </h4>
+              </div>
+            )}
+            collapsible={false}
+            className="-ml-5"
+          >
+            {version ? (
+              <>
+                <DescriptionList>
+                  <DescriptionList.Item label={t("Name")}>
+                    {version.name}
+                  </DescriptionList.Item>
+                  <DescriptionList.Item label={t("Created at")}>
+                    <Time datetime={version.createdAt} />
+                  </DescriptionList.Item>
+                  <DescriptionList.Item label={t("Created by")}>
+                    {version.createdBy?.displayName ?? "-"}
+                  </DescriptionList.Item>
+                </DescriptionList>
+              </>
+            ) : (
+              <p className={"italic text-gray-500"}>
+                {t(
+                  "This dataset has no version. Upload a new version using your browser or the SDK to see it here.",
+                )}
+              </p>
+            )}
+          </DataCard.Section>
+        </DataCard>
       </DatasetLayout>
     </Page>
   );

@@ -16,8 +16,7 @@ import { useEffect } from "react";
 import useCacheKey from "core/hooks/useCacheKey";
 import { trackEvent } from "core/helpers/analytics";
 import DatasetExplorer from "datasets/features/DatasetExplorer";
-import DatasetTabs from "datasets/features/DatasetTabs";
-import DatasetLayout from "datasets/features/layouts/DatasetLayout";
+import DatasetLayout from "datasets/layouts/DatasetLayout";
 
 type Props = {
   datasetSlug: string;
@@ -63,18 +62,27 @@ const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
 
   return (
     <Page title={datasetLink.dataset.name ?? t("Dataset")}>
-      <DatasetLayout datasetLink={data.datasetLink} workspace={workspace}>
-        <DatasetTabs datasetLink={datasetLink} currentTab="files">
-          {version ? (
-            <DatasetExplorer version={version} fileId={fileId} />
-          ) : (
-            <p className={"italic text-gray-500"}>
-              {t(
-                "This dataset has no version. Upload a new version using your browser or the SDK to view your files.",
-              )}
-            </p>
-          )}
-        </DatasetTabs>
+      <DatasetLayout
+        datasetLink={data.datasetLink}
+        workspace={workspace}
+        extraBreadcrumbs={[
+          {
+            title: t("Files"),
+            href: `/workspaces/${encodeURIComponent(
+              workspace.slug,
+            )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/files`,
+          },
+        ]}
+      >
+        {version ? (
+          <DatasetExplorer version={version} fileId={fileId} />
+        ) : (
+          <p className={"italic text-gray-500"}>
+            {t(
+              "This dataset has no version. Upload a new version using your browser or the SDK to view your files.",
+            )}
+          </p>
+        )}
       </DatasetLayout>
     </Page>
   );

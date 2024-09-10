@@ -17,6 +17,10 @@ import {
   DeleteDatasetError,
   DeleteDatasetLinkError,
 } from "graphql/types";
+import {
+  WorkspaceDatasetFilePageQuery,
+  WorkspaceDatasetFilePageQueryVariables,
+} from "workspaces/graphql/queries.generated";
 
 export async function updateDataset(
   datasetId: string,
@@ -235,4 +239,28 @@ export async function deleteDataset(datasetId: string) {
   } else {
     throw new Error("An unknown error occurred");
   }
+}
+
+export async function getDatasetVersionFile(fileId: string) {
+  const client = getApolloClient();
+
+  const { data } = await client.query<
+    WorkspaceDatasetFilePageQuery,
+    WorkspaceDatasetFilePageQueryVariables
+  >({
+    query: gql`
+      query WorkspaceDatasetFileExplorer($fileId: ID!) {
+        datasetVersionFile(id: $fileId) {
+          id
+          uri
+          filename
+          createdAt
+          contentType
+        }
+      }
+    `,
+    variables: { fileId: fileId },
+  });
+
+  return data.datasetVersionFile;
 }

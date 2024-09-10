@@ -157,7 +157,7 @@ export type WorkspaceDatasetFilePageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspaceDatasetFilePageQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, uri: string, filename: string, createdAt: any, contentType: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null } | null } | null };
+export type WorkspaceDatasetFilePageQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, uri: string, filename: string, createdAt: any, contentType: string } | null };
 
 export type ConnectionsPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];

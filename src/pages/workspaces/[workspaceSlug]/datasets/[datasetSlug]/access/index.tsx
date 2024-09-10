@@ -3,7 +3,6 @@ import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 import {
   useWorkspaceDatasetPageQuery,
   WorkspaceDatasetPageDocument,
@@ -14,9 +13,9 @@ import { useEffect, useState } from "react";
 import { LinkIcon } from "@heroicons/react/24/solid";
 import useCacheKey from "core/hooks/useCacheKey";
 import { trackEvent } from "core/helpers/analytics";
-import DatasetTabs from "datasets/features/DatasetTabs/DatasetTabs";
 import DatasetLinksDataGrid from "datasets/features/DatasetLinksDataGrid";
-import DatasetLayout from "datasets/features/layouts/DatasetLayout";
+import DatasetLayout from "datasets/layouts/DatasetLayout";
+import LinkDatasetDialog from "datasets/features/LinkDatasetDialog";
 
 export type WorkspaceDatabasePageProps = {
   datasetSlug: string;
@@ -33,8 +32,6 @@ const WorkspaceDatasetAccessManagementPage: NextPageWithLayout = (
     props;
 
   const { t } = useTranslation();
-  const router = useRouter();
-  const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [isLinkDialogOpen, setLinkDialogOpen] = useState(false);
   const { data, refetch } = useWorkspaceDatasetPageQuery({
     variables: {
@@ -65,25 +62,39 @@ const WorkspaceDatasetAccessManagementPage: NextPageWithLayout = (
 
   return (
     <Page title={datasetLink.dataset.name ?? t("Dataset")}>
-      <DatasetLayout datasetLink={data.datasetLink} workspace={workspace}>
-        <DatasetTabs datasetLink={datasetLink} currentTab="management">
-          <>
-            <div className={"flex flex justify-end"}>
-              {workspace.permissions.update && (
-                <Button
-                  leadingIcon={<LinkIcon className={"h-4 w-4"} />}
-                  onClick={() => setLinkDialogOpen(true)}
-                >
-                  {t("Share with a workspace")}
-                </Button>
-              )}
-            </div>
-            <div className={"-mx-6"}>
-              <DatasetLinksDataGrid dataset={datasetLink.dataset} />
-            </div>
-          </>
-        </DatasetTabs>
+      <DatasetLayout
+        datasetLink={data.datasetLink}
+        workspace={workspace}
+        extraBreadcrumbs={[
+          {
+            title: t("Access Management"),
+            href: `/workspaces/${encodeURIComponent(
+              workspace.slug,
+            )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/access`,
+          },
+        ]}
+      >
+        <div className="space-y-4">
+          <div className={"flex flex justify-end"}>
+            {workspace.permissions.update && (
+              <Button
+                leadingIcon={<LinkIcon className={"h-4 w-4"} />}
+                onClick={() => setLinkDialogOpen(true)}
+              >
+                {t("Share with a workspace")}
+              </Button>
+            )}
+          </div>
+          <div>
+            <DatasetLinksDataGrid dataset={datasetLink.dataset} />
+          </div>
+        </div>
       </DatasetLayout>
+      <LinkDatasetDialog
+        dataset={datasetLink.dataset}
+        open={isLinkDialogOpen}
+        onClose={() => setLinkDialogOpen(false)}
+      />
     </Page>
   );
 };

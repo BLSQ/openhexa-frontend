@@ -3,25 +3,22 @@ import * as Types from '../../../../graphql/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type DatasetFilesDataGridQueryVariables = Types.Exact<{
+export type DatasetFileDataGridQueryVariables = Types.Exact<{
   id: Types.Scalars['ID']['input'];
 }>;
 
 
-export type DatasetFilesDataGridQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null } | null } | null };
+export type DatasetFileDataGridQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null } | null } | null };
 
-export type DatasetFileDataGrid_FileFragment = { __typename?: 'DatasetVersionFile', id: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null } | null };
+export type DatasetFileDataGrid_FileFragment = { __typename?: 'DatasetVersionFile', id: string };
 
 export const DatasetFileDataGrid_FileFragmentDoc = gql`
     fragment DatasetFileDataGrid_file on DatasetVersionFile {
   id
-  fileSample {
-    sample
-  }
 }
     `;
-export const DatasetFilesDataGridDocument = gql`
-    query DatasetFilesDataGrid($id: ID!) {
+export const DatasetFileDataGridDocument = gql`
+    query DatasetFileDataGrid($id: ID!) {
   datasetVersionFile(id: $id) {
     id
     fileSample {
@@ -32,34 +29,34 @@ export const DatasetFilesDataGridDocument = gql`
     `;
 
 /**
- * __useDatasetFilesDataGridQuery__
+ * __useDatasetFileDataGridQuery__
  *
- * To run a query within a React component, call `useDatasetFilesDataGridQuery` and pass it any options that fit your needs.
- * When your component renders, `useDatasetFilesDataGridQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDatasetFileDataGridQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDatasetFileDataGridQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useDatasetFilesDataGridQuery({
+ * const { data, loading, error } = useDatasetFileDataGridQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDatasetFilesDataGridQuery(baseOptions: Apollo.QueryHookOptions<DatasetFilesDataGridQuery, DatasetFilesDataGridQueryVariables> & ({ variables: DatasetFilesDataGridQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useDatasetFileDataGridQuery(baseOptions: Apollo.QueryHookOptions<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables> & ({ variables: DatasetFileDataGridQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DatasetFilesDataGridQuery, DatasetFilesDataGridQueryVariables>(DatasetFilesDataGridDocument, options);
+        return Apollo.useQuery<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>(DatasetFileDataGridDocument, options);
       }
-export function useDatasetFilesDataGridLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DatasetFilesDataGridQuery, DatasetFilesDataGridQueryVariables>) {
+export function useDatasetFileDataGridLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DatasetFilesDataGridQuery, DatasetFilesDataGridQueryVariables>(DatasetFilesDataGridDocument, options);
+          return Apollo.useLazyQuery<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>(DatasetFileDataGridDocument, options);
         }
-export function useDatasetFilesDataGridSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DatasetFilesDataGridQuery, DatasetFilesDataGridQueryVariables>) {
+export function useDatasetFileDataGridSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<DatasetFilesDataGridQuery, DatasetFilesDataGridQueryVariables>(DatasetFilesDataGridDocument, options);
+          return Apollo.useSuspenseQuery<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>(DatasetFileDataGridDocument, options);
         }
-export type DatasetFilesDataGridQueryHookResult = ReturnType<typeof useDatasetFilesDataGridQuery>;
-export type DatasetFilesDataGridLazyQueryHookResult = ReturnType<typeof useDatasetFilesDataGridLazyQuery>;
-export type DatasetFilesDataGridSuspenseQueryHookResult = ReturnType<typeof useDatasetFilesDataGridSuspenseQuery>;
-export type DatasetFilesDataGridQueryResult = Apollo.QueryResult<DatasetFilesDataGridQuery, DatasetFilesDataGridQueryVariables>;
+export type DatasetFileDataGridQueryHookResult = ReturnType<typeof useDatasetFileDataGridQuery>;
+export type DatasetFileDataGridLazyQueryHookResult = ReturnType<typeof useDatasetFileDataGridLazyQuery>;
+export type DatasetFileDataGridSuspenseQueryHookResult = ReturnType<typeof useDatasetFileDataGridSuspenseQuery>;
+export type DatasetFileDataGridQueryResult = Apollo.QueryResult<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>;

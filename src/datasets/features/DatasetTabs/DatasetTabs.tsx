@@ -1,75 +1,48 @@
-import React, { ReactElement, useMemo } from "react";
+import React, { ReactElement, Fragment, useCallback } from "react";
 import { useRouter } from "next/router";
-import Tabs from "core/components/Tabs";
-import { useTranslation } from "next-i18next";
-import { gql } from "@apollo/client";
-import { DatasetTabs_DatasetlinkFragment } from "./DatasetTabs.generated";
+import { Tab as HeadlessTab } from "@headlessui/react";
+import clsx from "clsx";
+
+export type DatasetTabType = { label: string; href: string };
 
 type DatasetTabsProps = {
-  currentTab?: string;
-  datasetLink: DatasetTabs_DatasetlinkFragment;
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
+  tabs: DatasetTabType[];
 };
 
-const TABS = ["", "files", "management"];
-
 const DatasetTabs = (props: DatasetTabsProps) => {
-  const { currentTab, datasetLink, children } = props;
   const router = useRouter();
-  const { t } = useTranslation();
+  const { children, tabs = [] } = props;
 
-  const { dataset, workspace } = datasetLink;
-
-  const onTabChange = (index: number) => {
-    const selectedTab = TABS[index];
-    if (selectedTab !== "files") {
-      delete router.query["fileId"];
-    }
-
-    router.push({
-      pathname: `/workspaces/[workspaceSlug]/datasets/[datasetSlug]/${selectedTab}`,
-      query: { ...router.query },
-    });
-  };
-  const tabIndex: number = useMemo(() => {
-    return currentTab && TABS.indexOf(currentTab)
-      ? TABS.indexOf(currentTab)
-      : 0;
-  }, []);
-
-  const isWorkspaceSource = workspace.slug === dataset.workspace?.slug;
+  const isActiveTab = useCallback(
+    (tab: DatasetTabType) => tab.href === router.asPath,
+    [],
+  );
 
   return (
-    <Tabs defaultIndex={tabIndex} onChange={onTabChange}>
-      <Tabs.Tab label={t("Description")}>
-        {tabIndex === 0 ? children : <></>}
-      </Tabs.Tab>
-      <Tabs.Tab label={t("Data files")}>
-        {tabIndex === 1 ? children : <></>}
-      </Tabs.Tab>
-      {isWorkspaceSource && (
-        <Tabs.Tab label={t("Access Management")}>
-          {tabIndex === 2 ? children : <></>}
-        </Tabs.Tab>
-      )}
-    </Tabs>
+    <HeadlessTab.Group>
+      <HeadlessTab.List className="space-x-4">
+        {tabs.map((tab, id) => (
+          <HeadlessTab key={id} as={Fragment}>
+            <a
+              href={tab.href || ""}
+              className={clsx(
+                "cursor-pointer whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide",
+                isActiveTab(tab)
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+              )}
+            >
+              {tab.label}
+            </a>
+          </HeadlessTab>
+        ))}
+      </HeadlessTab.List>
+      <HeadlessTab.Panels>
+        <HeadlessTab.Panel className="px-2 py-4">{children}</HeadlessTab.Panel>
+      </HeadlessTab.Panels>
+    </HeadlessTab.Group>
   );
 };
 
-DatasetTabs.fragments = {
-  datasetLink: gql`
-    fragment DatasetTabs_datasetlink on DatasetLink {
-      id
-      dataset {
-        slug
-        workspace {
-          slug
-        }
-      }
-      workspace {
-        slug
-      }
-    }
-  `,
-};
 export default DatasetTabs;

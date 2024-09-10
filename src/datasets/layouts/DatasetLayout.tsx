@@ -2,30 +2,30 @@ import Breadcrumbs from "core/components/Breadcrumbs";
 import { useTranslation } from "react-i18next";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import { WorkspaceLayoutProps } from "workspaces/layouts/WorkspaceLayout/WorkspaceLayout";
-import PinDatasetButton from "../PinDatasetButton";
-import LinkDatasetDialog from "../LinkDatasetDialog";
-import UploadDatasetVersionDialog from "../UploadDatasetVersionDialog";
+import PinDatasetButton from "../features/PinDatasetButton";
+import UploadDatasetVersionDialog from "../features/UploadDatasetVersionDialog";
 import Button from "core/components/Button";
-import DeleteDatasetTrigger from "../DeleteDatasetTrigger";
+import DeleteDatasetTrigger from "../features/DeleteDatasetTrigger";
 import { useRouter } from "next/router";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { WorkspaceDatasetPageQuery } from "workspaces/graphql/queries.generated";
-import DatasetVersionPicker from "../DatasetVersionPicker";
+import DatasetVersionPicker from "../features/DatasetVersionPicker";
 import Block from "core/components/Block";
 import { capitalize } from "lodash";
+import DatasetTabs from "../features/DatasetTabs";
 
 type DatasetLayoutProps = {
   datasetLink: WorkspaceDatasetPageQuery["datasetLink"];
+  extraBreadcrumbs?: { href: string; title: string }[];
 } & WorkspaceLayoutProps;
 
 const DatasetLayout = (props: DatasetLayoutProps) => {
-  const { children, datasetLink, workspace } = props;
+  const { children, datasetLink, workspace, extraBreadcrumbs = [] } = props;
 
   const { t } = useTranslation();
   const router = useRouter();
   const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [isLinkDialogOpen, setLinkDialogOpen] = useState(false);
 
   const onChangeVersion: React.ComponentProps<
     typeof DatasetVersionPicker
@@ -72,13 +72,22 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
             {t("Datasets")}
           </Breadcrumbs.Part>
           <Breadcrumbs.Part
-            isLast
+            isLast={!extraBreadcrumbs.length}
             href={`/workspaces/${encodeURIComponent(
               workspace.slug,
-            )}/datasets/${encodeURIComponent(datasetLink.id)}`}
+            )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}`}
           >
             {datasetLink.dataset.name}
           </Breadcrumbs.Part>
+          {extraBreadcrumbs?.map((breadcrumbsPart, index) => (
+            <Breadcrumbs.Part
+              key={index}
+              isLast={extraBreadcrumbs.length == index}
+              href={breadcrumbsPart.href}
+            >
+              {breadcrumbsPart.title}
+            </Breadcrumbs.Part>
+          ))}
         </Breadcrumbs>
         <PinDatasetButton link={datasetLink} />
         {dataset.permissions.createVersion && isWorkspaceSource && (
@@ -124,18 +133,38 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
               />
             )}
           </Block.Header>
-          <Block.Content className="space-y-2">{children}</Block.Content>
+          <Block.Content className="space-y-2">
+            <DatasetTabs
+              tabs={[
+                {
+                  label: t("Description"),
+                  href: `/workspaces/${encodeURIComponent(
+                    workspace.slug,
+                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/`,
+                },
+                {
+                  label: t("Data files"),
+                  href: `/workspaces/${encodeURIComponent(
+                    workspace.slug,
+                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/files/`,
+                },
+                {
+                  label: t("Access Management"),
+                  href: `/workspaces/${encodeURIComponent(
+                    workspace.slug,
+                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/access/`,
+                },
+              ]}
+            >
+              {children}
+            </DatasetTabs>
+          </Block.Content>
         </Block>
       </WorkspaceLayout.PageContent>
       <UploadDatasetVersionDialog
         open={isUploadDialogOpen}
         onClose={() => setUploadDialogOpen(false)}
         datasetLink={datasetLink}
-      />
-      <LinkDatasetDialog
-        dataset={datasetLink.dataset}
-        open={isLinkDialogOpen}
-        onClose={() => setLinkDialogOpen(false)}
       />
     </WorkspaceLayout>
   );

@@ -1,3 +1,3 @@
-import DatasetFilesDataGrid from "./DatasetFileDataGrid";
+import DatasetFileDataGrid from "./DatasetFileDataGrid";
 
-export default DatasetFilesDataGrid;
+export default DatasetFileDataGrid;
