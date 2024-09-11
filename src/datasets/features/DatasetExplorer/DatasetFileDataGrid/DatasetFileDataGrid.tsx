@@ -19,7 +19,7 @@ const DatasetFileDataGrid = (props: DatasetFileDataGridProps) => {
   const { t } = useTranslation();
 
   const [displayColumns, setDisplayColumns] = useState<string[]>([]);
-  const { data } = useQuery<
+  const { data, loading } = useQuery<
     DatasetFileDataGridQuery,
     DatasetFileDataGridQueryVariables
   >(
@@ -29,6 +29,7 @@ const DatasetFileDataGrid = (props: DatasetFileDataGridProps) => {
           id
           fileSample {
             sample
+            status
           }
         }
       }

@@ -67,12 +67,13 @@ const WorkspaceDatasetAccessManagementPage: NextPageWithLayout = (
         workspace={workspace}
         extraBreadcrumbs={[
           {
-            title: t("Access Management"),
+            title: t("Access management"),
             href: `/workspaces/${encodeURIComponent(
               workspace.slug,
             )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/access`,
           },
         ]}
+        tab="access"
       >
         <div className="space-y-4">
           <div className={"flex flex justify-end"}>
@@ -122,6 +123,12 @@ export const getServerSideProps = createGetServerSideProps({
     });
 
     if (!data.datasetLink) {
+      return { notFound: true };
+    }
+
+    const { dataset, workspace } = data.datasetLink;
+    // in case it's not the source dataset, we should not display the access management page
+    if (workspace.slug !== dataset.workspace?.slug) {
       return { notFound: true };
     }
 

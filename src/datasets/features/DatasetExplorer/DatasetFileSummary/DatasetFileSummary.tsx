@@ -15,6 +15,7 @@ type DatasetFileSummaryProps = {
 const DatasetFileSummary = (props: DatasetFileSummaryProps) => {
   const { file } = props;
   const { t } = useTranslation();
+
   return (
     <Block>
       <Block.Content className="space-y-4 min-screen">
@@ -40,14 +41,13 @@ const DatasetFileSummary = (props: DatasetFileSummaryProps) => {
                 DateTime.DATE_FULL,
               )}
           </DescriptionList.Item>
-          <DescriptionList.Item label={t("Size")}>N/A</DescriptionList.Item>
         </DescriptionList>
       </Block.Content>
     </Block>
   );
 };
 
-DatasetFileSummary.fragment = {
+DatasetFileSummary.fragments = {
   file: gql`
     fragment DatasetFileSummary_file on DatasetVersionFile {
       id

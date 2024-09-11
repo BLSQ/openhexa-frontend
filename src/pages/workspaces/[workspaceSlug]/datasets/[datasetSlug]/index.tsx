@@ -72,7 +72,11 @@ const WorkspaceDatasetPage: NextPageWithLayout = (
 
   return (
     <Page title={datasetLink.dataset.name ?? t("Dataset")}>
-      <DatasetLayout datasetLink={data.datasetLink} workspace={workspace}>
+      <DatasetLayout
+        datasetLink={data.datasetLink}
+        workspace={workspace}
+        tab="description"
+      >
         <DataCard
           item={datasetLink.dataset}
           className="divide-y-2 space-y-2 divide-gray-100 shadow-none"

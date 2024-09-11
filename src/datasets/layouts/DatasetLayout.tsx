@@ -8,20 +8,51 @@ import Button from "core/components/Button";
 import DeleteDatasetTrigger from "../features/DeleteDatasetTrigger";
 import { useRouter } from "next/router";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { WorkspaceDatasetPageQuery } from "workspaces/graphql/queries.generated";
 import DatasetVersionPicker from "../features/DatasetVersionPicker";
 import Block from "core/components/Block";
 import { capitalize } from "lodash";
-import DatasetTabs from "../features/DatasetTabs";
+import Link, { LinkProps } from "core/components/Link";
+import clsx from "clsx";
+
+const TabLink = (
+  props: LinkProps & {
+    className: string;
+    selected?: boolean;
+    label: string;
+  },
+) => {
+  const { selected, label, ...rest } = props;
+  return (
+    <Link
+      {...rest}
+      className={clsx(
+        "cursor-pointer whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide",
+        selected
+          ? "border-blue-500 text-blue-600"
+          : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+      )}
+    >
+      {label}
+    </Link>
+  );
+};
 
 type DatasetLayoutProps = {
   datasetLink: WorkspaceDatasetPageQuery["datasetLink"];
+  tab: string;
   extraBreadcrumbs?: { href: string; title: string }[];
 } & WorkspaceLayoutProps;
 
 const DatasetLayout = (props: DatasetLayoutProps) => {
-  const { children, datasetLink, workspace, extraBreadcrumbs = [] } = props;
+  const {
+    children,
+    datasetLink,
+    workspace,
+    tab,
+    extraBreadcrumbs = [],
+  } = props;
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -134,33 +165,54 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
             )}
           </Block.Header>
           <Block.Content className="space-y-2">
-            <DatasetTabs
-              tabs={[
-                {
-                  label: t("Description"),
-                  match: `/${datasetLink.dataset.slug}/$`,
-                  href: `/workspaces/${encodeURIComponent(
-                    workspace.slug,
-                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}`,
-                },
-                {
-                  label: t("Data files"),
-                  match: "/files(/.*)?$",
-                  href: `/workspaces/${encodeURIComponent(
-                    workspace.slug,
-                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/files`,
-                },
-                {
-                  label: t("Access Management"),
-                  match: `/access/?$`,
-                  href: `/workspaces/${encodeURIComponent(
-                    workspace.slug,
-                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/access`,
-                },
-              ]}
-            >
-              {children}
-            </DatasetTabs>
+            <div className="-mb-px flex space-x-8 border-b border-gray-200 text-sm font-medium ">
+              <TabLink
+                href={{
+                  pathname:
+                    "/workspaces/[workspaceSlug]/datasets/[datasetSlug]",
+                  query: {
+                    workspaceSlug: workspace.slug,
+                    datasetSlug: dataset.slug,
+                  },
+                }}
+                className="whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide border-blue-500 text-blue-600"
+                label={t("Description")}
+                selected={tab == "description"}
+              />
+              <TabLink
+                href={{
+                  pathname:
+                    "/workspaces/[workspaceSlug]/datasets/[datasetSlug]/files",
+                  query: {
+                    workspaceSlug: workspace.slug,
+                    datasetSlug: dataset.slug,
+                  },
+                }}
+                selected={tab == "files"}
+                className="whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide border-blue-500 text-blue-600"
+                role="tab"
+                label={t("Data files")}
+              >
+                {t("Data files")}
+              </TabLink>
+              {isWorkspaceSource && (
+                <TabLink
+                  href={{
+                    pathname:
+                      "/workspaces/[workspaceSlug]/datasets/[datasetSlug]/access",
+                    query: {
+                      workspaceSlug: workspace.slug,
+                      datasetSlug: dataset.slug,
+                    },
+                  }}
+                  className="whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide border-blue-500 text-blue-600"
+                  role="tab"
+                  selected={tab == "access"}
+                  label={t("Access management")}
+                />
+              )}
+            </div>
+            {children}
           </Block.Content>
         </Block>
       </WorkspaceLayout.PageContent>

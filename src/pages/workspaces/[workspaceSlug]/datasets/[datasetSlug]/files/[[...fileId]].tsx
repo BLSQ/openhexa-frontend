@@ -2,8 +2,8 @@ import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 import {
+  useWorkspaceDatasetFilePageQuery,
   useWorkspaceDatasetPageQuery,
   WorkspaceDatasetFilePageDocument,
   WorkspaceDatasetFilePageQuery,
@@ -31,7 +31,6 @@ const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
     props;
 
   const { t } = useTranslation();
-  const router = useRouter();
   const { data, refetch } = useWorkspaceDatasetPageQuery({
     variables: {
       workspaceSlug,
@@ -40,6 +39,7 @@ const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
       isSpecificVersion,
     },
   });
+
   useCacheKey(["datasets"], () => refetch());
 
   useEffect(() => {
@@ -53,9 +53,14 @@ const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
     }
   }, []);
 
+  const file = useWorkspaceDatasetFilePageQuery({
+    variables: { fileId: fileId },
+  });
+
   if (!data?.datasetLink) {
     return null;
   }
+
   const { datasetLink } = data;
   const { dataset, workspace } = datasetLink;
   const version = dataset.version || dataset.latestVersion || null;
@@ -73,9 +78,13 @@ const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
             )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/files`,
           },
         ]}
+        tab="files"
       >
         {version ? (
-          <DatasetExplorer version={version} fileId={fileId} />
+          <DatasetExplorer
+            version={version}
+            currentFile={file.data?.datasetVersionFile}
+          />
         ) : (
           <p className={"italic text-gray-500"}>
             {t(
@@ -114,6 +123,7 @@ export const getServerSideProps = createGetServerSideProps({
       return { notFound: true };
     }
 
+    // optional route parameters
     const fileArr = (ctx.query.fileId as string[]) ?? [];
     if (fileArr.length > 1) {
       return { notFound: true };

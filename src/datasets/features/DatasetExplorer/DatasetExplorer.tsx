@@ -9,19 +9,17 @@ import DatasetFileDataGrid from "./DatasetFileDataGrid";
 import Block from "core/components/Block";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import { getDatasetVersionFile } from "datasets/helpers/dataset";
+import { gql } from "@apollo/client";
+import { DatasetExplorerFile_FileFragment } from "./DatasetExplorer.generated";
 
 type DatasetExplorerProps = {
   version: Pick<DatasetVersion, "id"> | null;
-  fileId?: string;
+  currentFile?: DatasetExplorerFile_FileFragment | null;
 };
 
-const DatasetExplorer = ({ version, fileId = "" }: DatasetExplorerProps) => {
+const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
   const router = useRouter();
   const { t } = useTranslation();
-  const [selectedFile, setSelectedFile] = useState<
-    DatasetVersionFile | null | undefined
-  >(null);
 
   const onFileSelected = (file: DatasetFileType) => {
     router.push({
@@ -29,14 +27,6 @@ const DatasetExplorer = ({ version, fileId = "" }: DatasetExplorerProps) => {
       query: { ...router.query, version: version?.id, fileId: file.id },
     });
   };
-
-  useEffect(() => {
-    if (fileId) {
-      getDatasetVersionFile(fileId)
-        .then(setSelectedFile)
-        .catch((err) => setSelectedFile(null));
-    }
-  }, [fileId]);
 
   if (!version) {
     return null;
@@ -46,13 +36,13 @@ const DatasetExplorer = ({ version, fileId = "" }: DatasetExplorerProps) => {
     <div className="grid grid-cols-4 gap-4">
       <DatasetFilesExplorer version={version} onClick={onFileSelected} />
       <div className="col-span-3 py-2 space-y-4">
-        {selectedFile ? (
+        {currentFile ? (
           <>
-            <DatasetFileSummary file={selectedFile} />
+            <DatasetFileSummary file={currentFile} />
             <Block className="py-2 px-4 space-y-8">
               <Tabs>
                 <Tabs.Tab label={t("Sample")} className="h-full">
-                  <DatasetFileDataGrid file={selectedFile} />
+                  <DatasetFileDataGrid file={currentFile} />
                 </Tabs.Tab>
               </Tabs>
             </Block>
@@ -68,6 +58,25 @@ const DatasetExplorer = ({ version, fileId = "" }: DatasetExplorerProps) => {
       </div>
     </div>
   );
+};
+
+DatasetExplorer.fragments = {
+  file: gql`
+    fragment DatasetExplorerFile_file on DatasetVersionFile {
+      id
+      filename
+      ...DatasetFileSummary_file
+      ...DatasetFileDataGrid_file
+    }
+    ${DatasetFileSummary.fragments.file}
+  `,
+  version: gql`
+    fragment DatasetExplorerVersion on DatasetVersion {
+      id
+      ...DatasetFilesExplorer_version
+    }
+    ${DatasetFilesExplorer.fragments.version}
+  `,
 };
 
 export default DatasetExplorer;
