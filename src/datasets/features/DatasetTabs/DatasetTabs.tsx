@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Tab as HeadlessTab } from "@headlessui/react";
 import clsx from "clsx";
 
-export type DatasetTabType = { label: string; href: string };
+export type DatasetTabType = { label: string; href: string; match: string };
 
 type DatasetTabsProps = {
   children: ReactElement | ReactElement[];
@@ -15,8 +15,16 @@ const DatasetTabs = (props: DatasetTabsProps) => {
   const { children, tabs = [] } = props;
 
   const isActiveTab = useCallback(
-    (tab: DatasetTabType) => tab.href === router.asPath,
-    [],
+    (tab: DatasetTabType) => {
+      try {
+        const regex = new RegExp(tab.match);
+        return regex.test(router.asPath);
+      } catch (error) {
+        console.error(`Invalid regex in tab match: ${tab.match}`, error);
+        return false;
+      }
+    },
+    [router.asPath],
   );
 
   return (

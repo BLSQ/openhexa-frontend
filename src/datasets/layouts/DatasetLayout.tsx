@@ -8,7 +8,7 @@ import Button from "core/components/Button";
 import DeleteDatasetTrigger from "../features/DeleteDatasetTrigger";
 import { useRouter } from "next/router";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 import { WorkspaceDatasetPageQuery } from "workspaces/graphql/queries.generated";
 import DatasetVersionPicker from "../features/DatasetVersionPicker";
 import Block from "core/components/Block";
@@ -138,21 +138,24 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
               tabs={[
                 {
                   label: t("Description"),
+                  match: `/${datasetLink.dataset.slug}/$`,
                   href: `/workspaces/${encodeURIComponent(
                     workspace.slug,
-                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/`,
+                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}`,
                 },
                 {
                   label: t("Data files"),
+                  match: "/files(/.*)?$",
                   href: `/workspaces/${encodeURIComponent(
                     workspace.slug,
-                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/files/`,
+                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/files`,
                 },
                 {
                   label: t("Access Management"),
+                  match: `/access/?$`,
                   href: `/workspaces/${encodeURIComponent(
                     workspace.slug,
-                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/access/`,
+                  )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/access`,
                 },
               ]}
             >
