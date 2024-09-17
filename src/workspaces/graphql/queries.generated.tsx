@@ -35,6 +35,7 @@ import { DatabaseVariablesSection_WorkspaceFragmentDoc } from '../features/Datab
 import { DatabaseTableDataGrid_TableFragmentDoc, DatabaseTableDataGrid_WorkspaceFragmentDoc } from '../features/DatabaseTableDataGrid/DatabaseTableDataGrid.generated';
 import { DatasetFileSummary_FileFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFileSummary/DatasetFileSummary.generated';
 import { DatasetFileDataGrid_FileFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFileDataGrid/DatasetFileDataGrid.generated';
+import { DatasetFileMetadata_FileFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFileMetadata/DatasetFileMetadata.generated';
 import { CreateConnectionDialog_WorkspaceFragmentDoc } from '../features/CreateConnectionDialog/CreateConnectionDialog.generated';
 import { ConnectionUsageSnippets_ConnectionFragmentDoc } from '../features/ConnectionUsageSnippets/ConnectionUsageSnippets.generated';
 import { ConnectionFieldsSection_ConnectionFragmentDoc } from '../features/ConnectionFieldsSection/ConnectionFieldsSection.generated';
@@ -157,7 +158,7 @@ export type WorkspaceDatasetFilePageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspaceDatasetFilePageQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, uri: string, filename: string, createdAt: any, contentType: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null, status: Types.FileSampleStatus } | null } | null };
+export type WorkspaceDatasetFilePageQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, uri: string, filename: string, createdAt: any, contentType: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null, status: Types.FileSampleStatus } | null, metadata: { __typename?: 'MetadataObject', attributes: Array<{ __typename?: 'MetadataAttribute', id: string, key: string, value?: any | null }> } } | null };
 
 export type ConnectionsPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
@@ -1082,10 +1083,12 @@ export const WorkspaceDatasetFilePageDocument = gql`
     contentType
     ...DatasetFileSummary_file
     ...DatasetFileDataGrid_file
+    ...DatasetFileMetadata_file
   }
 }
     ${DatasetFileSummary_FileFragmentDoc}
-${DatasetFileDataGrid_FileFragmentDoc}`;
+${DatasetFileDataGrid_FileFragmentDoc}
+${DatasetFileMetadata_FileFragmentDoc}`;
 
 /**
  * __useWorkspaceDatasetFilePageQuery__

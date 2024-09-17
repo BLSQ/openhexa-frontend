@@ -213,14 +213,6 @@ export const getServerSideProps = createGetServerSideProps({
     if (!data.datasetLink) {
       return { notFound: true };
     }
-    // If we have a versionId or there is a version in the dataset, prefetch the files
-    if (versionId || data.datasetLink.dataset.latestVersion?.id) {
-      await DatasetVersionFilesDataGrid.prefetch(client, {
-        perPage: 10,
-        versionId: (versionId ||
-          data.datasetLink.dataset.latestVersion?.id) as string,
-      });
-    }
 
     return {
       props: variables,

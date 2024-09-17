@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useMemo, useState } from "react";
 import DatasetFilesExplorer from "./DatasetFilesExplorer";
 import { DatasetFileType } from "./DatasetFilesExplorer/DatasetFilesExplorer";
-import { DatasetVersion, FileSampleStatus } from "graphql/types";
+import { FileSampleStatus } from "graphql/types";
 import DatasetFileSummary from "./DatasetFileSummary";
 import Tabs from "core/components/Tabs";
 import DatasetFileDataGrid from "./DatasetFileDataGrid";
@@ -13,14 +13,18 @@ import {
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import { gql } from "@apollo/client";
-import { DatasetExplorerFile_FileFragment } from "./DatasetExplorer.generated";
 import Button from "core/components/Button";
 import Popover from "core/components/Popover";
 import Checkbox from "core/components/forms/Checkbox";
 import DownloadVersionFile from "../DownloadVersionFile";
+import DatasetFileMetadata from "./DatasetFileMetadata";
+import {
+  DatasetExplorerDatasetVersion_VersionFragment,
+  DatasetExplorerFile_FileFragment,
+} from "./DatasetExplorer.generated";
 
 type DatasetExplorerProps = {
-  version: Pick<DatasetVersion, "id"> | null;
+  version: DatasetExplorerDatasetVersion_VersionFragment;
   currentFile?: DatasetExplorerFile_FileFragment | null;
 };
 
@@ -40,7 +44,6 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
         const parsedData = JSON.parse(fileSample.sample);
         if (Array.isArray(parsedData)) {
           const cols = Object.keys(parsedData[0]);
-          cols.sort((a, b) => (a > b ? 1 : -1));
           setDisplayColumns(cols);
           return cols;
         }
@@ -71,9 +74,9 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
             <DatasetFileSummary file={currentFile} />
             <Block className="py-2 px-4 space-y-2">
               <Tabs>
-                <Tabs.Tab label={t("Sample")}>
+                <Tabs.Tab label={t("Sample")} className="space-y-2">
                   <div className="space-y-2">
-                    {currentFile && (
+                    {currentFile.fileSample && (
                       <div className="flex flex justify-end">
                         <Popover
                           placement="bottom-start"
@@ -151,15 +154,19 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
                     />
                   </div>
                 </Tabs.Tab>
+                <Tabs.Tab
+                  label={t("Metadata")}
+                  className="max-h-[50vh] overflow-y-scroll"
+                >
+                  <DatasetFileMetadata file={currentFile} />
+                </Tabs.Tab>
               </Tabs>
             </Block>
           </>
         ) : (
           <div className="flex flex-col items-center justify-center text-gray-500">
             <MagnifyingGlassIcon className="w-8 h-8 mb-2" />
-            <p>
-              {t("Please select a file to view its sample data and metadata.")}
-            </p>
+            <p>{t("Select a file to view its sample data and metadata.")}</p>
           </div>
         )}
       </div>
@@ -174,12 +181,14 @@ DatasetExplorer.fragments = {
       filename
       ...DatasetFileSummary_file
       ...DatasetFileDataGrid_file
+      ...DatasetFileMetadata_file
     }
     ${DatasetFileSummary.fragments.file}
     ${DatasetFileDataGrid.fragments.file}
+    ${DatasetFileMetadata.fragments.file}
   `,
   version: gql`
-    fragment DatasetExplorerVersion on DatasetVersion {
+    fragment DatasetExplorerDatasetVersion_version on DatasetVersion {
       id
       ...DatasetFilesExplorer_version
     }

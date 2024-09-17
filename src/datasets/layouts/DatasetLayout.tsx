@@ -153,8 +153,8 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
         <Block className="py-4 min-h-[70vh]">
-          <Block.Header className="flex gap-4 items-center justify-between">
-            {capitalize(datasetLink.dataset.name)}
+          <Block.Header className="flex gap-4 items-center justify-between capitalize">
+            {datasetLink.dataset.name}
             {version && (
               <DatasetVersionPicker
                 onChange={onChangeVersion}
@@ -164,8 +164,8 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
               />
             )}
           </Block.Header>
-          <Block.Content className="space-y-2">
-            <div className="-mb-px flex space-x-8 border-b border-gray-200 text-sm font-medium ">
+          <Block.Content className="space-y-4">
+            <div className="flex space-x-8 border-b border-gray-200 text-sm font-medium">
               <TabLink
                 href={{
                   pathname:

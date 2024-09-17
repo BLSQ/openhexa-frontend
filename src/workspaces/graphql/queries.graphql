@@ -430,8 +430,11 @@ query WorkspaceDatasetFilePage($fileId: ID!) {
     contentType
     ...DatasetFileSummary_file
     ...DatasetFileDataGrid_file
+    ...DatasetFileMetadata_file
   }
 }
+
+
 query ConnectionsPage($workspaceSlug: String!) {
   workspace(slug: $workspaceSlug) {
     slug

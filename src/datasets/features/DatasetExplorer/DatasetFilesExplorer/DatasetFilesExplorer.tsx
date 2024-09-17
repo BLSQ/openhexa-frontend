@@ -5,7 +5,7 @@ import {
   DatasetFilesExplorerQueryVariables,
 } from "./DatasetFilesExplorer.generated";
 import { DatasetVersion } from "graphql/types";
-import Block from "core/components/Block";
+import Title from "core/components/Title";
 
 export type DatasetFileType = {
   id: string;
@@ -63,32 +63,32 @@ const DatasetFilesExplorer = (props: DatasetFilesExplorerProps) => {
   }
 
   return (
-    <Block className="shadow-none space-y-4 h-96 overflow-y-scroll">
-      <Block.Header>
-        <span className="text-gray-500">{t("Filename")}</span>
-      </Block.Header>
-      <Block.Content className="flex flex-col divide-y divide-gray-200 ">
+    <div className="space-y-4 px-1 max-h-[50vh] overflow-auto">
+      <Title level={2} className="text-gray-500">
+        {t("Filename")}
+      </Title>
+      <div className="flex flex-col divide-y divide-gray-200 ">
         {files?.items.map((file: DatasetFileType) => (
           <div
             className="py-2.5 hover:bg-gray-100 cursor-pointer"
             key={file.id}
             onClick={() => onClick(file)}
           >
-            <span className="text-sm text-gray-500">{file.filename}</span>
+            <span className="text-sm text-gray-700">{file.filename}</span>
           </div>
         ))}
         {files.items.length !== files.totalItems && (
           <div className="pb-2 text-center">
             <button
-              onClick={() => showMore()}
+              onClick={showMore}
               className="ml-4 inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-400"
             >
               {t("Show more")}
             </button>
           </div>
         )}
-      </Block.Content>
-    </Block>
+      </div>
+    </div>
   );
 };
 
