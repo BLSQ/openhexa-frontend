@@ -1024,15 +1024,16 @@ export type DatabaseTablePage = {
 };
 
 /** Dataset is a collection of files that are related to each other and are versioned. */
-export type Dataset = {
+export type Dataset = HasMetadata & {
   __typename?: "Dataset";
   createdAt: Scalars["DateTime"]["output"];
   createdBy?: Maybe<User>;
   description?: Maybe<Scalars["String"]["output"]>;
+  extendedId: Scalars["String"]["output"];
   id: Scalars["ID"]["output"];
   latestVersion?: Maybe<DatasetVersion>;
   links: DatasetLinkPage;
-  metadata?: Maybe<MetadataObject>;
+  metadata: MetadataObject;
   name: Scalars["String"]["output"];
   permissions: DatasetPermissions;
   slug: Scalars["String"]["output"];
@@ -1118,16 +1119,17 @@ export type DatasetPermissions = {
 };
 
 /** A version of a dataset. A version is a snapshot of the dataset at a point in time. */
-export type DatasetVersion = {
+export type DatasetVersion = HasMetadata & {
   __typename?: "DatasetVersion";
   createdAt: Scalars["DateTime"]["output"];
   createdBy?: Maybe<User>;
   dataset: Dataset;
   description?: Maybe<Scalars["String"]["output"]>;
+  extendedId: Scalars["String"]["output"];
   fileByName?: Maybe<DatasetVersionFile>;
   files: DatasetVersionFilePage;
   id: Scalars["ID"]["output"];
-  metadata?: Maybe<MetadataObject>;
+  metadata: MetadataObject;
   name: Scalars["String"]["output"];
   permissions: DatasetVersionPermissions;
 };
@@ -1144,15 +1146,16 @@ export type DatasetVersionFilesArgs = {
 };
 
 /** A file in a dataset version. */
-export type DatasetVersionFile = {
+export type DatasetVersionFile = HasMetadata & {
   __typename?: "DatasetVersionFile";
   contentType: Scalars["String"]["output"];
   createdAt: Scalars["DateTime"]["output"];
   createdBy?: Maybe<User>;
+  extendedId: Scalars["String"]["output"];
   fileSample?: Maybe<DatasetFileSample>;
   filename: Scalars["String"]["output"];
   id: Scalars["ID"]["output"];
-  metadata?: Maybe<MetadataObject>;
+  metadata: MetadataObject;
   uri: Scalars["String"]["output"];
 };
 
@@ -1387,9 +1390,8 @@ export type DeleteMembershipResult = {
 
 /** Input to delete custom attribute */
 export type DeleteMetadataAttributeInput = {
-  id: Scalars["UUID"]["input"];
+  extendedId: Scalars["String"]["input"];
   key: Scalars["String"]["input"];
-  modelType: Scalars["String"]["input"];
 };
 
 /** Represents the input for deleting a pipeline. */
@@ -1688,6 +1690,12 @@ export type GenericOutput = {
   uri: Scalars["String"]["output"];
 };
 
+/** Interface for type implementing metadata */
+export type HasMetadata = {
+  extendedId: Scalars["String"]["output"];
+  metadata: MetadataObject;
+};
+
 /** Represents the input for inviting a member to a workspace. */
 export type InviteWorkspaceMemberInput = {
   role: WorkspaceMembershipRole;
@@ -1933,9 +1941,8 @@ export type MetadataAttribute = {
 
 /** Input to add or edit a custom attribute, empty field for value is accepted */
 export type MetadataAttributeInput = {
-  id: Scalars["UUID"]["input"];
+  extendedId: Scalars["String"]["input"];
   key: Scalars["String"]["input"];
-  modelType: Scalars["String"]["input"];
   value?: InputMaybe<Scalars["JSON"]["input"]>;
 };
 
@@ -1968,8 +1975,8 @@ export enum MetadataEditAttributeError {
 export type MetadataObject = {
   __typename?: "MetadataObject";
   attributes: Array<MetadataAttribute>;
-  id: Scalars["UUID"]["output"];
-  linkedObject?: Maybe<LinkedObject>;
+  id: Scalars["String"]["output"];
+  object: LinkedObject;
 };
 
 export type Mutation = {
@@ -2920,6 +2927,7 @@ export type Query = {
   datasets: DatasetPage;
   /** Retrieves the currently authenticated user. */
   me: Me;
+  metadata: MetadataObject;
   notebooksUrl: Scalars["URL"]["output"];
   /** Retrieves a list of organizations. */
   organizations: Array<Organization>;
@@ -3046,6 +3054,10 @@ export type QueryDatasetsArgs = {
   page?: InputMaybe<Scalars["Int"]["input"]>;
   perPage?: InputMaybe<Scalars["Int"]["input"]>;
   query?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type QueryMetadataArgs = {
+  extendedId: Scalars["String"]["input"];
 };
 
 export type QueryPendingWorkspaceInvitationsArgs = {

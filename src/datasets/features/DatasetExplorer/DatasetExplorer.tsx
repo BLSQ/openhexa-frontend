@@ -1,16 +1,23 @@
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import DatasetFilesExplorer from "./DatasetFilesExplorer";
 import { DatasetFileType } from "./DatasetFilesExplorer/DatasetFilesExplorer";
-import { DatasetVersion, DatasetVersionFile } from "graphql/types";
+import { DatasetVersion, FileSampleStatus } from "graphql/types";
 import DatasetFileSummary from "./DatasetFileSummary";
 import Tabs from "core/components/Tabs";
 import DatasetFileDataGrid from "./DatasetFileDataGrid";
 import Block from "core/components/Block";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import {
+  MagnifyingGlassIcon,
+  ViewColumnsIcon,
+} from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 import { gql } from "@apollo/client";
 import { DatasetExplorerFile_FileFragment } from "./DatasetExplorer.generated";
+import Button from "core/components/Button";
+import Popover from "core/components/Popover";
+import Checkbox from "core/components/forms/Checkbox";
+import DownloadVersionFile from "../DownloadVersionFile";
 
 type DatasetExplorerProps = {
   version: Pick<DatasetVersion, "id"> | null;
@@ -18,8 +25,31 @@ type DatasetExplorerProps = {
 };
 
 const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
-  const router = useRouter();
   const { t } = useTranslation();
+  const router = useRouter();
+  const [displayColumns, setDisplayColumns] = useState<string[]>([]);
+
+  //todo fix the sample format on the back-end to remove this function
+  const columns = useMemo(() => {
+    if (
+      currentFile?.fileSample &&
+      currentFile.fileSample.status === FileSampleStatus.Finished
+    ) {
+      const { fileSample } = currentFile;
+      try {
+        const parsedData = JSON.parse(fileSample.sample);
+        if (Array.isArray(parsedData)) {
+          const cols = Object.keys(parsedData[0]);
+          cols.sort((a, b) => (a > b ? 1 : -1));
+          setDisplayColumns(cols);
+          return cols;
+        }
+      } catch (error) {
+        console.log("Error parsing sample data:", error);
+      }
+    }
+    return [];
+  }, [currentFile]);
 
   const onFileSelected = (file: DatasetFileType) => {
     router.push({
@@ -39,10 +69,87 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
         {currentFile ? (
           <>
             <DatasetFileSummary file={currentFile} />
-            <Block className="py-2 px-4 space-y-8">
+            <Block className="py-2 px-4 space-y-2">
               <Tabs>
-                <Tabs.Tab label={t("Sample")} className="h-full">
-                  <DatasetFileDataGrid file={currentFile} />
+                <Tabs.Tab label={t("Sample")}>
+                  <div className="space-y-2">
+                    {currentFile && (
+                      <div className="flex flex justify-end">
+                        <Popover
+                          placement="bottom-start"
+                          withPortal
+                          as="div"
+                          trigger={
+                            <Button
+                              leadingIcon={
+                                <ViewColumnsIcon className="h-4 w-4" />
+                              }
+                              size="sm"
+                            >
+                              {t("Select columns")}
+                            </Button>
+                          }
+                        >
+                          <p className="mb-2 text-sm">
+                            {t("Select the columns to display in the grid")}
+                          </p>
+                          <div className="max-h-96 overflow-y-auto pb-2 ">
+                            {columns.map((column) => (
+                              <div
+                                key={column}
+                                className="flex items-center py-1.5"
+                              >
+                                <Checkbox
+                                  name={column}
+                                  label={column}
+                                  checked={displayColumns.some(
+                                    (c) => c === column,
+                                  )}
+                                  onChange={(event) =>
+                                    event.target.checked
+                                      ? setDisplayColumns([
+                                          ...displayColumns,
+                                          column,
+                                        ])
+                                      : setDisplayColumns(
+                                          displayColumns.filter(
+                                            (c) => c !== column,
+                                          ),
+                                        )
+                                  }
+                                />
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-2 flex justify-end gap-2 ">
+                            <Button
+                              size="sm"
+                              variant="outlined"
+                              onClick={() => setDisplayColumns(columns)}
+                            >
+                              {t("Select all")}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outlined"
+                              onClick={() => setDisplayColumns([])}
+                            >
+                              {t("Select none")}
+                            </Button>
+                          </div>
+                        </Popover>
+                        <DownloadVersionFile
+                          file={currentFile}
+                          variant="outlined"
+                          size="sm"
+                        />
+                      </div>
+                    )}
+                    <DatasetFileDataGrid
+                      file={currentFile}
+                      columns={displayColumns}
+                    />
+                  </div>
                 </Tabs.Tab>
               </Tabs>
             </Block>
@@ -69,6 +176,7 @@ DatasetExplorer.fragments = {
       ...DatasetFileDataGrid_file
     }
     ${DatasetFileSummary.fragments.file}
+    ${DatasetFileDataGrid.fragments.file}
   `,
   version: gql`
     fragment DatasetExplorerVersion on DatasetVersion {

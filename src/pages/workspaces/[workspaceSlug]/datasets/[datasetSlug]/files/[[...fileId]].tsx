@@ -53,8 +53,10 @@ const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
     }
   }, []);
 
+  // todo should include the file version to check if the file exist in a specified version
   const file = useWorkspaceDatasetFilePageQuery({
     variables: { fileId: fileId },
+    skip: !fileId,
   });
 
   if (!data?.datasetLink) {
@@ -128,7 +130,7 @@ export const getServerSideProps = createGetServerSideProps({
     if (fileArr.length > 1) {
       return { notFound: true };
     }
-
+    // todo handle case when file doesnt exist in a selected version
     const fileId = fileArr[0] ?? "";
     if (fileId) {
       const { data } = await client.query<

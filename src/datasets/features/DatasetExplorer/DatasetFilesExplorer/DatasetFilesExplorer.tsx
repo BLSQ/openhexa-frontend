@@ -47,7 +47,7 @@ const DatasetFilesExplorer = (props: DatasetFilesExplorerProps) => {
         }
       }
     `,
-    { variables: { versionId: version.id, perPage: 2 } },
+    { variables: { versionId: version.id, perPage: 10 } },
   );
 
   const files = data?.datasetVersion?.files;

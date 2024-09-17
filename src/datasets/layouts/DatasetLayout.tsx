@@ -8,7 +8,7 @@ import Button from "core/components/Button";
 import DeleteDatasetTrigger from "../features/DeleteDatasetTrigger";
 import { useRouter } from "next/router";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { ReactElement, useState } from "react";
+import { useState } from "react";
 import { WorkspaceDatasetPageQuery } from "workspaces/graphql/queries.generated";
 import DatasetVersionPicker from "../features/DatasetVersionPicker";
 import Block from "core/components/Block";
@@ -113,7 +113,7 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
           {extraBreadcrumbs?.map((breadcrumbsPart, index) => (
             <Breadcrumbs.Part
               key={index}
-              isLast={extraBreadcrumbs.length == index}
+              isLast={extraBreadcrumbs.length - 1 == index}
               href={breadcrumbsPart.href}
             >
               {breadcrumbsPart.title}

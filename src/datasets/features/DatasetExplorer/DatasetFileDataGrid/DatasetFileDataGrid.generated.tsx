@@ -10,11 +10,15 @@ export type DatasetFileDataGridQueryVariables = Types.Exact<{
 
 export type DatasetFileDataGridQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null, status: Types.FileSampleStatus } | null } | null };
 
-export type DatasetFileDataGrid_FileFragment = { __typename?: 'DatasetVersionFile', id: string };
+export type DatasetFileDataGrid_FileFragment = { __typename?: 'DatasetVersionFile', id: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null, status: Types.FileSampleStatus } | null };
 
 export const DatasetFileDataGrid_FileFragmentDoc = gql`
     fragment DatasetFileDataGrid_file on DatasetVersionFile {
   id
+  fileSample {
+    sample
+    status
+  }
 }
     `;
 export const DatasetFileDataGridDocument = gql`

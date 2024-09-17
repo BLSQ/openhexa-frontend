@@ -1,24 +1,25 @@
 import { gql, useQuery } from "@apollo/client";
 import DataGrid from "core/components/DataGrid/DataGrid";
-
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import { useTranslation } from "next-i18next";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
-  DatasetFileDataGrid_FileFragment,
   DatasetFileDataGridQuery,
   DatasetFileDataGridQueryVariables,
+  DatasetFileDataGrid_FileFragment,
 } from "./DatasetFileDataGrid.generated";
+import Spinner from "core/components/Spinner";
+import { FileSampleStatus } from "graphql/types";
 
 type DatasetFileDataGridProps = {
   file: DatasetFileDataGrid_FileFragment;
+  columns: string[];
 };
 
 const DatasetFileDataGrid = (props: DatasetFileDataGridProps) => {
-  const { file } = props;
   const { t } = useTranslation();
+  const { file, columns } = props;
 
-  const [displayColumns, setDisplayColumns] = useState<string[]>([]);
   const { data, loading } = useQuery<
     DatasetFileDataGridQuery,
     DatasetFileDataGridQueryVariables
@@ -36,16 +37,14 @@ const DatasetFileDataGrid = (props: DatasetFileDataGridProps) => {
     `,
     { variables: { id: file.id } },
   );
-
   const fileSample = data?.datasetVersionFile?.fileSample;
 
+  //todo fix the sample format on the back-end to remove this function
   const sample = useMemo(() => {
-    if (fileSample?.sample) {
+    if (fileSample?.sample && fileSample.status === FileSampleStatus.Finished) {
       try {
         const parsedData = JSON.parse(fileSample.sample);
         if (Array.isArray(parsedData)) {
-          const columns = Object.keys(parsedData[0]);
-          setDisplayColumns(columns);
           return parsedData;
         }
       } catch (error) {
@@ -57,35 +56,60 @@ const DatasetFileDataGrid = (props: DatasetFileDataGridProps) => {
 
   return (
     <div>
-      {sample && sample?.length > 0 ? (
-        <DataGrid
-          data={sample ?? []}
-          defaultPageSize={10}
-          fixedLayout={false}
-          totalItems={sample.length}
-        >
-          {displayColumns.map((column, id) => (
-            <TextColumn
-              key={id}
-              name={column}
-              label={column}
-              accessor={column}
-            />
-          ))}
-        </DataGrid>
-      ) : (
-        <p className="text-center text-gray-500">
-          {t("Sample data not available.")}
-        </p>
+      {loading && (
+        <div className="flex justify-center">
+          <Spinner size="md" />
+        </div>
+      )}
+      {!loading && (
+        <div>
+          {(fileSample?.status == FileSampleStatus.Failed || !fileSample) && (
+            <p className="text-center text-gray-500">
+              {t("Sample data not available.")}
+            </p>
+          )}
+          {fileSample?.status == FileSampleStatus.Processing && (
+            <p className="text-center text-gray-500">
+              {t(
+                "We're working on generating your data sample.This may take a few moments. Please refresh the page periodically to view the results.",
+              )}
+            </p>
+          )}
+          {fileSample?.status == FileSampleStatus.Finished &&
+            sample?.length > 0 && (
+              <>
+                <DataGrid
+                  data={sample ?? []}
+                  defaultPageSize={10}
+                  fixedLayout={false}
+                  totalItems={sample.length}
+                >
+                  {columns.map((column, id) => (
+                    <TextColumn
+                      key={id}
+                      name={column}
+                      label={column}
+                      accessor={column}
+                    />
+                  ))}
+                </DataGrid>
+              </>
+            )}
+        </div>
       )}
     </div>
   );
 };
 
+// todo add a loader, check status for sample
 DatasetFileDataGrid.fragments = {
-  version: gql`
+  file: gql`
     fragment DatasetFileDataGrid_file on DatasetVersionFile {
       id
+      fileSample {
+        sample
+        status
+      }
     }
   `,
 };

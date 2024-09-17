@@ -926,7 +926,7 @@ type DatabaseTablePage {
 """
 Dataset is a collection of files that are related to each other and are versioned.
 """
-type Dataset {
+type Dataset implements HasMetadata {
   id: ID!
   slug: String!
   name: String!
@@ -940,7 +940,8 @@ type Dataset {
   version(id: ID!): DatasetVersion
   latestVersion: DatasetVersion
   links(page: Int = 1, perPage: Int = 15): DatasetLinkPage!
-  metadata: MetadataObject
+  metadata: MetadataObject!
+  extendedId: String!
 }
 
 """File sample for dataset file"""
@@ -1001,7 +1002,7 @@ type DatasetPermissions {
 """
 A version of a dataset. A version is a snapshot of the dataset at a point in time.
 """
-type DatasetVersion {
+type DatasetVersion implements HasMetadata {
   id: ID!
   name: String!
   description: String
@@ -1011,11 +1012,12 @@ type DatasetVersion {
   permissions: DatasetVersionPermissions!
   fileByName(name: String!): DatasetVersionFile
   files(page: Int = 1, perPage: Int = 15): DatasetVersionFilePage!
-  metadata: MetadataObject
+  metadata: MetadataObject!
+  extendedId: String!
 }
 
 """A file in a dataset version."""
-type DatasetVersionFile {
+type DatasetVersionFile implements HasMetadata {
   id: ID!
   uri: String!
   filename: String!
@@ -1023,7 +1025,8 @@ type DatasetVersionFile {
   createdBy: User
   contentType: String!
   fileSample: DatasetFileSample
-  metadata: MetadataObject
+  metadata: MetadataObject!
+  extendedId: String!
 }
 
 """A page of dataset version files."""
@@ -1260,8 +1263,7 @@ type DeleteMembershipResult {
 
 """Input to delete custom attribute"""
 input DeleteMetadataAttributeInput {
-  id: UUID!
-  modelType: String!
+  extendedId: String!
   key: String!
 }
 
@@ -1599,6 +1601,12 @@ type GenericOutput {
   uri: String!
 }
 
+"""Interface for type implementing metadata"""
+interface HasMetadata {
+  extendedId: String!
+  metadata: MetadataObject!
+}
+
 """Represents the input for inviting a member to a workspace."""
 input InviteWorkspaceMemberInput {
   workspaceSlug: String!
@@ -1862,8 +1870,7 @@ type MetadataAttribute {
 Input to add or edit a custom attribute, empty field for value is accepted
 """
 input MetadataAttributeInput {
-  id: UUID!
-  modelType: String!
+  extendedId: String!
   key: String!
   value: JSON
 }
@@ -1895,8 +1902,8 @@ enum MetadataEditAttributeError {
 
 """Generic metadata object"""
 type MetadataObject {
-  id: UUID!
-  linkedObject: LinkedObject
+  id: String!
+  object: LinkedObject!
   attributes: [MetadataAttribute!]!
 }
 
@@ -2536,6 +2543,7 @@ type Query {
   databaseTable(id: String!): DatabaseTable
   connection(id: UUID!): Connection
   connectionBySlug(workspaceSlug: String!, connectionSlug: String!): Connection
+  metadata(extendedId: String!): MetadataObject!
 
   """Get a dataset by its ID."""
   dataset(id: ID!): Dataset
