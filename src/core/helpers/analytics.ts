@@ -9,6 +9,9 @@ async function sendEvent(
   properties: TrackEventProperties,
   headers?: Headers,
 ): Promise<void> {
+  if (process.env.NEXT_PUBLIC_DISABLE_ANALYTICS === "true") {
+    return;
+  }
   const res = await fetch(
     `${process.env.OPENHEXA_BACKEND_URL ?? ""}/analytics/track/`,
     {
