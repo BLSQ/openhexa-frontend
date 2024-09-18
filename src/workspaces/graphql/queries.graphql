@@ -430,7 +430,6 @@ query WorkspaceDatasetFilePage($fileId: ID!) {
     contentType
     ...DatasetFileSummary_file
     ...DatasetFileDataGrid_file
-    ...DatasetFileMetadata_file
   }
 }
 

@@ -61,6 +61,7 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
   const onChangeVersion: React.ComponentProps<
     typeof DatasetVersionPicker
   >["onChange"] = (version) => {
+    delete router.query["fileId"];
     router.push({
       pathname: router.pathname,
       query: { ...router.query, version: version?.id },

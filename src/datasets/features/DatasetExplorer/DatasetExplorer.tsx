@@ -17,7 +17,6 @@ import Button from "core/components/Button";
 import Popover from "core/components/Popover";
 import Checkbox from "core/components/forms/Checkbox";
 import DownloadVersionFile from "../DownloadVersionFile";
-import DatasetFileMetadata from "./DatasetFileMetadata";
 import {
   DatasetExplorerDatasetVersion_VersionFragment,
   DatasetExplorerFile_FileFragment,
@@ -154,12 +153,6 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
                     />
                   </div>
                 </Tabs.Tab>
-                <Tabs.Tab
-                  label={t("Metadata")}
-                  className="max-h-[50vh] overflow-y-scroll"
-                >
-                  <DatasetFileMetadata file={currentFile} />
-                </Tabs.Tab>
               </Tabs>
             </Block>
           </>
@@ -181,11 +174,9 @@ DatasetExplorer.fragments = {
       filename
       ...DatasetFileSummary_file
       ...DatasetFileDataGrid_file
-      ...DatasetFileMetadata_file
     }
     ${DatasetFileSummary.fragments.file}
     ${DatasetFileDataGrid.fragments.file}
-    ${DatasetFileMetadata.fragments.file}
   `,
   version: gql`
     fragment DatasetExplorerDatasetVersion_version on DatasetVersion {
