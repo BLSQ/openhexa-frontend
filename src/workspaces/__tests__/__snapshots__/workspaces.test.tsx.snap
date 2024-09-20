@@ -372,7 +372,7 @@ exports[`Workspaces renders the workspace page 1`] = `
           aria-expanded="false"
           class="flex items-center outline-none"
           data-headlessui-state=""
-          id="headlessui-popover-button-6fbe024f-2316-4265-aa6e-8d65a837e308"
+          id="headlessui-popover-button-6b042125-686a-43e0-8a68-23cf5bee102e"
           type="button"
         >
           <div
@@ -793,7 +793,7 @@ exports[`Workspaces shows the jupyterhub entry when user have the launchNotebook
           aria-expanded="false"
           class="flex items-center outline-none"
           data-headlessui-state=""
-          id="headlessui-popover-button-6fbe024f-2316-4265-aa6e-8d65a837e308"
+          id="headlessui-popover-button-6b042125-686a-43e0-8a68-23cf5bee102e"
           type="button"
         >
           <div
