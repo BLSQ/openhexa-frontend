@@ -480,6 +480,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             <Block>
               <DataGrid
                 defaultPageSize={perPage}
+                defaultPageIndex={page - 1}
                 data={pipeline.runs.items}
                 totalItems={pipeline.runs.totalItems}
                 fixedLayout={false}
