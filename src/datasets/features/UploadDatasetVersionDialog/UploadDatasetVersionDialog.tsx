@@ -161,7 +161,6 @@ version.add_file("/path/to/file.csv")`}
             variant={"outlined"}
             onClick={onClose}
             disabled={form.isSubmitting}
-            type="button"
           >
             {t("Close")}
           </Button>
