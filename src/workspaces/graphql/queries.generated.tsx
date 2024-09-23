@@ -215,8 +215,8 @@ export function useWorkspacesPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacesPageQuery, WorkspacesPageQueryVariables>(WorkspacesPageDocument, options);
         }
-export function useWorkspacesPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacesPageQuery, WorkspacesPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspacesPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspacesPageQuery, WorkspacesPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspacesPageQuery, WorkspacesPageQueryVariables>(WorkspacesPageDocument, options);
         }
 export type WorkspacesPageQueryHookResult = ReturnType<typeof useWorkspacesPageQuery>;
@@ -275,8 +275,8 @@ export function useWorkspacePageLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePageQuery, WorkspacePageQueryVariables>(WorkspacePageDocument, options);
         }
-export function useWorkspacePageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePageQuery, WorkspacePageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspacePageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspacePageQuery, WorkspacePageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspacePageQuery, WorkspacePageQueryVariables>(WorkspacePageDocument, options);
         }
 export type WorkspacePageQueryHookResult = ReturnType<typeof useWorkspacePageQuery>;
@@ -330,8 +330,8 @@ export function useWorkspacePipelinesPageLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelinesPageQuery, WorkspacePipelinesPageQueryVariables>(WorkspacePipelinesPageDocument, options);
         }
-export function useWorkspacePipelinesPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelinesPageQuery, WorkspacePipelinesPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspacePipelinesPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspacePipelinesPageQuery, WorkspacePipelinesPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspacePipelinesPageQuery, WorkspacePipelinesPageQueryVariables>(WorkspacePipelinesPageDocument, options);
         }
 export type WorkspacePipelinesPageQueryHookResult = ReturnType<typeof useWorkspacePipelinesPageQuery>;
@@ -375,8 +375,8 @@ export function useWorkspaceNotebooksPageLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceNotebooksPageQuery, WorkspaceNotebooksPageQueryVariables>(WorkspaceNotebooksPageDocument, options);
         }
-export function useWorkspaceNotebooksPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceNotebooksPageQuery, WorkspaceNotebooksPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspaceNotebooksPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceNotebooksPageQuery, WorkspaceNotebooksPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspaceNotebooksPageQuery, WorkspaceNotebooksPageQueryVariables>(WorkspaceNotebooksPageDocument, options);
         }
 export type WorkspaceNotebooksPageQueryHookResult = ReturnType<typeof useWorkspaceNotebooksPageQuery>;
@@ -488,8 +488,8 @@ export function useWorkspacePipelinePageLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelinePageQuery, WorkspacePipelinePageQueryVariables>(WorkspacePipelinePageDocument, options);
         }
-export function useWorkspacePipelinePageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelinePageQuery, WorkspacePipelinePageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspacePipelinePageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspacePipelinePageQuery, WorkspacePipelinePageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspacePipelinePageQuery, WorkspacePipelinePageQueryVariables>(WorkspacePipelinePageDocument, options);
         }
 export type WorkspacePipelinePageQueryHookResult = ReturnType<typeof useWorkspacePipelinePageQuery>;
@@ -550,8 +550,8 @@ export function useWorkspacePipelineVersionsPageLazyQuery(baseOptions?: Apollo.L
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelineVersionsPageQuery, WorkspacePipelineVersionsPageQueryVariables>(WorkspacePipelineVersionsPageDocument, options);
         }
-export function useWorkspacePipelineVersionsPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelineVersionsPageQuery, WorkspacePipelineVersionsPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspacePipelineVersionsPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspacePipelineVersionsPageQuery, WorkspacePipelineVersionsPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspacePipelineVersionsPageQuery, WorkspacePipelineVersionsPageQueryVariables>(WorkspacePipelineVersionsPageDocument, options);
         }
 export type WorkspacePipelineVersionsPageQueryHookResult = ReturnType<typeof useWorkspacePipelineVersionsPageQuery>;
@@ -592,8 +592,8 @@ export function useWorkspacePipelineStartPageLazyQuery(baseOptions?: Apollo.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelineStartPageQuery, WorkspacePipelineStartPageQueryVariables>(WorkspacePipelineStartPageDocument, options);
         }
-export function useWorkspacePipelineStartPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelineStartPageQuery, WorkspacePipelineStartPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspacePipelineStartPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspacePipelineStartPageQuery, WorkspacePipelineStartPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspacePipelineStartPageQuery, WorkspacePipelineStartPageQueryVariables>(WorkspacePipelineStartPageDocument, options);
         }
 export type WorkspacePipelineStartPageQueryHookResult = ReturnType<typeof useWorkspacePipelineStartPageQuery>;
@@ -688,8 +688,8 @@ export function useWorkspacePipelineRunPageLazyQuery(baseOptions?: Apollo.LazyQu
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspacePipelineRunPageQuery, WorkspacePipelineRunPageQueryVariables>(WorkspacePipelineRunPageDocument, options);
         }
-export function useWorkspacePipelineRunPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspacePipelineRunPageQuery, WorkspacePipelineRunPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspacePipelineRunPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspacePipelineRunPageQuery, WorkspacePipelineRunPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspacePipelineRunPageQuery, WorkspacePipelineRunPageQueryVariables>(WorkspacePipelineRunPageDocument, options);
         }
 export type WorkspacePipelineRunPageQueryHookResult = ReturnType<typeof useWorkspacePipelineRunPageQuery>;
@@ -773,8 +773,8 @@ export function useWorkspaceDatasetsPageLazyQuery(baseOptions?: Apollo.LazyQuery
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatasetsPageQuery, WorkspaceDatasetsPageQueryVariables>(WorkspaceDatasetsPageDocument, options);
         }
-export function useWorkspaceDatasetsPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatasetsPageQuery, WorkspaceDatasetsPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspaceDatasetsPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceDatasetsPageQuery, WorkspaceDatasetsPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspaceDatasetsPageQuery, WorkspaceDatasetsPageQueryVariables>(WorkspaceDatasetsPageDocument, options);
         }
 export type WorkspaceDatasetsPageQueryHookResult = ReturnType<typeof useWorkspaceDatasetsPageQuery>;
@@ -876,8 +876,8 @@ export function useWorkspaceDatasetPageLazyQuery(baseOptions?: Apollo.LazyQueryH
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatasetPageQuery, WorkspaceDatasetPageQueryVariables>(WorkspaceDatasetPageDocument, options);
         }
-export function useWorkspaceDatasetPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatasetPageQuery, WorkspaceDatasetPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspaceDatasetPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceDatasetPageQuery, WorkspaceDatasetPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspaceDatasetPageQuery, WorkspaceDatasetPageQueryVariables>(WorkspaceDatasetPageDocument, options);
         }
 export type WorkspaceDatasetPageQueryHookResult = ReturnType<typeof useWorkspaceDatasetPageQuery>;
@@ -945,8 +945,8 @@ export function useWorkspaceFilesPageLazyQuery(baseOptions?: Apollo.LazyQueryHoo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceFilesPageQuery, WorkspaceFilesPageQueryVariables>(WorkspaceFilesPageDocument, options);
         }
-export function useWorkspaceFilesPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceFilesPageQuery, WorkspaceFilesPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspaceFilesPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceFilesPageQuery, WorkspaceFilesPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspaceFilesPageQuery, WorkspaceFilesPageQueryVariables>(WorkspaceFilesPageDocument, options);
         }
 export type WorkspaceFilesPageQueryHookResult = ReturnType<typeof useWorkspaceFilesPageQuery>;
@@ -1004,8 +1004,8 @@ export function useWorkspaceDatabasesPageLazyQuery(baseOptions?: Apollo.LazyQuer
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatabasesPageQuery, WorkspaceDatabasesPageQueryVariables>(WorkspaceDatabasesPageDocument, options);
         }
-export function useWorkspaceDatabasesPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatabasesPageQuery, WorkspaceDatabasesPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspaceDatabasesPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceDatabasesPageQuery, WorkspaceDatabasesPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspaceDatabasesPageQuery, WorkspaceDatabasesPageQueryVariables>(WorkspaceDatabasesPageDocument, options);
         }
 export type WorkspaceDatabasesPageQueryHookResult = ReturnType<typeof useWorkspaceDatabasesPageQuery>;
@@ -1064,8 +1064,8 @@ export function useWorkspaceDatabaseTablePageLazyQuery(baseOptions?: Apollo.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>(WorkspaceDatabaseTablePageDocument, options);
         }
-export function useWorkspaceDatabaseTablePageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspaceDatabaseTablePageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>(WorkspaceDatabaseTablePageDocument, options);
         }
 export type WorkspaceDatabaseTablePageQueryHookResult = ReturnType<typeof useWorkspaceDatabaseTablePageQuery>;
@@ -1111,8 +1111,8 @@ export function useWorkspaceDatasetFilePageLazyQuery(baseOptions?: Apollo.LazyQu
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>(WorkspaceDatasetFilePageDocument, options);
         }
-export function useWorkspaceDatasetFilePageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useWorkspaceDatasetFilePageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>(WorkspaceDatasetFilePageDocument, options);
         }
 export type WorkspaceDatasetFilePageQueryHookResult = ReturnType<typeof useWorkspaceDatasetFilePageQuery>;
@@ -1171,8 +1171,8 @@ export function useConnectionsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ConnectionsPageQuery, ConnectionsPageQueryVariables>(ConnectionsPageDocument, options);
         }
-export function useConnectionsPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConnectionsPageQuery, ConnectionsPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useConnectionsPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ConnectionsPageQuery, ConnectionsPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<ConnectionsPageQuery, ConnectionsPageQueryVariables>(ConnectionsPageDocument, options);
         }
 export type ConnectionsPageQueryHookResult = ReturnType<typeof useConnectionsPageQuery>;
@@ -1233,8 +1233,8 @@ export function useConnectionPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ConnectionPageQuery, ConnectionPageQueryVariables>(ConnectionPageDocument, options);
         }
-export function useConnectionPageSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ConnectionPageQuery, ConnectionPageQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useConnectionPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ConnectionPageQuery, ConnectionPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<ConnectionPageQuery, ConnectionPageQueryVariables>(ConnectionPageDocument, options);
         }
 export type ConnectionPageQueryHookResult = ReturnType<typeof useConnectionPageQuery>;
@@ -1273,8 +1273,8 @@ export function useCheckWorkspaceAvailabilityLazyQuery(baseOptions?: Apollo.Lazy
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<CheckWorkspaceAvailabilityQuery, CheckWorkspaceAvailabilityQueryVariables>(CheckWorkspaceAvailabilityDocument, options);
         }
-export function useCheckWorkspaceAvailabilitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CheckWorkspaceAvailabilityQuery, CheckWorkspaceAvailabilityQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useCheckWorkspaceAvailabilitySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CheckWorkspaceAvailabilityQuery, CheckWorkspaceAvailabilityQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<CheckWorkspaceAvailabilityQuery, CheckWorkspaceAvailabilityQueryVariables>(CheckWorkspaceAvailabilityDocument, options);
         }
 export type CheckWorkspaceAvailabilityQueryHookResult = ReturnType<typeof useCheckWorkspaceAvailabilityQuery>;

@@ -174,6 +174,7 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
                   query: {
                     workspaceSlug: workspace.slug,
                     datasetSlug: dataset.slug,
+                    version: version?.id,
                   },
                 }}
                 className="whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide border-blue-500 text-blue-600"
@@ -187,6 +188,7 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
                   query: {
                     workspaceSlug: workspace.slug,
                     datasetSlug: dataset.slug,
+                    version: version?.id,
                   },
                 }}
                 selected={tab == "files"}
@@ -204,6 +206,7 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
                     query: {
                       workspaceSlug: workspace.slug,
                       datasetSlug: dataset.slug,
+                      version: version?.id,
                     },
                   }}
                   className="whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide border-blue-500 text-blue-600"
