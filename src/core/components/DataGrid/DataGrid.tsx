@@ -246,6 +246,11 @@ function DataGrid(props: DataGridProps) {
     onFetchData({ page: pageIndex + 1, pageIndex, pageSize, sortBy });
   }, [onFetchData, pageIndex, pageSize, sortBy, prevVariables]);
 
+  // to trigger the update of the current page for the pagination component
+  useEffect(() => {
+    gotoPage(defaultPageIndex);
+  }, [defaultPageIndex, gotoPage]);
+
   return (
     <div className={className}>
       <Overflow horizontal gradientWidth="w-12">
