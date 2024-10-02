@@ -8,6 +8,7 @@ import {
   PipelineCard_PipelineFragment,
   PipelineCard_WorkspaceFragment,
 } from "./PipelineCard.generated";
+import User from "core/features/User";
 
 interface PipelineCardProps {
   workspace: PipelineCard_WorkspaceFragment;
@@ -38,14 +39,18 @@ const PipelineCard = ({ pipeline, workspace }: PipelineCardProps) => {
         </div>
       }
     >
-      <Card.Content
-        className={clsx(
-          "line-clamp-3",
-          !pipeline.description && "italic text-gray-300",
+      <Card.Content className="space-y-2" title={pipeline.description ?? ""}>
+        <div
+          className={clsx("line-clamp-3", !pipeline.description && "italic")}
+        >
+          {pipeline.description || t("No description")}
+        </div>
+        {pipeline.currentVersion?.user && (
+          <div className="flex justify-between items-center text-sm font-medium text-gray-500">
+            {t("Last version by")}
+            <User user={pipeline.currentVersion?.user} />
+          </div>
         )}
-        title={pipeline.description ?? ""}
-      >
-        {pipeline.description || t("No description")}
       </Card.Content>
     </Card>
   );
@@ -60,6 +65,11 @@ PipelineCard.fragments = {
       schedule
       description
       type
+      currentVersion {
+        user {
+          ...User_user
+        }
+      }
       lastRuns: runs(orderBy: EXECUTION_DATE_DESC, page: 1, perPage: 1) {
         items {
           ...PipelineRunStatusBadge_run
