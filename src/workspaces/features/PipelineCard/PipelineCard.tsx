@@ -8,7 +8,8 @@ import {
   PipelineCard_PipelineFragment,
   PipelineCard_WorkspaceFragment,
 } from "./PipelineCard.generated";
-import User from "core/features/User";
+import Tooltip from "core/components/Tooltip";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 interface PipelineCardProps {
   workspace: PipelineCard_WorkspaceFragment;
@@ -39,16 +40,21 @@ const PipelineCard = ({ pipeline, workspace }: PipelineCardProps) => {
         </div>
       }
     >
-      <Card.Content className="space-y-2" title={pipeline.description ?? ""}>
+      <Card.Content className="space-y-4" title={pipeline.description ?? ""}>
         <div
           className={clsx("line-clamp-3", !pipeline.description && "italic")}
         >
           {pipeline.description || t("No description")}
         </div>
         {pipeline.currentVersion?.user && (
-          <div className="flex justify-between items-center text-sm font-medium text-gray-500">
-            {t("Last version by")}
-            <User user={pipeline.currentVersion?.user} />
+          <div className="flex justify-end">
+            <Tooltip
+              label={t("Last version uploaded by {{name}}", {
+                name: pipeline.currentVersion.user.displayName,
+              })}
+            >
+              <InformationCircleIcon className="h-4 w-4" />
+            </Tooltip>
           </div>
         )}
       </Card.Content>
