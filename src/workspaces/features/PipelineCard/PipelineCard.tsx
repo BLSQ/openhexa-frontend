@@ -10,6 +10,10 @@ import {
 } from "./PipelineCard.generated";
 import Tooltip from "core/components/Tooltip";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import Avatar from "core/components/Avatar";
+import User from "core/features/User";
+import UserAvatar from "identity/features/UserAvatar";
+import { DateTime } from "luxon";
 
 interface PipelineCardProps {
   workspace: PipelineCard_WorkspaceFragment;
@@ -49,11 +53,14 @@ const PipelineCard = ({ pipeline, workspace }: PipelineCardProps) => {
         {pipeline.currentVersion?.user && (
           <div className="flex justify-end">
             <Tooltip
-              label={t("Last version uploaded by {{name}}", {
+              label={t("Last version uploaded on {{date}} by {{name}}", {
+                date: DateTime.fromISO(
+                  pipeline.currentVersion.createdAt,
+                ).toLocaleString(DateTime.DATE_FULL),
                 name: pipeline.currentVersion.user.displayName,
               })}
             >
-              <InformationCircleIcon className="h-4 w-4" />
+              <UserAvatar user={pipeline.currentVersion.user} size="sm" />
             </Tooltip>
           </div>
         )}
@@ -75,6 +82,7 @@ PipelineCard.fragments = {
         user {
           ...User_user
         }
+        createdAt
       }
       lastRuns: runs(orderBy: EXECUTION_DATE_DESC, page: 1, perPage: 1) {
         items {
