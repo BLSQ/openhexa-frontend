@@ -1,7 +1,34 @@
 import { NextRequest } from "next/server";
+import getConfig from "next/config";
+
+const { publicRuntimeConfig } = getConfig();
 
 interface TrackEventProperties {
   [key: string]: any;
+}
+
+async function sendEvent(
+  event: string,
+  properties: TrackEventProperties,
+  headers?: Headers,
+): Promise<void> {
+  if (publicRuntimeConfig.DISABLE_ANALYTICS === "true") {
+    return;
+  }
+  const res = await fetch(
+    `${publicRuntimeConfig.OPENHEXA_BACKEND_URL ?? ""}/analytics/track/`,
+    {
+      method: "POST",
+      priority: "low",
+      headers: headers,
+      credentials: "include",
+      body: JSON.stringify({ event, properties }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to send event: ${res.statusText}`);
+  }
 }
 
 export async function trackEvent(
@@ -13,19 +40,7 @@ export async function trackEvent(
     return;
   }
   try {
-    const res = await fetch("/analytics/track/", {
-      method: "POST",
-      priority: "low",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ event, properties }),
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to track event: ${res.statusText}`);
-    }
+    await sendEvent(event, properties);
   } catch (error) {
     console.error("Error tracking event:", error);
   }
@@ -39,24 +54,15 @@ export async function pageView(request: NextRequest) {
   try {
     const headers = request.headers;
     headers.set("content-type", "application/json");
-    const res = await fetch(
-      `${process.env.OPENHEXA_BACKEND_URL ?? ""}/analytics/track/`,
-      {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          event: "pageview",
-          properties: {
-            pathname: request.nextUrl.pathname,
-            searchParams: request.nextUrl.searchParams.toString(),
-          },
-        }),
-      },
-    );
 
-    if (!res.ok) {
-      throw new Error(`Failed to track event: ${res.statusText}`);
-    }
+    await sendEvent(
+      "pageview",
+      {
+        pathname: request.nextUrl.pathname,
+        searchParams: request.nextUrl.searchParams.toString(),
+      },
+      headers,
+    );
   } catch (error) {
     console.error("Error tracking event:", error);
   }

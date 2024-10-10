@@ -378,6 +378,11 @@ enum BucketObjectType {
   DIRECTORY
 }
 
+type Config {
+  """List of requirements for the password."""
+  passwordRequirements: [String!]
+}
+
 """Represents a connection to an external data source or service."""
 type Connection {
   id: String!
@@ -544,14 +549,10 @@ type CreateAccessmodZonalStatisticsResult {
   errors: [CreateAccessmodZonalStatisticsError!]!
 }
 
-type CreateAttributeResult {
-  success: Boolean!
-  errors: [MetadataCreateAttributeError!]!
-}
-
 """Errors that can occur when creating a folder in a workspace's bucket."""
 enum CreateBucketFolderError {
   ALREADY_EXISTS
+  NOT_FOUND
   PERMISSION_DENIED
 }
 
@@ -705,6 +706,25 @@ type CreateMembershipResult {
 
   """The list of errors that occurred during the createMembership mutation."""
   errors: [CreateMembershipError!]!
+}
+
+"""Errors that can occur when creating an attribute."""
+enum CreateMetadataAttributeError {
+  PERMISSION_DENIED
+  TARGET_NOT_FOUND
+  DUPLICATE_KEY
+}
+
+"""Input to add a custom attribute, empty field for value is accepted"""
+input CreateMetadataAttributeInput {
+  targetId: OpaqueID!
+  key: String!
+  value: JSON
+}
+
+type CreateMetadataAttributeResult {
+  success: Boolean!
+  errors: [CreateMetadataAttributeError!]!
 }
 
 """Represents the input for creating a pipeline."""
@@ -926,7 +946,7 @@ type DatabaseTablePage {
 """
 Dataset is a collection of files that are related to each other and are versioned.
 """
-type Dataset implements HasMetadata {
+type Dataset implements MetadataObject {
   id: ID!
   slug: String!
   name: String!
@@ -940,8 +960,8 @@ type Dataset implements HasMetadata {
   version(id: ID!): DatasetVersion
   latestVersion: DatasetVersion
   links(page: Int = 1, perPage: Int = 15): DatasetLinkPage!
-  metadata: MetadataObject!
-  extendedId: String!
+  attributes: [MetadataAttribute!]!
+  targetId: OpaqueID!
 }
 
 """File sample for dataset file"""
@@ -1002,7 +1022,7 @@ type DatasetPermissions {
 """
 A version of a dataset. A version is a snapshot of the dataset at a point in time.
 """
-type DatasetVersion implements HasMetadata {
+type DatasetVersion implements MetadataObject {
   id: ID!
   name: String!
   description: String
@@ -1012,12 +1032,12 @@ type DatasetVersion implements HasMetadata {
   permissions: DatasetVersionPermissions!
   fileByName(name: String!): DatasetVersionFile
   files(page: Int = 1, perPage: Int = 15): DatasetVersionFilePage!
-  metadata: MetadataObject!
-  extendedId: String!
+  attributes: [MetadataAttribute!]!
+  targetId: OpaqueID!
 }
 
 """A file in a dataset version."""
-type DatasetVersionFile implements HasMetadata {
+type DatasetVersionFile implements MetadataObject {
   id: ID!
   uri: String!
   filename: String!
@@ -1025,8 +1045,9 @@ type DatasetVersionFile implements HasMetadata {
   createdBy: User
   contentType: String!
   fileSample: DatasetFileSample
-  metadata: MetadataObject!
-  extendedId: String!
+  properties: JSON
+  attributes: [MetadataAttribute!]!
+  targetId: OpaqueID!
 }
 
 """A page of dataset version files."""
@@ -1134,11 +1155,6 @@ type DeleteAccessmodProjectMemberResult {
 type DeleteAccessmodProjectResult {
   success: Boolean!
   errors: [DeleteAccessmodProjectError!]!
-}
-
-type DeleteAttributeResult {
-  success: Boolean!
-  errors: [MetadataDeleteAttributeError!]!
 }
 
 """
@@ -1261,10 +1277,22 @@ type DeleteMembershipResult {
   errors: [DeleteMembershipError!]!
 }
 
+"""Errors that can occur when deleting an attribute."""
+enum DeleteMetadataAttributeError {
+  PERMISSION_DENIED
+  TARGET_NOT_FOUND
+  METADATA_ATTRIBUTE_NOT_FOUND
+}
+
 """Input to delete custom attribute"""
 input DeleteMetadataAttributeInput {
-  extendedId: String!
+  targetId: OpaqueID!
   key: String!
+}
+
+type DeleteMetadataAttributeResult {
+  success: Boolean!
+  errors: [DeleteMetadataAttributeError!]!
 }
 
 """Represents the input for deleting a pipeline."""
@@ -1456,9 +1484,22 @@ type DisableTwoFactorResult {
   errors: [DisableTwoFactorError!]
 }
 
-type EditAttributeResult {
+"""Errors that can occur when editing an attribute."""
+enum EditMetadataAttributeError {
+  PERMISSION_DENIED
+  TARGET_NOT_FOUND
+}
+
+"""Input to edit a custom attribute, empty field for value is accepted"""
+input EditMetadataAttributeInput {
+  targetId: OpaqueID!
+  key: String!
+  value: JSON
+}
+
+type EditMetadataAttributeResult {
   success: Boolean!
-  errors: [MetadataEditAttributeError!]!
+  errors: [EditMetadataAttributeError!]!
 }
 
 """
@@ -1601,12 +1642,6 @@ type GenericOutput {
   uri: String!
 }
 
-"""Interface for type implementing metadata"""
-interface HasMetadata {
-  extendedId: String!
-  metadata: MetadataObject!
-}
-
 """Represents the input for inviting a member to a workspace."""
 input InviteWorkspaceMemberInput {
   workspaceSlug: String!
@@ -1703,9 +1738,6 @@ type LinkDatasetResult {
   success: Boolean!
   errors: [LinkDatasetError!]!
 }
-
-"""Union of all linked to metadata object types"""
-union LinkedObject = DatasetVersionFile | DatasetVersion | Dataset
 
 """
 The LoginError enum represents the possible errors that can occur during the login process.
@@ -1866,44 +1898,9 @@ type MetadataAttribute {
   system: Boolean!
 }
 
-"""
-Input to add or edit a custom attribute, empty field for value is accepted
-"""
-input MetadataAttributeInput {
-  extendedId: String!
-  key: String!
-  value: JSON
-}
-
-"""Errors that can occur when creating an attribute."""
-enum MetadataCreateAttributeError {
-  PERMISSION_DENIED
-  MODEL_TYPE_NOT_FOUND
-  MODEL_NOT_FOUND
-  DUPLICATE_KEY
-}
-
-"""Errors that can occur when deleting an attribute."""
-enum MetadataDeleteAttributeError {
-  PERMISSION_DENIED
-  MODEL_TYPE_NOT_FOUND
-  MODEL_NOT_FOUND
-  METADATA_OBJECT_NOT_FOUND
-  METADATA_ATTRIBUTE_NOT_FOUND
-}
-
-"""Errors that can occur when editing an attribute."""
-enum MetadataEditAttributeError {
-  PERMISSION_DENIED
-  MODEL_TYPE_NOT_FOUND
-  MODEL_NOT_FOUND
-  METADATA_OBJECT_NOT_FOUND
-}
-
-"""Generic metadata object"""
-type MetadataObject {
-  id: String!
-  object: LinkedObject!
+"""Interface for type implementing metadata"""
+interface MetadataObject {
+  targetId: OpaqueID!
   attributes: [MetadataAttribute!]!
 }
 
@@ -2030,14 +2027,14 @@ type Mutation {
   updateConnection(input: UpdateConnectionInput!): UpdateConnectionResult!
   deleteConnection(input: DeleteConnectionInput!): DeleteConnectionResult!
 
-  """Add a custom attribute to an object instane"""
-  addMetadataToObject(input: MetadataAttributeInput!): CreateAttributeResult!
+  """Add a custom metadata attribute to an object instance"""
+  addMetadataAttribute(input: CreateMetadataAttributeInput!): CreateMetadataAttributeResult!
 
-  """Delete an attribute from an object instance"""
-  deleteMetadataFromObject(input: DeleteMetadataAttributeInput!): DeleteAttributeResult!
+  """Delete an metadata attribute from an object instance"""
+  deleteMetadataAttribute(input: DeleteMetadataAttributeInput!): DeleteMetadataAttributeResult!
 
   """Edit metadata attribute for an object instance"""
-  editMetadataForObject(input: MetadataAttributeInput!): EditAttributeResult!
+  editMetadataAttribute(input: EditMetadataAttributeInput!): EditMetadataAttributeResult!
 
   """Generates a new password for a database."""
   generateNewDatabasePassword(input: GenerateNewDatabasePasswordInput!): GenerateNewDatabasePasswordResult!
@@ -2093,6 +2090,8 @@ type NotebookServer {
   url: String!
   ready: Boolean!
 }
+
+scalar OpaqueID
 
 """The direction in which to order a list of items."""
 enum OrderByDirection {
@@ -2543,7 +2542,10 @@ type Query {
   databaseTable(id: String!): DatabaseTable
   connection(id: UUID!): Connection
   connectionBySlug(workspaceSlug: String!, connectionSlug: String!): Connection
-  metadata(extendedId: String!): MetadataObject!
+  metadataAttributes(targetId: OpaqueID!): [MetadataAttribute]!
+
+  """Retrieves the configuration of the system."""
+  config: Config!
 
   """Get a dataset by its ID."""
   dataset(id: ID!): Dataset

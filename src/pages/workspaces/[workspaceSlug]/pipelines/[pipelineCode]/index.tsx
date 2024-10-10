@@ -447,7 +447,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                       {section.isEdited && (
                         <>
                           <Button
-                            type="button"
                             className="whitespace-nowrap"
                             variant="secondary"
                             size="sm"
@@ -480,6 +479,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             <Block>
               <DataGrid
                 defaultPageSize={perPage}
+                defaultPageIndex={page - 1}
                 data={pipeline.runs.items}
                 totalItems={pipeline.runs.totalItems}
                 fixedLayout={false}
