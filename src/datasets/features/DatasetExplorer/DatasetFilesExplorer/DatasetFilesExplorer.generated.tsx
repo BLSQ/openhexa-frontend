@@ -64,8 +64,8 @@ export function useDatasetFilesExplorerLazyQuery(baseOptions?: Apollo.LazyQueryH
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<DatasetFilesExplorerQuery, DatasetFilesExplorerQueryVariables>(DatasetFilesExplorerDocument, options);
         }
-export function useDatasetFilesExplorerSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DatasetFilesExplorerQuery, DatasetFilesExplorerQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useDatasetFilesExplorerSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DatasetFilesExplorerQuery, DatasetFilesExplorerQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<DatasetFilesExplorerQuery, DatasetFilesExplorerQueryVariables>(DatasetFilesExplorerDocument, options);
         }
 export type DatasetFilesExplorerQueryHookResult = ReturnType<typeof useDatasetFilesExplorerQuery>;

@@ -57,8 +57,8 @@ export function useDatasetFileDataGridLazyQuery(baseOptions?: Apollo.LazyQueryHo
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>(DatasetFileDataGridDocument, options);
         }
-export function useDatasetFileDataGridSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useDatasetFileDataGridSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<DatasetFileDataGridQuery, DatasetFileDataGridQueryVariables>(DatasetFileDataGridDocument, options);
         }
 export type DatasetFileDataGridQueryHookResult = ReturnType<typeof useDatasetFileDataGridQuery>;

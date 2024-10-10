@@ -464,7 +464,7 @@
   "We were not able to generate a download url for this file": "Nous n'avons pas été en mesure de générer un lien de téléchargement pour ce fichier.",
   "We were not able to remove it from your favorites": "Nous n'avons pas pu le supprimer de vos favoris.",
   "We were unable to create a link for this output.": "Nous n'avons pas pu créer de lien pour cette sortie.",
-  "We're working on generating your data sample.This may take a few moments. Please refresh the page periodically to view the results.": "Nous sommes en train de générer votre échantillon de données, ce qui peut prendre quelques instants. Cela peut prendre quelques instants. Veuillez rafraîchir la page régulièrement pour voir les résultats.",
+  "We're working on generating your data sample. Please refresh the page periodically.": "Nous travaillons sur la génération de votre échantillon de données. Veuillez rafraîchir la page régulièrement.",
   "Webhook": "Webhook",
   "Workspace": "Workspace",
   "Workspace invitations": "Invitations au workspace",

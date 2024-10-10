@@ -38,17 +38,12 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
       currentFile?.fileSample &&
       currentFile.fileSample.status === FileSampleStatus.Finished
     ) {
-      const { fileSample } = currentFile;
-      try {
-        const parsedData = JSON.parse(fileSample.sample);
-        if (Array.isArray(parsedData)) {
-          const cols = Object.keys(parsedData[0]);
-          setDisplayColumns(cols);
-          return cols;
-        }
-      } catch (error) {
-        console.log("Error parsing sample data:", error);
-      }
+      const {
+        fileSample: { sample },
+      } = currentFile;
+      const cols = Object.keys(sample[0]);
+      setDisplayColumns(cols);
+      return cols;
     }
     return [];
   }, [currentFile]);
@@ -73,7 +68,7 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
             <DatasetFileSummary file={currentFile} />
             <Block className="py-2 px-4 space-y-2">
               <Tabs>
-                <Tabs.Tab label={t("Sample")} className="space-y-2">
+                <Tabs.Tab label={t("Sample")} className="space-y-2 pt-2">
                   <div className="space-y-2">
                     {currentFile.fileSample && (
                       <div className="flex flex justify-end">

@@ -462,7 +462,7 @@
   "We were not able to generate a download url for this file": "We were not able to generate a download url for this file",
   "We were not able to remove it from your favorites": "We were not able to remove it from your favorites",
   "We were unable to create a link for this output.": "We were unable to create a link for this output.",
-  "We're working on generating your data sample.This may take a few moments. Please refresh the page periodically to view the results.": "We're working on generating your data sample.This may take a few moments. Please refresh the page periodically to view the results.",
+  "We're working on generating your data sample. Please refresh the page periodically.": "We're working on generating your data sample. Please refresh the page periodically.",
   "Webhook": "Webhook",
   "Workspace": "Workspace",
   "Workspace invitations": "Workspace invitations",
