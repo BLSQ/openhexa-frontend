@@ -12,6 +12,7 @@ import {
   DownloadVersionFile_FileFragment,
 } from "./DownloadVersionFile.generated";
 import { PrepareVersionFileDownloadError } from "graphql/types";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
 type DownloadVersionFileProps = {
   children?({
@@ -82,7 +83,7 @@ const DownloadVersionFile = (props: DownloadVersionFileProps) => {
   return (
     <Button disabled={isPreparing} onClick={onClick} {...delegated}>
       {isPreparing && <Spinner size="xs" className="mr-1" />}
-      {t("Download")}
+      {!isPreparing && <ArrowDownTrayIcon className="h-4 w-4" />}
     </Button>
   );
 };
