@@ -15,27 +15,37 @@ import Block from "core/components/Block";
 import { capitalize } from "lodash";
 import Link, { LinkProps } from "core/components/Link";
 import clsx from "clsx";
+import Title from "core/components/Title";
+import DataCard from "core/components/DataCard";
 
-const TabLink = (
-  props: LinkProps & {
-    className: string;
-    selected?: boolean;
-    label: string;
-  },
-) => {
-  const { selected, label, ...rest } = props;
+type TabsProps = {
+  selected: string;
+  tabs: { label: string; href: string; id: string }[];
+  className?: string;
+};
+const Tabs = ({ tabs, selected, className }: TabsProps) => {
   return (
-    <Link
-      {...rest}
+    <div
       className={clsx(
-        "cursor-pointer whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide",
-        selected
-          ? "border-blue-500 text-blue-600"
-          : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+        "flex space-x-8 border-b border-gray-200 text-sm font-medium",
+        className,
       )}
     >
-      {label}
-    </Link>
+      {tabs.map((tab) => (
+        <Link
+          key={tab.id}
+          href={tab.href}
+          className={clsx(
+            "cursor-pointer whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide first:pl-0 first:ml-1.5",
+            tab.id === selected
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+          )}
+        >
+          {tab.label}
+        </Link>
+      ))}
+    </div>
   );
 };
 
@@ -153,73 +163,44 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
         )}
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
-        <Block className="py-4 min-h-[70vh]">
-          <Block.Header className="flex gap-4 items-center justify-between capitalize">
-            {datasetLink.dataset.name}
-            {version && (
-              <DatasetVersionPicker
-                onChange={onChangeVersion}
-                dataset={datasetLink.dataset}
-                version={version}
-                className="w-40"
-              />
-            )}
-          </Block.Header>
-          <Block.Content className="space-y-4">
-            <div className="flex space-x-8 border-b border-gray-200 text-sm font-medium">
-              <TabLink
-                href={{
-                  pathname:
-                    "/workspaces/[workspaceSlug]/datasets/[datasetSlug]",
-                  query: {
-                    workspaceSlug: workspace.slug,
-                    datasetSlug: dataset.slug,
-                    version: version?.id,
-                  },
-                }}
-                className="whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide border-blue-500 text-blue-600"
-                label={t("Description")}
-                selected={tab == "description"}
-              />
-              <TabLink
-                href={{
-                  pathname:
-                    "/workspaces/[workspaceSlug]/datasets/[datasetSlug]/files",
-                  query: {
-                    workspaceSlug: workspace.slug,
-                    datasetSlug: dataset.slug,
-                    version: version?.id,
-                  },
-                }}
-                selected={tab == "files"}
-                className="whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide border-blue-500 text-blue-600"
-                role="tab"
-                label={t("Data files")}
-              >
-                {t("Data files")}
-              </TabLink>
-              {isWorkspaceSource && (
-                <TabLink
-                  href={{
-                    pathname:
-                      "/workspaces/[workspaceSlug]/datasets/[datasetSlug]/access",
-                    query: {
-                      workspaceSlug: workspace.slug,
-                      datasetSlug: dataset.slug,
-                      version: version?.id,
-                    },
-                  }}
-                  className="whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide border-blue-500 text-blue-600"
-                  role="tab"
-                  selected={tab == "access"}
-                  label={t("Access management")}
-                />
-              )}
-            </div>
-            {children}
-          </Block.Content>
-        </Block>
+        <Title level={2} className="flex items-center justify-between">
+          {datasetLink.dataset.name}
+          {version && (
+            <DatasetVersionPicker
+              onChange={onChangeVersion}
+              dataset={datasetLink.dataset}
+              version={version}
+              className="w-40"
+            />
+          )}
+        </Title>
+        <DataCard item={datasetLink.dataset} className="">
+          <Tabs
+            className="mx-4 mt-2"
+            tabs={[
+              {
+                label: t("Description"),
+                href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}`,
+                id: "description",
+              },
+              {
+                label: t("Data files"),
+
+                href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/files`,
+                id: "files",
+              },
+              {
+                label: t("Access management"),
+                href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/access`,
+                id: "access",
+              },
+            ]}
+            selected={tab}
+          />
+          {children}
+        </DataCard>
       </WorkspaceLayout.PageContent>
+
       <UploadDatasetVersionDialog
         open={isUploadDialogOpen}
         onClose={() => setUploadDialogOpen(false)}

@@ -17,6 +17,7 @@ import useCacheKey from "core/hooks/useCacheKey";
 import { trackEvent } from "core/helpers/analytics";
 import DatasetExplorer from "datasets/features/DatasetExplorer";
 import DatasetLayout from "datasets/layouts/DatasetLayout";
+import Block from "core/components/Block";
 
 type Props = {
   datasetSlug: string;
@@ -82,18 +83,20 @@ const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
         ]}
         tab="files"
       >
-        {version ? (
-          <DatasetExplorer
-            version={version}
-            currentFile={file.data?.datasetVersionFile}
-          />
-        ) : (
-          <p className={"italic text-gray-500"}>
-            {t(
-              "This dataset has no version. Upload a new version using your browser or the SDK to view your files.",
-            )}
-          </p>
-        )}
+        <Block.Section>
+          {version ? (
+            <DatasetExplorer
+              version={version}
+              currentFile={file.data?.datasetVersionFile}
+            />
+          ) : (
+            <p className={"italic text-gray-500"}>
+              {t(
+                "This dataset has no version. Upload a new version using your browser or the SDK to view your files.",
+              )}
+            </p>
+          )}
+        </Block.Section>
       </DatasetLayout>
     </Page>
   );

@@ -16,6 +16,7 @@ import { trackEvent } from "core/helpers/analytics";
 import DatasetLinksDataGrid from "datasets/features/DatasetLinksDataGrid";
 import DatasetLayout from "datasets/layouts/DatasetLayout";
 import LinkDatasetDialog from "datasets/features/LinkDatasetDialog";
+import Block from "core/components/Block";
 
 export type WorkspaceDatabasePageProps = {
   datasetSlug: string;
@@ -75,21 +76,17 @@ const WorkspaceDatasetAccessManagementPage: NextPageWithLayout = (
         ]}
         tab="access"
       >
-        <div className="space-y-4">
-          <div className={"flex flex justify-end"}>
-            {workspace.permissions.update && (
-              <Button
-                leadingIcon={<LinkIcon className={"h-4 w-4"} />}
-                onClick={() => setLinkDialogOpen(true)}
-              >
-                {t("Share with a workspace")}
-              </Button>
-            )}
-          </div>
-          <div>
-            <DatasetLinksDataGrid dataset={datasetLink.dataset} />
-          </div>
-        </div>
+        <Block.Content>
+          {workspace.permissions.update && (
+            <Button
+              leadingIcon={<LinkIcon className={"h-4 w-4"} />}
+              onClick={() => setLinkDialogOpen(true)}
+            >
+              {t("Share with a workspace")}
+            </Button>
+          )}
+        </Block.Content>
+        <DatasetLinksDataGrid dataset={datasetLink.dataset} />
       </DatasetLayout>
       <LinkDatasetDialog
         dataset={datasetLink.dataset}

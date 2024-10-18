@@ -63,31 +63,26 @@ const DatasetFilesExplorer = (props: DatasetFilesExplorerProps) => {
   }
 
   return (
-    <div className="space-y-4 px-1 max-h-[50vh] overflow-auto">
-      <Title level={2} className="text-gray-500">
-        {t("Filename")}
-      </Title>
-      <div className="flex flex-col divide-y divide-gray-200 ">
-        {files?.items.map((file: DatasetFileType) => (
-          <div
-            className="py-2.5 hover:bg-gray-100 cursor-pointer"
-            key={file.id}
-            onClick={() => onClick(file)}
+    <div className="flex flex-col divide-y divide-gray-200 ">
+      {files?.items.map((file: DatasetFileType) => (
+        <div
+          className="py-2.5 hover:bg-gray-100 cursor-pointer"
+          key={file.id}
+          onClick={() => onClick(file)}
+        >
+          <span className="text-sm text-gray-700">{file.filename}</span>
+        </div>
+      ))}
+      {files.items.length !== files.totalItems && (
+        <div className="pb-2 text-center">
+          <button
+            onClick={showMore}
+            className="ml-4 inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-400"
           >
-            <span className="text-sm text-gray-700">{file.filename}</span>
-          </div>
-        ))}
-        {files.items.length !== files.totalItems && (
-          <div className="pb-2 text-center">
-            <button
-              onClick={showMore}
-              className="ml-4 inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-400"
-            >
-              {t("Show more")}
-            </button>
-          </div>
-        )}
-      </div>
+            {t("Show more")}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

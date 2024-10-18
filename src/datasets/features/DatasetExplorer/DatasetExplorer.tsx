@@ -60,9 +60,9 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="flex divide-x-2 divide-b-50">
       <DatasetFilesExplorer version={version} onClick={onFileSelected} />
-      <div className="col-span-3 py-2 space-y-4">
+      <div className="flex-1 py-2 space-y-4">
         {currentFile ? (
           <>
             <DatasetFileSummary file={currentFile} />
@@ -71,7 +71,7 @@ const DatasetExplorer = ({ version, currentFile }: DatasetExplorerProps) => {
                 <Tabs.Tab label={t("Sample")} className="space-y-2 pt-2">
                   <div className="space-y-2">
                     {currentFile.fileSample && (
-                      <div className="flex flex justify-end">
+                      <div className="flex justify-end">
                         <Popover
                           placement="bottom-start"
                           withPortal
