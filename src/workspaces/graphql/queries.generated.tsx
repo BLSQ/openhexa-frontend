@@ -27,11 +27,14 @@ import { DeleteDatasetTrigger_DatasetFragmentDoc } from '../../datasets/features
 import { DatasetLinksDataGrid_DatasetFragmentDoc } from '../../datasets/features/DatasetLinksDataGrid/DatasetLinksDataGrid.generated';
 import { DatasetVersionPicker_DatasetFragmentDoc, DatasetVersionPicker_VersionFragmentDoc } from '../../datasets/features/DatasetVersionPicker/DatasetVersionPicker.generated';
 import { DatasetVersionFilesDataGrid_VersionFragmentDoc } from '../../datasets/features/DatasetVersionFilesDataGrid/DatasetVersionFilesDataGrid.generated';
+import { DatasetFilesExplorer_VersionFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFilesExplorer/DatasetFilesExplorer.generated';
 import { BucketExplorer_WorkspaceFragmentDoc, BucketExplorer_ObjectsFragmentDoc } from '../features/BucketExplorer/BucketExplorer.generated';
 import { UploadObjectDialog_WorkspaceFragmentDoc } from '../features/UploadObjectDialog/UploadObjectDialog.generated';
 import { CreateBucketFolderDialog_WorkspaceFragmentDoc } from '../features/CreateBucketFolderDialog/CreateBucketFolderDialog.generated';
 import { DatabaseVariablesSection_WorkspaceFragmentDoc } from '../features/DatabaseVariablesSection/DatabaseVariablesSection.generated';
 import { DatabaseTableDataGrid_TableFragmentDoc, DatabaseTableDataGrid_WorkspaceFragmentDoc } from '../features/DatabaseTableDataGrid/DatabaseTableDataGrid.generated';
+import { DatasetFileSummary_FileFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFileSummary/DatasetFileSummary.generated';
+import { DatasetFileDataGrid_FileFragmentDoc } from '../../datasets/features/DatasetExplorer/DatasetFileDataGrid/DatasetFileDataGrid.generated';
 import { CreateConnectionDialog_WorkspaceFragmentDoc } from '../features/CreateConnectionDialog/CreateConnectionDialog.generated';
 import { ConnectionUsageSnippets_ConnectionFragmentDoc } from '../features/ConnectionUsageSnippets/ConnectionUsageSnippets.generated';
 import { ConnectionFieldsSection_ConnectionFragmentDoc } from '../features/ConnectionFieldsSection/ConnectionFieldsSection.generated';
@@ -148,6 +151,13 @@ export type WorkspaceDatabaseTablePageQueryVariables = Types.Exact<{
 
 
 export type WorkspaceDatabaseTablePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', deleteDatabaseTable: boolean, manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, database: { __typename?: 'Database', table?: { __typename?: 'DatabaseTable', name: string, count?: number | null, columns: Array<{ __typename?: 'TableColumn', name: string, type: string }> } | null }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null };
+
+export type WorkspaceDatasetFilePageQueryVariables = Types.Exact<{
+  fileId: Types.Scalars['ID']['input'];
+}>;
+
+
+export type WorkspaceDatasetFilePageQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, uri: string, filename: string, createdAt: any, contentType: string, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null, status: Types.FileSampleStatus } | null } | null };
 
 export type ConnectionsPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
@@ -809,6 +819,7 @@ export const WorkspaceDatasetPageDocument = gql`
         createdAt
         ...DatasetVersionFilesDataGrid_version
         ...DatasetVersionPicker_version
+        ...DatasetFilesExplorer_version
       }
       version(id: $versionId) @include(if: $isSpecificVersion) {
         createdBy {
@@ -817,6 +828,7 @@ export const WorkspaceDatasetPageDocument = gql`
         createdAt
         ...DatasetVersionFilesDataGrid_version
         ...DatasetVersionPicker_version
+        ...DatasetFilesExplorer_version
       }
       permissions {
         update
@@ -834,7 +846,8 @@ ${DatasetLinksDataGrid_DatasetFragmentDoc}
 ${DatasetVersionPicker_DatasetFragmentDoc}
 ${User_UserFragmentDoc}
 ${DatasetVersionFilesDataGrid_VersionFragmentDoc}
-${DatasetVersionPicker_VersionFragmentDoc}`;
+${DatasetVersionPicker_VersionFragmentDoc}
+${DatasetFilesExplorer_VersionFragmentDoc}`;
 
 /**
  * __useWorkspaceDatasetPageQuery__
@@ -1059,6 +1072,53 @@ export type WorkspaceDatabaseTablePageQueryHookResult = ReturnType<typeof useWor
 export type WorkspaceDatabaseTablePageLazyQueryHookResult = ReturnType<typeof useWorkspaceDatabaseTablePageLazyQuery>;
 export type WorkspaceDatabaseTablePageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceDatabaseTablePageSuspenseQuery>;
 export type WorkspaceDatabaseTablePageQueryResult = Apollo.QueryResult<WorkspaceDatabaseTablePageQuery, WorkspaceDatabaseTablePageQueryVariables>;
+export const WorkspaceDatasetFilePageDocument = gql`
+    query WorkspaceDatasetFilePage($fileId: ID!) {
+  datasetVersionFile(id: $fileId) {
+    id
+    uri
+    filename
+    createdAt
+    contentType
+    ...DatasetFileSummary_file
+    ...DatasetFileDataGrid_file
+  }
+}
+    ${DatasetFileSummary_FileFragmentDoc}
+${DatasetFileDataGrid_FileFragmentDoc}`;
+
+/**
+ * __useWorkspaceDatasetFilePageQuery__
+ *
+ * To run a query within a React component, call `useWorkspaceDatasetFilePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkspaceDatasetFilePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkspaceDatasetFilePageQuery({
+ *   variables: {
+ *      fileId: // value for 'fileId'
+ *   },
+ * });
+ */
+export function useWorkspaceDatasetFilePageQuery(baseOptions: Apollo.QueryHookOptions<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables> & ({ variables: WorkspaceDatasetFilePageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>(WorkspaceDatasetFilePageDocument, options);
+      }
+export function useWorkspaceDatasetFilePageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>(WorkspaceDatasetFilePageDocument, options);
+        }
+export function useWorkspaceDatasetFilePageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>(WorkspaceDatasetFilePageDocument, options);
+        }
+export type WorkspaceDatasetFilePageQueryHookResult = ReturnType<typeof useWorkspaceDatasetFilePageQuery>;
+export type WorkspaceDatasetFilePageLazyQueryHookResult = ReturnType<typeof useWorkspaceDatasetFilePageLazyQuery>;
+export type WorkspaceDatasetFilePageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceDatasetFilePageSuspenseQuery>;
+export type WorkspaceDatasetFilePageQueryResult = Apollo.QueryResult<WorkspaceDatasetFilePageQuery, WorkspaceDatasetFilePageQueryVariables>;
 export const ConnectionsPageDocument = gql`
     query ConnectionsPage($workspaceSlug: String!) {
   workspace(slug: $workspaceSlug) {

@@ -19,6 +19,10 @@ import {
   DeleteDatasetError,
   DeleteDatasetLinkError,
 } from "graphql/types";
+import {
+  WorkspaceDatasetFilePageQuery,
+  WorkspaceDatasetFilePageQueryVariables,
+} from "workspaces/graphql/queries.generated";
 
 export async function updateDataset(
   datasetId: string,

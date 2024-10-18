@@ -317,6 +317,7 @@ query WorkspaceDatasetPage(
         createdAt
         ...DatasetVersionFilesDataGrid_version
         ...DatasetVersionPicker_version
+        ...DatasetFilesExplorer_version
       }
       version(id: $versionId) @include(if: $isSpecificVersion) {
         createdBy {
@@ -325,6 +326,7 @@ query WorkspaceDatasetPage(
         createdAt
         ...DatasetVersionFilesDataGrid_version
         ...DatasetVersionPicker_version
+        ...DatasetFilesExplorer_version
       }
 
       permissions {
@@ -418,6 +420,19 @@ query WorkspaceDatabaseTablePage($workspaceSlug: String!, $tableName: String!) {
     ...WorkspaceLayout_workspace
   }
 }
+
+query WorkspaceDatasetFilePage($fileId: ID!) {
+  datasetVersionFile(id: $fileId) {
+    id
+    uri
+    filename
+    createdAt
+    contentType
+    ...DatasetFileSummary_file
+    ...DatasetFileDataGrid_file
+  }
+}
+
 
 query ConnectionsPage($workspaceSlug: String!) {
   workspace(slug: $workspaceSlug) {
