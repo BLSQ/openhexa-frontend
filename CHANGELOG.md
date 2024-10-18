@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.52.1](https://github.com/BLSQ/openhexa-frontend/compare/0.52.0...0.52.1) (2024-10-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/lodash to v4.17.11 ([e2c905e](https://github.com/BLSQ/openhexa-frontend/commit/e2c905e7c0ead918dcefdc212076e91cb54b35a8))
+* **deps:** update dependency @types/node to v22.7.6 ([cc3f86a](https://github.com/BLSQ/openhexa-frontend/commit/cc3f86a1a92e14e53a73dfe10798c254c5df88ec))
+
 ## [0.52.0](https://github.com/BLSQ/openhexa-frontend/compare/0.51.0...0.52.0) (2024-10-13)
 
 
