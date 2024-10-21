@@ -1,45 +1,45 @@
+import { gql } from "@apollo/client";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 import Breadcrumbs from "core/components/Breadcrumbs";
+import Button from "core/components/Button";
+import DataCard from "core/components/DataCard";
+import Link from "core/components/Link";
+import Title from "core/components/Title";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import { WorkspaceLayoutProps } from "workspaces/layouts/WorkspaceLayout/WorkspaceLayout";
+import DatasetVersionPicker from "../features/DatasetVersionPicker";
+import DeleteDatasetTrigger from "../features/DeleteDatasetTrigger";
 import PinDatasetButton from "../features/PinDatasetButton";
 import UploadDatasetVersionDialog from "../features/UploadDatasetVersionDialog";
-import Button from "core/components/Button";
-import DeleteDatasetTrigger from "../features/DeleteDatasetTrigger";
-import { useRouter } from "next/router";
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import { WorkspaceDatasetPageQuery } from "workspaces/graphql/queries.generated";
-import DatasetVersionPicker from "../features/DatasetVersionPicker";
-import Block from "core/components/Block";
-import { capitalize } from "lodash";
-import Link, { LinkProps } from "core/components/Link";
-import clsx from "clsx";
-import Title from "core/components/Title";
-import DataCard from "core/components/DataCard";
+import {
+  DatasetLayout_DatasetLinkFragment,
+  DatasetLayout_VersionFragment,
+  DatasetLayout_WorkspaceFragment,
+} from "./DatasetLayout.generated";
+import { trackEvent } from "core/helpers/analytics";
 
 type TabsProps = {
-  selected: string;
+  selected?: string;
   tabs: { label: string; href: string; id: string }[];
   className?: string;
 };
 const Tabs = ({ tabs, selected, className }: TabsProps) => {
   return (
     <div
-      className={clsx(
-        "flex space-x-8 border-b border-gray-200 text-sm font-medium",
-        className,
-      )}
+      className={clsx("flex space-x-8 -mb-px text-sm font-medium", className)}
     >
       {tabs.map((tab) => (
         <Link
           key={tab.id}
           href={tab.href}
           className={clsx(
-            "cursor-pointer whitespace-nowrap border-b-2 px-1.5 py-2.5 tracking-wide first:pl-0 first:ml-1.5",
+            "whitespace-nowrap cursor-pointer border-b-2 px-1.5 pt-2.5 pb-2 tracking-wide first:pl-0  first:ml-1.5 hover:text-gray-900",
             tab.id === selected
-              ? "border-blue-500 text-blue-600"
-              : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+              ? "border-pink-500 text-gray-900 font-medium"
+              : "border-transparent text-gray-500 hover:border-gray-400",
           )}
         >
           {tab.label}
@@ -50,17 +50,21 @@ const Tabs = ({ tabs, selected, className }: TabsProps) => {
 };
 
 type DatasetLayoutProps = {
-  datasetLink: WorkspaceDatasetPageQuery["datasetLink"];
-  tab: string;
+  datasetLink: DatasetLayout_DatasetLinkFragment;
+  version: DatasetLayout_VersionFragment | null;
+  workspace: DatasetLayout_WorkspaceFragment;
+  tab?: string;
   extraBreadcrumbs?: { href: string; title: string }[];
-} & WorkspaceLayoutProps;
+  children: React.ReactNode;
+};
 
 const DatasetLayout = (props: DatasetLayoutProps) => {
   const {
     children,
     datasetLink,
     workspace,
-    tab,
+    version,
+    tab = "general",
     extraBreadcrumbs = [],
   } = props;
 
@@ -78,13 +82,20 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
     });
   };
 
+  useEffect(() => {
+    trackEvent("datasets.dataset_open", {
+      workspace: workspace.slug,
+      dataset_id: datasetLink.dataset.slug,
+      dataset_version: version?.name,
+    });
+  }, []);
+
   if (!datasetLink) {
     return null;
   }
 
   const { dataset } = datasetLink;
   const isWorkspaceSource = workspace.slug === dataset.workspace?.slug;
-  const version = dataset.version || dataset.latestVersion || null;
 
   return (
     <WorkspaceLayout
@@ -117,17 +128,17 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
             isLast={!extraBreadcrumbs.length}
             href={`/workspaces/${encodeURIComponent(
               workspace.slug,
-            )}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}`}
+            )}/datasets/${encodeURIComponent(dataset.slug)}`}
           >
-            {datasetLink.dataset.name}
+            {dataset.name}
           </Breadcrumbs.Part>
-          {extraBreadcrumbs?.map((breadcrumbsPart, index) => (
+          {extraBreadcrumbs.map(({ href, title }, index) => (
             <Breadcrumbs.Part
               key={index}
               isLast={extraBreadcrumbs.length - 1 == index}
-              href={breadcrumbsPart.href}
+              href={href}
             >
-              {breadcrumbsPart.title}
+              {title}
             </Breadcrumbs.Part>
           ))}
         </Breadcrumbs>
@@ -140,9 +151,9 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
             {t("Create new version")}
           </Button>
         )}
-        {isWorkspaceSource && datasetLink.dataset.permissions.delete && (
+        {isWorkspaceSource && dataset.permissions.delete && (
           <DeleteDatasetTrigger
-            dataset={datasetLink.dataset}
+            dataset={dataset}
             onDelete={() =>
               router.push({
                 pathname: "/workspaces/[workspaceSlug]/datasets",
@@ -164,34 +175,38 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
       </WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
         <Title level={2} className="flex items-center justify-between">
-          {datasetLink.dataset.name}
+          {dataset.name}
           {version && (
+            // Only show the version picker if we have a version
             <DatasetVersionPicker
               onChange={onChangeVersion}
-              dataset={datasetLink.dataset}
+              dataset={dataset}
               version={version}
-              className="w-40"
+              className="min-w-40"
             />
           )}
         </Title>
-        <DataCard item={datasetLink.dataset} className="">
+        <DataCard item={dataset} className="">
           <Tabs
             className="mx-4 mt-2"
             tabs={[
               {
-                label: t("Description"),
-                href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}`,
-                id: "description",
+                label: t("General"),
+                href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(dataset.slug)}`,
+                id: "general",
               },
-              {
-                label: t("Data files"),
-
-                href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/files`,
-                id: "files",
-              },
+              ...(version
+                ? [
+                    {
+                      label: t("Files"),
+                      href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(dataset.slug)}/files`,
+                      id: "files",
+                    },
+                  ]
+                : []),
               {
                 label: t("Access management"),
-                href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(datasetLink.dataset.slug)}/access`,
+                href: `/workspaces/${encodeURIComponent(workspace.slug)}/datasets/${encodeURIComponent(dataset.slug)}/access`,
                 id: "access",
               },
             ]}
@@ -209,4 +224,43 @@ const DatasetLayout = (props: DatasetLayoutProps) => {
     </WorkspaceLayout>
   );
 };
+
+DatasetLayout.fragments = {
+  workspace: gql`
+    fragment DatasetLayout_workspace on Workspace {
+      ...WorkspaceLayout_workspace
+      name
+      slug
+    }
+    ${WorkspaceLayout.fragments.workspace}
+  `,
+  datasetLink: gql`
+    fragment DatasetLayout_datasetLink on DatasetLink {
+      ...UploadDatasetVersionDialog_datasetLink
+      ...PinDatasetButton_link
+      dataset {
+        workspace {
+          slug
+        }
+        slug
+        permissions {
+          delete
+          createVersion
+        }
+      }
+    }
+    ${UploadDatasetVersionDialog.fragments.datasetLink}
+    ${PinDatasetButton.fragments.link}
+  `,
+
+  version: gql`
+    fragment DatasetLayout_version on DatasetVersion {
+      id
+      name
+      ...DatasetVersionPicker_version
+    }
+    ${DatasetVersionPicker.fragments.version}
+  `,
+};
+
 export default DatasetLayout;

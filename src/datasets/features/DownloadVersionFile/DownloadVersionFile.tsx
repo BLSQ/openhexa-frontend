@@ -82,8 +82,12 @@ const DownloadVersionFile = (props: DownloadVersionFileProps) => {
 
   return (
     <Button disabled={isPreparing} onClick={onClick} {...delegated}>
-      {isPreparing && <Spinner size="xs" className="mr-1" />}
-      {!isPreparing && <ArrowDownTrayIcon className="h-4 w-4" />}
+      {isPreparing ? (
+        <Spinner size="xs" />
+      ) : (
+        <ArrowDownTrayIcon className="h-3 w-3" />
+      )}
+      <span className="ml-1.5">{t("Download")}</span>
     </Button>
   );
 };

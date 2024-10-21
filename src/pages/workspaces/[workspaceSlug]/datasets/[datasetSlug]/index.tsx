@@ -1,4 +1,4 @@
-import Block from "core/components/Block";
+import Badge from "core/components/Badge";
 import Clipboard from "core/components/Clipboard";
 import DataCard from "core/components/DataCard";
 import DateProperty from "core/components/DataCard/DateProperty";
@@ -8,80 +8,57 @@ import UserProperty from "core/components/DataCard/UserProperty";
 import DescriptionList from "core/components/DescriptionList";
 import Page from "core/components/Page";
 import Time from "core/components/Time";
-import { trackEvent } from "core/helpers/analytics";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
-import useCacheKey from "core/hooks/useCacheKey";
 import { updateDataset } from "datasets/helpers/dataset";
 import DatasetLayout from "datasets/layouts/DatasetLayout";
 import { useTranslation } from "next-i18next";
-import { useEffect } from "react";
 import {
-  useWorkspaceDatasetPageQuery,
-  WorkspaceDatasetPageDocument,
-  WorkspaceDatasetPageQuery,
-  WorkspaceDatasetPageQueryVariables,
+  useWorkspaceDatasetIndexPageQuery,
+  WorkspaceDatasetIndexPageDocument,
+  WorkspaceDatasetIndexPageQuery,
+  WorkspaceDatasetIndexPageQueryVariables,
 } from "workspaces/graphql/queries.generated";
 
-export type WorkspaceDatabasePageProps = {
-  datasetSlug: string;
-  workspaceSlug: string;
-  versionId: string;
+export type WorkspaceDatasetPageProps = {
   isSpecificVersion: boolean;
-  tabIndex: number;
+  workspaceSlug: string;
+  datasetSlug: string;
+  versionId: string;
 };
 
 const WorkspaceDatasetPage: NextPageWithLayout = (
-  props: WorkspaceDatabasePageProps,
+  props: WorkspaceDatasetPageProps,
 ) => {
-  const { datasetSlug, workspaceSlug, isSpecificVersion, versionId } = props;
-
   const { t } = useTranslation();
-  const { data, refetch } = useWorkspaceDatasetPageQuery({
-    variables: {
-      workspaceSlug,
-      datasetSlug,
-      versionId,
-      isSpecificVersion,
-    },
+  const { data } = useWorkspaceDatasetIndexPageQuery({
+    variables: props,
   });
-  useCacheKey(["datasets"], () => refetch());
-
-  useEffect(() => {
-    if (data?.datasetLink) {
-      const version = dataset.version || dataset.latestVersion || null;
-      trackEvent("datasets.dataset_open", {
-        workspace: workspaceSlug,
-        dataset_id: datasetSlug,
-        dataset_version: version?.name,
-      });
-    }
-  }, []);
-
-  if (!data?.datasetLink) {
+  if (!data || !data.datasetLink || !data.workspace) {
     return null;
   }
-  const { datasetLink } = data;
-  const { dataset, workspace } = datasetLink;
+  const { datasetLink, workspace } = data;
+  const { dataset } = datasetLink;
+  const version = props.isSpecificVersion
+    ? datasetLink.dataset.version
+    : datasetLink.dataset.latestVersion;
+
   const isWorkspaceSource = workspace.slug === dataset.workspace?.slug;
-  const version = dataset.version || dataset.latestVersion || null;
 
   const onSave = async (values: any) => {
-    await updateDataset(datasetLink.dataset.id, values);
+    await updateDataset(dataset.id, values);
   };
 
   return (
-    <Page title={datasetLink.dataset.name ?? t("Dataset")}>
+    <Page title={dataset.name ?? t("Dataset")}>
       <DatasetLayout
-        datasetLink={data.datasetLink}
+        datasetLink={datasetLink}
         workspace={workspace}
-        tab="description"
+        version={version ?? null}
       >
         <DataCard.FormSection
           onSave={
-            datasetLink.dataset.permissions.update && isWorkspaceSource
-              ? onSave
-              : undefined
+            dataset.permissions.update && isWorkspaceSource ? onSave : undefined
           }
           collapsible={false}
         >
@@ -95,7 +72,7 @@ const WorkspaceDatasetPage: NextPageWithLayout = (
             id="description"
             accessor={"description"}
             label={t("Description")}
-            defaultValue="Empty description"
+            defaultValue="-"
             hideLabel
             markdown
           />
@@ -128,46 +105,46 @@ const WorkspaceDatasetPage: NextPageWithLayout = (
             label={t("Created by")}
             accessor={"createdBy"}
           />
-          <TextProperty
-            readonly
+          <RenderProperty
+            // visible={(_, isEditing) => isEditing && !isWorkspaceSource}
             id={"workspace"}
             accessor={"workspace.name"}
             label={t("Source workspace")}
-          />
+          >
+            {(property) => <Badge>{property.displayValue}</Badge>}
+          </RenderProperty>
         </DataCard.FormSection>
-        <DataCard.Section
-          title={() => (
-            <div className="flex flex-1 gap-2 items-center justify-between">
-              <h4 className="flex-1 font-medium">
-                {version &&
-                  version.id === datasetLink.dataset.latestVersion?.id &&
-                  t("Current version")}
-                {version &&
-                  version.id !== datasetLink.dataset.latestVersion?.id &&
-                  t("Version {{version}}", {
-                    version: version.name,
-                  })}
-              </h4>
-            </div>
-          )}
-          collapsible={false}
-        >
-          {version && (
-            <>
-              <DescriptionList>
-                <DescriptionList.Item label={t("Name")}>
-                  {version.name}
-                </DescriptionList.Item>
-                <DescriptionList.Item label={t("Created at")}>
-                  <Time datetime={version.createdAt} />
-                </DescriptionList.Item>
-                <DescriptionList.Item label={t("Created by")}>
-                  {version.createdBy?.displayName ?? "-"}
-                </DescriptionList.Item>
-              </DescriptionList>
-            </>
-          )}
-        </DataCard.Section>
+        {version && (
+          <DataCard.Section
+            title={() => (
+              <div className="flex flex-1 gap-2 items-center justify-between">
+                <h4 className="flex-1 font-medium">
+                  {version &&
+                    version.id === datasetLink.dataset.latestVersion?.id &&
+                    t("Current version")}
+                  {version &&
+                    version.id !== datasetLink.dataset.latestVersion?.id &&
+                    t("Version {{version}}", {
+                      version: version.name,
+                    })}
+                </h4>
+              </div>
+            )}
+            collapsible={false}
+          >
+            <DescriptionList>
+              <DescriptionList.Item label={t("Name")}>
+                {version.name}
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Created at")}>
+                <Time datetime={version.createdAt} />
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Created by")}>
+                {version.createdBy?.displayName ?? "-"}
+              </DescriptionList.Item>
+            </DescriptionList>
+          </DataCard.Section>
+        )}
       </DatasetLayout>
     </Page>
   );
@@ -188,14 +165,14 @@ export const getServerSideProps = createGetServerSideProps({
     };
 
     const { data } = await client.query<
-      WorkspaceDatasetPageQuery,
-      WorkspaceDatasetPageQueryVariables
+      WorkspaceDatasetIndexPageQuery,
+      WorkspaceDatasetIndexPageQueryVariables
     >({
-      query: WorkspaceDatasetPageDocument,
+      query: WorkspaceDatasetIndexPageDocument,
       variables,
     });
 
-    if (!data.datasetLink) {
+    if (!data.datasetLink || !data.workspace) {
       return { notFound: true };
     }
 

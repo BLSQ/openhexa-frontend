@@ -1,78 +1,61 @@
 import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
-import { useTranslation } from "next-i18next";
-import {
-  useWorkspaceDatasetFilePageQuery,
-  useWorkspaceDatasetPageQuery,
-  WorkspaceDatasetFilePageDocument,
-  WorkspaceDatasetFilePageQuery,
-  WorkspaceDatasetFilePageQueryVariables,
-  WorkspaceDatasetPageDocument,
-  WorkspaceDatasetPageQuery,
-  WorkspaceDatasetPageQueryVariables,
-} from "workspaces/graphql/queries.generated";
-import { useEffect } from "react";
-import useCacheKey from "core/hooks/useCacheKey";
-import { trackEvent } from "core/helpers/analytics";
 import DatasetExplorer from "datasets/features/DatasetExplorer";
+import LinkDatasetDialog from "datasets/features/LinkDatasetDialog";
 import DatasetLayout from "datasets/layouts/DatasetLayout";
-import Block from "core/components/Block";
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import {
+  useWorkspaceDatasetFilesPageQuery,
+  WorkspaceDatasetFilesPageDocument,
+  WorkspaceDatasetFilesPageQuery,
+  WorkspaceDatasetFilesPageQueryVariables,
+} from "workspaces/graphql/queries.generated";
 
-type Props = {
-  datasetSlug: string;
-  workspaceSlug: string;
-  versionId: string;
+export type WorkspaceDatasetFilesPageProps = {
   isSpecificVersion: boolean;
-  fileId: string;
+  workspaceSlug: string;
+  datasetSlug: string;
+  versionId: string;
+  fileId: string | null;
 };
 
-const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
-  const { datasetSlug, workspaceSlug, isSpecificVersion, versionId, fileId } =
-    props;
-
+const WorkspaceDatasetFilesPage: NextPageWithLayout = (
+  props: WorkspaceDatasetFilesPageProps,
+) => {
   const { t } = useTranslation();
-  const { data, refetch } = useWorkspaceDatasetPageQuery({
-    variables: {
-      workspaceSlug,
-      datasetSlug,
-      versionId,
-      isSpecificVersion,
-    },
+  const router = useRouter();
+  const [isLinkDialogOpen, setLinkDialogOpen] = useState(false);
+  const { fileId, isSpecificVersion, workspaceSlug, datasetSlug, versionId } =
+    props;
+  const { data } = useWorkspaceDatasetFilesPageQuery({
+    variables: { isSpecificVersion, workspaceSlug, datasetSlug, versionId },
   });
-
-  useCacheKey(["datasets"], () => refetch());
-
-  useEffect(() => {
-    if (data?.datasetLink) {
-      const version = dataset.version || dataset.latestVersion || null;
-      trackEvent("datasets.dataset_open", {
-        workspace: workspaceSlug,
-        dataset_id: datasetSlug,
-        dataset_version: version?.name,
-      });
-    }
-  }, []);
-
-  // todo should include the file version to check if the file exist in a specified version
-  const file = useWorkspaceDatasetFilePageQuery({
-    variables: { fileId: fileId },
-    skip: !fileId,
-  });
-
-  if (!data?.datasetLink) {
+  if (!data || !data.datasetLink || !data.workspace) {
     return null;
   }
+  const { datasetLink, workspace } = data;
+  const { dataset } = datasetLink;
+  const version = isSpecificVersion ? dataset.version! : dataset.latestVersion!;
 
-  const { datasetLink } = data;
-  const { dataset, workspace } = datasetLink;
-  const version = dataset.version || dataset.latestVersion || null;
+  const currentFile = (() => {
+    if (!fileId) {
+      return version.files.items[0];
+    } else {
+      return version.files.items.find(
+        (file: { id: string }) => file.id === fileId,
+      );
+    }
+  })();
 
   return (
-    <Page title={datasetLink.dataset.name ?? t("Dataset")}>
+    <Page title={dataset.name ?? t("Dataset")}>
       <DatasetLayout
-        datasetLink={data.datasetLink}
+        datasetLink={datasetLink}
         workspace={workspace}
+        version={version ?? null}
         extraBreadcrumbs={[
           {
             title: t("Files"),
@@ -83,21 +66,22 @@ const WorkspaceDatasetFilesPage: NextPageWithLayout = (props: Props) => {
         ]}
         tab="files"
       >
-        <Block.Section>
-          {version ? (
-            <DatasetExplorer
-              version={version}
-              currentFile={file.data?.datasetVersionFile}
-            />
-          ) : (
-            <p className={"italic text-gray-500"}>
-              {t(
-                "This dataset has no version. Upload a new version using your browser or the SDK to view your files.",
-              )}
-            </p>
-          )}
-        </Block.Section>
+        <DatasetExplorer
+          version={version}
+          currentFile={currentFile}
+          onClickFile={(file) =>
+            router.push({
+              pathname: `${router.pathname}`,
+              query: { ...router.query, version: version?.id, fileId: file.id },
+            })
+          }
+        />
       </DatasetLayout>
+      <LinkDatasetDialog
+        dataset={datasetLink.dataset}
+        open={isLinkDialogOpen}
+        onClose={() => setLinkDialogOpen(false)}
+      />
     </Page>
   );
 };
@@ -117,40 +101,28 @@ export const getServerSideProps = createGetServerSideProps({
     };
 
     const { data } = await client.query<
-      WorkspaceDatasetPageQuery,
-      WorkspaceDatasetPageQueryVariables
+      WorkspaceDatasetFilesPageQuery,
+      WorkspaceDatasetFilesPageQueryVariables
     >({
-      query: WorkspaceDatasetPageDocument,
+      query: WorkspaceDatasetFilesPageDocument,
       variables,
     });
 
-    if (!data.datasetLink) {
+    const version = variables.isSpecificVersion
+      ? data.datasetLink?.dataset.version
+      : data.datasetLink?.dataset.latestVersion;
+    if (!data.datasetLink || !data.workspace || !version) {
       return { notFound: true };
     }
 
     // optional route parameters
     const fileArr = (ctx.query.fileId as string[]) ?? [];
-    if (fileArr.length > 1) {
-      return { notFound: true };
-    }
-    // todo handle case when file doesnt exist in a selected version
-    const fileId = fileArr[0] ?? "";
-    if (fileId) {
-      const { data } = await client.query<
-        WorkspaceDatasetFilePageQuery,
-        WorkspaceDatasetFilePageQueryVariables
-      >({
-        query: WorkspaceDatasetFilePageDocument,
-        variables: { fileId: fileId },
-      });
-
-      if (!data.datasetVersionFile) {
-        return { notFound: true };
-      }
-    }
 
     return {
-      props: { ...variables, fileId: fileId },
+      props: {
+        ...variables,
+        fileId: fileArr.length === 1 ? fileArr[0] : null,
+      },
     };
   },
 });

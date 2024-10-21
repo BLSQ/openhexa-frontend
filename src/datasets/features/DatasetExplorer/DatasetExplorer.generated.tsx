@@ -1,25 +1,34 @@
 import * as Types from '../../../graphql/types';
 
 import { gql } from '@apollo/client';
-import { DatasetFileSummary_FileFragmentDoc } from './DatasetFileSummary/DatasetFileSummary.generated';
-import { DatasetFileDataGrid_FileFragmentDoc } from './DatasetFileDataGrid/DatasetFileDataGrid.generated';
-import { DatasetFilesExplorer_VersionFragmentDoc } from './DatasetFilesExplorer/DatasetFilesExplorer.generated';
-export type DatasetExplorerFile_FileFragment = { __typename?: 'DatasetVersionFile', id: string, filename: string, contentType: string, createdAt: any, fileSample?: { __typename?: 'DatasetFileSample', sample?: any | null, status: Types.FileSampleStatus } | null };
+import { DownloadVersionFile_FileFragmentDoc } from '../DownloadVersionFile/DownloadVersionFile.generated';
+import { DatasetVersionFileSample_FileFragmentDoc } from '../DatasetVersionFileSample/DatasetVersionFileSample.generated';
+export type DatasetExplorer_FileFragment = { __typename?: 'DatasetVersionFile', id: string, filename: string, createdAt: any, contentType: string, uri: string, createdBy?: { __typename?: 'User', displayName: string } | null };
 
-export type DatasetExplorerDatasetVersion_VersionFragment = { __typename?: 'DatasetVersion', id: string };
+export type DatasetExplorer_VersionFragment = { __typename?: 'DatasetVersion', id: string, files: { __typename?: 'DatasetVersionFilePage', items: Array<{ __typename?: 'DatasetVersionFile', id: string, filename: string, createdAt: any, contentType: string, uri: string, createdBy?: { __typename?: 'User', displayName: string } | null }> } };
 
-export const DatasetExplorerFile_FileFragmentDoc = gql`
-    fragment DatasetExplorerFile_file on DatasetVersionFile {
+export const DatasetExplorer_FileFragmentDoc = gql`
+    fragment DatasetExplorer_file on DatasetVersionFile {
   id
   filename
-  ...DatasetFileSummary_file
-  ...DatasetFileDataGrid_file
+  createdAt
+  createdBy {
+    displayName
+  }
+  ...DownloadVersionFile_file
+  ...DatasetVersionFileSample_file
+  contentType
+  uri
 }
-    ${DatasetFileSummary_FileFragmentDoc}
-${DatasetFileDataGrid_FileFragmentDoc}`;
-export const DatasetExplorerDatasetVersion_VersionFragmentDoc = gql`
-    fragment DatasetExplorerDatasetVersion_version on DatasetVersion {
+    ${DownloadVersionFile_FileFragmentDoc}
+${DatasetVersionFileSample_FileFragmentDoc}`;
+export const DatasetExplorer_VersionFragmentDoc = gql`
+    fragment DatasetExplorer_version on DatasetVersion {
   id
-  ...DatasetFilesExplorer_version
+  files {
+    items {
+      ...DatasetExplorer_file
+    }
+  }
 }
-    ${DatasetFilesExplorer_VersionFragmentDoc}`;
+    ${DatasetExplorer_FileFragmentDoc}`;

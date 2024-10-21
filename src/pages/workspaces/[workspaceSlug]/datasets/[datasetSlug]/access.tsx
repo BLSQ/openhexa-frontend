@@ -1,71 +1,51 @@
-import Button from "core/components/Button/Button";
+import { LinkIcon } from "@heroicons/react/24/outline";
+import Block from "core/components/Block";
+import Button from "core/components/Button";
 import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
-import { useTranslation } from "next-i18next";
-import {
-  useWorkspaceDatasetPageQuery,
-  WorkspaceDatasetPageDocument,
-  WorkspaceDatasetPageQuery,
-  WorkspaceDatasetPageQueryVariables,
-} from "workspaces/graphql/queries.generated";
-import { useEffect, useState } from "react";
-import { LinkIcon } from "@heroicons/react/24/solid";
-import useCacheKey from "core/hooks/useCacheKey";
-import { trackEvent } from "core/helpers/analytics";
 import DatasetLinksDataGrid from "datasets/features/DatasetLinksDataGrid";
-import DatasetLayout from "datasets/layouts/DatasetLayout";
 import LinkDatasetDialog from "datasets/features/LinkDatasetDialog";
-import Block from "core/components/Block";
+import DatasetLayout from "datasets/layouts/DatasetLayout";
+import { useTranslation } from "next-i18next";
+import { useState } from "react";
+import {
+  useWorkspaceDatasetAccessPageQuery,
+  WorkspaceDatasetAccessPageDocument,
+  WorkspaceDatasetAccessPageQuery,
+  WorkspaceDatasetAccessPageQueryVariables,
+} from "workspaces/graphql/queries.generated";
 
-export type WorkspaceDatabasePageProps = {
-  datasetSlug: string;
-  workspaceSlug: string;
-  versionId: string;
+export type WorkspaceDatasetAccessPageProps = {
   isSpecificVersion: boolean;
-  tabIndex: number;
+  workspaceSlug: string;
+  datasetSlug: string;
+  versionId: string;
 };
 
-const WorkspaceDatasetAccessManagementPage: NextPageWithLayout = (
-  props: WorkspaceDatabasePageProps,
+const WorkspaceDatasetAccessPage: NextPageWithLayout = (
+  props: WorkspaceDatasetAccessPageProps,
 ) => {
-  const { datasetSlug, workspaceSlug, isSpecificVersion, versionId, tabIndex } =
-    props;
-
   const { t } = useTranslation();
-  const [isLinkDialogOpen, setLinkDialogOpen] = useState(false);
-  const { data, refetch } = useWorkspaceDatasetPageQuery({
-    variables: {
-      workspaceSlug,
-      datasetSlug,
-      versionId,
-      isSpecificVersion,
-    },
+  const { data } = useWorkspaceDatasetAccessPageQuery({
+    variables: props,
   });
-  useCacheKey(["datasets"], () => refetch());
-
-  useEffect(() => {
-    if (data?.datasetLink) {
-      const version = dataset.version || dataset.latestVersion || null;
-      trackEvent("datasets.dataset_open", {
-        workspace: workspaceSlug,
-        dataset_id: datasetSlug,
-        dataset_version: version?.name,
-      });
-    }
-  }, []);
-
-  if (!data?.datasetLink) {
+  const [isLinkDialogOpen, setLinkDialogOpen] = useState(false);
+  if (!data || !data.datasetLink || !data.workspace) {
     return null;
   }
-  const { datasetLink } = data;
-  const { dataset, workspace } = datasetLink;
+  const { datasetLink, workspace } = data;
+  const { dataset } = datasetLink;
+  const version = props.isSpecificVersion
+    ? datasetLink.dataset.version
+    : datasetLink.dataset.latestVersion;
 
   return (
-    <Page title={datasetLink.dataset.name ?? t("Dataset")}>
+    <Page title={dataset.name ?? t("Dataset")}>
       <DatasetLayout
-        datasetLink={data.datasetLink}
+        datasetLink={datasetLink}
         workspace={workspace}
+        version={version ?? null}
         extraBreadcrumbs={[
           {
             title: t("Access management"),
@@ -76,7 +56,8 @@ const WorkspaceDatasetAccessManagementPage: NextPageWithLayout = (
         ]}
         tab="access"
       >
-        <Block.Content>
+        <DatasetLinksDataGrid dataset={datasetLink.dataset} />
+        <Block.Content className="flex justify-end">
           {workspace.permissions.update && (
             <Button
               leadingIcon={<LinkIcon className={"h-4 w-4"} />}
@@ -86,7 +67,6 @@ const WorkspaceDatasetAccessManagementPage: NextPageWithLayout = (
             </Button>
           )}
         </Block.Content>
-        <DatasetLinksDataGrid dataset={datasetLink.dataset} />
       </DatasetLayout>
       <LinkDatasetDialog
         dataset={datasetLink.dataset}
@@ -97,7 +77,7 @@ const WorkspaceDatasetAccessManagementPage: NextPageWithLayout = (
   );
 };
 
-WorkspaceDatasetAccessManagementPage.getLayout = (page) => page;
+WorkspaceDatasetAccessPage.getLayout = (page) => page;
 
 export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
@@ -112,20 +92,14 @@ export const getServerSideProps = createGetServerSideProps({
     };
 
     const { data } = await client.query<
-      WorkspaceDatasetPageQuery,
-      WorkspaceDatasetPageQueryVariables
+      WorkspaceDatasetAccessPageQuery,
+      WorkspaceDatasetAccessPageQueryVariables
     >({
-      query: WorkspaceDatasetPageDocument,
+      query: WorkspaceDatasetAccessPageDocument,
       variables,
     });
 
-    if (!data.datasetLink) {
-      return { notFound: true };
-    }
-
-    const { dataset, workspace } = data.datasetLink;
-    // in case it's not the source dataset, we should not display the access management page
-    if (workspace.slug !== dataset.workspace?.slug) {
+    if (!data.datasetLink || !data.workspace) {
       return { notFound: true };
     }
 
@@ -135,4 +109,4 @@ export const getServerSideProps = createGetServerSideProps({
   },
 });
 
-export default WorkspaceDatasetAccessManagementPage;
+export default WorkspaceDatasetAccessPage;
