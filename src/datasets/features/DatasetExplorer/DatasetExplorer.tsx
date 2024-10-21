@@ -12,6 +12,8 @@ import {
   DatasetExplorer_VersionFragment,
 } from "./DatasetExplorer.generated";
 import DatasetVersionFileSample from "../DatasetVersionFileSample";
+import { DocumentIcon } from "@heroicons/react/24/outline";
+import Filesize from "core/components/Filesize";
 
 type DatasetExplorerProps = {
   version: DatasetExplorer_VersionFragment;
@@ -53,7 +55,7 @@ const DatasetExplorer = ({
         {currentFile && (
           <div className="px-4 py-1 space-y-6">
             <Title level={3} className="flex justify-between">
-              <span className=" font-mono tracking-tighter">
+              <span className="font-mono tracking-tighter">
                 {currentFile.filename}
               </span>
               <DownloadVersionFile
@@ -72,6 +74,11 @@ const DatasetExplorer = ({
               <DescriptionList.Item label={t("Type")}>
                 <code className="font-mono text-sm text-gray-600">
                   {currentFile.contentType}
+                </code>
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Size")}>
+                <code className="font-mono text-sm text-gray-600">
+                  <Filesize size={currentFile.size} />
                 </code>
               </DescriptionList.Item>
             </DescriptionList>
@@ -100,6 +107,7 @@ DatasetExplorer.fragments = {
       ...DownloadVersionFile_file
       ...DatasetVersionFileSample_file
       contentType
+      size
       uri
     }
     ${DownloadVersionFile.fragments.file}
