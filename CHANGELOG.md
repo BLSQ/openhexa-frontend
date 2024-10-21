@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.52.1](https://github.com/BLSQ/openhexa-frontend/compare/0.52.0...0.52.1) (2024-10-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/nextjs to v8.35.0 ([84219a0](https://github.com/BLSQ/openhexa-frontend/commit/84219a02e906271cc577a23dd33f96dc4a9104f7))
+* **deps:** update dependency @types/lodash to v4.17.11 ([e2c905e](https://github.com/BLSQ/openhexa-frontend/commit/e2c905e7c0ead918dcefdc212076e91cb54b35a8))
+* **deps:** update dependency @types/lodash to v4.17.12 ([7f77f55](https://github.com/BLSQ/openhexa-frontend/commit/7f77f557ab3bf3098396c28d03b8cad1bec17166))
+* **deps:** update dependency @types/node to v22.7.6 ([cc3f86a](https://github.com/BLSQ/openhexa-frontend/commit/cc3f86a1a92e14e53a73dfe10798c254c5df88ec))
+* **deps:** update dependency @types/node to v22.7.7 ([b6e64d9](https://github.com/BLSQ/openhexa-frontend/commit/b6e64d99c6a73dca1760950af19fd76392182e30))
+* **deps:** update dependency i18next to v23.16.1 ([bc951d8](https://github.com/BLSQ/openhexa-frontend/commit/bc951d8abe0633aea8070a74949e99285b8b6f40))
+* **deps:** update dependency i18next to v23.16.2 ([3b60284](https://github.com/BLSQ/openhexa-frontend/commit/3b60284af2e930f54593c2b329a2df7b9565bca6))
+* **deps:** update dependency react-dropzone to v14.2.10 ([af596e2](https://github.com/BLSQ/openhexa-frontend/commit/af596e288e42332ed5a4250c4198021aa0ae51ce))
+* **deps:** update dependency react-i18next to v15.1.0 ([a1814a6](https://github.com/BLSQ/openhexa-frontend/commit/a1814a6fe23054642507f42c4c9f916486b1e4aa))
+
 ## [0.52.0](https://github.com/BLSQ/openhexa-frontend/compare/0.51.0...0.52.0) (2024-10-13)
 
 
