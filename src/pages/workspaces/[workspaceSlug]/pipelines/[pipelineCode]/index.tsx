@@ -29,11 +29,7 @@ import Tooltip from "core/components/Tooltip";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
 import { NextPageWithLayout } from "core/helpers/types";
-import {
-  PipelineRecipient,
-  PipelineRunTrigger,
-  PipelineType,
-} from "graphql/types";
+import { PipelineRunTrigger, PipelineType } from "graphql/types";
 import useFeature from "identity/hooks/useFeature";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -488,9 +484,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                 </DataCard.FormSection>
                 <DataCard.FormSection
                   title={t("Notifications")}
-                  onSave={
-                    pipeline.permissions.update ? onSavePipeline : undefined
-                  }
                   collapsible={false}
                 >
                   <PipelineRecipients pipeline={pipeline} />

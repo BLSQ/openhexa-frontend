@@ -3,12 +3,16 @@ import useCacheKey from "core/hooks/useCacheKey";
 import { useTranslation } from "next-i18next";
 import { ReactElement } from "react";
 import { deletePipelineRecipient } from "workspaces/helpers/pipelines";
-import { DeletePipelineRecipientTrigger_RecipientFragment } from "./DeletePipelineRecipientTrigger.generated";
+import {
+  DeletePipelineRecipientTrigger_PipelineFragment,
+  DeletePipelineRecipientTrigger_RecipientFragment,
+} from "./DeletePipelineRecipientTrigger.generated";
 
 type DeletePipelineRecipientriggerProps = {
   children: ({ onClick }: { onClick: () => void }) => ReactElement;
   confirmMessage?: string;
   recipient: DeletePipelineRecipientTrigger_RecipientFragment;
+  pipeline: DeletePipelineRecipientTrigger_PipelineFragment;
 };
 
 const DeletePipelineRecipientTrigger = (
@@ -18,20 +22,21 @@ const DeletePipelineRecipientTrigger = (
   const {
     children,
     recipient,
+    pipeline,
     confirmMessage = t("Remove {{name}} from the notifications recipients?", {
       name: recipient.user.displayName,
     }),
   } = props;
 
-  const clearCache = useCacheKey(["pipelines", recipient.pipeline.id]);
+  const clearCache = useCacheKey("pipeline");
 
   const onClick = async () => {
     if (window.confirm(confirmMessage)) {
       await deletePipelineRecipient(recipient.id);
-      clearCache();
     }
+    clearCache();
   };
-  if (!recipient.pipeline.permissions.update) {
+  if (!pipeline.permissions.update) {
     return null;
   }
   return children({ onClick });
@@ -44,11 +49,13 @@ DeletePipelineRecipientTrigger.fragments = {
       user {
         displayName
       }
-      pipeline {
-        id
-        permissions {
-          update
-        }
+    }
+  `,
+  pipeline: gql`
+    fragment DeletePipelineRecipientTrigger_pipeline on Pipeline {
+      code
+      permissions {
+        update
       }
     }
   `,

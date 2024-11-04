@@ -5,7 +5,6 @@ import useForm from "core/hooks/useForm";
 import { useEffect } from "react";
 import { useTranslation } from "next-i18next";
 import { gql } from "@apollo/client";
-
 import Field from "core/components/forms/Field";
 import {
   PipelineNotificationEvent,
@@ -73,7 +72,7 @@ const UpdatePipelineRecipientDialog = (
           required
         >
           <SimpleSelect
-            name="role"
+            name="notificationEvent"
             value={form.formData.notificationEvent}
             onChange={form.handleInputChange}
             required

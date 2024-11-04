@@ -130,12 +130,12 @@ export type ResendWorkspaceInvitationMutationVariables = Types.Exact<{
 
 export type ResendWorkspaceInvitationMutation = { __typename?: 'Mutation', resendWorkspaceInvitation: { __typename?: 'ResendWorkspaceInvitationResult', success: boolean, errors: Array<Types.ResendWorkspaceInvitationError> } };
 
-export type UpdatePipelineRecipientMutationVariables = Types.Exact<{
-  input: Types.UpdatePipelineRecipientInput;
+export type AddPipelineRecipientMutationVariables = Types.Exact<{
+  input: Types.CreatePipelineRecipientInput;
 }>;
 
 
-export type UpdatePipelineRecipientMutation = { __typename?: 'Mutation', updatePipelineRecipient: { __typename?: 'UpdatePipelineRecipientResult', success: boolean, errors: Array<Types.PipelineRecipientError> } };
+export type AddPipelineRecipientMutation = { __typename?: 'Mutation', addPipelineRecipient: { __typename?: 'AddPipelineRecipientResult', success: boolean, errors: Array<Types.PipelineRecipientError> } };
 
 
 export const CreateWorkspaceDocument = gql`
@@ -815,37 +815,37 @@ export function useResendWorkspaceInvitationMutation(baseOptions?: Apollo.Mutati
 export type ResendWorkspaceInvitationMutationHookResult = ReturnType<typeof useResendWorkspaceInvitationMutation>;
 export type ResendWorkspaceInvitationMutationResult = Apollo.MutationResult<ResendWorkspaceInvitationMutation>;
 export type ResendWorkspaceInvitationMutationOptions = Apollo.BaseMutationOptions<ResendWorkspaceInvitationMutation, ResendWorkspaceInvitationMutationVariables>;
-export const UpdatePipelineRecipientDocument = gql`
-    mutation updatePipelineRecipient($input: UpdatePipelineRecipientInput!) {
-  updatePipelineRecipient(input: $input) {
+export const AddPipelineRecipientDocument = gql`
+    mutation addPipelineRecipient($input: CreatePipelineRecipientInput!) {
+  addPipelineRecipient(input: $input) {
     success
     errors
   }
 }
     `;
-export type UpdatePipelineRecipientMutationFn = Apollo.MutationFunction<UpdatePipelineRecipientMutation, UpdatePipelineRecipientMutationVariables>;
+export type AddPipelineRecipientMutationFn = Apollo.MutationFunction<AddPipelineRecipientMutation, AddPipelineRecipientMutationVariables>;
 
 /**
- * __useUpdatePipelineRecipientMutation__
+ * __useAddPipelineRecipientMutation__
  *
- * To run a mutation, you first call `useUpdatePipelineRecipientMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePipelineRecipientMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAddPipelineRecipientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPipelineRecipientMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updatePipelineRecipientMutation, { data, loading, error }] = useUpdatePipelineRecipientMutation({
+ * const [addPipelineRecipientMutation, { data, loading, error }] = useAddPipelineRecipientMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdatePipelineRecipientMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePipelineRecipientMutation, UpdatePipelineRecipientMutationVariables>) {
+export function useAddPipelineRecipientMutation(baseOptions?: Apollo.MutationHookOptions<AddPipelineRecipientMutation, AddPipelineRecipientMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdatePipelineRecipientMutation, UpdatePipelineRecipientMutationVariables>(UpdatePipelineRecipientDocument, options);
+        return Apollo.useMutation<AddPipelineRecipientMutation, AddPipelineRecipientMutationVariables>(AddPipelineRecipientDocument, options);
       }
-export type UpdatePipelineRecipientMutationHookResult = ReturnType<typeof useUpdatePipelineRecipientMutation>;
-export type UpdatePipelineRecipientMutationResult = Apollo.MutationResult<UpdatePipelineRecipientMutation>;
-export type UpdatePipelineRecipientMutationOptions = Apollo.BaseMutationOptions<UpdatePipelineRecipientMutation, UpdatePipelineRecipientMutationVariables>;
+export type AddPipelineRecipientMutationHookResult = ReturnType<typeof useAddPipelineRecipientMutation>;
+export type AddPipelineRecipientMutationResult = Apollo.MutationResult<AddPipelineRecipientMutation>;
+export type AddPipelineRecipientMutationOptions = Apollo.BaseMutationOptions<AddPipelineRecipientMutation, AddPipelineRecipientMutationVariables>;

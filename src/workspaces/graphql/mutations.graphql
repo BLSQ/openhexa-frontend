@@ -190,8 +190,8 @@ mutation resendWorkspaceInvitation($input: ResendWorkspaceInvitationInput!) {
   }
 }
 
-mutation updatePipelineRecipient($input: UpdatePipelineRecipientInput!) {
-  updatePipelineRecipient(input: $input) {
+mutation addPipelineRecipient($input: CreatePipelineRecipientInput!) {
+  addPipelineRecipient(input: $input) {
     success
     errors
   }

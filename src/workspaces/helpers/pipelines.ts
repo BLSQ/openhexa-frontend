@@ -6,6 +6,7 @@ import "cronstrue/locales/en";
 import "cronstrue/locales/fr";
 import {
   ConnectionType,
+  PipelineNotificationEvent,
   PipelineParameter,
   PipelineType,
   UpdatePipelineError,
@@ -16,6 +17,7 @@ import {
   UpdateWorkspacePipelineMutation,
   UpdateWorkspacePipelineMutationVariables,
 } from "./pipelines.generated";
+import useCacheKey from "core/hooks/useCacheKey";
 
 export async function updatePipeline(
   pipelineId: string,
@@ -274,6 +276,35 @@ export function formatPipelineType(pipelineType: PipelineType) {
     default:
       return i18n!.t("Pipeline");
   }
+}
+
+export async function updatePipelineRecipient(
+  recipientId: string,
+  notificationEvent: PipelineNotificationEvent,
+) {
+  const client = getApolloClient();
+
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation updatePipelineRecipient($input: UpdatePipelineRecipientInput!) {
+        updatePipelineRecipient(input: $input) {
+          success
+          errors
+        }
+      }
+    `,
+    variables: { input: { recipientId, notificationEvent } },
+  });
+
+  if (data.updatePipelineRecipient.success) {
+    return true;
+  }
+
+  if (data.updatePipelineRecipient.errors.includes("PERMISSION_DENIED")) {
+    throw new Error("You are not authorized to perform this action");
+  }
+
+  throw new Error("Failed to update recipient");
 }
 
 export async function deletePipelineRecipient(recipientId: string) {

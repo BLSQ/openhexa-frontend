@@ -33,7 +33,7 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
     multiple = false,
     onChange,
     exclude = [],
-    placeholder = t("Select recipients"),
+    placeholder = t("Select member"),
   } = props;
 
   const { data, loading } = useQuery<WorkspaceMemberPickerQuery>(
@@ -55,9 +55,9 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
     const lowercaseQuery = debouncedQuery.toLowerCase();
     return (
       data?.workspace?.members.items?.filter(
-        (c) =>
-          c.user.displayName.toLowerCase().includes(lowercaseQuery) &&
-          !exclude.includes(c.user.id),
+        (m) =>
+          m.user.displayName.toLowerCase().includes(lowercaseQuery) &&
+          !exclude.includes(m.user.id),
       ) ?? []
     );
   }, [data, debouncedQuery]);
