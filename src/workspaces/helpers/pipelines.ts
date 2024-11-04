@@ -275,3 +275,28 @@ export function formatPipelineType(pipelineType: PipelineType) {
       return i18n!.t("Pipeline");
   }
 }
+
+export async function deletePipelineRecipient(recipientId: string) {
+  const client = getApolloClient();
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation deletePipelineRecipient($input: DeletePipelineRecipientInput!) {
+        deletePipelineRecipient(input: $input) {
+          success
+          errors
+        }
+      }
+    `,
+    variables: { input: { id: recipientId } },
+  });
+
+  if (data.deletePipelineVersion.success) {
+    return true;
+  }
+
+  if (data.deletePipelineRecipient.errors.includes("PERMISSION_DENIED")) {
+    throw new Error("You are not authorized to perform this action");
+  }
+
+  throw new Error("Failed to delete recipient");
+}

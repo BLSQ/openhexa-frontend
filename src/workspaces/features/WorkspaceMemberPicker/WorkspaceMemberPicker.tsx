@@ -5,19 +5,21 @@ import useDebounce from "core/hooks/useDebounce";
 import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
 import { WorkspaceMemberPickerQuery } from "./WorkspaceMemberPicker.generated";
 
-type Option = {
+export type WorkspaceMemberOption = {
   id: string;
   user: { id: string; displayName: string };
 };
 
 type WorkspaceMemberPickerProps = {
-  value: Option | Option[];
+  value: WorkspaceMemberOption | WorkspaceMemberOption[] | null;
   workspaceSlug: string;
   placeholder?: string;
-  onChange(value: Option | Option[]): void;
+  onChange(value: WorkspaceMemberOption | WorkspaceMemberOption[]): void;
   required?: boolean;
   disabled?: boolean;
   withPortal?: boolean;
+  multiple?: boolean;
+  exclude?: string[];
 };
 
 const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
@@ -28,7 +30,9 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
     disabled = false,
     required = false,
     withPortal = false,
+    multiple = false,
     onChange,
+    exclude = [],
     placeholder = t("Select recipients"),
   } = props;
 
@@ -50,25 +54,31 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
   const options = useMemo(() => {
     const lowercaseQuery = debouncedQuery.toLowerCase();
     return (
-      data?.workspace?.members.items?.filter((c) =>
-        c.user.displayName.toLowerCase().includes(lowercaseQuery),
+      data?.workspace?.members.items?.filter(
+        (c) =>
+          c.user.displayName.toLowerCase().includes(lowercaseQuery) &&
+          !exclude.includes(c.user.id),
       ) ?? []
     );
   }, [data, debouncedQuery]);
 
   const displayValue = useCallback(
-    (option: Option) => (option ? option.user.displayName : ""),
+    (option: WorkspaceMemberOption) => (option ? option.user.displayName : ""),
     [],
   );
 
+  const Picker: any = multiple ? MultiCombobox : Combobox;
+
   return (
-    <MultiCombobox
+    <Picker
       required={required}
       onChange={onChange}
       loading={loading}
       withPortal={withPortal}
       displayValue={displayValue}
-      by={(a: Option, b: Option) => a.user.id === b.user.id}
+      by={(a: WorkspaceMemberOption, b: WorkspaceMemberOption) =>
+        a?.user?.id === b?.user?.id
+      }
       onInputChange={useCallback(
         (event: any) => setQuery(event.target.value),
         [],
@@ -83,7 +93,7 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
           {option.user.displayName}
         </Combobox.CheckOption>
       ))}
-    </MultiCombobox>
+    </Picker>
   );
 };
 

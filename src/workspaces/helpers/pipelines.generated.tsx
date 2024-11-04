@@ -26,6 +26,13 @@ export type DeletePipelineVersionMutationVariables = Types.Exact<{
 
 export type DeletePipelineVersionMutation = { __typename?: 'Mutation', deletePipelineVersion: { __typename?: 'DeletePipelineVersionResult', success: boolean, errors: Array<Types.DeletePipelineVersionError> } };
 
+export type DeletePipelineRecipientMutationVariables = Types.Exact<{
+  input: Types.DeletePipelineRecipientInput;
+}>;
+
+
+export type DeletePipelineRecipientMutation = { __typename?: 'Mutation', deletePipelineRecipient: { __typename?: 'DeletePipelineRecipientResult', success: boolean, errors: Array<Types.PipelineRecipientError> } };
+
 export const NewRunFragmentDoc = gql`
     fragment NewRun on PipelineRun {
   id
@@ -156,3 +163,37 @@ export function useDeletePipelineVersionMutation(baseOptions?: Apollo.MutationHo
 export type DeletePipelineVersionMutationHookResult = ReturnType<typeof useDeletePipelineVersionMutation>;
 export type DeletePipelineVersionMutationResult = Apollo.MutationResult<DeletePipelineVersionMutation>;
 export type DeletePipelineVersionMutationOptions = Apollo.BaseMutationOptions<DeletePipelineVersionMutation, DeletePipelineVersionMutationVariables>;
+export const DeletePipelineRecipientDocument = gql`
+    mutation deletePipelineRecipient($input: DeletePipelineRecipientInput!) {
+  deletePipelineRecipient(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type DeletePipelineRecipientMutationFn = Apollo.MutationFunction<DeletePipelineRecipientMutation, DeletePipelineRecipientMutationVariables>;
+
+/**
+ * __useDeletePipelineRecipientMutation__
+ *
+ * To run a mutation, you first call `useDeletePipelineRecipientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePipelineRecipientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePipelineRecipientMutation, { data, loading, error }] = useDeletePipelineRecipientMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeletePipelineRecipientMutation(baseOptions?: Apollo.MutationHookOptions<DeletePipelineRecipientMutation, DeletePipelineRecipientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePipelineRecipientMutation, DeletePipelineRecipientMutationVariables>(DeletePipelineRecipientDocument, options);
+      }
+export type DeletePipelineRecipientMutationHookResult = ReturnType<typeof useDeletePipelineRecipientMutation>;
+export type DeletePipelineRecipientMutationResult = Apollo.MutationResult<DeletePipelineRecipientMutation>;
+export type DeletePipelineRecipientMutationOptions = Apollo.BaseMutationOptions<DeletePipelineRecipientMutation, DeletePipelineRecipientMutationVariables>;

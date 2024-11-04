@@ -76,6 +76,7 @@ query WorkspacePipelinePage(
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
     ...RunPipelineDialog_pipeline
     ...PipelineVersionPicker_pipeline
+    ...PipelineRecipients_pipeline
     permissions {
       run
       update
