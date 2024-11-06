@@ -71,6 +71,7 @@ query WorkspacePipelinePage(
     slug
     name
     ...WorkspaceLayout_workspace
+    ...PipelineRecipients_workspace
   }
 
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {

@@ -8,14 +8,23 @@ export type PipelineRecipientQueryVariables = Types.Exact<{
 }>;
 
 
-export type PipelineRecipientQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', id: string, code: string, permissions: { __typename?: 'PipelinePermissions', update: boolean }, recipients: Array<{ __typename?: 'PipelineRecipient', id: string, notificationEvent: Types.PipelineNotificationEvent, user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string } } | null };
+export type PipelineRecipientQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', id: string, code: string, permissions: { __typename?: 'PipelinePermissions', update: boolean }, recipients: Array<{ __typename?: 'PipelineRecipient', id: string, notificationEvent: Types.PipelineNotificationEvent, user: { __typename?: 'User', id: string, displayName: string, email: string } }>, workspace: { __typename?: 'Workspace', slug: string } } | null };
 
 export type PipelineRecipients_PipelineFragment = { __typename?: 'Pipeline', id: string, code: string };
+
+export type PipelineRecipients_WorkspaceFragment = { __typename?: 'Workspace', members: { __typename?: 'WorkspaceMembershipPage', totalItems: number } };
 
 export const PipelineRecipients_PipelineFragmentDoc = gql`
     fragment PipelineRecipients_pipeline on Pipeline {
   id
   code
+}
+    `;
+export const PipelineRecipients_WorkspaceFragmentDoc = gql`
+    fragment PipelineRecipients_workspace on Workspace {
+  members {
+    totalItems
+  }
 }
     `;
 export const PipelineRecipientDocument = gql`
@@ -31,6 +40,7 @@ export const PipelineRecipientDocument = gql`
       user {
         id
         displayName
+        email
       }
       notificationEvent
     }

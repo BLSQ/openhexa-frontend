@@ -17,7 +17,6 @@ import {
   UpdateWorkspacePipelineMutation,
   UpdateWorkspacePipelineMutationVariables,
 } from "./pipelines.generated";
-import useCacheKey from "core/hooks/useCacheKey";
 
 export async function updatePipeline(
   pipelineId: string,
@@ -278,6 +277,36 @@ export function formatPipelineType(pipelineType: PipelineType) {
   }
 }
 
+export async function createPipelineRecipient(
+  pipelineId: string,
+  userId: string,
+  notificationEvent: string,
+) {
+  const client = getApolloClient();
+
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation addPipelineRecipient($input: CreatePipelineRecipientInput!) {
+        addPipelineRecipient(input: $input) {
+          success
+          errors
+        }
+      }
+    `,
+    variables: { input: { userId, pipelineId, notificationEvent } },
+  });
+
+  if (data.addPipelineRecipient.success) {
+    return true;
+  }
+
+  if (data.addPipelineRecipient.errors.includes("PERMISSION_DENIED")) {
+    throw new Error("You are not authorized to perform this action");
+  }
+
+  throw new Error("Failed to create recipient.");
+}
+
 export async function updatePipelineRecipient(
   recipientId: string,
   notificationEvent: PipelineNotificationEvent,
@@ -318,10 +347,10 @@ export async function deletePipelineRecipient(recipientId: string) {
         }
       }
     `,
-    variables: { input: { id: recipientId } },
+    variables: { input: { recipientId } },
   });
 
-  if (data.deletePipelineVersion.success) {
+  if (data.deletePipelineRecipient.success) {
     return true;
   }
 

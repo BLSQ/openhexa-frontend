@@ -8,7 +8,7 @@ import {
   DeletePipelineRecipientTrigger_RecipientFragment,
 } from "./DeletePipelineRecipientTrigger.generated";
 
-type DeletePipelineRecipientriggerProps = {
+type DeletePipelineRecipientTriggerProps = {
   children: ({ onClick }: { onClick: () => void }) => ReactElement;
   confirmMessage?: string;
   recipient: DeletePipelineRecipientTrigger_RecipientFragment;
@@ -16,25 +16,25 @@ type DeletePipelineRecipientriggerProps = {
 };
 
 const DeletePipelineRecipientTrigger = (
-  props: DeletePipelineRecipientriggerProps,
+  props: DeletePipelineRecipientTriggerProps,
 ) => {
   const { t } = useTranslation();
   const {
     children,
     recipient,
     pipeline,
-    confirmMessage = t("Remove {{name}} from the notifications recipients?", {
+    confirmMessage = t("Remove {{name}} from the notification recipient?", {
       name: recipient.user.displayName,
     }),
   } = props;
 
-  const clearCache = useCacheKey("pipeline");
+  const clearCache = useCacheKey(["pipelines", pipeline.id]);
 
   const onClick = async () => {
     if (window.confirm(confirmMessage)) {
       await deletePipelineRecipient(recipient.id);
+      clearCache();
     }
-    clearCache();
   };
   if (!pipeline.permissions.update) {
     return null;
@@ -53,7 +53,7 @@ DeletePipelineRecipientTrigger.fragments = {
   `,
   pipeline: gql`
     fragment DeletePipelineRecipientTrigger_pipeline on Pipeline {
-      code
+      id
       permissions {
         update
       }

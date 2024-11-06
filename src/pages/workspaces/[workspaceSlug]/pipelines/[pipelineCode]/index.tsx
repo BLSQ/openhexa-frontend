@@ -486,93 +486,91 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   title={t("Notifications")}
                   collapsible={false}
                 >
-                  <PipelineRecipients pipeline={pipeline} />
+                  <PipelineRecipients
+                    pipeline={pipeline}
+                    workspace={workspace}
+                  />
                 </DataCard.FormSection>
+              </Tabs.Tab>
+              <Tabs.Tab label={t("Runs")} className="font-medium">
+                <DataGrid
+                  defaultPageSize={perPage}
+                  defaultPageIndex={page - 1}
+                  data={pipeline.runs.items}
+                  totalItems={pipeline.runs.totalItems}
+                  fixedLayout={false}
+                  fetchData={({ page, pageSize }) => {
+                    router.push({
+                      pathname: router.pathname,
+                      query: {
+                        ...router.query,
+                        page,
+                        perPage: pageSize,
+                      },
+                    });
+                  }}
+                >
+                  <BaseColumn id="name" label={t("Executed on")}>
+                    {(item) => (
+                      <Link
+                        customStyle="text-gray-700 font-medium"
+                        href={{
+                          pathname:
+                            "/workspaces/[workspaceSlug]/pipelines/[pipelineCode]/runs/[runId]",
+                          query: {
+                            pipelineCode: pipeline.code,
+                            workspaceSlug: workspace.slug,
+                            runId: item.id,
+                          },
+                        }}
+                      >
+                        <Time datetime={item.executionDate} />
+                      </Link>
+                    )}
+                  </BaseColumn>
+                  <BaseColumn<PipelineRunTrigger>
+                    label={t("Trigger")}
+                    accessor="triggerMode"
+                  >
+                    {(value) => (
+                      <span>
+                        {value === PipelineRunTrigger.Scheduled &&
+                          t("Scheduled")}
+                        {value === PipelineRunTrigger.Manual && t("Manual")}
+                        {value === PipelineRunTrigger.Webhook && t("Webhook")}
+                      </span>
+                    )}
+                  </BaseColumn>
+                  <BaseColumn label={t("Status")} id="status">
+                    {(item) => <PipelineRunStatusBadge run={item} />}
+                  </BaseColumn>
+                  {pipeline.type === PipelineType.ZipFile ? (
+                    <TextColumn accessor="version.name" label={t("Version")} />
+                  ) : null}
+                  <BaseColumn label={t("Duration")} accessor="duration">
+                    {(value) => (
+                      <span suppressHydrationWarning>
+                        {value ? formatDuration(value) : "-"}
+                      </span>
+                    )}
+                  </BaseColumn>
+                  <UserColumn label={t("User")} accessor="user" />
+                  <ChevronLinkColumn
+                    accessor="id"
+                    url={(value: any) => ({
+                      pathname:
+                        "/workspaces/[workspaceSlug]/pipelines/[pipelineCode]/runs/[runId]",
+                      query: {
+                        workspaceSlug: workspace.slug,
+                        pipelineCode: pipeline.code,
+                        runId: value,
+                      },
+                    })}
+                  />
+                </DataGrid>
               </Tabs.Tab>
             </Tabs>
           </DataCard>
-
-          <div>
-            <Title level={4} className="font-medium">
-              {t("Runs")}
-            </Title>
-            <Block>
-              <DataGrid
-                defaultPageSize={perPage}
-                defaultPageIndex={page - 1}
-                data={pipeline.runs.items}
-                totalItems={pipeline.runs.totalItems}
-                fixedLayout={false}
-                fetchData={({ page, pageSize }) => {
-                  router.push({
-                    pathname: router.pathname,
-                    query: {
-                      ...router.query,
-                      page,
-                      perPage: pageSize,
-                    },
-                  });
-                }}
-              >
-                <BaseColumn id="name" label={t("Executed on")}>
-                  {(item) => (
-                    <Link
-                      customStyle="text-gray-700 font-medium"
-                      href={{
-                        pathname:
-                          "/workspaces/[workspaceSlug]/pipelines/[pipelineCode]/runs/[runId]",
-                        query: {
-                          pipelineCode: pipeline.code,
-                          workspaceSlug: workspace.slug,
-                          runId: item.id,
-                        },
-                      }}
-                    >
-                      <Time datetime={item.executionDate} />
-                    </Link>
-                  )}
-                </BaseColumn>
-                <BaseColumn<PipelineRunTrigger>
-                  label={t("Trigger")}
-                  accessor="triggerMode"
-                >
-                  {(value) => (
-                    <span>
-                      {value === PipelineRunTrigger.Scheduled && t("Scheduled")}
-                      {value === PipelineRunTrigger.Manual && t("Manual")}
-                      {value === PipelineRunTrigger.Webhook && t("Webhook")}
-                    </span>
-                  )}
-                </BaseColumn>
-                <BaseColumn label={t("Status")} id="status">
-                  {(item) => <PipelineRunStatusBadge run={item} />}
-                </BaseColumn>
-                {pipeline.type === PipelineType.ZipFile ? (
-                  <TextColumn accessor="version.name" label={t("Version")} />
-                ) : null}
-                <BaseColumn label={t("Duration")} accessor="duration">
-                  {(value) => (
-                    <span suppressHydrationWarning>
-                      {value ? formatDuration(value) : "-"}
-                    </span>
-                  )}
-                </BaseColumn>
-                <UserColumn label={t("User")} accessor="user" />
-                <ChevronLinkColumn
-                  accessor="id"
-                  url={(value: any) => ({
-                    pathname:
-                      "/workspaces/[workspaceSlug]/pipelines/[pipelineCode]/runs/[runId]",
-                    query: {
-                      workspaceSlug: workspace.slug,
-                      pipelineCode: pipeline.code,
-                      runId: value,
-                    },
-                  })}
-                />
-              </DataGrid>
-            </Block>
-          </div>
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
       <DeletePipelineDialog

@@ -11,7 +11,7 @@ export type WorkspaceMemberOption = {
 };
 
 type WorkspaceMemberPickerProps = {
-  value: WorkspaceMemberOption | WorkspaceMemberOption[] | null;
+  value?: WorkspaceMemberOption | WorkspaceMemberOption[] | null;
   workspaceSlug: string;
   placeholder?: string;
   onChange(value: WorkspaceMemberOption | WorkspaceMemberOption[]): void;
@@ -46,7 +46,7 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
       }
       ${WorkspaceMemberPicker.fragments.workspace}
     `,
-    { variables: { slug: workspaceSlug } },
+    { variables: { slug: workspaceSlug }, fetchPolicy: "cache-first" },
   );
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
@@ -67,6 +67,13 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
     [],
   );
 
+  const onInputChange = useCallback(
+    (event: any) => setQuery(event.target.value),
+    [],
+  );
+
+  const onClose = useCallback(() => setQuery(""), []);
+
   const Picker: any = multiple ? MultiCombobox : Combobox;
 
   return (
@@ -79,13 +86,10 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
       by={(a: WorkspaceMemberOption, b: WorkspaceMemberOption) =>
         a?.user?.id === b?.user?.id
       }
-      onInputChange={useCallback(
-        (event: any) => setQuery(event.target.value),
-        [],
-      )}
+      onInputChange={onInputChange}
       placeholder={placeholder}
       value={value as any}
-      onClose={useCallback(() => setQuery(""), [])}
+      onClose={onClose}
       disabled={disabled}
     >
       {options.map((option) => (
