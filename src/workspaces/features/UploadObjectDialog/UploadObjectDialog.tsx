@@ -74,7 +74,7 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
       </Dialog.Title>
       <Dialog.Content>
         <Dropzone
-          className="h-48"
+          className="h-80"
           onChange={(files) => form.setFieldValue("files", files)}
           disabled={form.isSubmitting}
           label={t("Drop files here or click to select")}
