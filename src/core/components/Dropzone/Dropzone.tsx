@@ -88,7 +88,7 @@ const Dropzone = (props: DropzoneProps) => {
       {acceptedFiles.length > 0 && (
         <span className="line-clamp-3 text-xs">
           <ul>
-            {acceptedFiles?.map((f) => (
+            {acceptedFiles.map((f) => (
               <li key={f.name}>
                 <p className="inline">{f.name} - </p>
                 <Filesize className="inline" size={f.size} />
