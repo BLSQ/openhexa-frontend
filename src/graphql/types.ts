@@ -800,7 +800,7 @@ export type CreatePipelineInput = {
 
 /** Represents the input for adding a recipient to a pipeline. */
 export type CreatePipelineRecipientInput = {
-  notificationEvent: PipelineNotificationEvent;
+  notificationLevel: PipelineNotificationLevel;
   pipelineId: Scalars['UUID']['input'];
   userId: Scalars['UUID']['input'];
 };
@@ -2013,6 +2013,7 @@ export type Mutation = {
   addMetadataAttribute: CreateMetadataAttributeResult;
   /** Adds an output to a pipeline. */
   addPipelineOutput: AddPipelineOutputResult;
+  /** Adds a recipient to a pipeline. */
   addPipelineRecipient: AddPipelineRecipientResult;
   approveAccessmodAccessRequest: ApproveAccessmodAccessRequestResult;
   archiveWorkspace: ArchiveWorkspaceResult;
@@ -2055,6 +2056,7 @@ export type Mutation = {
   deleteMetadataAttribute: DeleteMetadataAttributeResult;
   /** Deletes a pipeline. */
   deletePipeline: DeletePipelineResult;
+  /** Deletes a pipeline recipient. */
   deletePipelineRecipient: DeletePipelineRecipientResult;
   /** Deletes a pipeline version. */
   deletePipelineVersion: DeletePipelineVersionResult;
@@ -2133,6 +2135,7 @@ export type Mutation = {
   updatePipeline: UpdatePipelineResult;
   /** Updates the progress of a pipeline. */
   updatePipelineProgress: UpdatePipelineProgressResult;
+  /** Updates a pipeline recipient. */
   updatePipelineRecipient: UpdatePipelineRecipientResult;
   /** Updates a pipeline version. */
   updatePipelineVersion: UpdatePipelineVersionResult;
@@ -2761,9 +2764,10 @@ export enum PipelineError {
   WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
 }
 
-export enum PipelineNotificationEvent {
-  AllEvents = 'ALL_EVENTS',
-  PipelineFailed = 'PIPELINE_FAILED'
+/** Represents the notification level for a pipeline recipient. */
+export enum PipelineNotificationLevel {
+  All = 'ALL',
+  Error = 'ERROR'
 }
 
 /** Represents a parameter of a pipeline. */
@@ -2794,7 +2798,7 @@ export type PipelinePermissions = {
 export type PipelineRecipient = {
   __typename?: 'PipelineRecipient';
   id: Scalars['UUID']['output'];
-  notificationEvent: PipelineNotificationEvent;
+  notificationLevel: PipelineNotificationLevel;
   pipeline: Pipeline;
   user: User;
 };
@@ -3820,7 +3824,7 @@ export type UpdatePipelineProgressResult = {
 
 /** Represents the input for updating a recipient. */
 export type UpdatePipelineRecipientInput = {
-  notificationEvent: PipelineNotificationEvent;
+  notificationLevel: PipelineNotificationLevel;
   recipientId: Scalars['UUID']['input'];
 };
 

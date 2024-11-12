@@ -1,15 +1,15 @@
 import Button from "core/components/Button";
 import Select from "core/components/forms/Select";
-import { PipelineNotificationEvent } from "graphql/types";
+import { PipelineNotificationLevel } from "graphql/types";
 import { i18n } from "next-i18next";
 import { ReactElement, ReactNode } from "react";
 
-export const formatNotificationEvent = (status: PipelineNotificationEvent) => {
-  switch (status) {
-    case PipelineNotificationEvent.AllEvents:
-      return i18n!.t("All events");
-    case PipelineNotificationEvent.PipelineFailed:
-      return i18n!.t("Pipeline failed");
+export const formatNotificationLevel = (level: PipelineNotificationLevel) => {
+  switch (level) {
+    case PipelineNotificationLevel.All:
+      return i18n!.t("All");
+    case PipelineNotificationLevel.Error:
+      return i18n!.t("Error");
   }
 };
 
@@ -45,24 +45,21 @@ export const ActionButtonGroup = ({ buttons }: ActionButtonGroupProps) => {
   );
 };
 
-export const NotificationEventSelect = ({
+export const NotificationLevelSelect = ({
   value,
   onChange,
 }: {
-  value?: PipelineNotificationEvent | null | undefined;
-  onChange: (notificationEvent: PipelineNotificationEvent) => void;
+  value?: PipelineNotificationLevel | null | undefined;
+  onChange: (notificationLevel: PipelineNotificationLevel) => void;
 }) => {
   return (
     <Select
       value={value || null}
-      displayValue={(value) => formatNotificationEvent(value)}
-      placeholder={i18n!.t("Select event")}
+      displayValue={(value) => formatNotificationLevel(value)}
+      placeholder={i18n!.t("Select notification level")}
       onChange={onChange}
-      getOptionLabel={(option) => formatNotificationEvent(option)}
-      options={[
-        PipelineNotificationEvent.AllEvents,
-        PipelineNotificationEvent.PipelineFailed,
-      ]}
+      getOptionLabel={(option) => formatNotificationLevel(option)}
+      options={[PipelineNotificationLevel.All, PipelineNotificationLevel.Error]}
     />
   );
 };

@@ -23,17 +23,14 @@ const DeletePipelineRecipientTrigger = (
     children,
     recipient,
     pipeline,
-    confirmMessage = t("Remove {{name}} from the notification recipient?", {
+    confirmMessage = t("Remove {{name}} from the notifications recipients?", {
       name: recipient.user.displayName,
     }),
   } = props;
 
-  const clearCache = useCacheKey(["pipelines", pipeline.id]);
-
   const onClick = async () => {
     if (window.confirm(confirmMessage)) {
       await deletePipelineRecipient(recipient.id);
-      clearCache();
     }
   };
   if (!pipeline.permissions.update) {

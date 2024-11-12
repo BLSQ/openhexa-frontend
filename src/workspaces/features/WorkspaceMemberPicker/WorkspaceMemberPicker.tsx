@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
 import useDebounce from "core/hooks/useDebounce";
 import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
@@ -46,7 +46,11 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
       }
       ${WorkspaceMemberPicker.fragments.workspace}
     `,
-    { variables: { slug: workspaceSlug }, fetchPolicy: "cache-first" },
+    {
+      variables: { slug: workspaceSlug },
+      fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "network-only",
+    },
   );
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
@@ -60,7 +64,7 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
           !exclude.includes(m.user.id),
       ) ?? []
     );
-  }, [data, debouncedQuery]);
+  }, [data, debouncedQuery, exclude]);
 
   const displayValue = useCallback(
     (option: WorkspaceMemberOption) => (option ? option.user.displayName : ""),

@@ -6,7 +6,7 @@ import "cronstrue/locales/en";
 import "cronstrue/locales/fr";
 import {
   ConnectionType,
-  PipelineNotificationEvent,
+  PipelineNotificationLevel,
   PipelineParameter,
   PipelineType,
   UpdatePipelineError,
@@ -280,7 +280,7 @@ export function formatPipelineType(pipelineType: PipelineType) {
 export async function createPipelineRecipient(
   pipelineId: string,
   userId: string,
-  notificationEvent: string,
+  notificationLevel: string,
 ) {
   const client = getApolloClient();
 
@@ -293,7 +293,7 @@ export async function createPipelineRecipient(
         }
       }
     `,
-    variables: { input: { userId, pipelineId, notificationEvent } },
+    variables: { input: { userId, pipelineId, notificationLevel } },
   });
 
   if (data.addPipelineRecipient.success) {
@@ -309,7 +309,7 @@ export async function createPipelineRecipient(
 
 export async function updatePipelineRecipient(
   recipientId: string,
-  notificationEvent: PipelineNotificationEvent,
+  notificationLevel: PipelineNotificationLevel,
 ) {
   const client = getApolloClient();
 
@@ -322,7 +322,7 @@ export async function updatePipelineRecipient(
         }
       }
     `,
-    variables: { input: { recipientId, notificationEvent } },
+    variables: { input: { recipientId, notificationLevel } },
   });
 
   if (data.updatePipelineRecipient.success) {

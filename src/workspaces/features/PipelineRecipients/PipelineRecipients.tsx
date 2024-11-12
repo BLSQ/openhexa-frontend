@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import {
-  PipelineNotificationEvent,
+  Pipeline,
+  PipelineNotificationLevel,
   PipelineRecipient,
   User,
 } from "graphql/types";
@@ -35,17 +36,165 @@ import {
 import useCacheKey from "core/hooks/useCacheKey";
 import {
   ActionButtonGroup,
-  formatNotificationEvent,
-  NotificationEventSelect,
-} from "workspaces/helpers/utils";
+  formatNotificationLevel,
+  NotificationLevelSelect,
+} from "workspaces/helpers/recipients/utils";
 
-type Recipient = Pick<PipelineRecipient, "id" | "notificationEvent"> & {
+type Recipient = Pick<PipelineRecipient, "id" | "notificationLevel"> & {
   user: Pick<User, "displayName">;
+};
+
+type RecipientRowProps = {
+  recipient: Recipient;
+  pipeline: Pick<Pipeline, "id"> & {
+    permissions: Pick<Pipeline["permissions"], "update">;
+  };
+  isEditing: boolean;
+  onLevelChange: (level: PipelineNotificationLevel) => void;
+  onSelect: (recipient: Recipient) => void;
+  onUpdate: (recipient: Recipient) => void;
+  onCancel: () => void;
+  onDelete: () => void;
+  className?: string;
+};
+
+const RecipientRow = ({
+  recipient,
+  isEditing,
+  pipeline,
+  onLevelChange,
+  onSelect,
+  onUpdate,
+  onCancel,
+  onDelete,
+  className,
+}: RecipientRowProps) => {
+  return (
+    <TableRow className={className}>
+      <TableCell>{recipient.user.displayName}</TableCell>
+      <TableCell className="max-w-[20ch]">
+        {isEditing ? (
+          <NotificationLevelSelect
+            value={recipient.notificationLevel}
+            onChange={onLevelChange}
+          />
+        ) : (
+          formatNotificationLevel(recipient.notificationLevel)
+        )}
+      </TableCell>
+      <TableCell className="flex justify-end gap-x-2">
+        {isEditing ? (
+          <ActionButtonGroup
+            buttons={[
+              {
+                icon: <CheckIcon className="h-4" />,
+                onClick: () => onUpdate(recipient),
+              },
+              {
+                icon: <XMarkIcon className="h-4" />,
+                onClick: () => onCancel(),
+              },
+            ]}
+          />
+        ) : (
+          <ActionButtonGroup
+            buttons={[
+              {
+                icon: <PencilIcon className="h-4" />,
+                onClick: () => onSelect(recipient),
+              },
+              {
+                render: () => (
+                  <DeletePipelineRecipientTrigger
+                    pipeline={pipeline}
+                    recipient={recipient}
+                  >
+                    {({ onClick }) => (
+                      <Button
+                        onClick={() => {
+                          onClick();
+                          onDelete();
+                        }}
+                        size="sm"
+                        variant="secondary"
+                      >
+                        <TrashIcon className="h-4" />
+                      </Button>
+                    )}
+                  </DeletePipelineRecipientTrigger>
+                ),
+              },
+            ]}
+          />
+        )}
+      </TableCell>
+    </TableRow>
+  );
+};
+
+type NewRecipientRowProps = {
+  workspaceSlug: string;
+  newRecipient?: CreatePipelineRecipientInput;
+  excludedRecipients?: string[];
+  onChange: (field: string, value: any) => void;
+  onSave: () => void;
+  onCancel: () => void;
+};
+
+const NewRecipientRow = ({
+  workspaceSlug,
+  newRecipient,
+  excludedRecipients = [],
+  onChange,
+  onSave,
+  onCancel,
+}: NewRecipientRowProps) => {
+  return (
+    <TableRow>
+      <TableCell className="max-w-[20ch]">
+        <WorkspaceMemberPicker
+          workspaceSlug={workspaceSlug}
+          value={newRecipient?.member || null}
+          onChange={(member: WorkspaceMemberOption) =>
+            onChange("member", member)
+          }
+          withPortal
+          exclude={excludedRecipients}
+        />
+      </TableCell>
+      <TableCell className="max-w-[20ch]">
+        <NotificationLevelSelect
+          value={newRecipient?.notificationLevel}
+          onChange={(level: PipelineNotificationLevel) =>
+            onChange("notificationLevel", level)
+          }
+        />
+      </TableCell>
+      <TableCell className="flex justify-end gap-x-2">
+        <ActionButtonGroup
+          buttons={[
+            {
+              icon: <CheckIcon className="h-4" />,
+              onClick: onSave,
+              disabled:
+                !newRecipient?.member || !newRecipient?.notificationLevel,
+            },
+            {
+              icon: <XMarkIcon className="h-4" />,
+              onClick: onCancel,
+              disabled:
+                !newRecipient?.member || !newRecipient?.notificationLevel,
+            },
+          ]}
+        />
+      </TableCell>
+    </TableRow>
+  );
 };
 
 type CreatePipelineRecipientInput = {
   member?: WorkspaceMemberOption;
-  notificationEvent?: PipelineNotificationEvent;
+  notificationLevel?: PipelineNotificationLevel;
 };
 
 type PipelineRecipientsProps = {
@@ -60,7 +209,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
   const [selectedRecipient, setSelectedRecipient] =
     useState<Recipient | null>();
   const [newRecipient, setNewRecipient] =
-    useState<CreatePipelineRecipientInput>();
+    useState<CreatePipelineRecipientInput | null>();
 
   const { data, refetch } = useQuery<PipelineRecipientQuery>(
     gql`
@@ -76,9 +225,8 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
             user {
               id
               displayName
-              email
             }
-            notificationEvent
+            notificationLevel
           }
           workspace {
             slug
@@ -86,14 +234,13 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
         }
       }
     `,
-    { variables: { id: props.pipeline.id } },
+    { variables: { id: props.pipeline.id }, fetchPolicy: "network-only" },
   );
 
-  const clearCache = useCacheKey(["pipelines", props.pipeline.id], refetch);
-  const excludedRecipients = useMemo(
-    () => data?.pipeline?.recipients.map((r) => r.user.id) ?? [],
-    [data],
+  const clearCache = useCacheKey(["pipelines", props.pipeline.id], () =>
+    refetch(),
   );
+
   const canAddRecipient = useMemo(
     () => workspace.members.totalItems != data?.pipeline?.recipients.length,
     [workspace, data],
@@ -109,15 +256,15 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
       await createPipelineRecipient(
         pipeline.id,
         newRecipient.member.user.id,
-        newRecipient.notificationEvent!,
+        newRecipient.notificationLevel!,
       );
-      setNewRecipient(undefined);
+      setNewRecipient(null);
       clearCache();
     }
   };
 
   const handleUpdateRecipient = async (recipient: Recipient) => {
-    await updatePipelineRecipient(recipient.id, recipient.notificationEvent);
+    await updatePipelineRecipient(recipient.id, recipient.notificationLevel);
     clearCache();
     setSelectedRecipient(null);
   };
@@ -131,120 +278,50 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
       <TableHead>
         <TableRow>
           <TableCell heading>{t("User")}</TableCell>
-          <TableCell heading>{t("Event")}</TableCell>
+          <TableCell heading>{t("Level")}</TableCell>
           <TableCell heading></TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {canAddRecipient && (
-          <TableRow>
-            <TableCell>
-              <WorkspaceMemberPicker
-                workspaceSlug={pipeline.workspace.slug}
-                value={newRecipient?.member || null}
-                onChange={(member: WorkspaceMemberOption) =>
-                  setNewRecipient({
-                    ...newRecipient,
-                    member,
-                  })
-                }
-                withPortal
-                exclude={excludedRecipients}
-              />
-            </TableCell>
-            <TableCell>
-              <NotificationEventSelect
-                value={newRecipient?.notificationEvent}
-                onChange={(event: PipelineNotificationEvent) =>
-                  setNewRecipient({
-                    ...newRecipient,
-                    notificationEvent: event,
-                  })
-                }
-              />
-            </TableCell>
-            <TableCell className="flex justify-end">
-              <ActionButtonGroup
-                buttons={[
-                  {
-                    icon: <CheckIcon className="h-4" />,
-                    onClick: () => handleCreateRecipient(),
-                  },
-                  {
-                    icon: <XMarkIcon className="h-4" />,
-                    disabled: true,
-                  },
-                ]}
-              />
-            </TableCell>
-          </TableRow>
+          <NewRecipientRow
+            newRecipient={newRecipient!}
+            workspaceSlug={workspace.slug}
+            excludedRecipients={pipeline.recipients.map((r) => r.user.id) ?? []}
+            onCancel={() => setNewRecipient(null)}
+            onChange={(field: string, value: any) =>
+              setNewRecipient({
+                ...newRecipient,
+                [field]: value,
+              })
+            }
+            onSave={handleCreateRecipient}
+          />
         )}
-        {pipeline.recipients.map((recipient, i: number) => (
-          <TableRow key={i}>
-            <TableCell className="max-w-[20ch]">
-              {recipient.user.displayName}
-            </TableCell>
-            <TableCell className="max-w-[20ch]">
-              {selectedRecipient && selectedRecipient?.id === recipient.id ? (
-                <NotificationEventSelect
-                  value={selectedRecipient.notificationEvent}
-                  onChange={(event: PipelineNotificationEvent) =>
-                    setSelectedRecipient({
-                      ...selectedRecipient,
-                      notificationEvent: event,
-                    })
-                  }
-                />
-              ) : (
-                formatNotificationEvent(recipient.notificationEvent)
-              )}
-            </TableCell>
-            {pipeline.permissions.update && (
-              <TableCell className="flex justify-end gap-x-2 max-w-[24]">
-                {selectedRecipient && selectedRecipient?.id === recipient.id ? (
-                  <ActionButtonGroup
-                    buttons={[
-                      {
-                        icon: <CheckIcon className="h-4" />,
-                        onClick: () => handleUpdateRecipient(recipient),
-                      },
-                      {
-                        icon: <XMarkIcon className="h-4" />,
-                        onClick: handleCancelEdit,
-                      },
-                    ]}
-                  />
-                ) : (
-                  <ActionButtonGroup
-                    buttons={[
-                      {
-                        icon: <PencilIcon className="h-4" />,
-                        onClick: () => setSelectedRecipient(recipient),
-                      },
-                      {
-                        render: () => (
-                          <DeletePipelineRecipientTrigger
-                            pipeline={pipeline}
-                            recipient={recipient}
-                          >
-                            {({ onClick }) => (
-                              <Button
-                                onClick={onClick}
-                                size="sm"
-                                variant="secondary"
-                              >
-                                <TrashIcon className="h-4" />
-                              </Button>
-                            )}
-                          </DeletePipelineRecipientTrigger>
-                        ),
-                      },
-                    ]}
-                  />
-                )}
-              </TableCell>
+        {pipeline.recipients.map((recipient: Recipient, i: number) => (
+          <RecipientRow
+            className="py-4"
+            key={i}
+            recipient={
+              selectedRecipient && selectedRecipient?.id === recipient.id
+                ? selectedRecipient
+                : recipient
+            }
+            pipeline={pipeline}
+            isEditing={Boolean(
+              selectedRecipient && selectedRecipient?.id === recipient.id,
             )}
-          </TableRow>
+            onLevelChange={(level: PipelineNotificationLevel) => {
+              setSelectedRecipient({
+                ...recipient,
+                notificationLevel: level,
+              });
+            }}
+            onSelect={(recipient: Recipient) => setSelectedRecipient(recipient)}
+            onCancel={handleCancelEdit}
+            onUpdate={handleUpdateRecipient}
+            onDelete={() => clearCache()}
+          />
         ))}
       </TableBody>
     </Table>
@@ -260,6 +337,7 @@ PipelineRecipients.fragments = {
   `,
   workspace: gql`
     fragment PipelineRecipients_workspace on Workspace {
+      slug
       members {
         totalItems
       }

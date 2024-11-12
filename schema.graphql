@@ -745,7 +745,7 @@ input CreatePipelineInput {
 input CreatePipelineRecipientInput {
   pipelineId: UUID!
   userId: UUID!
-  notificationEvent: PipelineNotificationEvent!
+  notificationLevel: PipelineNotificationLevel!
 }
 
 """Represents the result of creating a pipeline."""
@@ -2037,8 +2037,14 @@ type Mutation {
 
   """Generates a webhook URL for a pipeline."""
   generatePipelineWebhookUrl(input: GeneratePipelineWebhookUrlInput!): GeneratePipelineWebhookUrlResult!
+
+  """Adds a recipient to a pipeline."""
   addPipelineRecipient(input: CreatePipelineRecipientInput!): AddPipelineRecipientResult!
+
+  """Updates a pipeline recipient."""
   updatePipelineRecipient(input: UpdatePipelineRecipientInput!): UpdatePipelineRecipientResult!
+
+  """Deletes a pipeline recipient."""
   deletePipelineRecipient(input: DeletePipelineRecipientInput!): DeletePipelineRecipientResult!
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
   updateWorkspace(input: UpdateWorkspaceInput!): UpdateWorkspaceResult!
@@ -2266,9 +2272,10 @@ enum PipelineError {
   CANNOT_UPDATE_NOTEBOOK_PIPELINE
 }
 
-enum PipelineNotificationEvent {
-  ALL_EVENTS
-  PIPELINE_FAILED
+"""Represents the notification level for a pipeline recipient."""
+enum PipelineNotificationLevel {
+  ALL
+  ERROR
 }
 
 """Represents a parameter of a pipeline."""
@@ -2298,7 +2305,7 @@ type PipelineRecipient {
   id: UUID!
   user: User!
   pipeline: Pipeline!
-  notificationEvent: PipelineNotificationEvent!
+  notificationLevel: PipelineNotificationLevel!
 }
 
 enum PipelineRecipientError {
@@ -3167,7 +3174,7 @@ type UpdatePipelineProgressResult {
 """Represents the input for updating a recipient."""
 input UpdatePipelineRecipientInput {
   recipientId: UUID!
-  notificationEvent: PipelineNotificationEvent!
+  notificationLevel: PipelineNotificationLevel!
 }
 
 type UpdatePipelineRecipientResult {
