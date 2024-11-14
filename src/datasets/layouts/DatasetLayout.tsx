@@ -6,7 +6,7 @@ import DataCard from "core/components/DataCard";
 import Title from "core/components/Title";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import DatasetVersionPicker from "../features/DatasetVersionPicker";
 import DeleteDatasetTrigger from "../features/DeleteDatasetTrigger";

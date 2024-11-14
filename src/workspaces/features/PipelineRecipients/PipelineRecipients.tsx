@@ -11,7 +11,7 @@ import {
   PipelineRecipients_WorkspaceFragment,
 } from "./PipelineRecipients.generated";
 import { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import {
   CheckIcon,
   PencilIcon,
@@ -234,7 +234,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
         }
       }
     `,
-    { variables: { id: props.pipeline.id }, fetchPolicy: "network-only" },
+    { variables: { id: props.pipeline.id } },
   );
 
   const clearCache = useCacheKey(["pipelines", props.pipeline.id], () =>
@@ -274,7 +274,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
   };
 
   return (
-    <Table>
+    <Table className="-mx-2">
       <TableHead>
         <TableRow>
           <TableCell heading>{t("User")}</TableCell>

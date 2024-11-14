@@ -3,7 +3,7 @@ import { PlayIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 import DownloadPipelineVersion from "pipelines/features/DownloadPipelineVersion";
@@ -61,11 +61,12 @@ const PipelineLayout = (props: DatasetLayoutProps) => {
           id: "runs",
         },
         {
-          label: t("Scheduling & Notifications"),
+          label: t("Scheduling and Notifications"),
           href: `/workspaces/${encodeURIComponent(workspace.slug)}/pipelines/${encodeURIComponent(pipeline.code)}/notifications`,
           id: "notifications",
         },
       ]}
+      title={pipeline.name}
     >
       <TabLayout.Header className="flex items-center justify-between gap-2">
         <Breadcrumbs withHome={false} className="flex-1">

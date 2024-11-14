@@ -7,7 +7,7 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { PipelineType } from "graphql/types";
 import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import CronProperty from "workspaces/features/CronProperty";
 import PipelineRecipients from "workspaces/features/PipelineRecipients";
 import {
@@ -19,6 +19,7 @@ import {
 import { updatePipeline } from "workspaces/helpers/pipelines";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
+import Block from "core/components/Block";
 
 type Props = {
   pipelineCode: string;
@@ -76,7 +77,7 @@ const WorkspacePipelineNotificationsPage: NextPageWithLayout = (
         currentTab="notifications"
         extraBreadcrumbs={[
           {
-            title: t("Schedule & Notifications"),
+            title: t("Scheduling and Notifications"),
             href: `/workspaces/${encodeURIComponent(workspace.slug)}/pipelines/${encodeURIComponent(pipeline.code)}/notifications`,
           },
         ]}
@@ -123,9 +124,11 @@ const WorkspacePipelineNotificationsPage: NextPageWithLayout = (
             required={(_, __, values) => Boolean(values.enableScheduling)}
           />
         </DataCard.FormSection>
-        <DataCard.FormSection title={t("Notifications")} collapsible={false}>
-          <PipelineRecipients pipeline={pipeline} workspace={workspace} />
-        </DataCard.FormSection>
+        <Block>
+          <Block.Content title={t("Notifications")} className="p-0">
+            <PipelineRecipients pipeline={pipeline} workspace={workspace} />
+          </Block.Content>
+        </Block>
       </PipelineLayout>
     </Page>
   );

@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 import DataCard from "core/components/DataCard";
-import React, { ReactNode } from "react";
-import { useTranslation } from "react-i18next";
+import React, { ReactElement, ReactNode } from "react";
 
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import LinkTabs from "core/components/Tabs/LinkTabs/LinkTabs";
+import Title from "core/components/Title";
 
 const TabLayoutHeader = ({
   children,
@@ -29,6 +29,7 @@ type TabLayoutProps = {
   children: React.ReactNode;
   helpLinks?: { label: string; href: string }[];
   tabs: { label: string; href: string; id: string }[];
+  title?: string | ReactElement;
 };
 
 const TabLayout = ({
@@ -38,10 +39,8 @@ const TabLayout = ({
   children,
   helpLinks,
   tabs,
+  title,
 }: TabLayoutProps) => {
-  const { t } = useTranslation();
-
-  // Separate out the children to find if TabLayout.Header is included
   const headerChild = React.Children.toArray(children).find(
     (child) => React.isValidElement(child) && child.type === TabLayout.Header,
   );
@@ -55,6 +54,14 @@ const TabLayout = ({
     <WorkspaceLayout workspace={workspace} helpLinks={helpLinks}>
       <WorkspaceLayout.Header>{headerChild}</WorkspaceLayout.Header>
       <WorkspaceLayout.PageContent>
+        {typeof title === "string" ? (
+          <Title level={2} className="flex items-center justify-between">
+            {title}
+          </Title>
+        ) : (
+          title
+        )}
+
         <DataCard item={item}>
           <LinkTabs className="mx-4 mt-2" tabs={tabs} selected={currentTab} />
           {contentChild}
