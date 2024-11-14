@@ -1,4 +1,4 @@
-import Alert from "core/components/Alert";
+import Alert, { AlertType } from "core/components/Alert";
 import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import useLocalStorage from "core/hooks/useLocalStorage";
@@ -14,7 +14,6 @@ import {
   WorkspacesPageQueryVariables,
   useCheckWorkspaceAvailabilityLazyQuery,
 } from "workspaces/graphql/queries.generated";
-import { AlertType } from "core/helpers/alert";
 
 type WorkspacesHomeProps = {
   workspaceSlug: string | null;

@@ -8,7 +8,13 @@ import { useTranslation } from "next-i18next";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import Button from "./Button/Button";
 import Dialog from "./Dialog";
-import { AlertType } from "core/helpers/alert";
+
+export enum AlertType {
+  success,
+  error,
+  info,
+  warning,
+}
 
 type AlertProps = {
   type?: AlertType;
@@ -30,7 +36,7 @@ const Alert = (props: AlertProps) => {
       case AlertType.error:
         return <XCircleIcon className="h-16 w-16 text-red-400" />;
       case AlertType.warning:
-        <ExclamationCircleIcon className="h-16 w-16 text-amber-400" />;
+        return <ExclamationCircleIcon className="h-16 w-16 text-amber-400" />;
       case AlertType.success:
         return <CheckCircleIcon className="h-16 w-16 text-green-400" />;
       case AlertType.info:

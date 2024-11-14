@@ -1,13 +1,12 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import Alert from "core/components/Alert";
+import Alert, { AlertType } from "core/components/Alert";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Spinner from "core/components/Spinner";
 import Checkbox from "core/components/forms/Checkbox/Checkbox";
 import Field from "core/components/forms/Field";
-import { AlertType } from "core/helpers/alert";
 import { ensureArray } from "core/helpers/array";
 import useCacheKey from "core/hooks/useCacheKey";
 import useForm from "core/hooks/useForm";

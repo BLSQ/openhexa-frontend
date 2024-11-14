@@ -1,4 +1,4 @@
-import Alert from "core/components/Alert";
+import Alert, { AlertType } from "core/components/Alert";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Input from "core/components/forms/Input";
@@ -7,7 +7,6 @@ import useMe from "identity/hooks/useMe";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
-import { AlertType } from "core/helpers/alert";
 
 type DisableTwoFactorDialogProps = {
   open: boolean;

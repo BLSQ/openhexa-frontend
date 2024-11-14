@@ -1,9 +1,8 @@
 import { useApolloClient } from "@apollo/client";
-import Alert from "core/components/Alert";
+import Alert, { AlertType } from "core/components/Alert";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Page from "core/components/Page";
 import Spinner from "core/components/Spinner";
-import { AlertType } from "core/helpers/alert";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { NotebookServer } from "graphql/types";
