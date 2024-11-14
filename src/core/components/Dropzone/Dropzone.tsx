@@ -13,6 +13,7 @@ import type {
 } from "react-dropzone";
 import { useDropzone } from "react-dropzone";
 import Filesize from "../Filesize";
+import pluralize from "pluralize";
 
 export type DropzoneProps = {
   className?: string;
@@ -86,7 +87,11 @@ const Dropzone = (props: DropzoneProps) => {
       <input key={inputKey} {...getInputProps()} />
       {fileRejections.length + acceptedFiles.length === 0 && children}
       {acceptedFiles.length > 0 && (
-        <span className="line-clamp-3 text-xs">
+        <span className="line-clamp-4 text-xs">
+          <p>
+            {acceptedFiles.length} {pluralize("file", acceptedFiles.length)}{" "}
+            selected:{" "}
+          </p>
           <ul>
             {acceptedFiles.map((f) => (
               <li key={f.name}>
