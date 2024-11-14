@@ -11,13 +11,16 @@ import useMe from "identity/hooks/useMe";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import Input from "core/components/forms/Input";
-import { toast } from "react-toastify";
+import { ErrorAlert } from "core/components/Alert";
 
 type EnableTwoFactorDialogProps = {
   open: boolean;
   onClose(): void;
 };
 
+// TODO : test notifications
+// TODO : check design
+// TODO : onUpload files
 const EnableTwoFactorDialog = (props: EnableTwoFactorDialogProps) => {
   const { open, onClose } = props;
   const [isVerificationNeeded, setVerificationNeeded] = useState(false);
@@ -56,9 +59,10 @@ const EnableTwoFactorDialog = (props: EnableTwoFactorDialogProps) => {
   };
 
   if (me?.hasTwoFactorEnabled && open) {
-    return toast.error(
-      t("Two-Factor Authentication is already enabled for your account."),
-      { onClose: () => router.reload(), autoClose: false, closeButton: true },
+    return (
+      <ErrorAlert onClose={() => router.reload()}>
+        {t("Two-Factor Authentication is already enabled for your account.")}
+      </ErrorAlert>
     );
   }
 

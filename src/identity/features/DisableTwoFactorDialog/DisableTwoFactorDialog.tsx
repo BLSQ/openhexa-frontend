@@ -6,7 +6,7 @@ import useMe from "identity/hooks/useMe";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
-import { toast } from "react-toastify";
+import { ErrorAlert } from "core/components/Alert";
 
 type DisableTwoFactorDialogProps = {
   open: boolean;
@@ -40,9 +40,10 @@ const DisableTwoFactorDialog = (props: DisableTwoFactorDialogProps) => {
   };
 
   if (!me?.hasTwoFactorEnabled && open) {
-    return toast.error(
-      t("Two-Factor Authentication is not enabled for your account."),
-      { onClose: () => router.reload(), closeButton: true, autoClose: false },
+    return (
+      <ErrorAlert onClose={() => router.reload()}>
+        {t("Two-Factor Authentication is not enabled for your account.")}
+      </ErrorAlert>
     );
   }
   return (

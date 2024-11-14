@@ -15,7 +15,7 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { launchNotebookServer } from "workspaces/helpers/notebooks";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import { toast } from "react-toastify";
+import { ErrorAlert } from "core/components/Alert";
 
 type Props = {
   server: NotebookServer;
@@ -47,16 +47,11 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
   }
 
   if (!server) {
-    return toast.error(t("Unable to start JupytherHub for this workspace."), {
-      onClose: () => {
-        router.push({
-          pathname: "/workspaces/[workspaceSlug]",
-          query: { workspaceSlug: workspaceSlug },
-        });
-      },
-      closeButton: true,
-      autoClose: false,
-    });
+    return (
+      <ErrorAlert onClose={() => router.push(`/workspaces/${workspaceSlug}`)}>
+        {t("Unable to start JupytherHub for this workspace.")}
+      </ErrorAlert>
+    );
   }
 
   return (

@@ -26,7 +26,7 @@ import {
   RunPipelineDialog_RunFragment,
   RunPipelineDialog_VersionFragment,
 } from "./RunPipelineDialog.generated";
-import { toast } from "react-toastify";
+import { ErrorAlert } from "core/components/Alert";
 
 type RunPipelineDialogProps = {
   children(onClick: () => void): React.ReactNode;
@@ -207,11 +207,11 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   }
 
   if (!pipeline.currentVersion && open) {
-    return toast.error(t("This pipeline has not been uploaded yet"), {
-      onClose,
-      closeButton: true,
-      autoClose: false,
-    });
+    return (
+      <ErrorAlert onClose={onClose}>
+        {t("This pipeline has not been uploaded yet")}
+      </ErrorAlert>
+    );
   }
 
   return (

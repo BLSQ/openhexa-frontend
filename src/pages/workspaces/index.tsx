@@ -13,7 +13,7 @@ import {
   WorkspacesPageQueryVariables,
   useCheckWorkspaceAvailabilityLazyQuery,
 } from "workspaces/graphql/queries.generated";
-import { toast } from "react-toastify";
+import { WarningAlert } from "core/components/Alert";
 
 type WorkspacesHomeProps = {
   workspaceSlug: string | null;
@@ -56,11 +56,11 @@ const WorkspacesHome = (props: WorkspacesHomeProps) => {
   }, []);
 
   if (!isChecking && !me.permissions.createWorkspace) {
-    return toast.warning(t("No workspace available at the moment"), {
-      onClose: () => router.push("/"),
-      autoClose: false,
-      closeButton: true,
-    });
+    return (
+      <WarningAlert onClose={() => router.push("/")}>
+        {t("No workspace available at the moment")}
+      </WarningAlert>
+    );
   }
   if (typeof window === "undefined") {
     return null;
