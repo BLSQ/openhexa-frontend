@@ -18,9 +18,6 @@ type EnableTwoFactorDialogProps = {
   onClose(): void;
 };
 
-// TODO : test notifications
-// TODO : check design
-// TODO : onUpload files
 const EnableTwoFactorDialog = (props: EnableTwoFactorDialogProps) => {
   const { open, onClose } = props;
   const [isVerificationNeeded, setVerificationNeeded] = useState(false);
