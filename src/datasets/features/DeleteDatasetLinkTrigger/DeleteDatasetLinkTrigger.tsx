@@ -24,7 +24,7 @@ const DeleteDatasetLinkTrigger = (props: DeleteDatasetLinkTriggerProps) => {
       },
     ),
   } = props;
-  const router = useRouter();
+  useRouter();
 
   const clearCache = useCacheKey("datasets");
 
