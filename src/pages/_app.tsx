@@ -43,7 +43,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
             <meta name="description" content="" />
           </Head>
           {getLayout(<Component {...pageProps} />, pageProps)}
-          <ToastContainer limit={1} />
+          <ToastContainer />
         </ApolloProvider>
       </MeProvider>
     </ErrorBoundary>
