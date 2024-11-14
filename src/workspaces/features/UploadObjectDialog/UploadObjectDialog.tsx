@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { getBucketObjectUploadUrl } from "workspaces/helpers/bucket";
 import { UploadObjectDialog_WorkspaceFragment } from "./UploadObjectDialog.generated";
+import { toast } from "react-toastify";
 
 type UploadObjectDialogProps = {
   open: boolean;
@@ -18,6 +19,9 @@ type UploadObjectDialogProps = {
   workspace: UploadObjectDialog_WorkspaceFragment;
 };
 
+//TODO : new uploader notif
+// TODO : onProgress
+// TODO : design
 const UploadObjectDialog = (props: UploadObjectDialogProps) => {
   const { open, onClose, prefix, workspace } = props;
   const [progress, setProgress] = useState(0);
@@ -33,26 +37,35 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
       return errors;
     },
     async onSubmit(values) {
-      await uploader.createUploadJob({
-        files: values.files,
-        async getXHROptions(file) {
-          const contentType = file.type || "application/octet-stream";
-          const url = await getBucketObjectUploadUrl(
-            workspace.slug,
-            (prefix ?? "") + file.name,
-            contentType,
-          );
+      await uploader
+        .createUploadJob({
+          files: values.files,
+          async getXHROptions(file) {
+            const contentType = file.type || "application/octet-stream";
+            const url = await getBucketObjectUploadUrl(
+              workspace.slug,
+              (prefix ?? "") + file.name,
+              contentType,
+            );
 
-          return {
-            url,
-            method: "PUT",
-            headers: { "Content-Type": contentType },
-          };
-        },
-        onProgress: setProgress,
-      });
-      clearCache();
-      handleClose();
+            return {
+              url,
+              method: "PUT",
+              headers: { "Content-Type": contentType },
+            };
+          },
+          onProgress: setProgress,
+        })
+        .then(() => {
+          clearCache();
+          handleClose();
+          toast.success(t("Files uploaded successfully."));
+        })
+        .catch((error) =>
+          toast.error(
+            (error as Error).message ?? t("An unexpected error ocurred."),
+          ),
+        );
     },
   });
 
