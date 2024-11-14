@@ -1,4 +1,3 @@
-import Alert, { AlertType } from "core/components/Alert";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Input from "core/components/forms/Input";
@@ -7,6 +6,7 @@ import useMe from "identity/hooks/useMe";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { toast } from "react-toastify";
 
 type DisableTwoFactorDialogProps = {
   open: boolean;
@@ -40,10 +40,9 @@ const DisableTwoFactorDialog = (props: DisableTwoFactorDialogProps) => {
   };
 
   if (!me?.hasTwoFactorEnabled && open) {
-    return (
-      <Alert onClose={() => router.reload()} type={AlertType.error}>
-        {t("Two-Factor Authentication is not enabled for your account")}
-      </Alert>
+    return toast.error(
+      t("Two-Factor Authentication is not enabled for your account."),
+      { onClose: () => router.reload(), closeButton: true, autoClose: false },
     );
   }
   return (

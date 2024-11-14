@@ -1,5 +1,4 @@
 import { useApolloClient } from "@apollo/client";
-import Alert, { AlertType } from "core/components/Alert";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Page from "core/components/Page";
 import Spinner from "core/components/Spinner";
@@ -16,6 +15,7 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { launchNotebookServer } from "workspaces/helpers/notebooks";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
+import { toast } from "react-toastify";
 
 type Props = {
   server: NotebookServer;
@@ -47,19 +47,16 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
   }
 
   if (!server) {
-    return (
-      <Alert
-        onClose={() => {
-          router.push({
-            pathname: "/workspaces/[workspaceSlug]",
-            query: { workspaceSlug: workspaceSlug },
-          });
-        }}
-        type={AlertType.error}
-      >
-        {t("Unable to start JupytherHub for this workspace.")}
-      </Alert>
-    );
+    return toast.error(t("Unable to start JupytherHub for this workspace."), {
+      onClose: () => {
+        router.push({
+          pathname: "/workspaces/[workspaceSlug]",
+          query: { workspaceSlug: workspaceSlug },
+        });
+      },
+      closeButton: true,
+      autoClose: false,
+    });
   }
 
   return (

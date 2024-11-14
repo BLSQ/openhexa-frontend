@@ -1,4 +1,3 @@
-import Alert, { AlertType } from "core/components/Alert";
 import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import useLocalStorage from "core/hooks/useLocalStorage";
@@ -14,6 +13,7 @@ import {
   WorkspacesPageQueryVariables,
   useCheckWorkspaceAvailabilityLazyQuery,
 } from "workspaces/graphql/queries.generated";
+import { toast } from "react-toastify";
 
 type WorkspacesHomeProps = {
   workspaceSlug: string | null;
@@ -56,11 +56,11 @@ const WorkspacesHome = (props: WorkspacesHomeProps) => {
   }, []);
 
   if (!isChecking && !me.permissions.createWorkspace) {
-    return (
-      <Alert onClose={() => router.push("/")} type={AlertType.warning}>
-        {t("No workspace available at the moment")}
-      </Alert>
-    );
+    return toast.warning(t("No workspace available at the moment"), {
+      onClose: () => router.push("/"),
+      autoClose: false,
+      closeButton: true,
+    });
   }
   if (typeof window === "undefined") {
     return null;

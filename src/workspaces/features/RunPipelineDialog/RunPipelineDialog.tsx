@@ -1,7 +1,6 @@
 import { gql, useLazyQuery } from "@apollo/client";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import Alert, { AlertType } from "core/components/Alert";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Spinner from "core/components/Spinner";
@@ -27,6 +26,7 @@ import {
   RunPipelineDialog_RunFragment,
   RunPipelineDialog_VersionFragment,
 } from "./RunPipelineDialog.generated";
+import { toast } from "react-toastify";
 
 type RunPipelineDialogProps = {
   children(onClick: () => void): React.ReactNode;
@@ -207,11 +207,11 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   }
 
   if (!pipeline.currentVersion && open) {
-    return (
-      <Alert onClose={onClose} type={AlertType.error}>
-        {t("This pipeline has not been uploaded yet")}
-      </Alert>
-    );
+    return toast.error(t("This pipeline has not been uploaded yet"), {
+      onClose,
+      closeButton: true,
+      autoClose: false,
+    });
   }
 
   return (
