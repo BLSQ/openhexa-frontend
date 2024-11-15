@@ -48,7 +48,14 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
 
   if (!server) {
     return (
-      <ErrorAlert onClose={() => router.push(`/workspaces/${workspaceSlug}`)}>
+      <ErrorAlert
+        onClose={() => {
+          router.push({
+            pathname: "/workspaces/[workspaceSlug]",
+            query: { workspaceSlug: workspaceSlug },
+          });
+        }}
+      >
         {t("Unable to start JupytherHub for this workspace.")}
       </ErrorAlert>
     );
