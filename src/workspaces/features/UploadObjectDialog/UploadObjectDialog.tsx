@@ -70,17 +70,17 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
             500,
           );
           clearCache();
-          handleClose();
         })
-        .catch((error) =>
+        .catch((error) => {
           toast.update(toastId.current as Id, {
             type: "error",
             render:
               (error as Error).message ?? t("An unexpected error occurred."),
             isLoading: false,
             autoClose: 2000,
-          }),
-        );
+          });
+        })
+        .finally(() => handleClose());
     },
   });
 
