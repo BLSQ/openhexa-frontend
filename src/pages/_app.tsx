@@ -43,7 +43,11 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
             <meta name="description" content="" />
           </Head>
           {getLayout(<Component {...pageProps} />, pageProps)}
-          <ToastContainer pauseOnFocusLoss={false} pauseOnHover={false} />
+          <ToastContainer
+            pauseOnFocusLoss={false}
+            pauseOnHover={false}
+            hideProgressBar={true}
+          />
         </ApolloProvider>
       </MeProvider>
     </ErrorBoundary>

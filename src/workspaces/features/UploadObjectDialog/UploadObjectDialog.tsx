@@ -21,7 +21,6 @@ type UploadObjectDialogProps = {
 
 // TODO : new uploader notif
 // TODO : translate
-// TODO : design
 const UploadObjectDialog = (props: UploadObjectDialogProps) => {
   const { open, onClose, prefix, workspace } = props;
   const [progress, setProgress] = useState(0);
@@ -38,17 +37,9 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
       return errors;
     },
     async onSubmit(values) {
-      setProgress(0);
       toastId.current = toast(t("Upload in progress..."), {
-        progress,
         isLoading: true,
       });
-      const onProgress = (progress: number) => {
-        setProgress(progress);
-        toast.update(toastId.current as Id, {
-          progress: progress / 100,
-        });
-      };
       await uploader
         .createUploadJob({
           files: values.files,
@@ -66,7 +57,7 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
               headers: { "Content-Type": contentType },
             };
           },
-          onProgress,
+          onProgress: setProgress,
         })
         .then(() => {
           setTimeout(
@@ -74,11 +65,10 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
               toast.update(toastId.current as Id, {
                 type: "success",
                 render: t("Upload successful") + " 🎉",
-                autoClose: 2000,
-                hideProgressBar: true,
                 isLoading: false,
+                autoClose: 2000,
               }),
-            1000,
+            500,
           );
           clearCache();
           handleClose();
@@ -88,9 +78,8 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
             type: "error",
             render:
               (error as Error).message ?? t("An unexpected error occurred."),
-            autoClose: 2000,
-            hideProgressBar: true,
             isLoading: false,
+            autoClose: 2000,
           }),
         );
     },
