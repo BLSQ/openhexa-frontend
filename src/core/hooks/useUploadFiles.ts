@@ -1,13 +1,13 @@
-import { uploader } from "./files";
+import { uploader } from "../helpers/files";
 import { Id, toast } from "react-toastify";
 import { BucketExplorer_WorkspaceFragment } from "workspaces/features/BucketExplorer/BucketExplorer.generated";
-import useCacheKey from "../hooks/useCacheKey";
+import useCacheKey from "./useCacheKey";
 import { useRef } from "react";
 import { getBucketObjectUploadUrl } from "workspaces/helpers/bucket";
 import { useTranslation } from "next-i18next";
 import { UploadObjectDialog_WorkspaceFragment } from "workspaces/features/UploadObjectDialog/UploadObjectDialog.generated";
 
-type UploadFilesProps = {
+type UseUploadFilesProps = {
   workspace:
     | UploadObjectDialog_WorkspaceFragment
     | BucketExplorer_WorkspaceFragment;
@@ -21,7 +21,7 @@ export const useUploadFiles = ({
   workspace,
   onTermination,
   onProgress,
-}: UploadFilesProps) => {
+}: UseUploadFilesProps) => {
   const toastId = useRef<Id | null>(null);
   const { t } = useTranslation();
   const clearCache = useCacheKey(["workspace", "files", prefix]);

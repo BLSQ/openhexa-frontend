@@ -22,7 +22,7 @@ import {
 } from "./BucketExplorer.generated";
 import SimpleSelect from "core/components/forms/SimpleSelect";
 import DropzoneOverlay from "core/components/DropzoneOverlay";
-import { useUploadFiles } from "core/helpers/uploadFiles";
+import { useUploadFiles } from "core/hooks/useUploadFiles";
 
 type BucketExplorerProps = {
   workspace: BucketExplorer_WorkspaceFragment;
