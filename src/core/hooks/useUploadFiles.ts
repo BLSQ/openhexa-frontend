@@ -13,13 +13,13 @@ type UseUploadFilesProps = {
     | BucketExplorer_WorkspaceFragment;
   prefix?: string | null;
   onProgress?: (progress: number) => void;
-  onTermination?: () => void;
+  onFileUploaded?: () => void;
 };
 
 export const useUploadFiles = ({
   prefix,
   workspace,
-  onTermination,
+  onFileUploaded,
   onProgress,
 }: UseUploadFilesProps) => {
   const toastId = useRef<Id | null>(null);
@@ -70,6 +70,6 @@ export const useUploadFiles = ({
           autoClose: 2000,
         });
       })
-      .finally(onTermination);
+      .finally(onFileUploaded);
   };
 };

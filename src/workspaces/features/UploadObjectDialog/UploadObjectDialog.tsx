@@ -28,7 +28,7 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
     workspace,
     prefix,
     onProgress: setProgress,
-    onTermination: handleClose,
+    onFileUploaded: handleClose,
   });
   const form = useForm<{ files: File[] }>({
     validate(values) {
