@@ -1,0 +1,75 @@
+import { uploader } from "./files";
+import { Id, toast } from "react-toastify";
+import { BucketExplorer_WorkspaceFragment } from "workspaces/features/BucketExplorer/BucketExplorer.generated";
+import useCacheKey from "../hooks/useCacheKey";
+import { useRef } from "react";
+import { getBucketObjectUploadUrl } from "workspaces/helpers/bucket";
+import { useTranslation } from "next-i18next";
+import { UploadObjectDialog_WorkspaceFragment } from "workspaces/features/UploadObjectDialog/UploadObjectDialog.generated";
+
+type UploadFilesProps = {
+  workspace:
+    | UploadObjectDialog_WorkspaceFragment
+    | BucketExplorer_WorkspaceFragment;
+  prefix?: string | null;
+  onProgress?: (progress: number) => void;
+  onTermination?: () => void;
+};
+
+export const useUploadFiles = ({
+  prefix,
+  workspace,
+  onTermination,
+  onProgress,
+}: UploadFilesProps) => {
+  const toastId = useRef<Id | null>(null);
+  const { t } = useTranslation();
+  const clearCache = useCacheKey(["workspace", "files", prefix]);
+  return (files: File[]) => {
+    toastId.current = toast(t("Upload in progress..."), {
+      isLoading: true,
+    });
+    uploader
+      .createUploadJob({
+        files,
+        async getXHROptions(file) {
+          const contentType = file.type || "application/octet-stream";
+          const url = await getBucketObjectUploadUrl(
+            workspace.slug,
+            (prefix ?? "") + file.name,
+            contentType,
+          );
+
+          return {
+            url,
+            method: "PUT",
+            headers: { "Content-Type": contentType },
+          };
+        },
+        onProgress,
+      })
+      .then(() => {
+        setTimeout(
+          () =>
+            toast.update(toastId.current as Id, {
+              type: "success",
+              render: t("Upload successful !") + " 🎉",
+              isLoading: false,
+              autoClose: 2000,
+            }),
+          500,
+        );
+        clearCache();
+      })
+      .catch((error) => {
+        toast.update(toastId.current as Id, {
+          type: "error",
+          render:
+            (error as Error).message ?? t("An unexpected error occurred."),
+          isLoading: false,
+          autoClose: 2000,
+        });
+      })
+      .finally(onTermination);
+  };
+};

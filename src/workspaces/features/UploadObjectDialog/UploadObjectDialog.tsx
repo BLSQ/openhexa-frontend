@@ -3,14 +3,11 @@ import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Dropzone from "core/components/Dropzone";
-import { uploader } from "core/helpers/files";
-import useCacheKey from "core/hooks/useCacheKey";
 import useForm from "core/hooks/useForm";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
-import { getBucketObjectUploadUrl } from "workspaces/helpers/bucket";
 import { UploadObjectDialog_WorkspaceFragment } from "./UploadObjectDialog.generated";
-import { Id, toast } from "react-toastify";
+import { useUploadFiles } from "core/helpers/uploadFiles";
 
 type UploadObjectDialogProps = {
   open: boolean;
@@ -19,13 +16,20 @@ type UploadObjectDialogProps = {
   workspace: UploadObjectDialog_WorkspaceFragment;
 };
 
-// TODO : new uploader notif
 const UploadObjectDialog = (props: UploadObjectDialogProps) => {
   const { open, onClose, prefix, workspace } = props;
   const [progress, setProgress] = useState(0);
   const { t } = useTranslation();
-  const clearCache = useCacheKey(["workspace", "files", prefix]);
-  const toastId = useRef<Id | null>(null);
+  const handleClose = () => {
+    form.resetForm();
+    onClose();
+  };
+  const uploadFiles = useUploadFiles({
+    workspace,
+    prefix,
+    onProgress: setProgress,
+    onTermination: handleClose,
+  });
   const form = useForm<{ files: File[] }>({
     validate(values) {
       const errors = {} as any;
@@ -35,52 +39,8 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
 
       return errors;
     },
-    async onSubmit(values) {
-      toastId.current = toast(t("Upload in progress..."), {
-        isLoading: true,
-      });
-      await uploader
-        .createUploadJob({
-          files: values.files,
-          async getXHROptions(file) {
-            const contentType = file.type || "application/octet-stream";
-            const url = await getBucketObjectUploadUrl(
-              workspace.slug,
-              (prefix ?? "") + file.name,
-              contentType,
-            );
-
-            return {
-              url,
-              method: "PUT",
-              headers: { "Content-Type": contentType },
-            };
-          },
-          onProgress: setProgress,
-        })
-        .then(() => {
-          setTimeout(
-            () =>
-              toast.update(toastId.current as Id, {
-                type: "success",
-                render: t("Upload successful !") + " 🎉",
-                isLoading: false,
-                autoClose: 2000,
-              }),
-            500,
-          );
-          clearCache();
-        })
-        .catch((error) => {
-          toast.update(toastId.current as Id, {
-            type: "error",
-            render:
-              (error as Error).message ?? t("An unexpected error occurred."),
-            isLoading: false,
-            autoClose: 2000,
-          });
-        })
-        .finally(() => handleClose());
+    async onSubmit({ files }) {
+      uploadFiles(files);
     },
   });
 
@@ -89,11 +49,6 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
       setProgress(0);
     }
   }, [open]);
-
-  const handleClose = () => {
-    form.resetForm();
-    onClose();
-  };
 
   return (
     <Dialog
