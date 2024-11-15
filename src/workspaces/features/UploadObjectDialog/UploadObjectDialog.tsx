@@ -6,11 +6,11 @@ import Dropzone from "core/components/Dropzone";
 import { uploader } from "core/helpers/files";
 import useCacheKey from "core/hooks/useCacheKey";
 import useForm from "core/hooks/useForm";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { getBucketObjectUploadUrl } from "workspaces/helpers/bucket";
 import { UploadObjectDialog_WorkspaceFragment } from "./UploadObjectDialog.generated";
-import { toast } from "react-toastify";
+import { Id, toast } from "react-toastify";
 
 type UploadObjectDialogProps = {
   open: boolean;
@@ -19,14 +19,15 @@ type UploadObjectDialogProps = {
   workspace: UploadObjectDialog_WorkspaceFragment;
 };
 
-//TODO : new uploader notif
-// TODO : onProgress
+// TODO : pull + new uploader notif
+// TODO : translate
 // TODO : design
 const UploadObjectDialog = (props: UploadObjectDialogProps) => {
   const { open, onClose, prefix, workspace } = props;
   const [progress, setProgress] = useState(0);
   const { t } = useTranslation();
   const clearCache = useCacheKey(["workspace", "files", prefix]);
+  const toastId = useRef<Id | null>(null);
   const form = useForm<{ files: File[] }>({
     validate(values) {
       const errors = {} as any;
@@ -37,6 +38,15 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
       return errors;
     },
     async onSubmit(values) {
+      setProgress(0);
+      toastId.current = toast("Upload in Progress", { progress });
+      const onProgress = (progress: number) => {
+        setProgress(progress);
+        toast.update(toastId.current as Id, {
+          progress: progress / 100,
+          autoClose: false,
+        });
+      };
       await uploader
         .createUploadJob({
           files: values.files,
@@ -54,17 +64,26 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
               headers: { "Content-Type": contentType },
             };
           },
-          onProgress: setProgress,
+          onProgress,
         })
         .then(() => {
+          setTimeout(() => {
+            toast.update(toastId.current as Id, {
+              type: "success",
+              render: t("Upload successful 🎉"),
+              autoClose: 2000,
+            });
+          }, 1000);
           clearCache();
           handleClose();
-          toast.success(t("Files uploaded successfully."));
         })
         .catch((error) =>
-          toast.error(
-            (error as Error).message ?? t("An unexpected error ocurred."),
-          ),
+          toast.update(toastId.current as Id, {
+            type: "error",
+            render:
+              (error as Error).message ?? t("An unexpected error ocurred."),
+            autoClose: 2000,
+          }),
         );
     },
   });
