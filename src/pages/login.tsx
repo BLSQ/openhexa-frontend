@@ -41,7 +41,7 @@ const LoginPage: NextPageWithLayout = () => {
         },
       });
       if (!data) {
-        throw new Error(t("An unexpected error ocurred."));
+        throw new Error(t("An unexpected error occurred."));
       }
       if (data.login.success) {
         await router.push((router.query.next as string) ?? "/");
