@@ -20,7 +20,6 @@ type UploadObjectDialogProps = {
 };
 
 // TODO : new uploader notif
-// TODO : translate
 const UploadObjectDialog = (props: UploadObjectDialogProps) => {
   const { open, onClose, prefix, workspace } = props;
   const [progress, setProgress] = useState(0);
@@ -64,7 +63,7 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
             () =>
               toast.update(toastId.current as Id, {
                 type: "success",
-                render: t("Upload successful") + " 🎉",
+                render: t("Upload successful !") + " 🎉",
                 isLoading: false,
                 autoClose: 2000,
               }),
