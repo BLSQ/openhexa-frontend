@@ -39,12 +39,14 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
     },
     async onSubmit(values) {
       setProgress(0);
-      toastId.current = toast("Upload in Progress", { progress });
+      toastId.current = toast(t("Upload in progress"), {
+        progress,
+        isLoading: true,
+      });
       const onProgress = (progress: number) => {
         setProgress(progress);
         toast.update(toastId.current as Id, {
           progress: progress / 100,
-          autoClose: false,
         });
       };
       await uploader
@@ -67,13 +69,17 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
           onProgress,
         })
         .then(() => {
-          setTimeout(() => {
-            toast.update(toastId.current as Id, {
-              type: "success",
-              render: t("Upload successful 🎉"),
-              autoClose: 2000,
-            });
-          }, 1000);
+          setTimeout(
+            () =>
+              toast.update(toastId.current as Id, {
+                type: "success",
+                render: t("Upload successful") + " 🎉",
+                autoClose: 2000,
+                hideProgressBar: true,
+                isLoading: false,
+              }),
+            1000,
+          );
           clearCache();
           handleClose();
         })
@@ -83,6 +89,8 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
             render:
               (error as Error).message ?? t("An unexpected error occurred."),
             autoClose: 2000,
+            hideProgressBar: true,
+            isLoading: false,
           }),
         );
     },
