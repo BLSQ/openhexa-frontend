@@ -42,7 +42,7 @@ const DisableTwoFactorDialog = (props: DisableTwoFactorDialogProps) => {
   if (!me?.hasTwoFactorEnabled && open) {
     return (
       <ErrorAlert onClose={() => router.reload()}>
-        {t("Two-Factor Authentication is not enabled for your account.")}
+        {t("Two-Factor Authentication is not enabled for your account")}
       </ErrorAlert>
     );
   }

@@ -414,7 +414,7 @@
   "Trigger": "Déclencheur",
   "Two-Factor Authentication": "Authentification à deux facteurs",
   "Two-Factor Authentication is already enabled for your account.": "L'authentification à deux facteurs est déjà activée pour votre compte.",
-  "Two-Factor Authentication is not enabled for your account.": "",
+  "Two-Factor Authentication is not enabled for your account": "L'authentification à deux facteurs n'est pas activée pour votre compte",
   "Type": "Type",
   "Type a description": "Tapez une description",
   "Type a description for the workspace": "Saisir une description du workspace",
