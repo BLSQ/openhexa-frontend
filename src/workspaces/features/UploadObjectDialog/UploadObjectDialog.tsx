@@ -19,7 +19,7 @@ type UploadObjectDialogProps = {
   workspace: UploadObjectDialog_WorkspaceFragment;
 };
 
-// TODO : pull + new uploader notif
+// TODO : new uploader notif
 // TODO : translate
 // TODO : design
 const UploadObjectDialog = (props: UploadObjectDialogProps) => {
@@ -81,7 +81,7 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
           toast.update(toastId.current as Id, {
             type: "error",
             render:
-              (error as Error).message ?? t("An unexpected error ocurred."),
+              (error as Error).message ?? t("An unexpected error occurred."),
             autoClose: 2000,
           }),
         );

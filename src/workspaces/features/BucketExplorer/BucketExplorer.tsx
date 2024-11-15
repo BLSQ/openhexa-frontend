@@ -25,7 +25,7 @@ import DropzoneOverlay from "core/components/DropzoneOverlay";
 import { uploader } from "core/helpers/files";
 import { getBucketObjectUploadUrl } from "workspaces/helpers/bucket";
 import useCacheKey from "core/hooks/useCacheKey";
-import { AlertType, displayAlert } from "core/helpers/alert";
+import { toast } from "react-toastify";
 
 type BucketExplorerProps = {
   workspace: BucketExplorer_WorkspaceFragment;
@@ -60,9 +60,8 @@ const BucketExplorer = (props: BucketExplorerProps) => {
       })
       .then(() => clearCache())
       .catch((error) =>
-        displayAlert(
+        toast.error(
           (error as Error).message ?? t("An unexpected error occurred."),
-          AlertType.error,
         ),
       );
   return (
