@@ -39,7 +39,7 @@ const UploadObjectDialog = (props: UploadObjectDialogProps) => {
     },
     async onSubmit(values) {
       setProgress(0);
-      toastId.current = toast(t("Upload in progress"), {
+      toastId.current = toast(t("Upload in progress..."), {
         progress,
         isLoading: true,
       });
