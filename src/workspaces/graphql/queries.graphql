@@ -68,7 +68,6 @@ query WorkspacePipelinePage(
   workspace(slug: $workspaceSlug) {
     slug
     name
-    ...WorkspaceLayout_workspace
     ...PipelineLayout_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
@@ -116,7 +115,7 @@ query WorkspacePipelineRunsPage(
   workspace(slug: $workspaceSlug) {
     slug
     name
-    ...WorkspaceLayout_workspace
+    ...PipelineLayout_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
     ...PipelineLayout_pipeline
@@ -156,7 +155,7 @@ query WorkspacePipelineNotificationsPage(
   workspace(slug: $workspaceSlug) {
     slug
     name
-    ...WorkspaceLayout_workspace
+    ...PipelineLayout_workspace
     ...PipelineRecipients_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {

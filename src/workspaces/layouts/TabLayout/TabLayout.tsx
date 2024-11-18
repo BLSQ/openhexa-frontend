@@ -5,6 +5,8 @@ import React, { ReactElement, ReactNode } from "react";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import LinkTabs from "core/components/Tabs/LinkTabs/LinkTabs";
 import Title from "core/components/Title";
+import { GetServerSidePropsContext } from "next";
+import { CustomApolloClient } from "core/helpers/apollo";
 
 const TabLayoutHeader = ({
   children,
@@ -71,9 +73,16 @@ const TabLayout = ({
   );
 };
 
+TabLayout.prefetch = async (
+  ctx: GetServerSidePropsContext,
+  client: CustomApolloClient,
+) => {
+  await WorkspaceLayout.prefetch(ctx, client);
+};
+
 TabLayout.fragments = {
   workspace: gql`
-    fragment BaseLayout_workspace on Workspace {
+    fragment TabLayout_workspace on Workspace {
       ...WorkspaceLayout_workspace
       name
     }

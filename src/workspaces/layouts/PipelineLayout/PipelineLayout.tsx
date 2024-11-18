@@ -12,6 +12,8 @@ import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import DeletePipelineDialog from "workspaces/features/DeletePipelineDialog";
 import PipelineVersionPicker from "workspaces/features/PipelineVersionPicker";
 import TabLayout from "../TabLayout";
+import { GetServerSidePropsContext } from "next";
+import { CustomApolloClient } from "core/helpers/apollo";
 
 type DatasetLayoutProps = {
   pipeline: any;
@@ -146,12 +148,19 @@ const PipelineLayout = (props: DatasetLayoutProps) => {
   );
 };
 
+PipelineLayout.prefetch = async (
+  ctx: GetServerSidePropsContext,
+  client: CustomApolloClient,
+) => {
+  await TabLayout.prefetch(ctx, client);
+};
+
 PipelineLayout.fragments = {
   workspace: gql`
     fragment PipelineLayout_workspace on Workspace {
-      ...WorkspaceLayout_workspace
+      ...TabLayout_workspace
     }
-    ${WorkspaceLayout.fragments.workspace}
+    ${TabLayout.fragments.workspace}
   `,
   pipeline: gql`
     fragment PipelineLayout_pipeline on Pipeline {

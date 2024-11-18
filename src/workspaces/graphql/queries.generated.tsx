@@ -69,7 +69,7 @@ export type WorkspacePipelinePageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacePipelinePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', launchNotebookServer: boolean, manageMembers: boolean, update: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipeline?: { __typename?: 'Pipeline', webhookUrl?: string | null, webhookEnabled: boolean, id: string, createdAt: any, code: string, name?: string | null, description?: string | null, schedule?: string | null, type: Types.PipelineType, notebookPath?: string | null, permissions: { __typename?: 'PipelinePermissions', run: boolean, update: boolean, schedule: boolean, delete: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, config?: any | null, externalLink?: any | null, isLatestVersion: boolean, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, multiple: boolean, type: Types.ParameterType, help?: string | null, required: boolean, choices?: Array<any> | null, default?: any | null }>, pipeline: { __typename?: 'Pipeline', id: string, schedule?: string | null, workspace: { __typename?: 'Workspace', slug: string } } } | null, recipients: Array<{ __typename?: 'PipelineRecipient', user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string } } | null };
+export type WorkspacePipelinePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipeline?: { __typename?: 'Pipeline', webhookUrl?: string | null, webhookEnabled: boolean, id: string, createdAt: any, code: string, name?: string | null, description?: string | null, schedule?: string | null, type: Types.PipelineType, notebookPath?: string | null, permissions: { __typename?: 'PipelinePermissions', run: boolean, update: boolean, schedule: boolean, delete: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, config?: any | null, externalLink?: any | null, isLatestVersion: boolean, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, multiple: boolean, type: Types.ParameterType, help?: string | null, required: boolean, choices?: Array<any> | null, default?: any | null }>, pipeline: { __typename?: 'Pipeline', id: string, schedule?: string | null, workspace: { __typename?: 'Workspace', slug: string } } } | null, recipients: Array<{ __typename?: 'PipelineRecipient', user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string } } | null };
 
 export type WorkspacePipelineRunsPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
@@ -412,7 +412,6 @@ export const WorkspacePipelinePageDocument = gql`
   workspace(slug: $workspaceSlug) {
     slug
     name
-    ...WorkspaceLayout_workspace
     ...PipelineLayout_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
@@ -450,8 +449,7 @@ export const WorkspacePipelinePageDocument = gql`
     }
   }
 }
-    ${WorkspaceLayout_WorkspaceFragmentDoc}
-${PipelineLayout_WorkspaceFragmentDoc}
+    ${PipelineLayout_WorkspaceFragmentDoc}
 ${RunPipelineDialog_PipelineFragmentDoc}
 ${PipelineVersionParametersTable_VersionFragmentDoc}
 ${PipelineVersionConfigDialog_VersionFragmentDoc}`;
@@ -494,7 +492,7 @@ export const WorkspacePipelineRunsPageDocument = gql`
   workspace(slug: $workspaceSlug) {
     slug
     name
-    ...WorkspaceLayout_workspace
+    ...PipelineLayout_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
     ...PipelineLayout_pipeline
@@ -525,7 +523,7 @@ export const WorkspacePipelineRunsPageDocument = gql`
     }
   }
 }
-    ${WorkspaceLayout_WorkspaceFragmentDoc}
+    ${PipelineLayout_WorkspaceFragmentDoc}
 ${PipelineLayout_PipelineFragmentDoc}
 ${User_UserFragmentDoc}
 ${UserColumn_UserFragmentDoc}
@@ -571,7 +569,7 @@ export const WorkspacePipelineNotificationsPageDocument = gql`
   workspace(slug: $workspaceSlug) {
     slug
     name
-    ...WorkspaceLayout_workspace
+    ...PipelineLayout_workspace
     ...PipelineRecipients_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
@@ -594,7 +592,7 @@ export const WorkspacePipelineNotificationsPageDocument = gql`
     }
   }
 }
-    ${WorkspaceLayout_WorkspaceFragmentDoc}
+    ${PipelineLayout_WorkspaceFragmentDoc}
 ${PipelineRecipients_WorkspaceFragmentDoc}
 ${PipelineLayout_PipelineFragmentDoc}
 ${PipelineRecipients_PipelineFragmentDoc}`;
