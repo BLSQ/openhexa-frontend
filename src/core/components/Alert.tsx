@@ -17,7 +17,6 @@ type AlertProps = {
 
 // TODO : onclick close
 // TODO : errors longer
-// TODO : remove useRouter
 // TODO : remove useApolloClient
 const Alert = ({ icon, children, onClose }: AlertProps) => {
   const [open, setOpen] = useState(false);

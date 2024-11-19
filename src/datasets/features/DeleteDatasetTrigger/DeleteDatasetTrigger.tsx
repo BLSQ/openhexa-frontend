@@ -27,7 +27,7 @@ const DeleteDatasetTrigger = (props: DeleteDatasetTriggerProps) => {
       },
     ),
   } = props;
-  useRouter();
+
   const clearCache = useCacheKey("datasets");
 
   const onClick = async () => {
