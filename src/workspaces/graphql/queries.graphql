@@ -153,10 +153,7 @@ query WorkspacePipelineNotificationsPage(
   $pipelineCode: String!
 ) {
   workspace(slug: $workspaceSlug) {
-    slug
-    name
     ...PipelineLayout_workspace
-    ...PipelineRecipients_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
     ...PipelineLayout_pipeline
@@ -168,13 +165,6 @@ query WorkspacePipelineNotificationsPage(
     permissions{
       schedule
       update
-    }
-    currentVersion {
-      id
-      name
-      description
-      config
-      externalLink
     }
   }
 }

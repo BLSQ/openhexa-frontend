@@ -1,6 +1,7 @@
 import * as Types from '../../../graphql/types';
 
 import { gql } from '@apollo/client';
+import { DeletePipelineRecipientTrigger_PipelineFragmentDoc, DeletePipelineRecipientTrigger_RecipientFragmentDoc } from './DeletePipelineRecipientTrigger/DeletePipelineRecipientTrigger.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type PipelineRecipientQueryVariables = Types.Exact<{
@@ -8,11 +9,9 @@ export type PipelineRecipientQueryVariables = Types.Exact<{
 }>;
 
 
-export type PipelineRecipientQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', id: string, code: string, permissions: { __typename?: 'PipelinePermissions', update: boolean }, recipients: Array<{ __typename?: 'PipelineRecipient', id: string, notificationLevel: Types.PipelineNotificationLevel, user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string } } | null };
+export type PipelineRecipientQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', id: string, permissions: { __typename?: 'PipelinePermissions', update: boolean }, recipients: Array<{ __typename?: 'PipelineRecipient', id: string, notificationLevel: Types.PipelineNotificationLevel, user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number } } } | null };
 
 export type PipelineRecipients_PipelineFragment = { __typename?: 'Pipeline', id: string, code: string };
-
-export type PipelineRecipients_WorkspaceFragment = { __typename?: 'Workspace', slug: string, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number } };
 
 export const PipelineRecipients_PipelineFragmentDoc = gql`
     fragment PipelineRecipients_pipeline on Pipeline {
@@ -20,19 +19,10 @@ export const PipelineRecipients_PipelineFragmentDoc = gql`
   code
 }
     `;
-export const PipelineRecipients_WorkspaceFragmentDoc = gql`
-    fragment PipelineRecipients_workspace on Workspace {
-  slug
-  members {
-    totalItems
-  }
-}
-    `;
 export const PipelineRecipientDocument = gql`
     query PipelineRecipient($id: UUID!) {
   pipeline(id: $id) {
-    id
-    code
+    ...DeletePipelineRecipientTrigger_pipeline
     permissions {
       update
     }
@@ -43,13 +33,18 @@ export const PipelineRecipientDocument = gql`
         displayName
       }
       notificationLevel
+      ...DeletePipelineRecipientTrigger_recipient
     }
     workspace {
       slug
+      members {
+        totalItems
+      }
     }
   }
 }
-    `;
+    ${DeletePipelineRecipientTrigger_PipelineFragmentDoc}
+${DeletePipelineRecipientTrigger_RecipientFragmentDoc}`;
 
 /**
  * __usePipelineRecipientQuery__

@@ -18,8 +18,7 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { updatePipeline } from "workspaces/helpers/pipelines";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
-import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import Block from "core/components/Block";
+import Title from "core/components/Title";
 
 type Props = {
   pipelineCode: string;
@@ -36,6 +35,8 @@ const WorkspacePipelineNotificationsPage: NextPageWithLayout = (
       workspaceSlug,
       pipelineCode,
     },
+    fetchPolicy: "cache-first",
+    nextFetchPolicy: "cache-first",
   });
 
   const hasMissingConfiguration = useMemo(() => {
@@ -124,11 +125,12 @@ const WorkspacePipelineNotificationsPage: NextPageWithLayout = (
             required={(_, __, values) => Boolean(values.enableScheduling)}
           />
         </DataCard.FormSection>
-        <Block>
-          <Block.Content title={t("Notifications")} className="p-0">
-            <PipelineRecipients pipeline={pipeline} workspace={workspace} />
-          </Block.Content>
-        </Block>
+        <div className="py-5 pt-6 space-y-4">
+          <Title level={6} className="px-6">
+            {t("Notifications")}
+          </Title>
+          <PipelineRecipients pipeline={pipeline} />
+        </div>
       </PipelineLayout>
     </Page>
   );

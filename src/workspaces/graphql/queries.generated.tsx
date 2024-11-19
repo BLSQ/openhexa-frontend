@@ -14,7 +14,7 @@ import { RunPipelineDialog_PipelineFragmentDoc, RunPipelineDialog_RunFragmentDoc
 import { PipelineVersionParametersTable_VersionFragmentDoc } from '../../pipelines/features/PipelineVersionParametersTable/PipelineVersionParametersTable.generated';
 import { PipelineVersionConfigDialog_VersionFragmentDoc } from '../features/PipelineVersionConfigDialog/PipelineVersionConfigDialog.generated';
 import { UserColumn_UserFragmentDoc } from '../../core/components/DataGrid/UserColumn.generated';
-import { PipelineRecipients_WorkspaceFragmentDoc, PipelineRecipients_PipelineFragmentDoc } from '../features/PipelineRecipients/PipelineRecipients.generated';
+import { PipelineRecipients_PipelineFragmentDoc } from '../features/PipelineRecipients/PipelineRecipients.generated';
 import { PipelineVersionCard_VersionFragmentDoc } from '../../pipelines/features/PipelineVersionCard/PipelineVersionCard.generated';
 import { RunOutputsTable_WorkspaceFragmentDoc, RunOutputsTable_RunFragmentDoc } from '../features/RunOutputsTable/RunOutputsTable.generated';
 import { RunMessages_RunFragmentDoc } from '../../pipelines/features/RunMessages/RunMessages.generated';
@@ -87,7 +87,7 @@ export type WorkspacePipelineNotificationsPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspacePipelineNotificationsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number }, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipeline?: { __typename?: 'Pipeline', id: string, code: string, type: Types.PipelineType, schedule?: string | null, name?: string | null, permissions: { __typename?: 'PipelinePermissions', run: boolean, update: boolean, schedule: boolean, delete: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, config?: any | null, externalLink?: any | null, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: Types.ParameterType, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null, pipeline: { __typename?: 'Pipeline', id: string, code: string } } | null, workspace: { __typename?: 'Workspace', slug: string } } | null };
+export type WorkspacePipelineNotificationsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', name: string, slug: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipeline?: { __typename?: 'Pipeline', id: string, code: string, type: Types.PipelineType, schedule?: string | null, name?: string | null, permissions: { __typename?: 'PipelinePermissions', run: boolean, update: boolean, schedule: boolean, delete: boolean }, currentVersion?: { __typename?: 'PipelineVersion', id: string, name: string, description?: string | null, config?: any | null, externalLink?: any | null, createdAt: any, parameters: Array<{ __typename?: 'PipelineParameter', code: string, name: string, help?: string | null, type: Types.ParameterType, default?: any | null, required: boolean, choices?: Array<any> | null, multiple: boolean }>, user?: { __typename?: 'User', displayName: string } | null, pipeline: { __typename?: 'Pipeline', id: string, code: string } } | null, workspace: { __typename?: 'Workspace', slug: string } } | null };
 
 export type WorkspacePipelineVersionsPageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
@@ -567,10 +567,7 @@ export type WorkspacePipelineRunsPageQueryResult = Apollo.QueryResult<WorkspaceP
 export const WorkspacePipelineNotificationsPageDocument = gql`
     query WorkspacePipelineNotificationsPage($workspaceSlug: String!, $pipelineCode: String!) {
   workspace(slug: $workspaceSlug) {
-    slug
-    name
     ...PipelineLayout_workspace
-    ...PipelineRecipients_workspace
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
     ...PipelineLayout_pipeline
@@ -583,17 +580,9 @@ export const WorkspacePipelineNotificationsPageDocument = gql`
       schedule
       update
     }
-    currentVersion {
-      id
-      name
-      description
-      config
-      externalLink
-    }
   }
 }
     ${PipelineLayout_WorkspaceFragmentDoc}
-${PipelineRecipients_WorkspaceFragmentDoc}
 ${PipelineLayout_PipelineFragmentDoc}
 ${PipelineRecipients_PipelineFragmentDoc}`;
 

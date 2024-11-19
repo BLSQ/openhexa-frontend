@@ -7,8 +7,8 @@ import {
 } from "graphql/types";
 import {
   PipelineRecipientQuery,
+  PipelineRecipientQueryVariables,
   PipelineRecipients_PipelineFragment,
-  PipelineRecipients_WorkspaceFragment,
 } from "./PipelineRecipients.generated";
 import { useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
@@ -199,24 +199,24 @@ type CreatePipelineRecipientInput = {
 
 type PipelineRecipientsProps = {
   pipeline: PipelineRecipients_PipelineFragment;
-  workspace: PipelineRecipients_WorkspaceFragment;
 };
 
 const PipelineRecipients = (props: PipelineRecipientsProps) => {
   const { t } = useTranslation();
 
-  const { workspace } = props;
   const [selectedRecipient, setSelectedRecipient] =
     useState<Recipient | null>();
   const [newRecipient, setNewRecipient] =
     useState<CreatePipelineRecipientInput | null>();
 
-  const { data, refetch } = useQuery<PipelineRecipientQuery>(
+  const { data, refetch } = useQuery<
+    PipelineRecipientQuery,
+    PipelineRecipientQueryVariables
+  >(
     gql`
       query PipelineRecipient($id: UUID!) {
         pipeline(id: $id) {
-          id
-          code
+          ...DeletePipelineRecipientTrigger_pipeline
           permissions {
             update
           }
@@ -227,14 +227,20 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
               displayName
             }
             notificationLevel
+            ...DeletePipelineRecipientTrigger_recipient
           }
           workspace {
             slug
+            members {
+              totalItems
+            }
           }
         }
       }
+      ${DeletePipelineRecipientTrigger.fragments.pipeline}
+      ${DeletePipelineRecipientTrigger.fragments.recipient}
     `,
-    { variables: { id: props.pipeline.id } },
+    { variables: { id: props.pipeline.id }, nextFetchPolicy: "cache-first" },
   );
 
   const clearCache = useCacheKey(["pipelines", props.pipeline.id], () =>
@@ -242,8 +248,10 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
   );
 
   const canAddRecipient = useMemo(
-    () => workspace.members.totalItems != data?.pipeline?.recipients.length,
-    [workspace, data],
+    () =>
+      data?.pipeline?.workspace.members?.totalItems !=
+      data?.pipeline?.recipients.length,
+    [data],
   );
 
   const pipeline = data?.pipeline;
@@ -265,7 +273,6 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
 
   const handleUpdateRecipient = async (recipient: Recipient) => {
     await updatePipelineRecipient(recipient.id, recipient.notificationLevel);
-    clearCache();
     setSelectedRecipient(null);
   };
 
@@ -274,7 +281,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
   };
 
   return (
-    <Table className="-mx-2">
+    <Table className="-mr-6">
       <TableHead>
         <TableRow>
           <TableCell heading>{t("User")}</TableCell>
@@ -286,7 +293,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
         {canAddRecipient && (
           <NewRecipientRow
             newRecipient={newRecipient!}
-            workspaceSlug={workspace.slug}
+            workspaceSlug={pipeline.workspace.slug}
             excludedRecipients={pipeline.recipients.map((r) => r.user.id) ?? []}
             onCancel={() => setNewRecipient(null)}
             onChange={(field: string, value: any) =>
@@ -320,7 +327,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
             onSelect={(recipient: Recipient) => setSelectedRecipient(recipient)}
             onCancel={handleCancelEdit}
             onUpdate={handleUpdateRecipient}
-            onDelete={() => clearCache()}
+            onDelete={() => {}}
           />
         ))}
       </TableBody>
@@ -333,14 +340,6 @@ PipelineRecipients.fragments = {
     fragment PipelineRecipients_pipeline on Pipeline {
       id
       code
-    }
-  `,
-  workspace: gql`
-    fragment PipelineRecipients_workspace on Workspace {
-      slug
-      members {
-        totalItems
-      }
     }
   `,
 };

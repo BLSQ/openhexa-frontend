@@ -319,6 +319,10 @@ export async function updatePipelineRecipient(
         updatePipelineRecipient(input: $input) {
           success
           errors
+          recipient {
+            id
+            notificationLevel
+          }
         }
       }
     `,

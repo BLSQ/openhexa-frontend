@@ -19,7 +19,6 @@ import {
   useWorkspacePipelineRunsPageQuery,
 } from "workspaces/graphql/queries.generated";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
-import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
   page: number;

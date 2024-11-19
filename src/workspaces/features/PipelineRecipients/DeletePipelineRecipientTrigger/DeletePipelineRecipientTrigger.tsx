@@ -27,10 +27,12 @@ const DeletePipelineRecipientTrigger = (
       name: recipient.user.displayName,
     }),
   } = props;
+  const clearCache = useCacheKey(["pipelines", props.pipeline.id]);
 
   const onClick = async () => {
     if (window.confirm(confirmMessage)) {
       await deletePipelineRecipient(recipient.id);
+      clearCache();
     }
   };
   if (!pipeline.permissions.update) {

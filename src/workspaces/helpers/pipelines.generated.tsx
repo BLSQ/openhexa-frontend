@@ -38,7 +38,7 @@ export type UpdatePipelineRecipientMutationVariables = Types.Exact<{
 }>;
 
 
-export type UpdatePipelineRecipientMutation = { __typename?: 'Mutation', updatePipelineRecipient: { __typename?: 'UpdatePipelineRecipientResult', success: boolean, errors: Array<Types.PipelineRecipientError> } };
+export type UpdatePipelineRecipientMutation = { __typename?: 'Mutation', updatePipelineRecipient: { __typename?: 'UpdatePipelineRecipientResult', success: boolean, errors: Array<Types.PipelineRecipientError>, recipient?: { __typename?: 'PipelineRecipient', id: string, notificationLevel: Types.PipelineNotificationLevel } | null } };
 
 export type DeletePipelineRecipientMutationVariables = Types.Exact<{
   input: Types.DeletePipelineRecipientInput;
@@ -216,6 +216,10 @@ export const UpdatePipelineRecipientDocument = gql`
   updatePipelineRecipient(input: $input) {
     success
     errors
+    recipient {
+      id
+      notificationLevel
+    }
   }
 }
     `;

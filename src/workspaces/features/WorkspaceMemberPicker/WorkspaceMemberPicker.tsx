@@ -1,9 +1,10 @@
-import { gql, useQuery } from "@apollo/client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { gql, useLazyQuery } from "@apollo/client";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
 import useDebounce from "core/hooks/useDebounce";
 import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
 import { WorkspaceMemberPickerQuery } from "./WorkspaceMemberPicker.generated";
+import { WorkspaceConnectionPickerQueryVariables } from "../WorkspaceConnectionPicker/WorkspaceConnectionPicker.generated";
 
 export type WorkspaceMemberOption = {
   id: string;
@@ -36,22 +37,19 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
     placeholder = t("Select member"),
   } = props;
 
-  const { data, loading } = useQuery<WorkspaceMemberPickerQuery>(
-    gql`
-      query WorkspaceMemberPicker($slug: String!) {
-        workspace(slug: $slug) {
-          slug
-          ...WorkspaceMemberPicker_workspace
-        }
+  const [fetch, { data, loading }] = useLazyQuery<
+    WorkspaceMemberPickerQuery,
+    WorkspaceConnectionPickerQueryVariables
+  >(gql`
+    query WorkspaceMemberPicker($slug: String!) {
+      workspace(slug: $slug) {
+        slug
+        ...WorkspaceMemberPicker_workspace
       }
-      ${WorkspaceMemberPicker.fragments.workspace}
-    `,
-    {
-      variables: { slug: workspaceSlug },
-      fetchPolicy: "cache-and-network",
-      nextFetchPolicy: "network-only",
-    },
-  );
+    }
+    ${WorkspaceMemberPicker.fragments.workspace}
+  `);
+
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
 
@@ -76,6 +74,10 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
     [],
   );
 
+  const onOpen = useCallback(() => {
+    fetch({ variables: { slug: workspaceSlug } });
+  }, [fetch, workspaceSlug]);
+
   const onClose = useCallback(() => setQuery(""), []);
 
   const Picker: any = multiple ? MultiCombobox : Combobox;
@@ -94,6 +96,7 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
       placeholder={placeholder}
       value={value as any}
       onClose={onClose}
+      onOpen={onOpen}
       disabled={disabled}
     >
       {options.map((option) => (
