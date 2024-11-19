@@ -15,7 +15,6 @@ type AlertProps = {
   children: ReactNode;
 };
 
-// TODO : onclick close
 const Alert = ({ icon, children, onClose }: AlertProps) => {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
