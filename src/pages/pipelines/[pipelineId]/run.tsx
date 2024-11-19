@@ -37,7 +37,7 @@ const PipelineConfigureRunPage = (props: Props) => {
         query: { pipelineId: dag.id, runId: dagRun.id },
       });
     } catch (err) {
-      toast.error((err as Error).message ?? "An unexpected error occurred.");
+      toast.error((err as Error).message ?? t("An unexpected error occurred."));
     }
   };
   const description = useMemo(
