@@ -199,8 +199,10 @@ export const getApolloClient = (
     // Get existing cache, loaded during client side data fetching
     const existingCache = client.extract();
 
-    // Merge the existing cache into data passed from getStaticProps/getServerSideProps
-    const data = merge(initialState, existingCache, {
+    // We have an existing cache when we navigate between pages in the frontend.
+    // We merge the existing cache with the new data passed from getStaticProps/getServerSideProps (that is more likely to be fresh)
+    // We use the existing cache as the base because it contains the data from the queries that have already been fetched
+    const data = merge(existingCache, initialState, {
       // combine arrays using object equality (like in sets)
       arrayMerge: (destinationArray, sourceArray) => [
         ...sourceArray,
