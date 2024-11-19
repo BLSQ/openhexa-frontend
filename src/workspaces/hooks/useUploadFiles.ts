@@ -67,7 +67,7 @@ export const useUploadFiles = ({
           render:
             (error as Error).message ?? t("An unexpected error occurred."),
           isLoading: false,
-          autoClose: 2000,
+          autoClose: 5000,
         });
       })
       .finally(onFileUploaded);

@@ -16,8 +16,6 @@ type AlertProps = {
 };
 
 // TODO : onclick close
-// TODO : errors longer
-// TODO : remove useApolloClient
 const Alert = ({ icon, children, onClose }: AlertProps) => {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();
