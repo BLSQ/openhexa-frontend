@@ -15,6 +15,11 @@ type AlertProps = {
   children: ReactNode;
 };
 
+// TODO : onclick close
+// TODO : errors longer
+// TODO : remove useRouter
+// TODO : remove useApolloClient
+// TODO : toast.error((err as Error).message ?? t("An unexpected error occurred."));
 const Alert = ({ icon, children, onClose }: AlertProps) => {
   const [open, setOpen] = useState(false);
   const { t } = useTranslation();

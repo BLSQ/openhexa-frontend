@@ -7,7 +7,7 @@ import useForm from "core/hooks/useForm";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { UploadObjectDialog_WorkspaceFragment } from "./UploadObjectDialog.generated";
-import { useUploadFiles } from "core/hooks/useUploadFiles";
+import { useUploadFiles } from "workspaces/hooks/useUploadFiles";
 
 type UploadObjectDialogProps = {
   open: boolean;

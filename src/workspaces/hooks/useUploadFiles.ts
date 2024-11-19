@@ -1,7 +1,7 @@
-import { uploader } from "../helpers/files";
+import { uploader } from "../../core/helpers/files";
 import { Id, toast } from "react-toastify";
 import { BucketExplorer_WorkspaceFragment } from "workspaces/features/BucketExplorer/BucketExplorer.generated";
-import useCacheKey from "./useCacheKey";
+import useCacheKey from "../../core/hooks/useCacheKey";
 import { useRef } from "react";
 import { getBucketObjectUploadUrl } from "workspaces/helpers/bucket";
 import { useTranslation } from "next-i18next";
