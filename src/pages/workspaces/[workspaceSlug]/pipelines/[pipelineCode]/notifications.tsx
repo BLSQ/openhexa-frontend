@@ -18,7 +18,6 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { updatePipeline } from "workspaces/helpers/pipelines";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
-import Block from "core/components/Block";
 import Title from "core/components/Title";
 
 type Props = {
@@ -36,8 +35,6 @@ const WorkspacePipelineNotificationsPage: NextPageWithLayout = (
       workspaceSlug,
       pipelineCode,
     },
-    fetchPolicy: "cache-first",
-    nextFetchPolicy: "cache-first",
   });
 
   const hasMissingConfiguration = useMemo(() => {

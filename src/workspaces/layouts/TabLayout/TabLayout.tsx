@@ -7,6 +7,7 @@ import LinkTabs from "core/components/Tabs/LinkTabs/LinkTabs";
 import Title from "core/components/Title";
 import { GetServerSidePropsContext } from "next";
 import { CustomApolloClient } from "core/helpers/apollo";
+import { TabLayout_WorkspaceFragment } from "./TabLayout.generated";
 
 const TabLayoutHeader = ({
   children,
@@ -25,7 +26,7 @@ const TabLayoutPageContent = ({
 }) => <div className={className}>{children}</div>;
 
 type TabLayoutProps = {
-  workspace: any;
+  workspace: TabLayout_WorkspaceFragment;
   item: any;
   currentTab: string;
   children: React.ReactNode;
@@ -63,7 +64,6 @@ const TabLayout = ({
         ) : (
           title
         )}
-
         <DataCard item={item}>
           <LinkTabs className="mx-4 mt-2" tabs={tabs} selected={currentTab} />
           {contentChild}

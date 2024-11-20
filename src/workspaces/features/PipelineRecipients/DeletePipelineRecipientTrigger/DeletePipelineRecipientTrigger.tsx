@@ -7,6 +7,7 @@ import {
   DeletePipelineRecipientTrigger_PipelineFragment,
   DeletePipelineRecipientTrigger_RecipientFragment,
 } from "./DeletePipelineRecipientTrigger.generated";
+import { toast } from "react-toastify";
 
 type DeletePipelineRecipientTriggerProps = {
   children: ({ onClick }: { onClick: () => void }) => ReactElement;
@@ -31,10 +32,15 @@ const DeletePipelineRecipientTrigger = (
 
   const onClick = async () => {
     if (window.confirm(confirmMessage)) {
-      await deletePipelineRecipient(recipient.id);
-      clearCache();
+      try {
+        await deletePipelineRecipient(recipient.id);
+        clearCache();
+      } catch (error: any) {
+        toast.error(error.message);
+      }
     }
   };
+
   if (!pipeline.permissions.update) {
     return null;
   }

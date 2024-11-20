@@ -15,7 +15,7 @@ import TabLayout from "../TabLayout";
 import { GetServerSidePropsContext } from "next";
 import { CustomApolloClient } from "core/helpers/apollo";
 
-type DatasetLayoutProps = {
+type PipelineLayoutProps = {
   pipeline: any;
   workspace: any;
   currentTab?: string;
@@ -23,7 +23,7 @@ type DatasetLayoutProps = {
   children: React.ReactNode;
 };
 
-const PipelineLayout = (props: DatasetLayoutProps) => {
+const PipelineLayout = (props: PipelineLayoutProps) => {
   const {
     children,
     workspace,

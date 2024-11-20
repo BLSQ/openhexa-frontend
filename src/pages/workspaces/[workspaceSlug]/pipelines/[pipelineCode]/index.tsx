@@ -29,7 +29,6 @@ import {
   updatePipeline,
 } from "workspaces/helpers/pipelines";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
-import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type Props = {
   pipelineCode: string;

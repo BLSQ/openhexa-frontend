@@ -26,9 +26,10 @@ import {
   TableHead,
   TableRow,
 } from "core/components/Table";
-import WorkspaceMemberPicker from "../WorkspaceMemberPicker";
-import { WorkspaceMemberOption } from "../WorkspaceMemberPicker/WorkspaceMemberPicker";
-import DeletePipelineRecipientTrigger from "./DeletePipelineRecipientTrigger/DeletePipelineRecipientTrigger";
+import WorkspaceMemberPicker, {
+  WorkspaceMemberOption,
+} from "../WorkspaceMemberPicker/WorkspaceMemberPicker";
+import DeletePipelineRecipientTrigger from "./DeletePipelineRecipientTrigger";
 import {
   createPipelineRecipient,
   updatePipelineRecipient,
@@ -54,7 +55,6 @@ type RecipientRowProps = {
   onSelect: (recipient: Recipient) => void;
   onUpdate: (recipient: Recipient) => void;
   onCancel: () => void;
-  onDelete: () => void;
   className?: string;
 };
 
@@ -66,7 +66,6 @@ const RecipientRow = ({
   onSelect,
   onUpdate,
   onCancel,
-  onDelete,
   className,
 }: RecipientRowProps) => {
   return (
@@ -111,14 +110,7 @@ const RecipientRow = ({
                     pipeline={pipeline}
                   >
                     {({ onClick }) => (
-                      <Button
-                        onClick={() => {
-                          onClick();
-                          onDelete();
-                        }}
-                        size="sm"
-                        variant="secondary"
-                      >
+                      <Button onClick={onClick} size="sm" variant="secondary">
                         <TrashIcon className="h-4" />
                       </Button>
                     )}
@@ -243,14 +235,12 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
     { variables: { id: props.pipeline.id } },
   );
 
-  const clearCache = useCacheKey(["pipelines", props.pipeline.id], () =>
-    refetch(),
-  );
+  const clearCache = useCacheKey("pipelines", () => refetch());
 
   const canAddRecipient = useMemo(
     () =>
       data?.pipeline?.workspace.members?.totalItems !=
-      data?.pipeline?.recipients.length,
+        data?.pipeline?.recipients.length && data?.pipeline?.permissions.update,
     [data],
   );
 
@@ -327,7 +317,6 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
             onSelect={(recipient: Recipient) => setSelectedRecipient(recipient)}
             onCancel={handleCancelEdit}
             onUpdate={handleUpdateRecipient}
-            onDelete={() => clearCache()}
           />
         ))}
       </TableBody>

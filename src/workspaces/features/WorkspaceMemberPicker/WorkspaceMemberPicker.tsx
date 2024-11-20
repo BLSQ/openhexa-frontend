@@ -3,8 +3,10 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
 import useDebounce from "core/hooks/useDebounce";
 import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
-import { WorkspaceMemberPickerQuery } from "./WorkspaceMemberPicker.generated";
-import { WorkspaceConnectionPickerQueryVariables } from "../WorkspaceConnectionPicker/WorkspaceConnectionPicker.generated";
+import {
+  WorkspaceMemberPickerQuery,
+  WorkspaceMemberPickerQueryVariables,
+} from "./WorkspaceMemberPicker.generated";
 
 export type WorkspaceMemberOption = {
   id: string;
@@ -39,7 +41,7 @@ const WorkspaceMemberPicker = (props: WorkspaceMemberPickerProps) => {
 
   const [fetch, { data, loading }] = useLazyQuery<
     WorkspaceMemberPickerQuery,
-    WorkspaceConnectionPickerQueryVariables
+    WorkspaceMemberPickerQueryVariables
   >(gql`
     query WorkspaceMemberPicker($slug: String!) {
       workspace(slug: $slug) {
