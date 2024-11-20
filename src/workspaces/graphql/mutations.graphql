@@ -196,10 +196,3 @@ mutation addPipelineRecipient($input: CreatePipelineRecipientInput!) {
     errors
   }
 }
-
-mutation deletePipelineRecipient($input: DeletePipelineRecipientInput!) {
-  deletePipelineRecipient(input: $input) {
-    success
-    errors
-  }
-}

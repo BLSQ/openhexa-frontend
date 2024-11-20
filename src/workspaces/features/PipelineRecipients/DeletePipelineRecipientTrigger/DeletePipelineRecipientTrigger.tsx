@@ -27,7 +27,7 @@ const DeletePipelineRecipientTrigger = (
       name: recipient.user.displayName,
     }),
   } = props;
-  const clearCache = useCacheKey(["pipelines", props.pipeline.id]);
+  const clearCache = useCacheKey("pipelines");
 
   const onClick = async () => {
     if (window.confirm(confirmMessage)) {
@@ -52,7 +52,6 @@ DeletePipelineRecipientTrigger.fragments = {
   `,
   pipeline: gql`
     fragment DeletePipelineRecipientTrigger_pipeline on Pipeline {
-      id
       permissions {
         update
       }

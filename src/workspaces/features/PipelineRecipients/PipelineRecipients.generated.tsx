@@ -1,7 +1,7 @@
 import * as Types from '../../../graphql/types';
 
 import { gql } from '@apollo/client';
-import { DeletePipelineRecipientTrigger_PipelineFragmentDoc, DeletePipelineRecipientTrigger_RecipientFragmentDoc } from './DeletePipelineRecipientTrigger/DeletePipelineRecipientTrigger.generated';
+import { DeletePipelineRecipientTrigger_RecipientFragmentDoc, DeletePipelineRecipientTrigger_PipelineFragmentDoc } from './DeletePipelineRecipientTrigger/DeletePipelineRecipientTrigger.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type PipelineRecipientQueryVariables = Types.Exact<{
@@ -9,23 +9,22 @@ export type PipelineRecipientQueryVariables = Types.Exact<{
 }>;
 
 
-export type PipelineRecipientQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', id: string, permissions: { __typename?: 'PipelinePermissions', update: boolean }, recipients: Array<{ __typename?: 'PipelineRecipient', id: string, notificationLevel: Types.PipelineNotificationLevel, user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number } } } | null };
+export type PipelineRecipientQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', recipients: Array<{ __typename?: 'PipelineRecipient', id: string, notificationLevel: Types.PipelineNotificationLevel, user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number } }, permissions: { __typename?: 'PipelinePermissions', update: boolean } } | null };
 
-export type PipelineRecipients_PipelineFragment = { __typename?: 'Pipeline', id: string, code: string };
+export type PipelineRecipients_PipelineFragment = { __typename?: 'Pipeline', id: string, code: string, permissions: { __typename?: 'PipelinePermissions', update: boolean } };
 
 export const PipelineRecipients_PipelineFragmentDoc = gql`
     fragment PipelineRecipients_pipeline on Pipeline {
   id
   code
+  permissions {
+    update
+  }
 }
     `;
 export const PipelineRecipientDocument = gql`
     query PipelineRecipient($id: UUID!) {
   pipeline(id: $id) {
-    ...DeletePipelineRecipientTrigger_pipeline
-    permissions {
-      update
-    }
     recipients {
       id
       user {
@@ -41,10 +40,11 @@ export const PipelineRecipientDocument = gql`
         totalItems
       }
     }
+    ...DeletePipelineRecipientTrigger_pipeline
   }
 }
-    ${DeletePipelineRecipientTrigger_PipelineFragmentDoc}
-${DeletePipelineRecipientTrigger_RecipientFragmentDoc}`;
+    ${DeletePipelineRecipientTrigger_RecipientFragmentDoc}
+${DeletePipelineRecipientTrigger_PipelineFragmentDoc}`;
 
 /**
  * __usePipelineRecipientQuery__

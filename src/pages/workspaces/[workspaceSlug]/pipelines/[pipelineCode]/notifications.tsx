@@ -18,6 +18,7 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { updatePipeline } from "workspaces/helpers/pipelines";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
+import Block from "core/components/Block";
 import Title from "core/components/Title";
 
 type Props = {
@@ -125,8 +126,8 @@ const WorkspacePipelineNotificationsPage: NextPageWithLayout = (
             required={(_, __, values) => Boolean(values.enableScheduling)}
           />
         </DataCard.FormSection>
-        <div className="py-5 pt-6 space-y-4">
-          <Title level={6} className="px-6">
+        <div className="px-2 space-y-4">
+          <Title level={6} className="px-4">
             {t("Notifications")}
           </Title>
           <PipelineRecipients pipeline={pipeline} />

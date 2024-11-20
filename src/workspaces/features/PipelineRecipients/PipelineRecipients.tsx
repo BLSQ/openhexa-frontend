@@ -46,7 +46,7 @@ type Recipient = Pick<PipelineRecipient, "id" | "notificationLevel"> & {
 
 type RecipientRowProps = {
   recipient: Recipient;
-  pipeline: Pick<Pipeline, "id"> & {
+  pipeline: {
     permissions: Pick<Pipeline["permissions"], "update">;
   };
   isEditing: boolean;
@@ -83,7 +83,7 @@ const RecipientRow = ({
         )}
       </TableCell>
       <TableCell className="flex justify-end gap-x-2">
-        {isEditing ? (
+        {isEditing && (
           <ActionButtonGroup
             buttons={[
               {
@@ -96,7 +96,8 @@ const RecipientRow = ({
               },
             ]}
           />
-        ) : (
+        )}
+        {!isEditing && pipeline.permissions.update && (
           <ActionButtonGroup
             buttons={[
               {
@@ -106,8 +107,8 @@ const RecipientRow = ({
               {
                 render: () => (
                   <DeletePipelineRecipientTrigger
-                    pipeline={pipeline}
                     recipient={recipient}
+                    pipeline={pipeline}
                   >
                     {({ onClick }) => (
                       <Button
@@ -199,9 +200,11 @@ type CreatePipelineRecipientInput = {
 
 type PipelineRecipientsProps = {
   pipeline: PipelineRecipients_PipelineFragment;
+  className?: string;
 };
 
 const PipelineRecipients = (props: PipelineRecipientsProps) => {
+  const { className } = props;
   const { t } = useTranslation();
 
   const [selectedRecipient, setSelectedRecipient] =
@@ -216,10 +219,6 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
     gql`
       query PipelineRecipient($id: UUID!) {
         pipeline(id: $id) {
-          ...DeletePipelineRecipientTrigger_pipeline
-          permissions {
-            update
-          }
           recipients {
             id
             user {
@@ -235,12 +234,13 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
               totalItems
             }
           }
+          ...DeletePipelineRecipientTrigger_pipeline
         }
       }
-      ${DeletePipelineRecipientTrigger.fragments.pipeline}
       ${DeletePipelineRecipientTrigger.fragments.recipient}
+      ${DeletePipelineRecipientTrigger.fragments.pipeline}
     `,
-    { variables: { id: props.pipeline.id }, nextFetchPolicy: "cache-first" },
+    { variables: { id: props.pipeline.id } },
   );
 
   const clearCache = useCacheKey(["pipelines", props.pipeline.id], () =>
@@ -262,7 +262,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
   const handleCreateRecipient = async () => {
     if (newRecipient?.member) {
       await createPipelineRecipient(
-        pipeline.id,
+        props.pipeline.id,
         newRecipient.member.user.id,
         newRecipient.notificationLevel!,
       );
@@ -281,7 +281,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
   };
 
   return (
-    <Table className="-mr-6">
+    <Table className={className}>
       <TableHead>
         <TableRow>
           <TableCell heading>{t("User")}</TableCell>
@@ -309,12 +309,12 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
           <RecipientRow
             className="py-4"
             key={i}
+            pipeline={pipeline}
             recipient={
               selectedRecipient && selectedRecipient?.id === recipient.id
                 ? selectedRecipient
                 : recipient
             }
-            pipeline={pipeline}
             isEditing={Boolean(
               selectedRecipient && selectedRecipient?.id === recipient.id,
             )}
@@ -327,7 +327,7 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
             onSelect={(recipient: Recipient) => setSelectedRecipient(recipient)}
             onCancel={handleCancelEdit}
             onUpdate={handleUpdateRecipient}
-            onDelete={() => {}}
+            onDelete={() => clearCache()}
           />
         ))}
       </TableBody>
@@ -340,6 +340,9 @@ PipelineRecipients.fragments = {
     fragment PipelineRecipients_pipeline on Pipeline {
       id
       code
+      permissions {
+        update
+      }
     }
   `,
 };
