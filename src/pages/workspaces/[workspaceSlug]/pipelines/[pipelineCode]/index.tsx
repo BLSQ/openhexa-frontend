@@ -280,17 +280,20 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   label={t("Version")}
                   readonly
                 >
-                  {(property) => (
-                    <div className="flex items-center gap-3">
-                      <Link
-                        href={`/workspaces/${encodeURIComponent(
-                          workspace.slug,
-                        )}/pipelines/${encodeURIComponent(pipeline.code)}/versions`}
-                      >
-                        {property.displayValue.name}
-                      </Link>
-                    </div>
-                  )}
+                  {(property) => {
+                    console.log(property);
+                    return (
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/workspaces/${encodeURIComponent(
+                            workspace.slug,
+                          )}/pipelines/${encodeURIComponent(pipeline.code)}/versions`}
+                        >
+                          {""}
+                        </Link>
+                      </div>
+                    );
+                  }}
                 </RenderProperty>
               )}
             </DataCard.FormSection>

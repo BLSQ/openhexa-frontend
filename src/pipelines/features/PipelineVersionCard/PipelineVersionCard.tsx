@@ -16,7 +16,6 @@ import { ItemProvider } from "core/hooks/useItemContext";
 import { UpdatePipelineVersionError } from "graphql/types";
 import { DateTime } from "luxon";
 import { Trans, useTranslation } from "next-i18next";
-import { useState } from "react";
 import DeletePipelineVersionTrigger from "workspaces/features/DeletePipelineVersionTrigger";
 import DownloadPipelineVersion from "../DownloadPipelineVersion";
 import PipelineVersionParametersTable from "../PipelineVersionParametersTable";
@@ -77,9 +76,7 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
       <Block className="divide-y-2 divide-gray-100">
         <Block.Header className="flex gap-4 items-center ">
           <div className="flex-1">
-            <span className="font-bold text-xl">
-              {t("Version")} {version.name}
-            </span>{" "}
+            <span className="font-bold text-xl">{version.versionName}</span>{" "}
             <span className="text-gray-500">
               <Trans>
                 created by {{ name }} on{" "}

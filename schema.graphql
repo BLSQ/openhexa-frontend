@@ -2363,8 +2363,9 @@ type PipelineVersion {
   id: UUID!
   user: User
   pipeline: Pipeline!
-  name: String!
-  number: String @deprecated(reason: "Use name field instead")
+  name: String
+  versionNumber: Int!
+  versionName: String!
   description: String
   externalLink: URL
   createdAt: DateTime!
