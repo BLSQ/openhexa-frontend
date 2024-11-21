@@ -187,6 +187,7 @@ PipelineVersionCard.fragments = {
   version: gql`
     fragment PipelineVersionCard_version on PipelineVersion {
       id
+      versionName
       name
       description
       externalLink
