@@ -4,8 +4,6 @@ import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import { useState } from "react";
 import { useTranslation } from "next-i18next";
-import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-
 import DownloadPipelineVersion from "pipelines/features/DownloadPipelineVersion";
 import Spinner from "core/components/Spinner";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
@@ -14,10 +12,14 @@ import PipelineVersionPicker from "workspaces/features/PipelineVersionPicker";
 import TabLayout from "../TabLayout";
 import { GetServerSidePropsContext } from "next";
 import { CustomApolloClient } from "core/helpers/apollo";
+import {
+  PipelineLayout_PipelineFragment,
+  PipelineLayout_WorkspaceFragment,
+} from "./PipelineLayout.generated";
 
 type PipelineLayoutProps = {
-  pipeline: any;
-  workspace: any;
+  pipeline: PipelineLayout_PipelineFragment;
+  workspace: PipelineLayout_WorkspaceFragment;
   currentTab?: string;
   extraBreadcrumbs?: { href: string; title: string }[];
   children: React.ReactNode;
@@ -68,7 +70,7 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
           id: "notifications",
         },
       ]}
-      title={pipeline.name}
+      title={pipeline.name ?? t("Pipeline")}
     >
       <TabLayout.Header className="flex items-center justify-between gap-2">
         <Breadcrumbs withHome={false} className="flex-1">

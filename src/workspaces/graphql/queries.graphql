@@ -72,6 +72,7 @@ query WorkspacePipelinePage(
   }
   pipeline: pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
     ...RunPipelineDialog_pipeline
+    ...PipelineLayout_pipeline
     permissions {
       run
       update
@@ -121,7 +122,6 @@ query WorkspacePipelineRunsPage(
     ...PipelineLayout_pipeline
     id
     type
-    notebookPath
     runs(page: $page, perPage: $perPage) {
       items {
         id
