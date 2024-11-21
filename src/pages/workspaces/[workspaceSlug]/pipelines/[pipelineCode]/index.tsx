@@ -281,7 +281,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   readonly
                 >
                   {(property) => {
-                    console.log(property);
                     return (
                       <div className="flex items-center gap-3">
                         <Link
@@ -289,7 +288,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                             workspace.slug,
                           )}/pipelines/${encodeURIComponent(pipeline.code)}/versions`}
                         >
-                          {""}
+                          {property.displayValue.versionName}
                         </Link>
                       </div>
                     );

@@ -94,6 +94,7 @@ query WorkspacePipelinePage(
     notebookPath
     currentVersion {
       id
+      versionName
       name
       description
       config
