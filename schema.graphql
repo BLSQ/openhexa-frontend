@@ -3297,7 +3297,6 @@ input UploadPipelineInput {
 type UploadPipelineResult {
   success: Boolean!
   pipelineVersion: PipelineVersion
-  version: String @deprecated(reason: "Use 'pipelineVersion' field instead")
   errors: [PipelineError!]!
 }
 
