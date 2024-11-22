@@ -530,7 +530,10 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   {(item) => <PipelineRunStatusBadge run={item} />}
                 </BaseColumn>
                 {pipeline.type === PipelineType.ZipFile ? (
-                  <TextColumn accessor="version.name" label={t("Version")} />
+                  <TextColumn
+                    accessor="version.versionName"
+                    label={t("Version")}
+                  />
                 ) : null}
                 <BaseColumn label={t("Duration")} accessor="duration">
                   {(value) => (
