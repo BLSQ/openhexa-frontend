@@ -295,7 +295,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                 )}
                 {run.version && (
                   <DescriptionList.Item label={t("Version")}>
-                    {run.version.name}
+                    {run.version.versionName}
                   </DescriptionList.Item>
                 )}
                 <DescriptionList.Item

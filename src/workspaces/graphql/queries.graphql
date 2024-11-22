@@ -185,6 +185,7 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
     id
     version {
       name
+      versionName
       parameters {
         code
         name
