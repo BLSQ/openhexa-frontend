@@ -95,7 +95,6 @@ query WorkspacePipelinePage(
     currentVersion {
       id
       versionName
-      name
       description
       config
       externalLink
@@ -184,7 +183,6 @@ query WorkspacePipelineRunPage($workspaceSlug: String!, $runId: UUID!) {
   pipelineRun(id: $runId) {
     id
     version {
-      name
       versionName
       parameters {
         code
