@@ -3912,8 +3912,6 @@ export type UploadPipelineResult = {
   errors: Array<PipelineError>;
   pipelineVersion?: Maybe<PipelineVersion>;
   success: Scalars['Boolean']['output'];
-  /** @deprecated Use 'pipelineVersion' field instead */
-  version?: Maybe<Scalars['String']['output']>;
 };
 
 /** The User type represents a user in the system. */

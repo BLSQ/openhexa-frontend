@@ -275,14 +275,13 @@ query WorkspaceDatasetsPage(
   }
 }
 
-
 query WorkspaceDatasetIndexPage(
   $workspaceSlug: String!
   $datasetSlug: String!
   $versionId: ID!
   $isSpecificVersion: Boolean!
 ) {
-  workspace(slug:$workspaceSlug) {
+  workspace(slug: $workspaceSlug) {
     slug
     ...DatasetLayout_workspace
   }
@@ -290,11 +289,12 @@ query WorkspaceDatasetIndexPage(
     workspaceSlug: $workspaceSlug
     datasetSlug: $datasetSlug
   ) {
-    
     ...DatasetLayout_datasetLink
     id
     dataset {
-      permissions {update}
+      permissions {
+        update
+      }
       description
       updatedAt
       createdAt
@@ -335,7 +335,7 @@ query WorkspaceDatasetAccessPage(
   $versionId: ID!
   $isSpecificVersion: Boolean!
 ) {
-  workspace(slug:$workspaceSlug) {
+  workspace(slug: $workspaceSlug) {
     slug
     ...DatasetLayout_workspace
   }
@@ -343,12 +343,13 @@ query WorkspaceDatasetAccessPage(
     workspaceSlug: $workspaceSlug
     datasetSlug: $datasetSlug
   ) {
-    
     ...DatasetLayout_datasetLink
     id
     dataset {
       name
-      permissions {update}
+      permissions {
+        update
+      }
       ...DatasetLinksDataGrid_dataset
       # If we have a specific version, fetch it
       version(id: $versionId) @include(if: $isSpecificVersion) {
@@ -368,7 +369,7 @@ query WorkspaceDatasetFilesPage(
   $versionId: ID!
   $isSpecificVersion: Boolean!
 ) {
-  workspace(slug:$workspaceSlug) {
+  workspace(slug: $workspaceSlug) {
     slug
     ...DatasetLayout_workspace
   }
@@ -394,9 +395,6 @@ query WorkspaceDatasetFilesPage(
     }
   }
 }
-
-
-
 
 query WorkspaceFilesPage(
   $workspaceSlug: String!
