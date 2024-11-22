@@ -62,7 +62,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
     }
   };
 
-  const [fetch, { data }] = useLazyQuery<PipelineCurrentVersionQuery>(
+  const [fetch] = useLazyQuery<PipelineCurrentVersionQuery>(
     gql`
       query PipelineCurrentVersion(
         $workspaceSlug: String!
