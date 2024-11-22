@@ -34,6 +34,22 @@ type RunPipelineDialogProps = {
   run?: RunPipelineDialog_RunFragment;
 };
 
+const VERSION_FRAGMENT = gql`
+  fragment RunPipelineDialog_version on PipelineVersion {
+    id
+    versionName
+    createdAt
+    config
+    user {
+      displayName
+    }
+    parameters {
+      ...ParameterField_parameter
+    }
+  }
+  ${ParameterField.fragments.parameter}
+`;
+
 const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const router = useRouter();
   const { pipeline, run, children } = props;
@@ -71,7 +87,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
         pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
           currentVersion {
             id
-            name
+            versionName
             createdAt
             user {
               displayName
@@ -345,7 +361,7 @@ RunPipelineDialog.fragments = {
       config
       version {
         id
-        name
+        versionName
         createdAt
         parameters {
           ...ParameterField_parameter
