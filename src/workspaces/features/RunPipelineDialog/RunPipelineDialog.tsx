@@ -34,22 +34,6 @@ type RunPipelineDialogProps = {
   run?: RunPipelineDialog_RunFragment;
 };
 
-const VERSION_FRAGMENT = gql`
-  fragment RunPipelineDialog_version on PipelineVersion {
-    id
-    name
-    createdAt
-    config
-    user {
-      displayName
-    }
-    parameters {
-      ...ParameterField_parameter
-    }
-  }
-  ${ParameterField.fragments.parameter}
-`;
-
 const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const router = useRouter();
   const { pipeline, run, children } = props;
