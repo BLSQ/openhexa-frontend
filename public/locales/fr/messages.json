@@ -47,7 +47,7 @@
   "An error occurred while linking this dataset": "Une erreur s'est produite lors de la liaison de ce jeu de données",
   "An unexpected error occurred.": "Une erreur inattendue s'est produite.",
   "Anyone with the URL will be able to trigger this pipeline": "Quiconque ayant l'URL pourra déclencher cette pipeline",
-  "Archive": "Archives",
+  "Archive": "Archiver",
   "Archive {{name}}": "Archive {{name}}",
   "Are you sure to delete this directory ? It will delete all its content.": "Êtes-vous sûr de vouloir supprimer ce répertoire ? Cela supprimera tout son contenu.",
   "Are you sure to delete this file ?": "Êtes-vous sûr de vouloir supprimer ce fichier ?",
