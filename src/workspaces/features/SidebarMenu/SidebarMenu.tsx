@@ -5,6 +5,7 @@ import {
   Cog6ToothIcon,
   GlobeAltIcon,
   QuestionMarkCircleIcon,
+  TrashIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -38,6 +39,8 @@ import { logout } from "identity/helpers/auth";
 import Tooltip from "core/components/Tooltip";
 import UILanguagePicker from "identity/features/UILanguagePicker";
 import Field from "core/components/forms/Field";
+import Button from "core/components/Button";
+import ArchiveWorkspaceDialog from "../ArchiveWorkspaceDialog";
 
 interface SidebarMenuProps {
   workspace: SidebarMenu_WorkspaceFragment;
@@ -49,7 +52,8 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   const { workspace, compact = false } = props;
   const { t } = useTranslation();
   const me = useMe();
-  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [hasLegacyAccess] = useFeature("openhexa_legacy");
   const router = useRouter();
   useEffect(() => {
@@ -71,7 +75,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     modifiers: POPPER_MODIFIERS,
   });
   useOnClickOutside(innerMenuRef, () => {
-    if (!isDialogOpen) {
+    if (!isCreateDialogOpen && !isArchiveDialogOpen) {
       // Do not close the menu if the user click in the dialog
       setFalse();
     }
@@ -185,15 +189,15 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                 <>
                   <button
                     type="button"
-                    onClick={() => setDialogOpen(true)}
+                    onClick={() => setCreateDialogOpen(true)}
                     title={t("Create a new workspace")}
                     className="text-gray-400 hover:text-gray-600"
                   >
                     <PlusCircleIcon className="h-5 w-5 " />
                   </button>
                   <CreateWorkspaceDialog
-                    open={isDialogOpen}
-                    onClose={() => setDialogOpen(false)}
+                    open={isCreateDialogOpen}
+                    onClose={() => setCreateDialogOpen(false)}
                   />
                 </>
               )}
@@ -227,19 +231,25 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                   <span className="text-sm leading-tight tracking-tight">
                     {ws.name}
                   </span>
-                  {me.permissions.createWorkspace && (
+                  {workspace.permissions.delete && (
                     <>
                       <button
                         type="button"
-                        onClick={() => setDialogOpen(true)}
-                        title={t("Create a new workspace")}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          setIsArchiveDialogOpen(true);
+                        }}
+                        title={t("Archive")}
                         className="text-gray-400 hover:text-red-600 ml-auto invisible group-hover:visible"
                       >
                         <MinusCircleIcon className="h-5 w-5" />
                       </button>
-                      <CreateWorkspaceDialog
-                        open={isDialogOpen}
-                        onClose={() => setDialogOpen(false)}
+                      <ArchiveWorkspaceDialog
+                        workspace={workspace}
+                        open={isArchiveDialogOpen}
+                        onClose={() => {
+                          setIsArchiveDialogOpen(false);
+                        }}
                       />
                     </>
                   )}
@@ -359,6 +369,9 @@ SidebarMenu.fragments = {
     fragment SidebarMenu_workspace on Workspace {
       slug
       name
+      permissions {
+        delete
+      }
       countries {
         flag
         code
