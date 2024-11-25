@@ -50,7 +50,8 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   const { workspace, compact = false } = props;
   const { t } = useTranslation();
   const me = useMe();
-  const [isArchiveDialogOpen, setIsArchiveDialogOpen] = useState(false);
+  const [workspaceIndexToArchive, setWorkspaceIndexToArchive] =
+    useState<Number>();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [hasLegacyAccess] = useFeature("openhexa_legacy");
   const router = useRouter();
@@ -73,7 +74,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     modifiers: POPPER_MODIFIERS,
   });
   useOnClickOutside(innerMenuRef, () => {
-    if (!(isCreateDialogOpen || isArchiveDialogOpen)) {
+    if (!(isCreateDialogOpen || workspaceIndexToArchive !== -1)) {
       // Do not close the menu if the user click in the dialog
       setFalse();
     }
@@ -91,6 +92,9 @@ const SidebarMenu = (props: SidebarMenuProps) => {
         workspaces(page: $page, perPage: $perPage) {
           totalItems
           items {
+            permissions {
+              delete
+            }
             slug
             name
             countries {
@@ -193,6 +197,10 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                   >
                     <PlusCircleIcon className="h-5 w-5 " />
                   </button>
+                  <CreateWorkspaceDialog
+                    open={isCreateDialogOpen}
+                    onClose={() => setCreateDialogOpen(false)}
+                  />
                 </>
               )}
             </div>
@@ -225,18 +233,27 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                   <span className="text-sm leading-tight tracking-tight">
                     {ws.name}
                   </span>
-                  {workspace.permissions.delete && (
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        setIsArchiveDialogOpen(true);
-                      }}
-                      title={t("Archive")}
-                      className="text-gray-400 hover:text-red-600 ml-auto invisible group-hover:visible"
-                    >
-                      <MinusCircleIcon className="h-5 w-5" />
-                    </button>
+                  {ws.permissions.delete && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          setWorkspaceIndexToArchive(index);
+                        }}
+                        title={t("Archive")}
+                        className="text-gray-400 hover:text-red-600 ml-auto invisible group-hover:visible"
+                      >
+                        <MinusCircleIcon className="h-5 w-5" />
+                      </button>
+                      <ArchiveWorkspaceDialog
+                        workspace={ws}
+                        open={workspaceIndexToArchive === index}
+                        onClose={() => {
+                          setWorkspaceIndexToArchive(undefined);
+                        }}
+                      />
+                    </>
                   )}
                 </Link>
               ))}
@@ -343,17 +360,6 @@ const SidebarMenu = (props: SidebarMenuProps) => {
               </section>
             </>
           )}
-          <CreateWorkspaceDialog
-            open={isCreateDialogOpen}
-            onClose={() => setCreateDialogOpen(false)}
-          />
-          <ArchiveWorkspaceDialog
-            workspace={workspace}
-            open={isArchiveDialogOpen}
-            onClose={() => {
-              setIsArchiveDialogOpen(false);
-            }}
-          />
         </div>
       </Transition>
     </div>
@@ -365,9 +371,6 @@ SidebarMenu.fragments = {
     fragment SidebarMenu_workspace on Workspace {
       slug
       name
-      permissions {
-        delete
-      }
       countries {
         flag
         code
