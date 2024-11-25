@@ -11,7 +11,7 @@ import { useCreateWorkspaceMutation } from "workspaces/graphql/mutations.generat
 import { useRouter } from "next/router";
 import { CreateWorkspaceError } from "graphql/types";
 import Checkbox from "core/components/forms/Checkbox/Checkbox";
-import useCacheKey from "../../../core/hooks/useCacheKey";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type CreateWorkspaceDialogProps = {
   onClose(): void;
