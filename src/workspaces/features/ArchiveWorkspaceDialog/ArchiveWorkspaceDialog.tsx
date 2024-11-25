@@ -55,32 +55,34 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <Dialog.Title>
-        {t("Archive {{name}}", { name: workspace.name })}
-      </Dialog.Title>
-      <Dialog.Content className="space-y-4">
-        <p>
-          {t("You're about to archive this workspace and all its content.")}
-        </p>
-        <p>{t("Please enter the workspace name to confirm:")}</p>
-        <input
-          type="text"
-          value={inputSlug}
-          onChange={(e) => setInputSlug(e.target.value)}
-          className="w-full border border-gray-300 rounded px-2 py-1"
-        />
-      </Dialog.Content>
-      <Dialog.Actions>
-        <Button variant="white" onClick={onClose}>
-          {t("Cancel")}
-        </Button>
-        <Button onClick={onSubmit}>
-          {isSubmitting && <Spinner size="xs" className="mr-1" />}
-          {t("Archive")}
-        </Button>
-      </Dialog.Actions>
-    </Dialog>
+    <div onClick={(e) => e.stopPropagation()}>
+      <Dialog open={open} onClose={onClose}>
+        <Dialog.Title>
+          {t("Archive {{name}}", { name: workspace.name })}
+        </Dialog.Title>
+        <Dialog.Content className="space-y-4">
+          <p>
+            {t("You're about to archive this workspace and all its content.")}
+          </p>
+          <p>{t("Please enter the workspace name to confirm:")}</p>
+          <input
+            type="text"
+            value={inputSlug}
+            onChange={(e) => setInputSlug(e.target.value)}
+            className="w-full border border-gray-300 rounded px-2 py-1"
+          />
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button variant="white" onClick={onClose}>
+            {t("Cancel")}
+          </Button>
+          <Button onClick={onSubmit}>
+            {isSubmitting && <Spinner size="xs" className="mr-1" />}
+            {t("Archive")}
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+    </div>
   );
 };
 

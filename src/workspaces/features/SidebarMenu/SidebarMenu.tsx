@@ -238,7 +238,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                       <button
                         type="button"
                         onClick={(event) => {
-                          event.preventDefault();
+                          event.preventDefault(); // Do not trigger the link
                           setWorkspaceIndexToArchive(index);
                         }}
                         title={t("Archive")}
