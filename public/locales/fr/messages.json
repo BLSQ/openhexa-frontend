@@ -48,7 +48,7 @@
   "An unexpected error occurred.": "Une erreur inattendue s'est produite.",
   "Anyone with the URL will be able to trigger this pipeline": "Quiconque ayant l'URL pourra déclencher cette pipeline",
   "Archive": "Archiver",
-  "Archive {{name}}": "Archive {{name}}",
+  "Archive {{name}}": "Archiver {{name}}",
   "Are you sure to delete this directory ? It will delete all its content.": "Êtes-vous sûr de vouloir supprimer ce répertoire ? Cela supprimera tout son contenu.",
   "Are you sure to delete this file ?": "Êtes-vous sûr de vouloir supprimer ce fichier ?",
   "Are you sure to disable the two-factor authentication for your account?": "Êtes-vous sûr d'avoir désactivé l'authentification à deux facteurs pour votre compte ?",
