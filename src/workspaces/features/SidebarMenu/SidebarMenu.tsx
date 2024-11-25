@@ -1,14 +1,17 @@
 import { gql, useQuery } from "@apollo/client";
 import { Transition } from "@headlessui/react";
 import {
-  ArrowLeftCircleIcon,
   ArrowRightOnRectangleIcon,
   Cog6ToothIcon,
   GlobeAltIcon,
   QuestionMarkCircleIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import { ChevronDownIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
+import {
+  ChevronDownIcon,
+  PlusCircleIcon,
+  MinusCircleIcon,
+} from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import Link from "core/components/Link";
 import User from "core/features/User";
@@ -205,7 +208,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                     query: { workspaceSlug: ws.slug },
                   }}
                   className={clsx(
-                    "flex items-center px-4 py-2.5 hover:bg-gray-100",
+                    "flex items-center px-4 py-2.5 hover:bg-gray-100 group",
                     ws.slug === workspace.slug && "bg-gray-100 font-medium",
                   )}
                   key={index}
@@ -224,6 +227,22 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                   <span className="text-sm leading-tight tracking-tight">
                     {ws.name}
                   </span>
+                  {me.permissions.createWorkspace && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setDialogOpen(true)}
+                        title={t("Create a new workspace")}
+                        className="text-gray-400 hover:text-red-600 ml-auto invisible group-hover:visible"
+                      >
+                        <MinusCircleIcon className="h-5 w-5" />
+                      </button>
+                      <CreateWorkspaceDialog
+                        open={isDialogOpen}
+                        onClose={() => setDialogOpen(false)}
+                      />
+                    </>
+                  )}
                 </Link>
               ))}
               {data?.workspaces.totalItems !==
