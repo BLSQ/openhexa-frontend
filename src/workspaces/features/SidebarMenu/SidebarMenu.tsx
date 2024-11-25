@@ -5,7 +5,6 @@ import {
   Cog6ToothIcon,
   GlobeAltIcon,
   QuestionMarkCircleIcon,
-  TrashIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -39,7 +38,6 @@ import { logout } from "identity/helpers/auth";
 import Tooltip from "core/components/Tooltip";
 import UILanguagePicker from "identity/features/UILanguagePicker";
 import Field from "core/components/forms/Field";
-import Button from "core/components/Button";
 import ArchiveWorkspaceDialog from "../ArchiveWorkspaceDialog";
 
 interface SidebarMenuProps {
