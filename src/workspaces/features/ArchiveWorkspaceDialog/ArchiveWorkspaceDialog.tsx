@@ -55,37 +55,35 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
   };
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
-      <Dialog open={open} onClose={onClose}>
-        <Dialog.Title>
-          {t("Archive {{name}}", { name: workspace.name })}
-        </Dialog.Title>
-        <Dialog.Content className="space-y-4">
-          <p>
-            {t("You're about to archive this workspace and all its content.")}
-          </p>
-          <p>{t("Please enter the workspace name to confirm:")}</p>
-          <input
-            type="text"
-            value={inputName}
-            onChange={(e) => setInputName(e.target.value)}
-            className="w-full border border-gray-300 rounded px-2 py-1"
-          />
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button variant="white" onClick={onClose}>
-            {t("Cancel")}
-          </Button>
-          <Button
-            onClick={onSubmit}
-            disabled={inputName.toLowerCase() !== workspace.name.toLowerCase()}
-          >
-            {isSubmitting && <Spinner size="xs" className="mr-1" />}
-            {t("Archive")}
-          </Button>
-        </Dialog.Actions>
-      </Dialog>
-    </div>
+    <Dialog open={open} onClose={onClose} onClick={(e) => e.stopPropagation()}>
+      <Dialog.Title>
+        {t("Archive {{name}}", { name: workspace.name })}
+      </Dialog.Title>
+      <Dialog.Content className="space-y-4">
+        <p>
+          {t("You're about to archive this workspace and all its content.")}
+        </p>
+        <p>{t("Please enter the workspace name to confirm:")}</p>
+        <input
+          type="text"
+          value={inputName}
+          onChange={(e) => setInputName(e.target.value)}
+          className="w-full border border-gray-300 rounded px-2 py-1"
+        />
+      </Dialog.Content>
+      <Dialog.Actions>
+        <Button variant="white" onClick={onClose}>
+          {t("Cancel")}
+        </Button>
+        <Button
+          onClick={onSubmit}
+          disabled={inputName.toLowerCase() !== workspace.name.toLowerCase()}
+        >
+          {isSubmitting && <Spinner size="xs" className="mr-1" />}
+          {t("Archive")}
+        </Button>
+      </Dialog.Actions>
+    </Dialog>
   );
 };
 

@@ -5,6 +5,7 @@ import useEventListener from "core/hooks/useEventListener";
 import {
   FormEventHandler,
   Fragment,
+  MouseEventHandler,
   ReactElement,
   ReactNode,
   useRef,
@@ -13,6 +14,7 @@ import {
 type DialogProps = {
   open: boolean;
   onClose: (value: any) => void;
+  onClick?: MouseEventHandler<HTMLDivElement>;
   centered?: boolean;
   padding?: string;
   children: ReactElement | ReactElement[] | ReactNode[] | ReactNode;
@@ -74,6 +76,7 @@ function Dialog(props: DialogProps) {
   const {
     open,
     onClose,
+    onClick,
     onSubmit,
     children,
     centered = true,
@@ -104,6 +107,7 @@ function Dialog(props: DialogProps) {
         ref={dialogRef}
         className="fixed inset-0 z-20"
         onClose={onClose}
+        onClick={onClick}
       >
         <Transition.Child
           as={Fragment}
