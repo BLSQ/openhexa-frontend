@@ -193,10 +193,6 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                   >
                     <PlusCircleIcon className="h-5 w-5 " />
                   </button>
-                  <CreateWorkspaceDialog
-                    open={isCreateDialogOpen}
-                    onClose={() => setCreateDialogOpen(false)}
-                  />
                 </>
               )}
             </div>
@@ -230,26 +226,17 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                     {ws.name}
                   </span>
                   {workspace.permissions.delete && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          setIsArchiveDialogOpen(true);
-                        }}
-                        title={t("Archive")}
-                        className="text-gray-400 hover:text-red-600 ml-auto invisible group-hover:visible"
-                      >
-                        <MinusCircleIcon className="h-5 w-5" />
-                      </button>
-                      <ArchiveWorkspaceDialog
-                        workspace={workspace}
-                        open={isArchiveDialogOpen}
-                        onClose={() => {
-                          setIsArchiveDialogOpen(false);
-                        }}
-                      />
-                    </>
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setIsArchiveDialogOpen(true);
+                      }}
+                      title={t("Archive")}
+                      className="text-gray-400 hover:text-red-600 ml-auto invisible group-hover:visible"
+                    >
+                      <MinusCircleIcon className="h-5 w-5" />
+                    </button>
                   )}
                 </Link>
               ))}
@@ -356,6 +343,17 @@ const SidebarMenu = (props: SidebarMenuProps) => {
               </section>
             </>
           )}
+          <CreateWorkspaceDialog
+            open={isCreateDialogOpen}
+            onClose={() => setCreateDialogOpen(false)}
+          />
+          <ArchiveWorkspaceDialog
+            workspace={workspace}
+            open={isArchiveDialogOpen}
+            onClose={() => {
+              setIsArchiveDialogOpen(false);
+            }}
+          />
         </div>
       </Transition>
     </div>

@@ -63,7 +63,7 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
         <p>
           {t("You're about to archive this workspace and all its content.")}
         </p>
-        <p>{t("Please enter the workspace slug to confirm:")}</p>
+        <p>{t("Please enter the workspace name to confirm:")}</p>
         <input
           type="text"
           value={inputSlug}
