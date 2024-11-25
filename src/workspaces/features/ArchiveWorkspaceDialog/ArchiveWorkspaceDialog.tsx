@@ -21,7 +21,7 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [inputSlug, setInputSlug] = useState("");
+  const [inputName, setInputName] = useState("");
 
   const [archiveWorkspace] = useArchiveWorkspaceMutation();
   const clearCache = useCacheKey(["workspaces", workspace.slug]);
@@ -67,8 +67,8 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
           <p>{t("Please enter the workspace name to confirm:")}</p>
           <input
             type="text"
-            value={inputSlug}
-            onChange={(e) => setInputSlug(e.target.value)}
+            value={inputName}
+            onChange={(e) => setInputName(e.target.value)}
             className="w-full border border-gray-300 rounded px-2 py-1"
           />
         </Dialog.Content>
@@ -76,7 +76,10 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
           <Button variant="white" onClick={onClose}>
             {t("Cancel")}
           </Button>
-          <Button onClick={onSubmit}>
+          <Button
+            onClick={onSubmit}
+            disabled={inputName.toLowerCase() !== workspace.name.toLowerCase()}
+          >
             {isSubmitting && <Spinner size="xs" className="mr-1" />}
             {t("Archive")}
           </Button>
