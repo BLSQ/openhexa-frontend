@@ -21,6 +21,7 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [inputSlug, setInputSlug] = useState("");
 
   const [archiveWorkspace] = useArchiveWorkspaceMutation();
   const clearCache = useCacheKey(["workspaces", workspace.slug]);
@@ -62,6 +63,13 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
         <p>
           {t("You're about to archive this workspace and all its content.")}
         </p>
+        <p>{t("Please enter the workspace slug to confirm:")}</p>
+        <input
+          type="text"
+          value={inputSlug}
+          onChange={(e) => setInputSlug(e.target.value)}
+          className="w-full border border-gray-300 rounded px-2 py-1"
+        />
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>

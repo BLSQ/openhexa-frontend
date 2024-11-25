@@ -73,7 +73,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     modifiers: POPPER_MODIFIERS,
   });
   useOnClickOutside(innerMenuRef, () => {
-    if (!isCreateDialogOpen && !isArchiveDialogOpen) {
+    if (!(isCreateDialogOpen || isArchiveDialogOpen)) {
       // Do not close the menu if the user click in the dialog
       setFalse();
     }
