@@ -39,6 +39,7 @@ import Tooltip from "core/components/Tooltip";
 import UILanguagePicker from "identity/features/UILanguagePicker";
 import Field from "core/components/forms/Field";
 import ArchiveWorkspaceDialog from "../ArchiveWorkspaceDialog";
+import { ArchiveWorkspace_WorkspaceFragment } from "../ArchiveWorkspaceDialog/ArchiveWorkspaceDialog.generated";
 
 interface SidebarMenuProps {
   workspace: SidebarMenu_WorkspaceFragment;
@@ -50,8 +51,8 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   const { workspace, compact = false } = props;
   const { t } = useTranslation();
   const me = useMe();
-  const [workspaceIndexToArchive, setWorkspaceIndexToArchive] =
-    useState<Number>();
+  const [workspaceToArchive, setWorkspaceToArchive] =
+    useState<ArchiveWorkspace_WorkspaceFragment>();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [hasLegacyAccess] = useFeature("openhexa_legacy");
   const router = useRouter();
@@ -74,7 +75,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     modifiers: POPPER_MODIFIERS,
   });
   useOnClickOutside(innerMenuRef, () => {
-    if (!(isCreateDialogOpen || workspaceIndexToArchive !== -1)) {
+    if (!(isCreateDialogOpen || workspaceToArchive !== undefined)) {
       // Do not close the menu if the user click in the dialog
       setFalse();
     }
@@ -239,7 +240,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                         type="button"
                         onClick={(event) => {
                           event.preventDefault(); // Do not trigger the link
-                          setWorkspaceIndexToArchive(index);
+                          setWorkspaceToArchive(ws);
                         }}
                         title={t("Archive")}
                         className="text-gray-400 hover:text-red-600 ml-auto invisible group-hover:visible"
@@ -248,9 +249,9 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                       </button>
                       <ArchiveWorkspaceDialog
                         workspace={ws}
-                        open={workspaceIndexToArchive === index}
+                        open={ws === workspaceToArchive}
                         onClose={() => {
-                          setWorkspaceIndexToArchive(undefined);
+                          setWorkspaceToArchive(undefined);
                         }}
                       />
                     </>
