@@ -279,7 +279,7 @@
   "Pipeline Run": "Exécution du pipeline",
   "Pipelines": "Pipelines",
   "Please enter an email address": "Veuillez saisir une adresse électronique",
-  "Please enter the workspace name to confirm:": "Entrez le nom du workspace à supprimer:",
+  "Please enter the workspace name to confirm:": "Confirmez le nom du workspace à archiver:",
   "Port": "Port",
   "Port of the PostgreSQL server": "Port du serveur PostgreSQL",
   "Preview": "Aperçu",
