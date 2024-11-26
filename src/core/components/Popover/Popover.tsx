@@ -17,7 +17,7 @@ type PopoverProps = {
   buttonClassName?: string;
   strategy?: PositioningStrategy;
   withPortal?: boolean;
-  children: React.ComponentProps<typeof HeadlessPopover>["children"];
+  children: React.ComponentProps<typeof HeadlessPopoverPanel>["children"];
 };
 
 const POPPER_MODIFIERS = [{ name: "offset", options: { offset: [0, 6] } }];
