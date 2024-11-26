@@ -75,6 +75,7 @@ function BlockSection(props: BlockSectionProps) {
                 leave="transition duration-50 ease-out"
                 leaveFrom="transform opacity-100"
                 leaveTo="transform opacity-0"
+                as="div"
               >
                 <Disclosure.Panel static className={clsx(title && "mt-6")}>
                   {typeof children === "function"
