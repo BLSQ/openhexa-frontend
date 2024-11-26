@@ -1,7 +1,9 @@
 import {
   Dialog as BaseDialog,
   DialogPanel as BaseDialogPanel,
+  DialogTitle as BaseDialogTitle,
   Transition,
+  TransitionChild,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
@@ -29,7 +31,7 @@ type DialogProps = {
 
 const DialogTitle = (props: { children: ReactNode; onClose?: () => void }) => {
   return (
-    <BaseDialog.Title
+    <BaseDialogTitle
       as="h3"
       className="mb-2 tall:mb-7 flex items-center justify-between text-2xl font-medium text-gray-900"
     >
@@ -37,7 +39,7 @@ const DialogTitle = (props: { children: ReactNode; onClose?: () => void }) => {
       {props.onClose && (
         <XMarkIcon className="h-6 w-6 cursor-pointer" onClick={props.onClose} />
       )}
-    </BaseDialog.Title>
+    </BaseDialogTitle>
   );
 };
 
@@ -103,13 +105,13 @@ function Dialog(props: DialogProps) {
   const ContentElement = onSubmit ? "form" : "div";
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition show={open} as={Fragment}>
       <BaseDialog
         ref={dialogRef}
         className="fixed inset-0 z-20"
         onClose={onClose}
       >
-        <Transition.Child
+        <TransitionChild
           as={Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
@@ -125,7 +127,7 @@ function Dialog(props: DialogProps) {
             )}
           />
           <BaseDialogPanel />
-        </Transition.Child>
+        </TransitionChild>
         <div className="h-screen px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           {/* This element is to trick the browser into centering the modal contents. */}
           <span
@@ -137,7 +139,7 @@ function Dialog(props: DialogProps) {
           >
             &#8203;
           </span>
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="transition-all transform ease-out duration-300"
             enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -166,10 +168,10 @@ function Dialog(props: DialogProps) {
                 {children}
               </ContentElement>
             </div>
-          </Transition.Child>
+          </TransitionChild>
         </div>
       </BaseDialog>
-    </Transition.Root>
+    </Transition>
   );
 }
 

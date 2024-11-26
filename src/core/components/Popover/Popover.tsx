@@ -1,11 +1,16 @@
-import { Popover as HeadlessPopover, Portal } from "@headlessui/react";
+import {
+  Popover as HeadlessPopover,
+  PopoverButton as HeadlessPopoverButton,
+  PopoverPanel as HeadlessPopoverPanel,
+  Portal,
+} from "@headlessui/react";
 import { Placement, PositioningStrategy } from "@popperjs/core";
 import clsx from "clsx";
-import { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import { usePopper } from "react-popper";
 
 type PopoverProps = {
-  trigger: React.ComponentProps<typeof HeadlessPopover.Button>["children"];
+  trigger: React.ComponentProps<typeof HeadlessPopoverButton>["children"];
   placement?: Placement;
   className?: string;
   as?: any;
@@ -40,7 +45,7 @@ const Popover = (props: PopoverProps) => {
   });
 
   const panel = (
-    <HeadlessPopover.Panel
+    <HeadlessPopoverPanel
       ref={setPopperElement}
       style={styles.popper}
       className={clsx(
@@ -50,18 +55,18 @@ const Popover = (props: PopoverProps) => {
       {...attributes.popper}
     >
       {children}
-    </HeadlessPopover.Panel>
+    </HeadlessPopoverPanel>
   );
 
   return (
     <HeadlessPopover className="relative">
-      <HeadlessPopover.Button
+      <HeadlessPopoverButton
         as={as}
         className={clsx("flex items-center outline-none", buttonClassName)}
         ref={setReferenceElement}
       >
         {trigger}
-      </HeadlessPopover.Button>
+      </HeadlessPopoverButton>
       {withPortal ? <Portal>{panel}</Portal> : panel}
     </HeadlessPopover>
   );
