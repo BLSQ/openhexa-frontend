@@ -4,12 +4,12 @@ import { gql } from '@apollo/client';
 import { DeletePipelineRecipientTrigger_RecipientFragmentDoc, DeletePipelineRecipientTrigger_PipelineFragmentDoc } from './DeletePipelineRecipientTrigger/DeletePipelineRecipientTrigger.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type PipelineRecipientQueryVariables = Types.Exact<{
+export type PipelineRecipientsQueryVariables = Types.Exact<{
   id: Types.Scalars['UUID']['input'];
 }>;
 
 
-export type PipelineRecipientQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', recipients: Array<{ __typename?: 'PipelineRecipient', id: string, notificationLevel: Types.PipelineNotificationLevel, user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number } }, permissions: { __typename?: 'PipelinePermissions', update: boolean } } | null };
+export type PipelineRecipientsQuery = { __typename?: 'Query', pipeline?: { __typename?: 'Pipeline', recipients: Array<{ __typename?: 'PipelineRecipient', id: string, notificationLevel: Types.PipelineNotificationLevel, user: { __typename?: 'User', id: string, displayName: string } }>, workspace: { __typename?: 'Workspace', slug: string, members: { __typename?: 'WorkspaceMembershipPage', totalItems: number } }, permissions: { __typename?: 'PipelinePermissions', update: boolean } } | null };
 
 export type PipelineRecipients_PipelineFragment = { __typename?: 'Pipeline', id: string, code: string, permissions: { __typename?: 'PipelinePermissions', update: boolean } };
 
@@ -22,8 +22,8 @@ export const PipelineRecipients_PipelineFragmentDoc = gql`
   }
 }
     `;
-export const PipelineRecipientDocument = gql`
-    query PipelineRecipient($id: UUID!) {
+export const PipelineRecipientsDocument = gql`
+    query PipelineRecipients($id: UUID!) {
   pipeline(id: $id) {
     recipients {
       id
@@ -47,34 +47,34 @@ export const PipelineRecipientDocument = gql`
 ${DeletePipelineRecipientTrigger_PipelineFragmentDoc}`;
 
 /**
- * __usePipelineRecipientQuery__
+ * __usePipelineRecipientsQuery__
  *
- * To run a query within a React component, call `usePipelineRecipientQuery` and pass it any options that fit your needs.
- * When your component renders, `usePipelineRecipientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePipelineRecipientsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePipelineRecipientsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePipelineRecipientQuery({
+ * const { data, loading, error } = usePipelineRecipientsQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function usePipelineRecipientQuery(baseOptions: Apollo.QueryHookOptions<PipelineRecipientQuery, PipelineRecipientQueryVariables> & ({ variables: PipelineRecipientQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function usePipelineRecipientsQuery(baseOptions: Apollo.QueryHookOptions<PipelineRecipientsQuery, PipelineRecipientsQueryVariables> & ({ variables: PipelineRecipientsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<PipelineRecipientQuery, PipelineRecipientQueryVariables>(PipelineRecipientDocument, options);
+        return Apollo.useQuery<PipelineRecipientsQuery, PipelineRecipientsQueryVariables>(PipelineRecipientsDocument, options);
       }
-export function usePipelineRecipientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PipelineRecipientQuery, PipelineRecipientQueryVariables>) {
+export function usePipelineRecipientsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PipelineRecipientsQuery, PipelineRecipientsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<PipelineRecipientQuery, PipelineRecipientQueryVariables>(PipelineRecipientDocument, options);
+          return Apollo.useLazyQuery<PipelineRecipientsQuery, PipelineRecipientsQueryVariables>(PipelineRecipientsDocument, options);
         }
-export function usePipelineRecipientSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<PipelineRecipientQuery, PipelineRecipientQueryVariables>) {
+export function usePipelineRecipientsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<PipelineRecipientsQuery, PipelineRecipientsQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<PipelineRecipientQuery, PipelineRecipientQueryVariables>(PipelineRecipientDocument, options);
+          return Apollo.useSuspenseQuery<PipelineRecipientsQuery, PipelineRecipientsQueryVariables>(PipelineRecipientsDocument, options);
         }
-export type PipelineRecipientQueryHookResult = ReturnType<typeof usePipelineRecipientQuery>;
-export type PipelineRecipientLazyQueryHookResult = ReturnType<typeof usePipelineRecipientLazyQuery>;
-export type PipelineRecipientSuspenseQueryHookResult = ReturnType<typeof usePipelineRecipientSuspenseQuery>;
-export type PipelineRecipientQueryResult = Apollo.QueryResult<PipelineRecipientQuery, PipelineRecipientQueryVariables>;
+export type PipelineRecipientsQueryHookResult = ReturnType<typeof usePipelineRecipientsQuery>;
+export type PipelineRecipientsLazyQueryHookResult = ReturnType<typeof usePipelineRecipientsLazyQuery>;
+export type PipelineRecipientsSuspenseQueryHookResult = ReturnType<typeof usePipelineRecipientsSuspenseQuery>;
+export type PipelineRecipientsQueryResult = Apollo.QueryResult<PipelineRecipientsQuery, PipelineRecipientsQueryVariables>;

@@ -6,11 +6,11 @@ import {
   User,
 } from "graphql/types";
 import {
-  PipelineRecipientQuery,
-  PipelineRecipientQueryVariables,
   PipelineRecipients_PipelineFragment,
+  PipelineRecipientsQuery,
+  PipelineRecipientsQueryVariables,
 } from "./PipelineRecipients.generated";
-import { useMemo, useState } from "react";
+import { ReactElement, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
 import {
   CheckIcon,
@@ -36,10 +36,10 @@ import {
 } from "workspaces/helpers/pipelines";
 import useCacheKey from "core/hooks/useCacheKey";
 import {
-  ActionButtonGroup,
   formatNotificationLevel,
   NotificationLevelSelect,
 } from "workspaces/helpers/recipients/utils";
+import { ButtonProps } from "core/components/Button/Button";
 
 type Recipient = Pick<PipelineRecipient, "id" | "notificationLevel"> & {
   user: Pick<User, "displayName">;
@@ -56,6 +56,15 @@ type RecipientRowProps = {
   onUpdate: (recipient: Recipient) => void;
   onCancel: () => void;
   className?: string;
+};
+
+const IconButton = (props: { icon: ReactElement } & ButtonProps) => {
+  const { icon, ...rest } = props;
+  return (
+    <Button {...rest} size="sm" variant="secondary">
+      {icon}
+    </Button>
+  );
 };
 
 const RecipientRow = ({
@@ -83,42 +92,35 @@ const RecipientRow = ({
       </TableCell>
       <TableCell className="flex justify-end gap-x-2">
         {isEditing && (
-          <ActionButtonGroup
-            buttons={[
-              {
-                icon: <CheckIcon className="h-4" />,
-                onClick: () => onUpdate(recipient),
-              },
-              {
-                icon: <XMarkIcon className="h-4" />,
-                onClick: () => onCancel(),
-              },
-            ]}
-          />
+          <div className="flex gap-x-2">
+            <IconButton
+              icon={<CheckIcon className="h-4" />}
+              onClick={() => onUpdate(recipient)}
+            />
+            <IconButton
+              icon={<XMarkIcon className="h-4" />}
+              onClick={() => onCancel()}
+            />
+          </div>
         )}
         {!isEditing && pipeline.permissions.update && (
-          <ActionButtonGroup
-            buttons={[
-              {
-                icon: <PencilIcon className="h-4" />,
-                onClick: () => onSelect(recipient),
-              },
-              {
-                render: () => (
-                  <DeletePipelineRecipientTrigger
-                    recipient={recipient}
-                    pipeline={pipeline}
-                  >
-                    {({ onClick }) => (
-                      <Button onClick={onClick} size="sm" variant="secondary">
-                        <TrashIcon className="h-4" />
-                      </Button>
-                    )}
-                  </DeletePipelineRecipientTrigger>
-                ),
-              },
-            ]}
-          />
+          <div className="flex gap-x-2">
+            <IconButton
+              icon={<PencilIcon className="h-4" />}
+              onClick={() => onSelect(recipient)}
+            />
+            <DeletePipelineRecipientTrigger
+              recipient={recipient}
+              pipeline={pipeline}
+            >
+              {({ onClick }) => (
+                <IconButton
+                  icon={<TrashIcon className="h-4" />}
+                  onClick={onClick}
+                />
+              )}
+            </DeletePipelineRecipientTrigger>
+          </div>
         )}
       </TableCell>
     </TableRow>
@@ -131,7 +133,6 @@ type NewRecipientRowProps = {
   excludedRecipients?: string[];
   onChange: (field: string, value: any) => void;
   onSave: () => void;
-  onCancel: () => void;
 };
 
 const NewRecipientRow = ({
@@ -140,7 +141,6 @@ const NewRecipientRow = ({
   excludedRecipients = [],
   onChange,
   onSave,
-  onCancel,
 }: NewRecipientRowProps) => {
   return (
     <TableRow>
@@ -164,21 +164,10 @@ const NewRecipientRow = ({
         />
       </TableCell>
       <TableCell className="flex justify-end gap-x-2">
-        <ActionButtonGroup
-          buttons={[
-            {
-              icon: <CheckIcon className="h-4" />,
-              onClick: onSave,
-              disabled:
-                !newRecipient?.member || !newRecipient?.notificationLevel,
-            },
-            {
-              icon: <XMarkIcon className="h-4" />,
-              onClick: onCancel,
-              disabled:
-                !newRecipient?.member || !newRecipient?.notificationLevel,
-            },
-          ]}
+        <IconButton
+          icon={<CheckIcon className="h-4" />}
+          onClick={onSave}
+          disabled={!newRecipient?.member || !newRecipient?.notificationLevel}
         />
       </TableCell>
     </TableRow>
@@ -205,11 +194,11 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
     useState<CreatePipelineRecipientInput | null>();
 
   const { data, refetch } = useQuery<
-    PipelineRecipientQuery,
-    PipelineRecipientQueryVariables
+    PipelineRecipientsQuery,
+    PipelineRecipientsQueryVariables
   >(
     gql`
-      query PipelineRecipient($id: UUID!) {
+      query PipelineRecipients($id: UUID!) {
         pipeline(id: $id) {
           recipients {
             id
@@ -285,7 +274,6 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
             newRecipient={newRecipient!}
             workspaceSlug={pipeline.workspace.slug}
             excludedRecipients={pipeline.recipients.map((r) => r.user.id) ?? []}
-            onCancel={() => setNewRecipient(null)}
             onChange={(field: string, value: any) =>
               setNewRecipient({
                 ...newRecipient,
@@ -301,12 +289,12 @@ const PipelineRecipients = (props: PipelineRecipientsProps) => {
             key={i}
             pipeline={pipeline}
             recipient={
-              selectedRecipient && selectedRecipient?.id === recipient.id
+              selectedRecipient && selectedRecipient.id === recipient.id
                 ? selectedRecipient
                 : recipient
             }
             isEditing={Boolean(
-              selectedRecipient && selectedRecipient?.id === recipient.id,
+              selectedRecipient && selectedRecipient.id === recipient.id,
             )}
             onLevelChange={(level: PipelineNotificationLevel) => {
               setSelectedRecipient({
