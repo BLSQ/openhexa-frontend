@@ -115,7 +115,6 @@ function Combobox<T extends { [key: string]: any }>(props: ComboboxProps<T>) {
       value={value}
       multiple={false}
       disabled={disabled}
-      nullable
       by={by as any /* Otherwise typescript is not happy */}
       {...delegated}
     >
