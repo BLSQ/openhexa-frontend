@@ -23,7 +23,6 @@ import {
 import { usePopper } from "react-popper";
 import CheckOption from "./CheckOption";
 import OptionsWrapper from "./OptionsWrapper";
-import { ByComparator } from "@headlessui/react/dist/hooks/use-by-comparator";
 
 type MultiComboboxProps<T> = {
   onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -128,7 +127,7 @@ function MultiCombobox<T extends { [key: string]: any }>(
       value={value}
       disabled={disabled}
       name={name}
-      by={by as ByComparator<NoInfer<T[]>>} //TODO : test this cast + multiple has been removed
+      by={by as any}
     >
       {({ open }) => (
         <div className={clsx("relative", className)} ref={setReferenceElement}>
