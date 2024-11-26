@@ -1,4 +1,8 @@
-import { Dialog as BaseDialog, Transition } from "@headlessui/react";
+import {
+  Dialog as BaseDialog,
+  DialogPanel as BaseDialogPanel,
+  Transition,
+} from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import useEventListener from "core/hooks/useEventListener";
@@ -114,12 +118,13 @@ function Dialog(props: DialogProps) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <BaseDialog.Overlay
+          <div
             className={clsx(
               "fixed inset-0 -z-10 bg-gray-800 bg-opacity-50 backdrop-blur-sm transition-opacity",
               !closeOnOutsideClick && "pointer-events-none", // Let's prevent mouse events to be triggered to ensure the dialog stay open.
             )}
           />
+          <BaseDialogPanel />
         </Transition.Child>
         <div className="h-screen px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           {/* This element is to trick the browser into centering the modal contents. */}
