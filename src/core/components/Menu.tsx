@@ -1,6 +1,7 @@
 import {
   Button as HeadlessMenuButton,
   Menu as HeadlessMenu,
+  MenuItem as HeadlessMenuItem,
   MenuItems as HeadlessMenuItems,
 } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
@@ -70,25 +71,22 @@ const Item = ({
   className = MenuClasses.Item,
   href,
 }: ItemProps) => (
-  <HeadlessMenu.Item>
-    {({ active }) =>
+  <HeadlessMenuItem>
+    {({ focus }) =>
       onClick ? (
         <button
           onClick={onClick}
-          className={clsx(className, active && activeClassName)}
+          className={clsx(className, focus && activeClassName)}
         >
           {children}
         </button>
       ) : (
-        <Link
-          href={href}
-          className={clsx(className, active && activeClassName)}
-        >
+        <Link href={href} className={clsx(className, focus && activeClassName)}>
           {children}
         </Link>
       )
     }
-  </HeadlessMenu.Item>
+  </HeadlessMenuItem>
 );
 
 Menu.Item = Item;
