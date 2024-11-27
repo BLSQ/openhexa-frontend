@@ -111,21 +111,18 @@ function Dialog(props: DialogProps) {
         onClose={onClose}
       >
         <TransitionChild
-          as={Fragment}
+          as="div"
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
           leave="ease-in duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
-        >
-          <div
-            className={clsx(
-              "fixed inset-0 -z-10 bg-gray-800 bg-opacity-50 backdrop-blur-sm transition-opacity",
-              !closeOnOutsideClick && "pointer-events-none", // Let's prevent mouse events to be triggered to ensure the dialog stay open.
-            )}
-          />
-        </TransitionChild>
+          className={clsx(
+            "fixed inset-0 -z-10 bg-gray-800 bg-opacity-50 backdrop-blur-sm transition-opacity",
+            !closeOnOutsideClick && "pointer-events-none", // Let's prevent mouse events to be triggered to ensure the dialog stay open.
+          )}
+        />
         <div className="h-screen px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           {/* This element is to trick the browser into centering the modal contents. */}
           <span
