@@ -43,7 +43,7 @@ describe("Combobox", () => {
     const onInputChange = jest.fn();
     const displayValue = jest.fn().mockReturnValue("<display value>");
 
-    const { container } = render(
+    render(
       <ComboboxWrapper
         onChange={onChange}
         value={null}
