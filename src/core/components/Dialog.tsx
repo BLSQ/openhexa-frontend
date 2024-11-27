@@ -1,6 +1,5 @@
 import {
   Dialog as BaseDialog,
-  DialogPanel as BaseDialogPanel,
   DialogTitle as BaseDialogTitle,
   Transition,
   TransitionChild,
@@ -126,7 +125,6 @@ function Dialog(props: DialogProps) {
               !closeOnOutsideClick && "pointer-events-none", // Let's prevent mouse events to be triggered to ensure the dialog stay open.
             )}
           />
-          <BaseDialogPanel />
         </TransitionChild>
         <div className="h-screen px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           {/* This element is to trick the browser into centering the modal contents. */}
