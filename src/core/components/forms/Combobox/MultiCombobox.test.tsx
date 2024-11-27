@@ -69,7 +69,7 @@ describe("MultiCombobox", () => {
 
     await userEvent.click(options[1]);
     await waitFor(() => {
-      expect(onChange).toHaveBeenCalledWith(items[1]);
+      expect(onChange).toHaveBeenCalledWith([items[1]]);
     });
 
     expect(screen.getByText(items[1].name)).toBeInTheDocument();

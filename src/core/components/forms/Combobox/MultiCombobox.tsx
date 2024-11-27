@@ -126,6 +126,7 @@ function MultiCombobox<T extends { [key: string]: any }>(
       onChange={onChange}
       value={value}
       disabled={disabled}
+      multiple={true as any}
       name={name}
       by={by as any}
     >
