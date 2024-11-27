@@ -32,6 +32,13 @@ export type ArchiveWorkspaceMutationVariables = Types.Exact<{
 
 export type ArchiveWorkspaceMutation = { __typename?: 'Mutation', archiveWorkspace: { __typename?: 'ArchiveWorkspaceResult', success: boolean, errors: Array<Types.ArchiveWorkspaceError> } };
 
+export type InsertWorkspaceMemberMutationVariables = Types.Exact<{
+  input: Types.InsertWorkspaceMemberInput;
+}>;
+
+
+export type InsertWorkspaceMemberMutation = { __typename?: 'Mutation', insertWorkspaceMember: { __typename?: 'InsertWorkspaceMemberResult', success: boolean, errors: Array<Types.InsertWorkspaceMemberError>, workspaceMembership?: { __typename?: 'WorkspaceMembership', id: string, role: Types.WorkspaceMembershipRole } | null } };
+
 export type InviteWorkspaceMemberMutationVariables = Types.Exact<{
   input: Types.InviteWorkspaceMemberInput;
 }>;
@@ -287,6 +294,44 @@ export function useArchiveWorkspaceMutation(baseOptions?: Apollo.MutationHookOpt
 export type ArchiveWorkspaceMutationHookResult = ReturnType<typeof useArchiveWorkspaceMutation>;
 export type ArchiveWorkspaceMutationResult = Apollo.MutationResult<ArchiveWorkspaceMutation>;
 export type ArchiveWorkspaceMutationOptions = Apollo.BaseMutationOptions<ArchiveWorkspaceMutation, ArchiveWorkspaceMutationVariables>;
+export const InsertWorkspaceMemberDocument = gql`
+    mutation insertWorkspaceMember($input: InsertWorkspaceMemberInput!) {
+  insertWorkspaceMember(input: $input) {
+    success
+    errors
+    workspaceMembership {
+      id
+      role
+    }
+  }
+}
+    `;
+export type InsertWorkspaceMemberMutationFn = Apollo.MutationFunction<InsertWorkspaceMemberMutation, InsertWorkspaceMemberMutationVariables>;
+
+/**
+ * __useInsertWorkspaceMemberMutation__
+ *
+ * To run a mutation, you first call `useInsertWorkspaceMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInsertWorkspaceMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [insertWorkspaceMemberMutation, { data, loading, error }] = useInsertWorkspaceMemberMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useInsertWorkspaceMemberMutation(baseOptions?: Apollo.MutationHookOptions<InsertWorkspaceMemberMutation, InsertWorkspaceMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InsertWorkspaceMemberMutation, InsertWorkspaceMemberMutationVariables>(InsertWorkspaceMemberDocument, options);
+      }
+export type InsertWorkspaceMemberMutationHookResult = ReturnType<typeof useInsertWorkspaceMemberMutation>;
+export type InsertWorkspaceMemberMutationResult = Apollo.MutationResult<InsertWorkspaceMemberMutation>;
+export type InsertWorkspaceMemberMutationOptions = Apollo.BaseMutationOptions<InsertWorkspaceMemberMutation, InsertWorkspaceMemberMutationVariables>;
 export const InviteWorkspaceMemberDocument = gql`
     mutation inviteWorkspaceMember($input: InviteWorkspaceMemberInput!) {
   inviteWorkspaceMember(input: $input) {

@@ -1736,6 +1736,29 @@ export type GenericOutput = {
   uri: Scalars['String']['output'];
 };
 
+/** The type of the potential error on workspace membership insertion. */
+export enum InsertWorkspaceMemberError {
+  AlreadyExists = 'ALREADY_EXISTS',
+  PermissionDenied = 'PERMISSION_DENIED',
+  ServerError = 'SERVER_ERROR',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents an input to add a user into a workspace. */
+export type InsertWorkspaceMemberInput = {
+  role: WorkspaceMembershipRole;
+  userEmail: Scalars['String']['input'];
+  workspaceSlug: Scalars['String']['input'];
+};
+
+/** The type of the result of a workspace membership insertion. */
+export type InsertWorkspaceMemberResult = {
+  __typename?: 'InsertWorkspaceMemberResult';
+  errors: Array<InsertWorkspaceMemberError>;
+  success: Scalars['Boolean']['output'];
+  workspaceMembership?: Maybe<WorkspaceMembership>;
+};
+
 /** Represents the input for inviting a member to a workspace. */
 export type InviteWorkspaceMemberInput = {
   role: WorkspaceMembershipRole;
@@ -2051,6 +2074,8 @@ export type Mutation = {
   generateNewDatabasePassword: GenerateNewDatabasePasswordResult;
   generatePipelineWebhookUrl: GeneratePipelineWebhookUrlResult;
   generateWorkspaceToken: GenerateWorkspaceTokenResult;
+  /** Insert user as member of a workspace. */
+  insertWorkspaceMember: InsertWorkspaceMemberResult;
   inviteWorkspaceMember: InviteWorkspaceMemberResult;
   joinWorkspace: JoinWorkspaceResult;
   launchAccessmodAnalysis: LaunchAccessmodAnalysisResult;
@@ -2346,6 +2371,11 @@ export type MutationGeneratePipelineWebhookUrlArgs = {
 
 export type MutationGenerateWorkspaceTokenArgs = {
   input: GenerateWorkspaceTokenInput;
+};
+
+
+export type MutationInsertWorkspaceMemberArgs = {
+  input: InsertWorkspaceMemberInput;
 };
 
 
@@ -3041,6 +3071,8 @@ export type Query = {
   team?: Maybe<Team>;
   teams: TeamPage;
   workspace?: Maybe<Workspace>;
+  /** Search workspace candidates. */
+  workspaceCandidates: WorkspaceCandidatesResult;
   workspaces: WorkspacePage;
 };
 
@@ -3228,6 +3260,12 @@ export type QueryTeamsArgs = {
 
 export type QueryWorkspaceArgs = {
   slug: Scalars['String']['input'];
+};
+
+
+export type QueryWorkspaceCandidatesArgs = {
+  query?: InputMaybe<Scalars['String']['input']>;
+  workspace?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -4024,6 +4062,12 @@ export type WorkspaceInvitationsArgs = {
 export type WorkspaceMembersArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** The result of a workspaceCandidates query */
+export type WorkspaceCandidatesResult = {
+  __typename?: 'WorkspaceCandidatesResult';
+  items: Array<User>;
 };
 
 /** Represents an invitation to join a workspace. */

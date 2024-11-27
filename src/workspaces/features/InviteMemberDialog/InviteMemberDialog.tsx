@@ -3,20 +3,26 @@ import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
 import Spinner from "core/components/Spinner";
 import { useTranslation } from "next-i18next";
-import { useInviteWorkspaceMemberMutation } from "workspaces/graphql/mutations.generated";
+import {
+  useInviteWorkspaceMemberMutation,
+  useInsertWorkspaceMemberMutation,
+} from "workspaces/graphql/mutations.generated";
 import useForm from "core/hooks/useForm";
 import {
   InviteWorkspaceMembershipError,
+  InsertWorkspaceMemberError,
   WorkspaceMembershipRole,
 } from "graphql/types";
-import Input from "core/components/forms/Input";
+
 import SimpleSelect from "core/components/forms/SimpleSelect";
 import { gql } from "@apollo/client";
 import { InviteMemberWorkspace_WorkspaceFragment } from "./InviteMemberDialog.generated";
 import useCacheKey from "core/hooks/useCacheKey";
 import { useEffect } from "react";
 
-type InviteMemberDialogProps = {
+import WorkspaceCandidatesPicker from "workspaces/features/WorkspaceCandidatesPicker/WorkspaceCandidatesPicker";
+
+type InviteOrAddMemberDialogProps = {
   onClose(): void;
   open: boolean;
   workspace: InviteMemberWorkspace_WorkspaceFragment;
@@ -25,65 +31,143 @@ type InviteMemberDialogProps = {
 type Form = {
   role: WorkspaceMembershipRole;
   email: string;
+  hasAccount?: boolean;
 };
 
-const InviteMemberDialog = (props: InviteMemberDialogProps) => {
+const isValidEmailAddress = (email: string) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+const insert = async (
+  input: {
+    role: WorkspaceMembershipRole;
+    workspaceSlug: String;
+    userEmail: String;
+  },
+  handler: Function,
+) => {
+  const { data } = await handler({
+    variables: {
+      input: {
+        role: input.role,
+        workspaceSlug: input.workspaceSlug,
+        userEmail: input.userEmail,
+      },
+    },
+  });
+
+  if (!data?.insertWorkspaceMember) {
+    throw new Error("Unknown error.");
+  }
+
+  const errors = {
+    [InsertWorkspaceMemberError.WorkspaceNotFound]:
+      "The workspace cannot be found.",
+    [InsertWorkspaceMemberError.AlreadyExists]:
+      "User already in this workspace.",
+    [InsertWorkspaceMemberError.ServerError]:
+      "An unexpected error has occurred.",
+    [InsertWorkspaceMemberError.PermissionDenied]:
+      "You are not authorized to perform this action",
+  };
+
+  const error =
+    data.insertWorkspaceMember.errors.length > 0 &&
+    errors[
+      data.insertWorkspaceMember.errors.shift() as InsertWorkspaceMemberError
+    ];
+
+  if (error) {
+    throw new Error(error);
+  }
+};
+
+const invite = async (
+  input: {
+    role: WorkspaceMembershipRole;
+    workspaceSlug: String;
+    userEmail: String;
+  },
+  handler: Function,
+) => {
+  const { data } = await handler({
+    variables: {
+      input: {
+        role: input.role,
+        workspaceSlug: input.workspaceSlug,
+        userEmail: input.userEmail,
+      },
+    },
+  });
+
+  if (!data?.inviteWorkspaceMember) {
+    throw new Error("Unknown error.");
+  }
+
+  if (
+    data.inviteWorkspaceMember.errors.includes(
+      InviteWorkspaceMembershipError.AlreadyExists,
+    )
+  ) {
+    throw new Error("User already invited to this workspace.");
+  }
+
+  if (
+    data.inviteWorkspaceMember.errors.includes(
+      InviteWorkspaceMembershipError.UserNotFound,
+    )
+  ) {
+    throw new Error("No user matching this email address.");
+  }
+
+  if (
+    data.inviteWorkspaceMember.errors.includes(
+      InviteWorkspaceMembershipError.PermissionDenied,
+    )
+  ) {
+    throw new Error("You are not authorized to perform this action");
+  }
+};
+
+const InviteMemberDialog = (props: InviteOrAddMemberDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
 
   const [createWorkspaceMember] = useInviteWorkspaceMemberMutation();
+  const [insertWorkspaceMember] = useInsertWorkspaceMemberMutation();
+
   const clearCache = useCacheKey(["workspaces", workspace.slug]);
 
   const form = useForm<Form>({
     onSubmit: async (values) => {
-      const { data } = await createWorkspaceMember({
-        variables: {
-          input: {
-            role: values.role,
-            workspaceSlug: workspace.slug,
-            userEmail: values.email,
-          },
-        },
-      });
+      const { hasAccount } = values;
 
-      if (!data?.inviteWorkspaceMember) {
-        throw new Error("Unknown error.");
-      }
+      const handler = hasAccount ? insert : invite;
+      const cb = hasAccount ? insertWorkspaceMember : createWorkspaceMember;
 
-      if (
-        data.inviteWorkspaceMember.errors.includes(
-          InviteWorkspaceMembershipError.AlreadyExists,
-        )
-      ) {
-        throw new Error("User already invited to this workspace.");
-      }
+      const input = {
+        role: values.role,
+        workspaceSlug: workspace.slug,
+        userEmail: values.email,
+      };
 
-      if (
-        data.inviteWorkspaceMember.errors.includes(
-          InviteWorkspaceMembershipError.UserNotFound,
-        )
-      ) {
-        throw new Error("No user matching this email address.");
-      }
-      if (
-        data.inviteWorkspaceMember.errors.includes(
-          InviteWorkspaceMembershipError.PermissionDenied,
-        )
-      ) {
-        throw new Error("You are not authorized to perform this action");
-      }
+      await handler(input, cb);
+
       clearCache();
       handleClose();
     },
     initialState: { role: WorkspaceMembershipRole.Viewer, email: "" },
     validate: (values) => {
       const errors = {} as any;
-      if (!values.email) {
-        errors.email = t("Email address is mandatory");
+
+      if (!values.email || !isValidEmailAddress(values.email)) {
+        errors.email = t("A valid email address is mandatory");
       }
+
       if (!values.role) {
         errors.role = t("Member role is mandatory");
       }
+
       return errors;
     },
   });
@@ -103,16 +187,18 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
       <Dialog.Title>{t("Invite member")}</Dialog.Title>
       <Dialog.Content className="space-y-4">
         <Field name="email" label={t("Email address")} type="email" required>
-          <Input
-            placeholder={t("sabrina@bluesquarehub.com")}
+          <WorkspaceCandidatesPicker
+            workspace={workspace.slug}
             name="email"
-            type="email"
-            autoComplete="email"
+            value={{
+              email: form.formData.email,
+              hasAccount: form.formData.hasAccount,
+            }}
+            onChange={(value) => {
+              form.formData.email = value?.email;
+              form.formData.hasAccount = value?.hasAccount;
+            }}
             required
-            fullWidth
-            value={form.formData.email}
-            onChange={form.handleInputChange}
-            error={form.touched.email && form.errors.email}
           />
         </Field>
         <Field name="role" label={t("Role")} required>
@@ -131,6 +217,10 @@ const InviteMemberDialog = (props: InviteMemberDialogProps) => {
             </option>
           </SimpleSelect>
         </Field>
+
+        {form.errors.email && (
+          <div className="text-danger mt-3 text-sm">{form.errors.email}</div>
+        )}
 
         {form.submitError && (
           <div className="text-danger mt-3 text-sm">{form.submitError}</div>

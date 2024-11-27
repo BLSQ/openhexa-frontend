@@ -1644,6 +1644,28 @@ type GenericOutput {
   uri: String!
 }
 
+"""Represents an input to add a user into a workspace."""
+input InsertWorkspaceMemberInput {
+  userEmail: String!
+  role: WorkspaceMembershipRole!
+  workspaceSlug: String!
+}
+
+"""The type of the potential error on workspace membership insertion."""
+enum InsertWorkspaceMemberError {
+  WORKSPACE_NOT_FOUND
+  PERMISSION_DENIED
+  ALREADY_EXISTS
+  SERVER_ERROR
+}
+
+"""The type of the result of a workspace membership insertion."""
+type InsertWorkspaceMemberResult {
+  success: Boolean!
+  errors: [InsertWorkspaceMemberError!]!
+  workspaceMembership: WorkspaceMembership
+}
+
 """Represents the input for inviting a member to a workspace."""
 input InviteWorkspaceMemberInput {
   workspaceSlug: String!
@@ -2085,6 +2107,9 @@ type Mutation {
 
   """Pin or unpin a dataset for a workspace."""
   pinDataset(input: PinDatasetInput!): PinDatasetResult!
+
+  """Insert user as member of a workspace."""
+  insertWorkspaceMember(input: InsertWorkspaceMemberInput!): InsertWorkspaceMemberResult!
 }
 
 type NotebookServer {
@@ -2566,6 +2591,9 @@ type Query {
 
   """Search datasets."""
   datasets(query: String, page: Int = 1, perPage: Int = 15): DatasetPage!
+
+  """Search workspace candidates."""
+  workspaceCandidates(query: String, workspace: String): WorkspaceCandidatesResult!
 }
 
 """
@@ -3400,6 +3428,13 @@ type Workspace {
 
   """Linked datasets of the workspace"""
   datasets(pinned: Boolean, query: String, page: Int = 1, perPage: Int = 15): DatasetLinkPage!
+}
+
+"""
+The result of a workspaceCandidates query
+"""
+type WorkspaceCandidatesResult {
+  items: [User!]!
 }
 
 """Represents an invitation to join a workspace."""
