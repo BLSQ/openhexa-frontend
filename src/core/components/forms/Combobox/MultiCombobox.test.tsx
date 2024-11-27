@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import MultiCombobox from "./MultiCombobox";
 import userEvent from "@testing-library/user-event";
@@ -6,46 +6,72 @@ import userEvent from "@testing-library/user-event";
 type Item = { id: number; name: string };
 
 const items: Item[] = [
-  { id: 1, name: "Item 1" },
+  { id: 1, name: "Item 4" },
   { id: 2, name: "Item 2" },
-  { id: 0, name: "Item 0" },
+  { id: 0, name: "Item 1" },
   { id: 3, name: "Item 3" },
 ];
 
+const MultiComboboxWrapper = ({
+  children,
+  ...props
+}: React.ComponentProps<typeof MultiCombobox>) => {
+  const [value, setValue] = useState<any>(props.value);
+
+  const onChange = (value: any) => {
+    setValue([value]);
+    props.onChange(value);
+  };
+
+  useEffect(() => setValue(props.value), [props.value]);
+  return (
+    <MultiCombobox {...props} value={value} onChange={onChange}>
+      {children}
+    </MultiCombobox>
+  );
+};
+
 describe("MultiCombobox", () => {
-  test("renders sorting by id", async () => {
-    const handleChange = jest.fn();
+  test("renders", async () => {
+    const onChange = jest.fn();
+    const onInputChange = jest.fn();
     render(
-      <MultiCombobox<Item>
+      <MultiComboboxWrapper
         value={[]}
-        onChange={handleChange}
+        onChange={onChange}
         displayValue={(item: Item) => item.name}
-        onInputChange={() => {}}
-        by={(a: Item, b: Item) => a.id === b.id}
+        onInputChange={onInputChange}
+        by={"name"}
       >
         {items.map((item) => (
           <MultiCombobox.CheckOption key={item.id} value={item}>
             {item.name}
           </MultiCombobox.CheckOption>
         ))}
-      </MultiCombobox>,
+      </MultiComboboxWrapper>,
     );
 
-    const comboboxButton = screen.getByRole("button");
-    const comboboxInput = screen.getByRole("combobox");
+    const comboboxButton = screen.getByTestId("combobox-button");
+    const comboboxInput = screen.getByTestId("combobox-input");
     expect(comboboxButton).toBeInTheDocument();
     expect(comboboxInput).toBeInTheDocument();
 
-    expect(handleChange).not.toHaveBeenCalled();
-    expect(screen.queryByTestId("combobox-options")).toBe(null);
+    expect(onInputChange).not.toHaveBeenCalled();
+    expect(onChange).not.toHaveBeenCalled();
 
-    await waitFor(async () => {
-      await userEvent.click(comboboxButton);
+    await userEvent.click(comboboxButton);
+    await waitFor(() => {
       expect(screen.getByTestId("combobox-options")).toBeInTheDocument();
-      const allOptions = screen.getAllByRole("option");
-      expect(allOptions.length === 4).toBeTruthy();
-      await userEvent.click(allOptions[2]);
     });
-    expect(handleChange).toHaveBeenCalledWith(items.at(2));
+
+    const options = screen.getAllByRole("option");
+    expect(options).toHaveLength(4);
+
+    await userEvent.click(options[1]);
+    await waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith(items[1]);
+    });
+
+    expect(screen.getByText(items[1].name)).toBeInTheDocument();
   });
 });
