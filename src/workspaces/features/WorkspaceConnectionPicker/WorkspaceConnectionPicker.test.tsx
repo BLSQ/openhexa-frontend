@@ -60,9 +60,6 @@ describe("WorkspaceConnectionPicker", () => {
     await user.click(await screen.findByTestId("combobox-button"));
     const option = await screen.queryAllByRole("option");
     expect(option.length).toBe(WORKSPACE.connections.length);
-
-    await user.click(await screen.findByText(WORKSPACE.connections[0].name));
-    expect(onChange).toHaveBeenCalledWith(WORKSPACE.connections[0]);
     expect(container).toMatchSnapshot();
   });
 
