@@ -162,6 +162,13 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
               {run.pipeline.name}
             </Breadcrumbs.Part>
             <Breadcrumbs.Part
+              href={`/workspaces/${encodeURIComponent(
+                workspace.slug,
+              )}/pipelines/${encodeURIComponent(run.pipeline.code)}/runs`}
+            >
+              {t("Runs")}
+            </Breadcrumbs.Part>
+            <Breadcrumbs.Part
               isLast
               href={{
                 pathname:
@@ -303,9 +310,6 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                   help={t("See documentation for more info.")}
                 >
                   {run.timeout ? formatDuration(run.timeout) : "-"}
-                </DescriptionList.Item>
-                <DescriptionList.Item label={t("Notifications")}>
-                  <Checkbox checked={run.sendMailNotifications} disabled />
                 </DescriptionList.Item>
               </DescriptionList>
             </Block.Section>
