@@ -4,7 +4,6 @@ import clsx from "clsx";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Spinner from "core/components/Spinner";
-import Checkbox from "core/components/forms/Checkbox/Checkbox";
 import Field from "core/components/forms/Field";
 import { ensureArray } from "core/helpers/array";
 import useCacheKey from "core/hooks/useCacheKey";
@@ -12,7 +11,7 @@ import useForm from "core/hooks/useForm";
 import { PipelineType } from "graphql/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   convertParametersToPipelineInput,
   isConnectionParameter,
@@ -27,6 +26,7 @@ import {
   RunPipelineDialog_VersionFragment,
 } from "./RunPipelineDialog.generated";
 import { ErrorAlert } from "core/components/Alert";
+import Checkbox from "core/components/forms/Checkbox";
 
 type RunPipelineDialogProps = {
   children(onClick: () => void): React.ReactNode;
@@ -53,7 +53,6 @@ const VERSION_FRAGMENT = gql`
 const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const router = useRouter();
   const { pipeline, run, children } = props;
-  const [showVersionPicker, setShowVersionPicker] = useState(false);
   const clearCache = useCacheKey(["pipelines", pipeline.code]);
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -130,11 +129,13 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       if (run) {
         return {
           sendMailNotifications: true,
+          enableDebugLogs: false,
           ...run.config,
         };
       } else if (activeVersion) {
         return {
           sendMailNotifications: true,
+          enableDebugLogs: false,
           ...activeVersion.config,
         };
       }
@@ -178,7 +179,6 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   });
 
   useEffect(() => {
-    setShowVersionPicker(false);
     if (!open) {
       setActiveVersion(null);
     } else if (run?.version) {
@@ -234,40 +234,24 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           ) : (
             <>
               <Dialog.Content>
-                {!showVersionPicker ? (
-                  <div className="mb-6 gap-x-1">
-                    <p>
-                      {!props.run
-                        ? t("This pipeline will run using the latest version.")
-                        : t("This pipeline will run using the same version.")}
-                      &nbsp;
-                      <button
-                        className="text-sm text-blue-600 hover:text-blue-500 inline"
-                        role="link"
-                        onClick={() => {
-                          setShowVersionPicker(true);
-                        }}
-                      >
-                        {t("Select specific version")}
-                      </button>
-                    </p>
+                {form.submitError && (
+                  <div className="mt-3 text-sm text-red-600">
+                    {form.submitError}
                   </div>
-                ) : (
-                  <Field
-                    name="version"
-                    label={t("Version")}
-                    required
-                    className="mb-6"
-                  >
-                    <PipelineVersionPicker
-                      required
-                      pipeline={pipeline}
-                      value={activeVersion}
-                      onChange={(value) => setActiveVersion(value)}
-                    />
-                  </Field>
                 )}
-
+                <Field
+                  name="version"
+                  label={t("Version")}
+                  required
+                  className="mb-6"
+                >
+                  <PipelineVersionPicker
+                    required
+                    pipeline={pipeline}
+                    value={activeVersion}
+                    onChange={(value) => setActiveVersion(value)}
+                  />
+                </Field>
                 <div
                   className={clsx(
                     "grid gap-x-3 gap-y-4",
@@ -297,27 +281,41 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                     </Field>
                   ))}
                 </div>
-                {form.submitError && (
-                  <div className="mt-3 text-sm text-red-600">
-                    {form.submitError}
-                  </div>
-                )}
-              </Dialog.Content>
-              <Dialog.Actions className="flex-1 items-center">
-                <div className="flex flex-1 items-center">
+                <Field
+                  name="notifiation"
+                  label={t("Notifications")}
+                  required
+                  className="mb-6"
+                >
                   <Checkbox
-                    checked={!form.formData.sendMailNotifications}
+                    checked={form.formData.sendMailNotifications}
                     name="sendMailNotifications"
                     onChange={(event) =>
                       form.setFieldValue(
                         "sendMailNotifications",
-                        !event.target.checked,
+                        event.target.checked,
                       )
                     }
-                    label={t("Mute notifications")}
-                    help={t("Notifications will be disabled for this run.")}
+                    label={t("Send notifications")}
+                    help={t("Notifications will be sent for this run.")}
                   />
-                </div>
+                </Field>
+                <Field name="logs" label={t("Logs")} required className="mb-6">
+                  <Checkbox
+                    checked={form.formData.enableDebugLogs}
+                    name="enableDebugLogs"
+                    onChange={(event) =>
+                      form.setFieldValue(
+                        "enableDebugLogs",
+                        event.target.checked,
+                      )
+                    }
+                    label={t("Show debug logs")}
+                    help={t("Debug logs will be enabled for this run.")}
+                  />
+                </Field>
+              </Dialog.Content>
+              <Dialog.Actions className="flex-1 items-center">
                 <Button variant="white" onClick={onClose}>
                   {t("Cancel")}
                 </Button>
