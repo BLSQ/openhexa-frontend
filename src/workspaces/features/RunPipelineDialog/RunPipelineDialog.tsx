@@ -105,7 +105,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
 
   const form = useForm<{ [key: string]: any }>({
     async onSubmit(values) {
-      const { sendMailNotifications, ...params } = values;
+      const { sendMailNotifications, enableDebugLogs, ...params } = values;
       if (!activeVersion) {
         throw new Error("No active version found");
       }
@@ -114,6 +114,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
         convertParametersToPipelineInput(activeVersion!, params),
         activeVersion!.id,
         sendMailNotifications,
+        enableDebugLogs,
       );
       await router.push(
         `/workspaces/${encodeURIComponent(
