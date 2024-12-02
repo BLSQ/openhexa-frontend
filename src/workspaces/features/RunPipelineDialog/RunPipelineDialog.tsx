@@ -235,11 +235,6 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           ) : (
             <>
               <Dialog.Content>
-                {form.submitError && (
-                  <div className="mt-3 text-sm text-red-600">
-                    {form.submitError}
-                  </div>
-                )}
                 <Field
                   name="version"
                   label={t("Version")}
@@ -315,6 +310,11 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                     help={t("Debug logs will be enabled for this run.")}
                   />
                 </Field>
+                {form.submitError && (
+                  <div className="mt-3 text-sm text-red-600">
+                    {form.submitError}
+                  </div>
+                )}
               </Dialog.Content>
               <Dialog.Actions className="flex-1 items-center">
                 <Button variant="white" onClick={onClose}>
