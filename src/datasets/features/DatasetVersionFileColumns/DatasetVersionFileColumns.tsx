@@ -31,7 +31,7 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
   const { file } = props;
   const { data, loading } = useQuery(
     gql`
-      query DatasetVersionFileMetadata($id: ID!) {
+      query DatasetVersionFileColumnsMetadata($id: ID!) {
         datasetVersionFile(id: $id) {
           id
           attributes {

@@ -3,12 +3,12 @@ import * as Types from '../../../graphql/types';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export type DatasetVersionFileMetadataQueryVariables = Types.Exact<{
+export type DatasetVersionFileColumnsMetadataQueryVariables = Types.Exact<{
   id: Types.Scalars['ID']['input'];
 }>;
 
 
-export type DatasetVersionFileMetadataQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, attributes: Array<{ __typename?: 'MetadataAttribute', id: string, key: string, value?: any | null, system: boolean }> } | null };
+export type DatasetVersionFileColumnsMetadataQuery = { __typename?: 'Query', datasetVersionFile?: { __typename?: 'DatasetVersionFile', id: string, attributes: Array<{ __typename?: 'MetadataAttribute', id: string, key: string, value?: any | null, system: boolean }> } | null };
 
 export type DatasetVersionFileColumns_FileFragment = { __typename?: 'DatasetVersionFile', id: string };
 
@@ -17,8 +17,8 @@ export const DatasetVersionFileColumns_FileFragmentDoc = gql`
   id
 }
     `;
-export const DatasetVersionFileMetadataDocument = gql`
-    query DatasetVersionFileMetadata($id: ID!) {
+export const DatasetVersionFileColumnsMetadataDocument = gql`
+    query DatasetVersionFileColumnsMetadata($id: ID!) {
   datasetVersionFile(id: $id) {
     id
     attributes {
@@ -32,34 +32,34 @@ export const DatasetVersionFileMetadataDocument = gql`
     `;
 
 /**
- * __useDatasetVersionFileMetadataQuery__
+ * __useDatasetVersionFileColumnsMetadataQuery__
  *
- * To run a query within a React component, call `useDatasetVersionFileMetadataQuery` and pass it any options that fit your needs.
- * When your component renders, `useDatasetVersionFileMetadataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDatasetVersionFileColumnsMetadataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDatasetVersionFileColumnsMetadataQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useDatasetVersionFileMetadataQuery({
+ * const { data, loading, error } = useDatasetVersionFileColumnsMetadataQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDatasetVersionFileMetadataQuery(baseOptions: Apollo.QueryHookOptions<DatasetVersionFileMetadataQuery, DatasetVersionFileMetadataQueryVariables> & ({ variables: DatasetVersionFileMetadataQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useDatasetVersionFileColumnsMetadataQuery(baseOptions: Apollo.QueryHookOptions<DatasetVersionFileColumnsMetadataQuery, DatasetVersionFileColumnsMetadataQueryVariables> & ({ variables: DatasetVersionFileColumnsMetadataQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DatasetVersionFileMetadataQuery, DatasetVersionFileMetadataQueryVariables>(DatasetVersionFileMetadataDocument, options);
+        return Apollo.useQuery<DatasetVersionFileColumnsMetadataQuery, DatasetVersionFileColumnsMetadataQueryVariables>(DatasetVersionFileColumnsMetadataDocument, options);
       }
-export function useDatasetVersionFileMetadataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DatasetVersionFileMetadataQuery, DatasetVersionFileMetadataQueryVariables>) {
+export function useDatasetVersionFileColumnsMetadataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DatasetVersionFileColumnsMetadataQuery, DatasetVersionFileColumnsMetadataQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DatasetVersionFileMetadataQuery, DatasetVersionFileMetadataQueryVariables>(DatasetVersionFileMetadataDocument, options);
+          return Apollo.useLazyQuery<DatasetVersionFileColumnsMetadataQuery, DatasetVersionFileColumnsMetadataQueryVariables>(DatasetVersionFileColumnsMetadataDocument, options);
         }
-export function useDatasetVersionFileMetadataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DatasetVersionFileMetadataQuery, DatasetVersionFileMetadataQueryVariables>) {
+export function useDatasetVersionFileColumnsMetadataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DatasetVersionFileColumnsMetadataQuery, DatasetVersionFileColumnsMetadataQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<DatasetVersionFileMetadataQuery, DatasetVersionFileMetadataQueryVariables>(DatasetVersionFileMetadataDocument, options);
+          return Apollo.useSuspenseQuery<DatasetVersionFileColumnsMetadataQuery, DatasetVersionFileColumnsMetadataQueryVariables>(DatasetVersionFileColumnsMetadataDocument, options);
         }
-export type DatasetVersionFileMetadataQueryHookResult = ReturnType<typeof useDatasetVersionFileMetadataQuery>;
-export type DatasetVersionFileMetadataLazyQueryHookResult = ReturnType<typeof useDatasetVersionFileMetadataLazyQuery>;
-export type DatasetVersionFileMetadataSuspenseQueryHookResult = ReturnType<typeof useDatasetVersionFileMetadataSuspenseQuery>;
-export type DatasetVersionFileMetadataQueryResult = Apollo.QueryResult<DatasetVersionFileMetadataQuery, DatasetVersionFileMetadataQueryVariables>;
+export type DatasetVersionFileColumnsMetadataQueryHookResult = ReturnType<typeof useDatasetVersionFileColumnsMetadataQuery>;
+export type DatasetVersionFileColumnsMetadataLazyQueryHookResult = ReturnType<typeof useDatasetVersionFileColumnsMetadataLazyQuery>;
+export type DatasetVersionFileColumnsMetadataSuspenseQueryHookResult = ReturnType<typeof useDatasetVersionFileColumnsMetadataSuspenseQuery>;
+export type DatasetVersionFileColumnsMetadataQueryResult = Apollo.QueryResult<DatasetVersionFileColumnsMetadataQuery, DatasetVersionFileColumnsMetadataQueryVariables>;

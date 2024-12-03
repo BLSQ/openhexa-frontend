@@ -14,7 +14,6 @@ import {
   DatasetExplorer_VersionFragment,
 } from "./DatasetExplorer.generated";
 import ErrorBoundary from "core/components/ErrorBoundary";
-import DatasetVersionFileMetadata from "../DatasetVersionFileColumns";
 import DatasetVersionFileColumns from "../DatasetVersionFileColumns";
 
 type DatasetExplorerProps = {
@@ -98,7 +97,7 @@ const DatasetExplorer = ({
                 className="space-y-2 mt-2 h-[560px] xtall:h-[700px] relative overflow-y-scroll"
               >
                 <ErrorBoundary fullScreen={false}>
-                  <DatasetVersionFileMetadata file={currentFile} />
+                  <DatasetVersionFileColumns file={currentFile} />
                 </ErrorBoundary>
               </Tabs.Tab>
             </Tabs>
