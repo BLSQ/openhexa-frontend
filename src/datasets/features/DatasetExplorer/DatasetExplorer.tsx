@@ -14,6 +14,8 @@ import {
   DatasetExplorer_VersionFragment,
 } from "./DatasetExplorer.generated";
 import ErrorBoundary from "core/components/ErrorBoundary";
+import DatasetVersionFileMetadata from "../DatasetVersionFileColumns";
+import DatasetVersionFileColumns from "../DatasetVersionFileColumns";
 
 type DatasetExplorerProps = {
   version: DatasetExplorer_VersionFragment;
@@ -82,7 +84,6 @@ const DatasetExplorer = ({
                 </code>
               </DescriptionList.Item>
             </DescriptionList>
-
             <Tabs>
               <Tabs.Tab
                 label={t("Preview")}
@@ -90,6 +91,14 @@ const DatasetExplorer = ({
               >
                 <ErrorBoundary fullScreen={false}>
                   <DatasetVersionFileSample file={currentFile} />
+                </ErrorBoundary>
+              </Tabs.Tab>
+              <Tabs.Tab
+                label={t("Columns")}
+                className="space-y-2 mt-2 h-[560px] xtall:h-[700px] relative overflow-y-scroll"
+              >
+                <ErrorBoundary fullScreen={false}>
+                  <DatasetVersionFileMetadata file={currentFile} />
                 </ErrorBoundary>
               </Tabs.Tab>
             </Tabs>
@@ -111,12 +120,14 @@ DatasetExplorer.fragments = {
       }
       ...DownloadVersionFile_file
       ...DatasetVersionFileSample_file
+      ...DatasetVersionFileColumns_file
       contentType
       size
       uri
     }
     ${DownloadVersionFile.fragments.file}
     ${DatasetVersionFileSample.fragments.file}
+    ${DatasetVersionFileColumns.fragments.file}
   `,
   version: gql`
     fragment DatasetExplorer_version on DatasetVersion {

@@ -317,3 +317,11 @@ export async function deleteDataset(datasetId: string) {
     throw new Error("An unknown error occurred");
   }
 }
+
+export function percentage(part: number, total: number): number {
+  if (total === 0) {
+    throw new Error("Total cannot be zero");
+  }
+  const result = (part / total) * 100;
+  return Math.round(result * 100) / 100;
+}
