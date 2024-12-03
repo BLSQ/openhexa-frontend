@@ -306,8 +306,8 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                         event.target.checked,
                       )
                     }
-                    label={t("Show debug logs")}
-                    help={t("Debug logs will be enabled for this run.")}
+                    label={t("Show debug messages")}
+                    help={t("Debug messages will be shown for this run.")}
                   />
                 </Field>
                 {form.submitError && (
