@@ -19,7 +19,7 @@ export type DatasetColumn = {
   missingValues: number;
   system: boolean;
   uniqueValues?: number;
-  totalValues: number;
+  count: number;
 };
 
 type DatasetVersionFileColumnsProps = {
@@ -50,13 +50,13 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
     },
   );
 
-  const metadata: Array<DatasetColumn> = useMemo(() => {
+  const { columns, total } = useMemo(() => {
     if (!data?.datasetVersionFile.attributes) {
-      return [];
+      return { columns: [], total: 0 };
     }
 
     const { attributes } = data.datasetVersionFile;
-    return Object.values(
+    const res: Array<DatasetColumn> = Object.values(
       attributes.reduce((acc: any, item: MetadataAttribute) => {
         const [columnKey, property] = item.key.split(".");
         if (!acc[columnKey]) {
@@ -70,6 +70,11 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
         return acc;
       }, {}),
     );
+
+    return {
+      columns: res,
+      total: res.length ? res[0].count + res[0].missingValues : 0,
+    };
   }, [data]);
 
   if (loading)
@@ -79,7 +84,7 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
       </div>
     );
 
-  if (!metadata.length) {
+  if (!columns.length) {
     return (
       <div className="text-sm text-gray-500 italic w-full flex justify-center p-4">
         {t("Columns metadata not available.")}
@@ -89,16 +94,17 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
 
   return (
     <div className="grid grid-cols-2 gap-2">
-      {metadata.map((metadataAttribute: DatasetColumn) => (
+      {columns.map((column: DatasetColumn) => (
         <Card
-          className="min-h-36"
-          key={metadataAttribute.key}
+          key={column.key}
           title={
-            <div className="flex justify-between items-start">
-              <p className="font-semibold text-sm max-w-60">
-                {metadataAttribute.columnName}
-              </p>
-              <Badge>{metadataAttribute.dataType}</Badge>
+            <div className="flex justify-between">
+              <span className="max-w-[80%] font-semibold text-sm">
+                {column.columnName}
+              </span>
+              <div>
+                <Badge>{column.dataType}</Badge>
+              </div>
             </div>
           }
         >
@@ -106,12 +112,12 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
             <DescriptionList>
               <DescriptionList.Item label={t("Distinct")}>
                 <code className="font-mono text-sm text-gray-600">
-                  {`${metadataAttribute.distinctValues}(${percentage(metadataAttribute.distinctValues, metadataAttribute.totalValues)}%)`}
+                  {`${column.distinctValues}(${percentage(column.distinctValues, total)}%)`}
                 </code>
               </DescriptionList.Item>
               <DescriptionList.Item label={t("Missing")}>
                 <code className="font-mono text-sm text-gray-600 -px-1">
-                  {`${metadataAttribute.missingValues}(${percentage(metadataAttribute.missingValues, metadataAttribute.totalValues)}%)`}
+                  {`${column.missingValues}(${percentage(column.missingValues, total)}%)`}
                 </code>
               </DescriptionList.Item>
             </DescriptionList>
