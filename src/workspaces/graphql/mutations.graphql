@@ -46,6 +46,17 @@ mutation archiveWorkspace($input: ArchiveWorkspaceInput!) {
   }
 }
 
+mutation insertWorkspaceMember($input: InsertWorkspaceMemberInput!) {
+  insertWorkspaceMember(input: $input) {
+    success
+    errors
+    workspaceMembership {
+      id
+      role
+    }
+  }
+}
+
 mutation inviteWorkspaceMember($input: InviteWorkspaceMemberInput!) {
   inviteWorkspaceMember(input: $input) {
     success

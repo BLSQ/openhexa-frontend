@@ -1,3 +1,3 @@
-import InviteMemberDialog from "./InviteMemberDialog";
+import InviteOrAddMemberDialog from "./InviteMemberDialog";
 
-export default InviteMemberDialog;
+export default InviteOrAddMemberDialog;
