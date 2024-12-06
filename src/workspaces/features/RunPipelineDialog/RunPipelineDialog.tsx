@@ -1,5 +1,5 @@
 import { gql, useLazyQuery } from "@apollo/client";
-import { PlayIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, PlayIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
@@ -27,6 +27,11 @@ import {
 } from "./RunPipelineDialog.generated";
 import { ErrorAlert } from "core/components/Alert";
 import Checkbox from "core/components/forms/Checkbox";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 
 type RunPipelineDialogProps = {
   children(onClick: () => void): React.ReactNode;
@@ -225,7 +230,6 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           onClose={onClose}
           centered={false}
           onSubmit={form.handleSubmit}
-          maxWidth={"max-w-3xl"}
         >
           <Dialog.Title>{t("Run pipeline")}</Dialog.Title>
           {!activeVersion ? (
@@ -235,19 +239,6 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           ) : (
             <>
               <Dialog.Content>
-                <Field
-                  name="version"
-                  label={t("Version")}
-                  required
-                  className="mb-6"
-                >
-                  <PipelineVersionPicker
-                    required
-                    pipeline={pipeline}
-                    value={activeVersion}
-                    onChange={(value) => setActiveVersion(value)}
-                  />
-                </Field>
                 <div
                   className={clsx(
                     "grid gap-x-3 gap-y-4",
@@ -277,44 +268,88 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                     </Field>
                   ))}
                 </div>
-                <Field
-                  name="notifiation"
-                  label={t("Notifications")}
-                  required
-                  className="mb-6"
-                >
-                  <Checkbox
-                    checked={form.formData.sendMailNotifications}
-                    name="sendMailNotifications"
-                    onChange={(event) =>
-                      form.setFieldValue(
-                        "sendMailNotifications",
-                        event.target.checked,
-                      )
-                    }
-                    label={t("Send notifications")}
-                    help={t("Notifications will be sent for this run.")}
-                  />
-                </Field>
-                <Field name="logs" label={t("Logs")} required className="mb-6">
-                  <Checkbox
-                    checked={form.formData.enableDebugLogs}
-                    name="enableDebugLogs"
-                    onChange={(event) =>
-                      form.setFieldValue(
-                        "enableDebugLogs",
-                        event.target.checked,
-                      )
-                    }
-                    label={t("Show debug messages")}
-                    help={t("Debug messages will be shown for this run.")}
-                  />
-                </Field>
                 {form.submitError && (
                   <div className="mt-3 text-sm text-red-600">
                     {form.submitError}
                   </div>
                 )}
+                <Disclosure as="div" className={"mt-5"}>
+                  {({ open }) => (
+                    <>
+                      <DisclosureButton className="group flex w-full justify-between text-left">
+                        <div className="flex flex-col">
+                          <span
+                            className={
+                              "font-bold text-sm group-data-[hover]:text-black/80"
+                            }
+                          >
+                            {t("Advanced settings")}
+                          </span>
+                          {!open && (
+                            <span className="text-gray-500 text-sm mt-1">
+                              {t("Pipeline version, notifications and logs")}
+                            </span>
+                          )}
+                        </div>
+                        <ChevronDownIcon
+                          className={`size-5 mt-1 ml-5 group-data-[hover]:text-black-900 ${
+                            open ? "rotate-180" : ""
+                          }`}
+                        />
+                      </DisclosureButton>
+                      <DisclosurePanel>
+                        <Field
+                          name="version"
+                          label={t("Version")}
+                          required
+                          className="mb-3"
+                        >
+                          <PipelineVersionPicker
+                            required
+                            pipeline={pipeline}
+                            value={activeVersion}
+                            onChange={(value) => setActiveVersion(value)}
+                          />
+                        </Field>
+                        <Field
+                          name="notification"
+                          label={t("Notifications")}
+                          required
+                          className="mb-4"
+                        >
+                          <Checkbox
+                            checked={form.formData.sendMailNotifications}
+                            name="sendMailNotifications"
+                            onChange={(event) =>
+                              form.setFieldValue(
+                                "sendMailNotifications",
+                                event.target.checked,
+                              )
+                            }
+                            label={t("Send notifications")}
+                            help={t("Notifications will be sent for this run.")}
+                          />
+                        </Field>
+                        <Field name="logs" label={t("Logs")} required>
+                          <Checkbox
+                            checked={form.formData.enableDebugLogs}
+                            name="enableDebugLogs"
+                            onChange={(event) =>
+                              form.setFieldValue(
+                                "enableDebugLogs",
+                                event.target.checked,
+                              )
+                            }
+                            label={t("Show debug messages")}
+                            help={t(
+                              "Debug messages will be shown for this run.",
+                            )}
+                          />
+                        </Field>
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
               </Dialog.Content>
               <Dialog.Actions className="flex-1 items-center">
                 <Button variant="white" onClick={onClose}>
