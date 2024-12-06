@@ -11,7 +11,6 @@ import Link from "core/components/Link";
 import Page from "core/components/Page";
 import Switch from "core/components/Switch";
 import Time from "core/components/Time";
-import Checkbox from "core/components/forms/Checkbox";
 import User from "core/features/User";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
@@ -29,15 +28,15 @@ import { useTranslation } from "next-i18next";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
 import RunLogs from "pipelines/features/RunLogs";
 import RunMessages from "pipelines/features/RunMessages";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import RunOutputsTable from "workspaces/features/RunOutputsTable";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import StopPipelineDialog from "workspaces/features/StopPipelineDialog";
 import {
+  useWorkspacePipelineRunPageQuery,
   WorkspacePipelineRunPageDocument,
   WorkspacePipelineRunPageQuery,
   WorkspacePipelineRunPageQueryVariables,
-  useWorkspacePipelineRunPageQuery,
 } from "workspaces/graphql/queries.generated";
 import {
   formatPipelineType,
@@ -160,6 +159,13 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
               )}/pipelines/${encodeURIComponent(run.pipeline.code)}`}
             >
               {run.pipeline.name}
+            </Breadcrumbs.Part>
+            <Breadcrumbs.Part
+              href={`/workspaces/${encodeURIComponent(
+                workspace.slug,
+              )}/pipelines/${encodeURIComponent(run.pipeline.code)}/runs`}
+            >
+              {t("Runs")}
             </Breadcrumbs.Part>
             <Breadcrumbs.Part
               isLast
@@ -295,7 +301,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                 )}
                 {run.version && (
                   <DescriptionList.Item label={t("Version")}>
-                    {run.version.name}
+                    {run.version.versionName}
                   </DescriptionList.Item>
                 )}
                 <DescriptionList.Item
@@ -303,9 +309,6 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                   help={t("See documentation for more info.")}
                 >
                   {run.timeout ? formatDuration(run.timeout) : "-"}
-                </DescriptionList.Item>
-                <DescriptionList.Item label={t("Notifications")}>
-                  <Checkbox checked={run.sendMailNotifications} disabled />
                 </DescriptionList.Item>
               </DescriptionList>
             </Block.Section>

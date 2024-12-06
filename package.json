@@ -36,8 +36,7 @@
     "@apollo/link-error": "^2.0.0-beta.3",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/lang-python": "^6.1.6",
-    "@headlessui/react": "^1",
-    "@headlessui/tailwindcss": "^0.2.1",
+    "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.1.5",
     "@next/bundle-analyzer": "^15.0.1",
     "@popperjs/core": "^2.11.8",
@@ -123,9 +122,9 @@
     "next-router-mock": "^0.9.13",
     "npm-run-all2": "^7.0.0",
     "postcss": "^8.4.47",
-    "prettier": "3.3.3",
+    "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^3.4.12"
   },
-  "version": "0.54.3"
+  "version": "0.55.0"
 }
