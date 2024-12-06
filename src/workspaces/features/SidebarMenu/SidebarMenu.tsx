@@ -45,7 +45,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   const { workspace, compact = false } = props;
   const { t } = useTranslation();
   const me = useMe();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setDialogOpen] = useState(false);
   const [hasLegacyAccess] = useFeature("openhexa_legacy");
   const router = useRouter();
   useEffect(() => {
@@ -181,7 +181,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                 <>
                   <button
                     type="button"
-                    onClick={() => setIsDialogOpen(true)}
+                    onClick={() => setDialogOpen(true)}
                     title={t("Create a new workspace")}
                     className="text-gray-400 hover:text-gray-600"
                   >
@@ -189,7 +189,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                   </button>
                   <CreateWorkspaceDialog
                     open={isDialogOpen}
-                    onClose={() => setIsDialogOpen(false)}
+                    onClose={() => setDialogOpen(false)}
                   />
                 </>
               )}
