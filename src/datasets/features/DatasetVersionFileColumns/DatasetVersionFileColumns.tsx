@@ -8,7 +8,6 @@ import DescriptionList from "core/components/DescriptionList";
 import { useTranslation } from "react-i18next";
 import Badge from "core/components/Badge";
 import { percentage } from "datasets/helpers/dataset";
-import Overflow from "core/components/Overflow";
 
 export type DatasetColumn = {
   id: string;
@@ -94,42 +93,40 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
   }
 
   return (
-    <Overflow vertical className="h-full">
-      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
-        {columns.map((column: DatasetColumn) => (
-          <Card
-            key={column.key}
-            title={
-              <div className="flex justify-between">
-                <span className="max-w-[80%] font-semibold text-sm font-mono">
-                  {column.columnName}
-                </span>
-                <div>
-                  <Badge className="text-xs bg-gray-100 font-mono">
-                    {column.dataType}
-                  </Badge>
-                </div>
+    <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
+      {columns.map((column: DatasetColumn) => (
+        <Card
+          key={column.key}
+          title={
+            <div className="flex justify-between">
+              <span className="max-w-[80%] font-semibold text-sm font-mono">
+                {column.columnName}
+              </span>
+              <div>
+                <Badge className="text-xs bg-gray-100 font-mono">
+                  {column.dataType}
+                </Badge>
               </div>
-            }
-          >
-            <Card.Content>
-              <DescriptionList compact>
-                <DescriptionList.Item label={t("Distinct")}>
-                  <code className="font-mono text-sm text-gray-600">
-                    {`${column.distinctValues} (${percentage(column.distinctValues, total)}%)`}
-                  </code>
-                </DescriptionList.Item>
-                <DescriptionList.Item label={t("Missing")} className="gap-4">
-                  <code className="font-mono text-sm text-gray-600 ">
-                    {`${column.missingValues} (${percentage(column.missingValues, total)}%)`}
-                  </code>
-                </DescriptionList.Item>
-              </DescriptionList>
-            </Card.Content>
-          </Card>
-        ))}
-      </div>
-    </Overflow>
+            </div>
+          }
+        >
+          <Card.Content>
+            <DescriptionList compact>
+              <DescriptionList.Item label={t("Distinct")}>
+                <code className="font-mono text-sm text-gray-600">
+                  {`${column.distinctValues} (${percentage(column.distinctValues, total)}%)`}
+                </code>
+              </DescriptionList.Item>
+              <DescriptionList.Item label={t("Missing")} className="gap-4">
+                <code className="font-mono text-sm text-gray-600 ">
+                  {`${column.missingValues} (${percentage(column.missingValues, total)}%)`}
+                </code>
+              </DescriptionList.Item>
+            </DescriptionList>
+          </Card.Content>
+        </Card>
+      ))}
+    </div>
   );
 };
 
