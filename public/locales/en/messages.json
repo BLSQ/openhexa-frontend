@@ -286,6 +286,7 @@
   "Pipeline runs": "Pipeline runs",
   "Pipelines": "Pipelines",
   "Please enter an email address": "Please enter an email address",
+  "Please enter the workspace name to confirm:": "Please enter the workspace name to confirm:",
   "Port": "Port",
   "Port of the PostgreSQL server": "Port of the PostgreSQL server",
   "Preview": "Preview",
