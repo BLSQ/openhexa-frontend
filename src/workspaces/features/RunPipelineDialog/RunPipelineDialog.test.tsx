@@ -119,6 +119,7 @@ describe("RunPipelineDialog", () => {
       </RunPipelineDialog>,
     );
     await user.click(await screen.findByTestId("trigger"));
+    await user.click(await screen.findByText("Advanced settings"));
     await user.click(await screen.findByLabelText("Send notifications"));
     await user.click(await screen.findByLabelText("Show debug messages"));
     await submitForm(user);
@@ -405,7 +406,7 @@ describe("RunPipelineDialog", () => {
 
     // Fill in the form
     const comboboxButtons = await screen.findAllByTestId("combobox-button");
-    await user.click(comboboxButtons[1]);
+    await user.click(comboboxButtons[0]);
     await user.click(await screen.findByText("2"));
 
     await submitForm(user);
