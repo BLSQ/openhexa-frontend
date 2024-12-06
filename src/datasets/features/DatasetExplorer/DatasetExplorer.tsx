@@ -52,7 +52,7 @@ const DatasetExplorer = ({
           ))}
         </ul>
       </Overflow>
-      <div className="flex-1 py-2 space-y-4">
+      <div className="flex-1 py-2 space-y-4 min-w-0">
         {currentFile && (
           <div className="px-4 py-1 space-y-6">
             <Title level={3} className="flex justify-between gap-4">
