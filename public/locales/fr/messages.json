@@ -264,7 +264,7 @@
   "Notebook path": "Chemin du notebook",
   "Notebooks": "Notebooks",
   "Notifications": "Notifications",
-  "Notifications will be sent for this run.": "Les notifications seront envoyées pour cette run",
+  "Notifications will be sent for this run.": "Les notifications seront envoyées pour cette exécution",
   "One of the fields is invalid. Please check your inputs.": "L'un des champs n'est pas valide. Veuillez vérifier vos données.",
   "Only letters, numbers, dashes and underscores are allowed. 'code' and 'description' are protected words and cannot be used.": "Seuls les lettres, les chiffres, les tirets et les traits de soulignement sont autorisés. Les mots \"code\" et \"description\" sont protégés et ne peuvent pas être utilisés.",
   "Open in Airflow": "Ouvert dans le flux d'air",

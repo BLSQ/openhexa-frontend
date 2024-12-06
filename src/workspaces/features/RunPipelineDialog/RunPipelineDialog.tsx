@@ -292,7 +292,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                           )}
                         </div>
                         <ChevronDownIcon
-                          className={`size-5 mt-1 ml-5 group-data-[hover]:text-black-900 ${
+                          className={`size-5 mt-1 ml-5 group-data-[hover]:text-black/80 ${
                             open ? "rotate-180" : ""
                           }`}
                         />
