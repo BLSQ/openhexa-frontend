@@ -7,11 +7,7 @@ import {
   QuestionMarkCircleIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import {
-  ChevronDownIcon,
-  PlusCircleIcon,
-  MinusCircleIcon,
-} from "@heroicons/react/24/solid";
+import { ChevronDownIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 import Link from "core/components/Link";
 import User from "core/features/User";
@@ -38,8 +34,6 @@ import { logout } from "identity/helpers/auth";
 import Tooltip from "core/components/Tooltip";
 import UILanguagePicker from "identity/features/UILanguagePicker";
 import Field from "core/components/forms/Field";
-import ArchiveWorkspaceDialog from "../ArchiveWorkspaceDialog";
-import { ArchiveWorkspace_WorkspaceFragment } from "../ArchiveWorkspaceDialog/ArchiveWorkspaceDialog.generated";
 
 interface SidebarMenuProps {
   workspace: SidebarMenu_WorkspaceFragment;
@@ -51,9 +45,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
   const { workspace, compact = false } = props;
   const { t } = useTranslation();
   const me = useMe();
-  const [workspaceToArchive, setWorkspaceToArchive] =
-    useState<ArchiveWorkspace_WorkspaceFragment>();
-  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [hasLegacyAccess] = useFeature("openhexa_legacy");
   const router = useRouter();
   useEffect(() => {
@@ -75,7 +67,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
     modifiers: POPPER_MODIFIERS,
   });
   useOnClickOutside(innerMenuRef, () => {
-    if (!(isCreateDialogOpen || workspaceToArchive !== undefined)) {
+    if (!isDialogOpen) {
       // Do not close the menu if the user click in the dialog
       setFalse();
     }
@@ -93,9 +85,6 @@ const SidebarMenu = (props: SidebarMenuProps) => {
         workspaces(page: $page, perPage: $perPage) {
           totalItems
           items {
-            permissions {
-              delete
-            }
             slug
             name
             countries {
@@ -192,15 +181,15 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                 <>
                   <button
                     type="button"
-                    onClick={() => setCreateDialogOpen(true)}
+                    onClick={() => setIsDialogOpen(true)}
                     title={t("Create a new workspace")}
                     className="text-gray-400 hover:text-gray-600"
                   >
                     <PlusCircleIcon className="h-5 w-5 " />
                   </button>
                   <CreateWorkspaceDialog
-                    open={isCreateDialogOpen}
-                    onClose={() => setCreateDialogOpen(false)}
+                    open={isDialogOpen}
+                    onClose={() => setIsDialogOpen(false)}
                   />
                 </>
               )}
@@ -215,7 +204,7 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                     query: { workspaceSlug: ws.slug },
                   }}
                   className={clsx(
-                    "flex items-center px-4 py-2.5 hover:bg-gray-100 group",
+                    "flex items-center px-4 py-2.5 hover:bg-gray-100",
                     ws.slug === workspace.slug && "bg-gray-100 font-medium",
                   )}
                   key={index}
@@ -234,28 +223,6 @@ const SidebarMenu = (props: SidebarMenuProps) => {
                   <span className="text-sm leading-tight tracking-tight">
                     {ws.name}
                   </span>
-                  {ws.permissions.delete && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.preventDefault(); // Do not trigger the link
-                          setWorkspaceToArchive(ws);
-                        }}
-                        title={t("Archive")}
-                        className="text-gray-400 hover:text-red-600 ml-auto invisible group-hover:visible"
-                      >
-                        <MinusCircleIcon className="h-5 w-5" />
-                      </button>
-                      <ArchiveWorkspaceDialog
-                        workspace={ws}
-                        open={ws === workspaceToArchive}
-                        onClose={() => {
-                          setWorkspaceToArchive(undefined);
-                        }}
-                      />
-                    </>
-                  )}
                 </Link>
               ))}
               {data?.workspaces.totalItems !==
