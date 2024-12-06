@@ -9,7 +9,7 @@ export type SidebarMenuQueryVariables = Types.Exact<{
 }>;
 
 
-export type SidebarMenuQuery = { __typename?: 'Query', pendingWorkspaceInvitations: { __typename?: 'WorkspaceInvitationPage', totalItems: number }, workspaces: { __typename?: 'WorkspacePage', totalItems: number, items: Array<{ __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', delete: boolean }, countries: Array<{ __typename?: 'Country', code: string, flag: string }> }> } };
+export type SidebarMenuQuery = { __typename?: 'Query', pendingWorkspaceInvitations: { __typename?: 'WorkspaceInvitationPage', totalItems: number }, workspaces: { __typename?: 'WorkspacePage', totalItems: number, items: Array<{ __typename?: 'Workspace', slug: string, name: string, countries: Array<{ __typename?: 'Country', code: string, flag: string }> }> } };
 
 export type SidebarMenu_WorkspaceFragment = { __typename?: 'Workspace', slug: string, name: string, countries: Array<{ __typename?: 'Country', flag: string, code: string }> };
 
@@ -31,9 +31,6 @@ export const SidebarMenuDocument = gql`
   workspaces(page: $page, perPage: $perPage) {
     totalItems
     items {
-      permissions {
-        delete
-      }
       slug
       name
       countries {
