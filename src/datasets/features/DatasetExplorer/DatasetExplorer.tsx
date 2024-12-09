@@ -86,7 +86,7 @@ const DatasetExplorer = ({
             <Tabs>
               <Tabs.Tab
                 label={t("Preview")}
-                className="space-y-2 mt-2 min-h-[560px] relative"
+                className="mt-2 min-h-[560px] xtall:min-h-[780px] relative"
               >
                 <ErrorBoundary fullScreen={false}>
                   <DatasetVersionFileSample file={currentFile} />
@@ -94,7 +94,7 @@ const DatasetExplorer = ({
               </Tabs.Tab>
               <Tabs.Tab
                 label={t("Columns")}
-                className="space-y-2 mt-2 min-h-[560px] relative"
+                className="mt-2 min-h-[560px] xtall:min-h-[780px] relative"
               >
                 <DatasetVersionFileColumns file={currentFile} />
               </Tabs.Tab>
