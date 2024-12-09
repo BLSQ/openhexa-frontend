@@ -185,6 +185,8 @@ export const DatasetVersionFileSample: ApolloComponent<
             sortable
             spacing="tight"
             className="border border-gray-100 rounded-md overflow-hidden font-mono tracking-tight"
+            totalItems={sample.length}
+            fixedLayout={false}
           >
             {columns.map((col) => (
               <TextColumn id={col} label={col} accessor={col} key={col} />
