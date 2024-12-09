@@ -61,12 +61,16 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
       </Dialog.Title>
       <Dialog.Content className="space-y-4">
         <p>
-          {t("You're about to archive this workspace and all its content.")}
+          {t(
+            "You're about to archive the {{workspaceName}} workspace and all its content.",
+            { workspaceName: workspace.name },
+          )}
         </p>
         <p>{t("Please enter the workspace name to confirm:")}</p>
         <input
           type="text"
           value={inputName}
+          placeholder={workspace.name}
           onChange={(e) => setInputName(e.target.value)}
           className="w-full border border-gray-300 rounded px-2 py-1"
         />
