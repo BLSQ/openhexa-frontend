@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Spinner from "core/components/Spinner";
 import { MetadataAttribute } from "graphql/types";
 import { camelCase } from "lodash";
@@ -77,6 +77,13 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
     };
   }, [data]);
 
+  const renderAttributePercentage = useCallback((value: number) => {
+    if (!total) {
+      return "";
+    }
+    return `(${percentage(value, total)}%)`;
+  }, []);
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-24 p-4">
@@ -114,12 +121,12 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
             <DescriptionList compact>
               <DescriptionList.Item label={t("Distinct")}>
                 <code className="font-mono text-sm text-gray-600">
-                  {`${column.distinctValues} (${percentage(column.distinctValues, total)}%)`}
+                  {`${column.distinctValues} ${renderAttributePercentage(column.distinctValues)}`}
                 </code>
               </DescriptionList.Item>
               <DescriptionList.Item label={t("Missing")} className="gap-4">
                 <code className="font-mono text-sm text-gray-600 ">
-                  {`${column.missingValues} (${percentage(column.missingValues, total)}%)`}
+                  {`${column.missingValues} ${renderAttributePercentage(column.missingValues)}`}
                 </code>
               </DescriptionList.Item>
             </DescriptionList>
