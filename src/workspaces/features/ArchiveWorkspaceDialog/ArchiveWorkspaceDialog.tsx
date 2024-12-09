@@ -55,7 +55,7 @@ const ArchiveWorkspaceDialog = (props: ArchiveWorkspaceDialogProps) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} onClick={(e) => e.stopPropagation()}>
+    <Dialog open={open} onClose={onClose}>
       <Dialog.Title>
         {t("Archive {{name}}", { name: workspace.name })}
       </Dialog.Title>
