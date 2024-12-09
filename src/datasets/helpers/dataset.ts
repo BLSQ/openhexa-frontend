@@ -318,9 +318,9 @@ export async function deleteDataset(datasetId: string) {
   }
 }
 
-export function percentage(part: number, total: number): number {
+export function percentage(part: number, total: number): number | null {
   if (total <= 0 || isNaN(total)) {
-    throw new Error("Total must be a valid positive number");
+    return null;
   }
   return Number(((part / total) * 100).toFixed(2));
 }
