@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.56.2](https://github.com/BLSQ/openhexa-frontend/compare/0.56.1...0.56.2) (2024-12-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/nextjs to v8.44.0 ([#944](https://github.com/BLSQ/openhexa-frontend/issues/944)) ([d7ac3f6](https://github.com/BLSQ/openhexa-frontend/commit/d7ac3f662b0ce615eabfd5786e29a068ae65bba1))
+* **deps:** update dependency @types/node to v22.10.2 ([#943](https://github.com/BLSQ/openhexa-frontend/issues/943)) ([2bfab5f](https://github.com/BLSQ/openhexa-frontend/commit/2bfab5fdcc34739c4b9263194cfd6a38046a5473))
+* **deps:** update dependency @types/react to v18.3.15 ([#939](https://github.com/BLSQ/openhexa-frontend/issues/939)) ([cf3c6c6](https://github.com/BLSQ/openhexa-frontend/commit/cf3c6c6b01eef8d83c297d4c2f69ef2e9dd37cff))
+* **deps:** update dependency @types/react to v18.3.16 ([#940](https://github.com/BLSQ/openhexa-frontend/issues/940)) ([00ce458](https://github.com/BLSQ/openhexa-frontend/commit/00ce458995b70c8b41d7a4533ee4145545439187))
+* **deps:** update dependency i18next to v24.1.0 ([#941](https://github.com/BLSQ/openhexa-frontend/issues/941)) ([c36aa92](https://github.com/BLSQ/openhexa-frontend/commit/c36aa925473651ad92e7e356ee7c5d74d14d4a11))
+* **deps:** update nextjs monorepo to v15.1.0 ([#937](https://github.com/BLSQ/openhexa-frontend/issues/937)) ([b88bb31](https://github.com/BLSQ/openhexa-frontend/commit/b88bb311025fc286b4c4c93cd7bec4a6796b3ab7))
+
 ## [0.56.1](https://github.com/BLSQ/openhexa-frontend/compare/0.56.0...0.56.1) (2024-12-10)
 
 
