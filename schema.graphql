@@ -2254,6 +2254,25 @@ type Pipeline {
   webhookUrl: String
   type: PipelineType!
   notebookPath: String
+  template: Template
+}
+
+""" Represents a template. """
+type Template {
+  id: ID!
+  name: String!
+  code: String!
+  description: String
+  config: String
+  versions: [TemplateVersion!]
+}
+
+""" Represents a version of a template. """
+type TemplateVersion {
+  id: ID!
+  version_number: Int!
+  created_at: String!
+  template: Template!
 }
 
 enum PipelineError {

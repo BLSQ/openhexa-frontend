@@ -2725,6 +2725,7 @@ export type Pipeline = {
   recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
+  template?: Maybe<Template>;
   type: PipelineType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
@@ -3589,6 +3590,26 @@ export type TeamPermissions = {
   delete: Scalars['Boolean']['output'];
   /** Indicates whether the user has permission to update the team. */
   update: Scalars['Boolean']['output'];
+};
+
+/**  Represents a template.  */
+export type Template = {
+  __typename?: 'Template';
+  code: Scalars['String']['output'];
+  config?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  versions?: Maybe<Array<TemplateVersion>>;
+};
+
+/**  Represents a version of a template.  */
+export type TemplateVersion = {
+  __typename?: 'TemplateVersion';
+  created_at: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  template: Template;
+  version_number: Scalars['Int']['output'];
 };
 
 export enum UpdateAccessmodAccessibilityAnalysisError {

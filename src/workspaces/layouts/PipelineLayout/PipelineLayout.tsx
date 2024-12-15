@@ -16,6 +16,7 @@ import {
   PipelineLayout_PipelineFragment,
   PipelineLayout_WorkspaceFragment,
 } from "./PipelineLayout.generated";
+import PublishPipelineDialog from "workspaces/features/PublishPipelineDialog";
 
 type PipelineLayoutProps = {
   pipeline: PipelineLayout_PipelineFragment;
@@ -35,6 +36,8 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
   } = props;
 
   const { t } = useTranslation();
+  const [isPublishPipelineDialogOpen, setPublishPipelineDialogOpen] =
+    useState(false);
   const [isDeletePipelineDialogOpen, setDeletePipelineDialogOpen] =
     useState(false);
 
@@ -104,6 +107,14 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
           ))}
         </Breadcrumbs>
         <div className="flex items-center gap-2">
+          {pipeline.currentVersion && ( // TODO : permission and feature flag
+            <Button
+              onClick={() => setPublishPipelineDialogOpen(true)}
+              variant={"secondary"}
+            >
+              {t("Publish as Template")}
+            </Button>
+          )}
           {pipeline.currentVersion && (
             <DownloadPipelineVersion version={pipeline.currentVersion}>
               {({ onClick, isDownloading }) => (
@@ -145,6 +156,12 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
           pipeline={pipeline}
           workspace={workspace}
         />
+        <PublishPipelineDialog
+          open={isPublishPipelineDialogOpen}
+          onClose={() => setPublishPipelineDialogOpen(false)}
+          pipeline={pipeline}
+          workspace={workspace}
+        />
       </TabLayout.PageContent>
     </TabLayout>
   );
@@ -173,6 +190,9 @@ PipelineLayout.fragments = {
         run
         delete
         update
+      }
+      template {
+        name
       }
       currentVersion {
         id
