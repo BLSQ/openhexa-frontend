@@ -1,17 +1,20 @@
 import { gql } from "@apollo/client";
-import {
-  PipelineDelete_PipelineFragment,
-  PipelineDelete_WorkspaceFragment,
-} from "./DeletePipelineDialog.generated";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
 import useCacheKey from "core/hooks/useCacheKey";
 import { PipelineError } from "graphql/types";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDeletePipelineMutation } from "workspaces/graphql/mutations.generated";
 import Dialog from "core/components/Dialog";
+import PipelineVersionPicker from "../PipelineVersionPicker";
+import Field from "core/components/forms/Field";
+import { RunPipelineDialog_VersionFragment } from "../RunPipelineDialog/RunPipelineDialog.generated";
+import {
+  PipelineDelete_PipelineFragment,
+  PipelineDelete_WorkspaceFragment,
+} from "../DeletePipelineDialog/DeletePipelineDialog.generated";
 
 type PublishPipelineDialog = {
   open: boolean;
@@ -22,6 +25,9 @@ type PublishPipelineDialog = {
 
 const PublishPipelineDialog = (props: PublishPipelineDialog) => {
   const { t } = useTranslation();
+  const [pipelineVersion, setPipelineVersion] =
+    useState<RunPipelineDialog_VersionFragment | null>(null);
+
   const { open, onClose, pipeline, workspace } = props;
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,15 +63,39 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
     }
   };
 
+  // TODO : Button action
+  // TODO : Conditionally show the fields
+  // TODO : Filter the list of options
+  // TODO : test
   return (
     <Dialog open={open} onClose={onClose}>
-      <Dialog.Title>{t("Delete pipeline")}</Dialog.Title>
-      <Dialog.Content className="space-y-4">
-        <p>
-          <Trans>
-            Are you sure you want to delete pipeline <b>{pipeline.name}</b> ?
-          </Trans>
-        </p>
+      <Dialog.Title>{t("Create a Template")}</Dialog.Title>
+      <Dialog.Content className={"w-full"}>
+        <Field
+          name="version"
+          label={t("Version to publish")}
+          required
+          className="mb-3"
+        >
+          <PipelineVersionPicker
+            required
+            pipeline={pipeline}
+            value={pipelineVersion}
+            onChange={(value) => setPipelineVersion(value)}
+          />
+        </Field>
+        <Field
+          name="name"
+          label={t("Template name")}
+          required
+          className="mb-3"
+        />
+        <Field
+          name="description"
+          label={t("Template description")}
+          required
+          className="mb-3"
+        />
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>
@@ -73,7 +103,7 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
         </Button>
         <Button onClick={onSubmit}>
           {isSubmitting && <Spinner size="xs" className="mr-1" />}
-          {t("Delete")}
+          {t("Create Template")}
         </Button>
       </Dialog.Actions>
     </Dialog>
