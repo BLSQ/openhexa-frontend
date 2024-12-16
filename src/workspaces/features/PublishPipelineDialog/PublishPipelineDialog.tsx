@@ -22,7 +22,7 @@ type PublishPipelineDialogProps = {
   workspace: PipelinePublish_WorkspaceFragment;
 };
 
-// TODO : test the translation + test confirmation
+// TODO : test confirmation
 // TODO : rename pipelinetemplate
 const PublishPipelineDialog = ({
   open,

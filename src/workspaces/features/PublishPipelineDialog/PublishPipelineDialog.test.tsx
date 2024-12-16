@@ -4,6 +4,18 @@ import PublishPipelineDialog from "./PublishPipelineDialog";
 import { MockedProvider } from "@apollo/client/testing";
 import { useCreateTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
 import { toast } from "react-toastify";
+import i18n from "i18next";
+import { I18nextProvider, initReactI18next } from "react-i18next";
+import messages from "../../../../public/locales/en/messages.json";
+
+i18n.use(initReactI18next).init({
+  lng: "en",
+  fallbackLng: "en",
+  ns: ["messages"],
+  defaultNS: "messages",
+  debug: true,
+  resources: { en: { messages } },
+});
 
 jest.mock("react-toastify", () => ({
   toast: {
@@ -41,12 +53,14 @@ const renderPublishPipelineDialog = (pipelineOverride = {}) => {
 
   render(
     <MockedProvider>
-      <PublishPipelineDialog
-        open={true}
-        onClose={jest.fn()}
-        pipeline={{ ...pipeline, ...pipelineOverride }}
-        workspace={workspace}
-      />
+      <I18nextProvider i18n={i18n}>
+        <PublishPipelineDialog
+          open={true}
+          onClose={jest.fn()}
+          pipeline={{ ...pipeline, ...pipelineOverride }}
+          workspace={workspace}
+        />
+      </I18nextProvider>
     </MockedProvider>,
   );
 
@@ -91,7 +105,7 @@ describe("PublishPipelineDialog", () => {
     });
 
     expect(toast.success).toHaveBeenCalledWith(
-      "New Template '{{name}}' created successfully.",
+      "New Template 'Test Template' created successfully.",
     );
   });
 
@@ -101,7 +115,7 @@ describe("PublishPipelineDialog", () => {
     });
 
     const submitButton = screen.getByRole("button", {
-      name: "Add a new version to Template '{{templateName}}'",
+      name: "Add a new version to Template 'template-name'",
     });
     expect(submitButton).toBeDisabled();
 
@@ -127,7 +141,7 @@ describe("PublishPipelineDialog", () => {
     });
 
     expect(toast.success).toHaveBeenCalledWith(
-      "New Template Version for '{{templateName}}' created successfully.",
+      "New Template Version for 'template-name' created successfully.",
     );
   });
 });
