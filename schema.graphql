@@ -1904,7 +1904,7 @@ type MePermissions {
   createAccessmodProject: Boolean!
   manageAccessmodAccessRequests: Boolean!
   createWorkspace: Boolean!
-  createPipelineTemplate: Boolean!
+  createPipelineTemplateVersion: Boolean!
 }
 
 """An enumeration representing the priority levels of a message."""
