@@ -63,7 +63,7 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
   };
 
   // TODO : Button action
-  // TODO : Filter the list of options
+  // TODO : Only allow to publish latest
   // TODO : test
   return (
     <Dialog open={open} onClose={onClose} className={"w-200"}>

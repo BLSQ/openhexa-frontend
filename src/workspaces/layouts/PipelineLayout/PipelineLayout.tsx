@@ -107,7 +107,7 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
           ))}
         </Breadcrumbs>
         <div className="flex items-center gap-2">
-          {pipeline.currentVersion && ( // TODO : permission and feature flag and pipeline type
+          {pipeline.currentVersion && ( // TODO : permission and feature flag and pipeline type and no template for this version
             <Button
               onClick={() => setPublishPipelineDialogOpen(true)}
               variant={"secondary"}
