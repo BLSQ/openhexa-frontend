@@ -29,6 +29,7 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
     useState<RunPipelineDialog_VersionFragment | null>(null);
 
   const { open, onClose, pipeline, workspace } = props;
+  const templateAlreadyExists = !!pipeline.template;
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -62,12 +63,17 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
   };
 
   // TODO : Button action
-  // TODO : Conditionally show the fields
   // TODO : Filter the list of options
   // TODO : test
   return (
     <Dialog open={open} onClose={onClose} className={"w-200"}>
-      <Dialog.Title>{t("Create a Template")}</Dialog.Title>
+      <Dialog.Title>
+        {t(
+          templateAlreadyExists
+            ? "Add a Template Version"
+            : "Create a Template",
+        )}
+      </Dialog.Title>
       <Dialog.Content className={"w-200"}>
         <Field
           name="version"
@@ -82,7 +88,7 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
             onChange={(value) => setPipelineVersion(value)}
           />
         </Field>
-        {pipeline.template && (
+        {!templateAlreadyExists && (
           <>
             <Field
               name="name"
