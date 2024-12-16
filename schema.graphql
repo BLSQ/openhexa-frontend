@@ -1974,6 +1974,7 @@ type Mutation {
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
   runDAG(input: RunDAGInput!): RunDAGResult!
   updateDAG(input: UpdateDAGInput!): UpdateDAGResult!
+  createTemplateVersion(input: CreateTemplateVersionInput!): CreateTemplateVersionResult!
   prepareDownloadURL(input: PrepareDownloadURLInput!): PrepareDownloadURLResult
   setDAGRunFavorite(input: SetDAGRunFavoriteInput!): SetDAGRunFavoriteResult
   createAccessmodProject(input: CreateAccessmodProjectInput!): CreateAccessmodProjectResult!
@@ -2274,6 +2275,37 @@ type TemplateVersion {
   version_number: Int!
   created_at: String!
   template: Template!
+}
+
+"""
+Represents the input for creating a new template version.
+"""
+input CreateTemplateVersionInput {
+  name: String
+  code: String
+  description: String
+  config: String
+  workspace_slug: String!
+  pipeline_id: ID!
+  pipeline_version_id: ID!
+}
+
+"""
+Represents the result of creating a new template version.
+"""
+type CreateTemplateVersionResult {
+  template: Template
+  success: Boolean!
+  errors: [CreateTemplateVersionError!]
+}
+"""
+Enum representing the possible errors that can occur when creating a template version.
+"""
+enum CreateTemplateVersionError {
+  PERMISSION_DENIED
+  WORKSPACE_NOT_FOUND
+  PIPELINE_NOT_FOUND
+  PIPELINE_VERSION_NOT_FOUND
 }
 
 enum PipelineError {
