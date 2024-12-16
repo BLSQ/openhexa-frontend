@@ -17,6 +17,9 @@ import {
   PipelineLayout_WorkspaceFragment,
 } from "./PipelineLayout.generated";
 import PublishPipelineDialog from "workspaces/features/PublishPipelineDialog";
+import useFeature from "identity/hooks/useFeature";
+import { PipelineType } from "graphql/types";
+import useMe from "identity/hooks/useMe";
 
 type PipelineLayoutProps = {
   pipeline: PipelineLayout_PipelineFragment;
@@ -40,6 +43,17 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
     useState(false);
   const [isDeletePipelineDialogOpen, setDeletePipelineDialogOpen] =
     useState(false);
+  const me = useMe();
+
+  const pipelineTemplateFeatureEnabled = useFeature("pipelineTemplates");
+  const userCanCreatePipelineTemplate = me?.permissions?.createPipelineTemplate;
+  const templateForThisVersion = !pipeline.currentVersion?.templateVersion;
+  const showPublishAsTemplateButton =
+    pipeline.currentVersion &&
+    pipeline.type !== PipelineType.Notebook &&
+    pipelineTemplateFeatureEnabled &&
+    userCanCreatePipelineTemplate &&
+    !templateForThisVersion;
 
   return (
     <TabLayout
@@ -107,7 +121,7 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
           ))}
         </Breadcrumbs>
         <div className="flex items-center gap-2">
-          {pipeline.currentVersion && ( // TODO : permission and feature flag and pipeline type and no template for this version
+          {showPublishAsTemplateButton && (
             <Button
               onClick={() => setPublishPipelineDialogOpen(true)}
               variant={"secondary"}
@@ -200,6 +214,9 @@ PipelineLayout.fragments = {
         description
         config
         externalLink
+        templateVersion {
+          id
+        }
         ...PipelineVersionPicker_version
         ...DownloadPipelineVersion_version
       }

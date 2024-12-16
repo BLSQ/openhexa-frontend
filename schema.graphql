@@ -1904,6 +1904,7 @@ type MePermissions {
   createAccessmodProject: Boolean!
   manageAccessmodAccessRequests: Boolean!
   createWorkspace: Boolean!
+  createPipelineTemplate: Boolean!
 }
 
 """An enumeration representing the priority levels of a message."""
@@ -2445,6 +2446,7 @@ type PipelineVersion {
   timeout: Int
   permissions: PipelineVersionPermissions!
   config: JSON
+  templateVersion: TemplateVersion
 }
 
 """Represents a page of pipeline versions."""
