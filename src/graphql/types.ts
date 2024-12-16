@@ -838,6 +838,33 @@ export type CreateTeamResult = {
   team?: Maybe<Team>;
 };
 
+/** Enum representing the possible errors that can occur when creating a template version. */
+export enum CreateTemplateVersionError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents the input for creating a new template version. */
+export type CreateTemplateVersionInput = {
+  code?: InputMaybe<Scalars['String']['input']>;
+  config?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  pipeline_id: Scalars['ID']['input'];
+  pipeline_version_id: Scalars['ID']['input'];
+  workspace_slug: Scalars['String']['input'];
+};
+
+/** Represents the result of creating a new template version. */
+export type CreateTemplateVersionResult = {
+  __typename?: 'CreateTemplateVersionResult';
+  errors?: Maybe<Array<CreateTemplateVersionError>>;
+  success: Scalars['Boolean']['output'];
+  template?: Maybe<Template>;
+};
+
 /** Enum representing the possible errors that can occur when creating a workspace. */
 export enum CreateWorkspaceError {
   InvalidSlug = 'INVALID_SLUG',
@@ -2037,6 +2064,7 @@ export type Mutation = {
   /** Creates a new pipeline. */
   createPipeline: CreatePipelineResult;
   createTeam: CreateTeamResult;
+  createTemplateVersion: CreateTemplateVersionResult;
   createWorkspace: CreateWorkspaceResult;
   declineWorkspaceInvitation: DeclineWorkspaceInvitationResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
@@ -2244,6 +2272,11 @@ export type MutationCreatePipelineArgs = {
 
 export type MutationCreateTeamArgs = {
   input: CreateTeamInput;
+};
+
+
+export type MutationCreateTemplateVersionArgs = {
+  input: CreateTemplateVersionInput;
 };
 
 

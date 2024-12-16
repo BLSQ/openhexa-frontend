@@ -3,9 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
-import { PipelineError } from "graphql/types";
 import React, { useState } from "react";
-import { useDeletePipelineMutation } from "workspaces/graphql/mutations.generated";
 import Dialog from "core/components/Dialog";
 import Field from "core/components/forms/Field";
 import Textarea from "core/components/forms/Textarea";
@@ -13,6 +11,7 @@ import {
   PipelinePublish_PipelineFragment,
   PipelinePublish_WorkspaceFragment,
 } from "./PublishPipelineDialog.generated";
+import { useCreateTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
 
 type PublishPipelineDialog = {
   open: boolean;
@@ -29,33 +28,33 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [deletePipeline] = useDeletePipelineMutation();
+  const [createTemplateVersion] = useCreateTemplateVersionMutation();
 
   const onSubmit = async () => {
     setIsSubmitting(true);
-    const { data } = await deletePipeline({
-      variables: {
-        input: {
-          id: pipeline.id,
-        },
-      },
-    });
-
-    if (!data?.deletePipeline) {
-      throw new Error("Unknown error.");
-    }
-
-    if (data.deletePipeline.success) {
-      setIsSubmitting(false);
-      router.push({
-        pathname: "/workspaces/[workspaceSlug]/pipelines",
-        query: { workspaceSlug: workspace.slug },
-      });
-    }
-    if (data.deletePipeline.errors.includes(PipelineError.PermissionDenied)) {
-      setIsSubmitting(false);
-      window.alert(t("Cannot delete a running or queued pipeline."));
-    }
+    // const { data } = await createTemplateVersion({
+    //   variables: {
+    //     input: {
+    //       id: pipeline.id,
+    //     },
+    //   },
+    // });
+    //
+    // if (!data?.deletePipeline) {
+    //   throw new Error("Unknown error.");
+    // }
+    //
+    // if (data.deletePipeline.success) {
+    //   setIsSubmitting(false);
+    //   router.push({
+    //     pathname: "/workspaces/[workspaceSlug]/pipelines",
+    //     query: { workspaceSlug: workspace.slug },
+    //   });
+    // }
+    // if (data.deletePipeline.errors.includes(PipelineError.PermissionDenied)) {
+    //   setIsSubmitting(false);
+    //   window.alert(t("Cannot delete a running or queued pipeline."));
+    // }
   };
 
   // TODO : Button action
