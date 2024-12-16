@@ -15,6 +15,7 @@ import {
   PipelineDelete_PipelineFragment,
   PipelineDelete_WorkspaceFragment,
 } from "../DeletePipelineDialog/DeletePipelineDialog.generated";
+import Textarea from "../../../core/components/forms/Textarea";
 
 type PublishPipelineDialog = {
   open: boolean;
@@ -68,9 +69,9 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
   // TODO : Filter the list of options
   // TODO : test
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} className={"w-200"}>
       <Dialog.Title>{t("Create a Template")}</Dialog.Title>
-      <Dialog.Content className={"w-full"}>
+      <Dialog.Content className={"w-200"}>
         <Field
           name="version"
           label={t("Version to publish")}
@@ -88,6 +89,7 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
           name="name"
           label={t("Template name")}
           required
+          fullWidth
           className="mb-3"
         />
         <Field
@@ -95,7 +97,9 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
           label={t("Template description")}
           required
           className="mb-3"
-        />
+        >
+          <Textarea name="description" required rows={20} />
+        </Field>
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>
