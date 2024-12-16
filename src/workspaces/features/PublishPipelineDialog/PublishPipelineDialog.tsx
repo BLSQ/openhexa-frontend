@@ -1,64 +1,89 @@
 import { gql } from "@apollo/client";
 import { useTranslation } from "react-i18next";
-import { useRouter } from "next/router";
 import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
 import React, { useState } from "react";
 import Dialog from "core/components/Dialog";
-import Field from "core/components/forms/Field";
-import Textarea from "core/components/forms/Textarea";
 import {
   PipelinePublish_PipelineFragment,
   PipelinePublish_WorkspaceFragment,
 } from "./PublishPipelineDialog.generated";
 import { useCreateTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
+import { CreateTemplateVersionError } from "graphql/types";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import { PublishPipelineDialogForm } from "./PublishPipelineDialogForm";
 
-type PublishPipelineDialog = {
+type PublishPipelineDialogProps = {
   open: boolean;
   onClose: () => void;
   pipeline: PipelinePublish_PipelineFragment;
   workspace: PipelinePublish_WorkspaceFragment;
 };
 
-const PublishPipelineDialog = (props: PublishPipelineDialog) => {
+const PublishPipelineDialog = ({
+  open,
+  onClose,
+  pipeline,
+  workspace,
+}: PublishPipelineDialogProps) => {
   const { t } = useTranslation();
-
-  const { open, onClose, pipeline, workspace } = props;
   const templateAlreadyExists = !!pipeline.template;
-  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
 
   const [createTemplateVersion] = useCreateTemplateVersionMutation();
 
   const onSubmit = async () => {
     setIsSubmitting(true);
-    // const { data } = await createTemplateVersion({
-    //   variables: {
-    //     input: {
-    //       id: pipeline.id,
-    //     },
-    //   },
-    // });
-    //
-    // if (!data?.deletePipeline) {
-    //   throw new Error("Unknown error.");
-    // }
-    //
-    // if (data.deletePipeline.success) {
-    //   setIsSubmitting(false);
-    //   router.push({
-    //     pathname: "/workspaces/[workspaceSlug]/pipelines",
-    //     query: { workspaceSlug: workspace.slug },
-    //   });
-    // }
-    // if (data.deletePipeline.errors.includes(PipelineError.PermissionDenied)) {
-    //   setIsSubmitting(false);
-    //   window.alert(t("Cannot delete a running or queued pipeline."));
-    // }
+    const pipelineVersionId = pipeline.currentVersion?.id;
+    if (!pipelineVersionId) {
+      setIsSubmitting(false);
+      window.alert(t("The pipeline version is not available."));
+      return;
+    }
+    const { data } = await createTemplateVersion({
+      variables: {
+        input: {
+          name,
+          code: name,
+          description,
+          config: "",
+          workspace_slug: workspace.slug,
+          pipeline_id: pipeline.id,
+          pipeline_version_id: pipelineVersionId,
+        },
+      },
+    });
+    setIsSubmitting(false);
+
+    if (!data?.createTemplateVersion) {
+      throw new Error("Unknown error.");
+    }
+
+    if (data.createTemplateVersion.success) {
+      onClose();
+      await router.push(`/workspaces/${workspace.slug}/pipelines/`); // TODO : Redirect to the new template page when this feature is available
+      toast.success(
+        t(
+          templateAlreadyExists
+            ? "New Template Version created successfully."
+            : "New Template created successfully.",
+        ),
+      );
+    } else if (
+      data.createTemplateVersion.errors?.includes(
+        CreateTemplateVersionError.PermissionDenied,
+      )
+    ) {
+      window.alert(t("Not allowed to create a template."));
+    } else {
+      window.alert(t("Unknown error."));
+    }
   };
 
-  // TODO : Button action
-  // TODO : test
   return (
     <Dialog open={open} onClose={onClose} className={"w-200"}>
       <Dialog.Title>
@@ -74,23 +99,12 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
             "This pipeline is already a template. You can add a new version of the template by publishing the latest version of this pipeline.",
           )
         ) : (
-          <>
-            <Field
-              name="name"
-              label={t("Template name")}
-              required
-              fullWidth
-              className="mb-3"
-            />
-            <Field
-              name="description"
-              label={t("Template description")}
-              required
-              className="mb-3"
-            >
-              <Textarea name="description" required rows={20} />
-            </Field>
-          </>
+          <PublishPipelineDialogForm
+            name={name}
+            setName={setName}
+            description={description}
+            setDescription={setDescription}
+          />
         )}
       </Dialog.Content>
       <Dialog.Actions>
@@ -114,6 +128,9 @@ PublishPipelineDialog.fragment = {
   pipeline: gql`
     fragment PipelinePublish_pipeline on Pipeline {
       id
+      currentVersion {
+        id
+      }
       template {
         name
       }
