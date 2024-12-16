@@ -45,10 +45,10 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
     useState(false);
   const me = useMe();
 
-  const pipelineTemplateFeatureEnabled = useFeature("pipelineTemplates");
+  const [pipelineTemplateFeatureEnabled] = useFeature("pipelineTemplates");
   const userCanCreatePipelineTemplate =
     me?.permissions?.createPipelineTemplateVersion;
-  const templateForThisVersion = !pipeline.currentVersion?.templateVersion;
+  const templateForThisVersion = !!pipeline.currentVersion?.templateVersion;
   const showPublishAsTemplateButton =
     pipeline.currentVersion &&
     pipeline.type !== PipelineType.Notebook &&

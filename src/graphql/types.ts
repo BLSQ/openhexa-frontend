@@ -1926,7 +1926,7 @@ export type MePermissions = {
   /** Indicates whether the user has permission to access the admin panel. */
   adminPanel: Scalars['Boolean']['output'];
   createAccessmodProject: Scalars['Boolean']['output'];
-  createPipelineTemplate: Scalars['Boolean']['output'];
+  createPipelineTemplateVersion: Scalars['Boolean']['output'];
   /** Indicates whether the user has permission to create a team. */
   createTeam: Scalars['Boolean']['output'];
   createWorkspace: Scalars['Boolean']['output'];
