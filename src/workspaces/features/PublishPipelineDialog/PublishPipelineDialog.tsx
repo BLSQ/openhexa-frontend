@@ -7,9 +7,7 @@ import { PipelineError } from "graphql/types";
 import React, { useState } from "react";
 import { useDeletePipelineMutation } from "workspaces/graphql/mutations.generated";
 import Dialog from "core/components/Dialog";
-import PipelineVersionPicker from "../PipelineVersionPicker";
 import Field from "core/components/forms/Field";
-import { RunPipelineDialog_VersionFragment } from "../RunPipelineDialog/RunPipelineDialog.generated";
 import Textarea from "core/components/forms/Textarea";
 import {
   PipelinePublish_PipelineFragment,
@@ -25,8 +23,6 @@ type PublishPipelineDialog = {
 
 const PublishPipelineDialog = (props: PublishPipelineDialog) => {
   const { t } = useTranslation();
-  const [pipelineVersion, setPipelineVersion] =
-    useState<RunPipelineDialog_VersionFragment | null>(null);
 
   const { open, onClose, pipeline, workspace } = props;
   const templateAlreadyExists = !!pipeline.template;
@@ -63,7 +59,6 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
   };
 
   // TODO : Button action
-  // TODO : Only allow to publish latest
   // TODO : test
   return (
     <Dialog open={open} onClose={onClose} className={"w-200"}>
@@ -75,20 +70,11 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
         )}
       </Dialog.Title>
       <Dialog.Content className={"w-200"}>
-        <Field
-          name="version"
-          label={t("Version to publish")}
-          required
-          className="mb-3"
-        >
-          <PipelineVersionPicker
-            required
-            pipeline={pipeline}
-            value={pipelineVersion}
-            onChange={(value) => setPipelineVersion(value)}
-          />
-        </Field>
-        {!templateAlreadyExists && (
+        {templateAlreadyExists ? (
+          t(
+            "This pipeline is already a template. You can add a new version of the template by publishing the latest version of this pipeline.",
+          )
+        ) : (
           <>
             <Field
               name="name"
@@ -114,7 +100,11 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
         </Button>
         <Button onClick={onSubmit}>
           {isSubmitting && <Spinner size="xs" className="mr-1" />}
-          {t("Create Template")}
+          {t(
+            templateAlreadyExists
+              ? "Add a Template Version"
+              : "Create a Template",
+          )}
         </Button>
       </Dialog.Actions>
     </Dialog>
