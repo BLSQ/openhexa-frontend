@@ -37,12 +37,7 @@ export const PublishPipelineDialogForm = ({
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <Field
-            name="description"
-            label={t("Template description")}
-            required
-            className="mb-3"
-          >
+          <Field name="description" label={t("Template description")} required>
             <Textarea
               id="description"
               name="description"
@@ -51,14 +46,14 @@ export const PublishPipelineDialogForm = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-          </Field>{" "}
+          </Field>
         </>
       )}
       <Field
         name="confirmPublishing"
         label={t("Confirm publishing")}
         required
-        className="mb-3"
+        className="mt-3 mb-3"
       >
         <Checkbox
           id="confirmPublishing"
