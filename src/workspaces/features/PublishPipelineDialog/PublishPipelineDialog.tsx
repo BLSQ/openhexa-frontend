@@ -96,7 +96,7 @@ const PublishPipelineDialog = ({
       <Dialog.Content className={"w-200"}>
         {templateAlreadyExists ? (
           t(
-            "This pipeline is already a template. You can add a new version of the template by publishing the latest version of this pipeline.",
+            "This pipeline is already published as a template. You can add a new version of the template by publishing the latest version of this pipeline.",
           )
         ) : (
           <PublishPipelineDialogForm
