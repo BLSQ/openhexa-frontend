@@ -3,7 +3,6 @@ import Field from "core/components/forms/Field";
 import Textarea from "core/components/forms/Textarea";
 import React from "react";
 import Checkbox from "core/components/forms/Checkbox";
-import { Trans } from "next-i18next";
 
 type PublishPipelineDialogFormProps = {
   name: string;
@@ -49,22 +48,16 @@ export const PublishPipelineDialogForm = ({
           onChange={(e) => setDescription(e.target.value)}
         />
       </Field>
-      <Field
-        name="confirmPublishing"
-        required
-        className="mb-3 flex items-center"
-      >
+      <Field name="confirmPublishing" required className="mb-3">
         <Checkbox
           id="confirmPublishing"
           name="confirmPublishing"
-          className="mr-3"
           checked={confirmPublishing}
           onChange={(e) => setConfirmPublishing(e.target.checked)}
+          label={t(
+            "I confirm that I want to publish this Pipeline code as a Template with all OpenHexa users.",
+          )}
         />
-        <Trans>
-          I confirm that I want to publish this Pipeline code as a Template with
-          all OpenHexa users.
-        </Trans>
       </Field>
     </>
   );

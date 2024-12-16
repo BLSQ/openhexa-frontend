@@ -97,9 +97,9 @@ const PublishPipelineDialog = ({
     : t("Create a new Template");
 
   return (
-    <Dialog open={open} onClose={onClose} className={"w-200"}>
+    <Dialog open={open} onClose={onClose} className={"w-300"}>
       <Dialog.Title>{actionMessage}</Dialog.Title>
-      <Dialog.Content className={"w-200"}>
+      <Dialog.Content className={"w-300"}>
         {templateAlreadyExists ? (
           t(
             "This pipeline is already published as a Template. You can add a new version by publishing {{versionName}}.",
