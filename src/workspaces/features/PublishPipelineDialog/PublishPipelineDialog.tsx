@@ -12,6 +12,10 @@ import PipelineVersionPicker from "../PipelineVersionPicker";
 import Field from "core/components/forms/Field";
 import { RunPipelineDialog_VersionFragment } from "../RunPipelineDialog/RunPipelineDialog.generated";
 import Textarea from "core/components/forms/Textarea";
+import {
+  PipelinePublish_PipelineFragment,
+  PipelinePublish_WorkspaceFragment,
+} from "./PublishPipelineDialog.generated";
 
 type PublishPipelineDialog = {
   open: boolean;
