@@ -11,17 +11,13 @@ import Dialog from "core/components/Dialog";
 import PipelineVersionPicker from "../PipelineVersionPicker";
 import Field from "core/components/forms/Field";
 import { RunPipelineDialog_VersionFragment } from "../RunPipelineDialog/RunPipelineDialog.generated";
-import {
-  PipelineDelete_PipelineFragment,
-  PipelineDelete_WorkspaceFragment,
-} from "../DeletePipelineDialog/DeletePipelineDialog.generated";
-import Textarea from "../../../core/components/forms/Textarea";
+import Textarea from "core/components/forms/Textarea";
 
 type PublishPipelineDialog = {
   open: boolean;
   onClose: () => void;
-  pipeline: PipelineDelete_PipelineFragment;
-  workspace: PipelineDelete_WorkspaceFragment;
+  pipeline: PipelinePublish_PipelineFragment;
+  workspace: PipelinePublish_WorkspaceFragment;
 };
 
 const PublishPipelineDialog = (props: PublishPipelineDialog) => {
@@ -85,21 +81,25 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
             onChange={(value) => setPipelineVersion(value)}
           />
         </Field>
-        <Field
-          name="name"
-          label={t("Template name")}
-          required
-          fullWidth
-          className="mb-3"
-        />
-        <Field
-          name="description"
-          label={t("Template description")}
-          required
-          className="mb-3"
-        >
-          <Textarea name="description" required rows={20} />
-        </Field>
+        {pipeline.template && (
+          <>
+            <Field
+              name="name"
+              label={t("Template name")}
+              required
+              fullWidth
+              className="mb-3"
+            />
+            <Field
+              name="description"
+              label={t("Template description")}
+              required
+              className="mb-3"
+            >
+              <Textarea name="description" required rows={20} />
+            </Field>
+          </>
+        )}
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>
@@ -116,14 +116,14 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
 
 PublishPipelineDialog.fragment = {
   pipeline: gql`
-    fragment PipelineDelete_pipeline on Pipeline {
-      id
-      name
-      code
+    fragment PipelinePublish_pipeline on Pipeline {
+      template {
+        name
+      }
     }
   `,
   workspace: gql`
-    fragment PipelineDelete_workspace on Workspace {
+    fragment PipelinePublish_workspace on Workspace {
       slug
     }
   `,
