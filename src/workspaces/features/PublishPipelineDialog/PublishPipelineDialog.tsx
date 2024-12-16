@@ -22,7 +22,7 @@ type PublishPipelineDialogProps = {
   workspace: PipelinePublish_WorkspaceFragment;
 };
 
-// TODO : test the button show or not show + test confirmation
+// TODO : test the translation + test confirmation
 // TODO : rename pipelinetemplate
 const PublishPipelineDialog = ({
   open,
@@ -95,35 +95,33 @@ const PublishPipelineDialog = ({
         templateName,
       })
     : t("Create a new Template");
-
+  const confimationButtonIsDisabled =
+    !confirmPublishing ||
+    (!templateAlreadyExists && (isEmpty(name) || isEmpty(description)));
   return (
     <Dialog open={open} onClose={onClose} className={"w-300"}>
       <Dialog.Title>{actionMessage}</Dialog.Title>
       <Dialog.Content className={"w-300"}>
-        {templateAlreadyExists ? (
+        {templateAlreadyExists &&
           t(
             "This pipeline is already published as a Template. You can add a new version by publishing {{versionName}}.",
             { versionName: pipeline.currentVersion?.versionName },
-          )
-        ) : (
-          <PublishPipelineDialogForm
-            name={name}
-            setName={setName}
-            description={description}
-            setDescription={setDescription}
-            confirmPublishing={confirmPublishing}
-            setConfirmPublishing={setConfirmPublishing}
-          />
-        )}
+          )}
+        <PublishPipelineDialogForm
+          templateAlreadyExists={templateAlreadyExists}
+          name={name}
+          setName={setName}
+          description={description}
+          setDescription={setDescription}
+          confirmPublishing={confirmPublishing}
+          setConfirmPublishing={setConfirmPublishing}
+        />
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>
           {t("Cancel")}
         </Button>
-        <Button
-          onClick={onSubmit}
-          disabled={!confirmPublishing || isEmpty(name) || isEmpty(description)}
-        >
+        <Button onClick={onSubmit} disabled={confimationButtonIsDisabled}>
           {isSubmitting && <Spinner size="xs" className="mr-1" />}
           {actionMessage}
         </Button>

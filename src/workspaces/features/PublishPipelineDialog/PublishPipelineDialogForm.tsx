@@ -5,6 +5,7 @@ import React from "react";
 import Checkbox from "core/components/forms/Checkbox";
 
 type PublishPipelineDialogFormProps = {
+  templateAlreadyExists: boolean;
   name: string;
   setName: (value: string) => void;
   description: string;
@@ -14,6 +15,7 @@ type PublishPipelineDialogFormProps = {
 };
 
 export const PublishPipelineDialogForm = ({
+  templateAlreadyExists,
   name,
   setName,
   description,
@@ -24,31 +26,40 @@ export const PublishPipelineDialogForm = ({
   const { t } = useTranslation();
   return (
     <>
+      {!templateAlreadyExists && (
+        <>
+          <Field
+            name="name"
+            label={t("Template name")}
+            required
+            fullWidth
+            className="mb-3"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Field
+            name="description"
+            label={t("Template description")}
+            required
+            className="mb-3"
+          >
+            <Textarea
+              id="description"
+              name="description"
+              required
+              rows={10}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </Field>{" "}
+        </>
+      )}
       <Field
-        name="name"
-        label={t("Template name")}
-        required
-        fullWidth
-        className="mb-3"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <Field
-        name="description"
-        label={t("Template description")}
+        name="confirmPublishing"
+        label={t("Confirm publishing")}
         required
         className="mb-3"
       >
-        <Textarea
-          id="description"
-          name="description"
-          required
-          rows={10}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </Field>
-      <Field name="confirmPublishing" required className="mb-3">
         <Checkbox
           id="confirmPublishing"
           name="confirmPublishing"

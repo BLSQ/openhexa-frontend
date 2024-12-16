@@ -17,7 +17,7 @@ jest.mock("pipelines/graphql/mutations.generated", () => ({
 
 const pipeline = {
   id: "pipeline-id",
-  currentVersion: { id: "version-id" },
+  currentVersion: { id: "version-id", versionName: "version-name" },
   template: null,
 };
 
@@ -64,7 +64,15 @@ describe("PublishPipelineDialog", () => {
       target: { value: "Test Description" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Create a Template" }));
+    const submitButton = screen.getByRole("button", {
+      name: "Create a new Template",
+    });
+    expect(submitButton).toBeDisabled();
+
+    fireEvent.click(screen.getByLabelText("Confirm publishing"));
+    expect(submitButton).not.toBeDisabled();
+
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(createTemplateVersionMock).toHaveBeenCalledWith({
@@ -83,7 +91,7 @@ describe("PublishPipelineDialog", () => {
     });
 
     expect(toast.success).toHaveBeenCalledWith(
-      "New Template created successfully.",
+      "New Template '{{name}}' created successfully.",
     );
   });
 
@@ -92,9 +100,15 @@ describe("PublishPipelineDialog", () => {
       template: { name: "template-name" },
     });
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Add a Template Version" }),
-    );
+    const submitButton = screen.getByRole("button", {
+      name: "Add a new version to Template '{{templateName}}'",
+    });
+    expect(submitButton).toBeDisabled();
+
+    fireEvent.click(screen.getByLabelText("Confirm publishing"));
+    expect(submitButton).not.toBeDisabled();
+
+    fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(createTemplateVersionMock).toHaveBeenCalledWith({
@@ -113,7 +127,7 @@ describe("PublishPipelineDialog", () => {
     });
 
     expect(toast.success).toHaveBeenCalledWith(
-      "New Template Version created successfully.",
+      "New Template Version for '{{templateName}}' created successfully.",
     );
   });
 });
