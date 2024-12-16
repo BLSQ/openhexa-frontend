@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
-import useCacheKey from "core/hooks/useCacheKey";
 import { PipelineError } from "graphql/types";
 import React, { useState } from "react";
 import { useDeletePipelineMutation } from "workspaces/graphql/mutations.generated";
@@ -32,7 +31,6 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
   const { open, onClose, pipeline, workspace } = props;
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const clearCache = useCacheKey(["pipelines", pipeline.code]);
 
   const [deletePipeline] = useDeletePipelineMutation();
 
@@ -56,7 +54,6 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
         pathname: "/workspaces/[workspaceSlug]/pipelines",
         query: { workspaceSlug: workspace.slug },
       });
-      clearCache();
     }
     if (data.deletePipeline.errors.includes(PipelineError.PermissionDenied)) {
       setIsSubmitting(false);
@@ -121,6 +118,7 @@ const PublishPipelineDialog = (props: PublishPipelineDialog) => {
 PublishPipelineDialog.fragment = {
   pipeline: gql`
     fragment PipelinePublish_pipeline on Pipeline {
+      id
       template {
         name
       }
