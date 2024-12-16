@@ -21,6 +21,9 @@ type PublishPipelineDialogProps = {
   workspace: PipelinePublish_WorkspaceFragment;
 };
 
+// TODO : popup to confirm the action + test
+// TODO : test the button show or not show
+// TODO : rename pipelinetemplate
 const PublishPipelineDialog = ({
   open,
   onClose,
@@ -41,7 +44,7 @@ const PublishPipelineDialog = ({
     const pipelineVersionId = pipeline.currentVersion?.id;
     if (!pipelineVersionId) {
       setIsSubmitting(false);
-      window.alert(t("The pipeline version is not available."));
+      toast.error(t("The pipeline version is not available."));
       return;
     }
     const { data } = await createTemplateVersion({
@@ -60,43 +63,46 @@ const PublishPipelineDialog = ({
     setIsSubmitting(false);
 
     if (!data?.createTemplateVersion) {
-      throw new Error("Unknown error.");
+      toast.error("Unknown error.");
+      return;
     }
 
     if (data.createTemplateVersion.success) {
       onClose();
       await router.push(`/workspaces/${workspace.slug}/pipelines/`); // TODO : Redirect to the new template page when this feature is available
-      toast.success(
-        t(
-          templateAlreadyExists
-            ? "New Template Version created successfully."
-            : "New Template created successfully.",
-        ),
-      );
+      toast.success(successMessage);
     } else if (
       data.createTemplateVersion.errors?.includes(
         CreateTemplateVersionError.PermissionDenied,
       )
     ) {
-      window.alert(t("Not allowed to create a template."));
+      toast.error(t("You are not allowed to create a Template."));
     } else {
-      window.alert(t("Unknown error."));
+      toast.error(t("Unknown error."));
     }
   };
+  const templateName = pipeline.template?.name;
+  const successMessage = templateAlreadyExists
+    ? t("New Template Version for '{{templateName}}' created successfully.", {
+        templateName,
+      })
+    : t("New Template '{{name}}' created successfully.", {
+        name,
+      });
+  const actionMessage = templateAlreadyExists
+    ? t("Add a new version to Template '{{templateName}}'", {
+        templateName,
+      })
+    : t("Create a new Template");
 
   return (
     <Dialog open={open} onClose={onClose} className={"w-200"}>
-      <Dialog.Title>
-        {t(
-          templateAlreadyExists
-            ? "Add a Template Version"
-            : "Create a Template",
-        )}
-      </Dialog.Title>
+      <Dialog.Title>{actionMessage}</Dialog.Title>
       <Dialog.Content className={"w-200"}>
         {templateAlreadyExists ? (
           t(
-            "This pipeline is already published as a template. You can add a new version of the template by publishing the latest version of this pipeline.",
+            "This pipeline is already published as a Template. You can add a new version by publishing {{versionName}}.",
+            { versionName: pipeline.currentVersion?.versionName },
           )
         ) : (
           <PublishPipelineDialogForm
@@ -113,11 +119,7 @@ const PublishPipelineDialog = ({
         </Button>
         <Button onClick={onSubmit}>
           {isSubmitting && <Spinner size="xs" className="mr-1" />}
-          {t(
-            templateAlreadyExists
-              ? "Add a Template Version"
-              : "Create a Template",
-          )}
+          {actionMessage}
         </Button>
       </Dialog.Actions>
     </Dialog>
@@ -130,6 +132,7 @@ PublishPipelineDialog.fragment = {
       id
       currentVersion {
         id
+        versionName
       }
       template {
         name

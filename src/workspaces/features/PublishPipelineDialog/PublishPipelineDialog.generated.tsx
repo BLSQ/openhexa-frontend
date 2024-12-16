@@ -1,7 +1,7 @@
 import * as Types from '../../../graphql/types';
 
 import { gql } from '@apollo/client';
-export type PipelinePublish_PipelineFragment = { __typename?: 'Pipeline', id: string, currentVersion?: { __typename?: 'PipelineVersion', id: string } | null, template?: { __typename?: 'Template', name: string } | null };
+export type PipelinePublish_PipelineFragment = { __typename?: 'Pipeline', id: string, currentVersion?: { __typename?: 'PipelineVersion', id: string, versionName: string } | null, template?: { __typename?: 'Template', name: string } | null };
 
 export type PipelinePublish_WorkspaceFragment = { __typename?: 'Workspace', slug: string };
 
@@ -10,6 +10,7 @@ export const PipelinePublish_PipelineFragmentDoc = gql`
   id
   currentVersion {
     id
+    versionName
   }
   template {
     name
