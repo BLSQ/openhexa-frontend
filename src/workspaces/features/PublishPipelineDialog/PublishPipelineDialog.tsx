@@ -13,6 +13,7 @@ import { CreateTemplateVersionError } from "graphql/types";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { PublishPipelineDialogForm } from "./PublishPipelineDialogForm";
+import { isEmpty } from "lodash";
 
 type PublishPipelineDialogProps = {
   open: boolean;
@@ -21,8 +22,7 @@ type PublishPipelineDialogProps = {
   workspace: PipelinePublish_WorkspaceFragment;
 };
 
-// TODO : popup to confirm the action + test
-// TODO : test the button show or not show
+// TODO : test the button show or not show + test confirmation
 // TODO : rename pipelinetemplate
 const PublishPipelineDialog = ({
   open,
@@ -36,6 +36,7 @@ const PublishPipelineDialog = ({
   const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [confirmPublishing, setConfirmPublishing] = useState(false);
 
   const [createTemplateVersion] = useCreateTemplateVersionMutation();
 
@@ -110,6 +111,8 @@ const PublishPipelineDialog = ({
             setName={setName}
             description={description}
             setDescription={setDescription}
+            confirmPublishing={confirmPublishing}
+            setConfirmPublishing={setConfirmPublishing}
           />
         )}
       </Dialog.Content>
@@ -117,7 +120,10 @@ const PublishPipelineDialog = ({
         <Button variant="white" onClick={onClose}>
           {t("Cancel")}
         </Button>
-        <Button onClick={onSubmit}>
+        <Button
+          onClick={onSubmit}
+          disabled={!confirmPublishing || isEmpty(name) || isEmpty(description)}
+        >
           {isSubmitting && <Spinner size="xs" className="mr-1" />}
           {actionMessage}
         </Button>

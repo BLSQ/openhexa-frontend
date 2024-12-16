@@ -2,12 +2,16 @@ import { useTranslation } from "react-i18next";
 import Field from "core/components/forms/Field";
 import Textarea from "core/components/forms/Textarea";
 import React from "react";
+import Checkbox from "core/components/forms/Checkbox";
+import { Trans } from "next-i18next";
 
 type PublishPipelineDialogFormProps = {
   name: string;
   setName: (value: string) => void;
   description: string;
   setDescription: (value: string) => void;
+  confirmPublishing: boolean;
+  setConfirmPublishing: (value: boolean) => void;
 };
 
 export const PublishPipelineDialogForm = ({
@@ -15,6 +19,8 @@ export const PublishPipelineDialogForm = ({
   setName,
   description,
   setDescription,
+  confirmPublishing,
+  setConfirmPublishing,
 }: PublishPipelineDialogFormProps) => {
   const { t } = useTranslation();
   return (
@@ -42,6 +48,23 @@ export const PublishPipelineDialogForm = ({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+      </Field>
+      <Field
+        name="confirmPublishing"
+        required
+        className="mb-3 flex items-center"
+      >
+        <Checkbox
+          id="confirmPublishing"
+          name="confirmPublishing"
+          className="mr-3"
+          checked={confirmPublishing}
+          onChange={(e) => setConfirmPublishing(e.target.checked)}
+        />
+        <Trans>
+          I confirm that I want to publish this Pipeline code as a Template with
+          all OpenHexa users.
+        </Trans>
       </Field>
     </>
   );
