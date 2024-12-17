@@ -2,7 +2,6 @@ import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import PublishPipelineDialog from "./PublishPipelineDialog";
 import { MockedProvider } from "@apollo/client/testing";
-import { useCreatePipelineTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
 import { toast } from "react-toastify";
 import i18n from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
@@ -23,8 +22,11 @@ jest.mock("react-toastify", () => ({
   },
 }));
 
+const createPipelineTemplateVersionMock = jest.fn();
 jest.mock("pipelines/graphql/mutations.generated", () => ({
-  useCreateTemplateVersionMutation: jest.fn(),
+  useCreatePipelineTemplateVersionMutation: () => [
+    createPipelineTemplateVersionMock,
+  ],
 }));
 
 const pipeline = {
@@ -38,18 +40,14 @@ const workspace = {
 };
 
 const renderPublishPipelineDialog = (pipelineOverride = {}) => {
-  const createTemplateVersionMock = jest.fn().mockResolvedValue({
+  createPipelineTemplateVersionMock.mockResolvedValue({
     data: {
-      createTemplateVersion: {
+      createPipelineTemplateVersion: {
         success: true,
         errors: [],
       },
     },
   });
-
-  (useCreatePipelineTemplateVersionMutation as jest.Mock).mockReturnValue([
-    createTemplateVersionMock,
-  ]);
 
   render(
     <MockedProvider>
@@ -63,13 +61,11 @@ const renderPublishPipelineDialog = (pipelineOverride = {}) => {
       </I18nextProvider>
     </MockedProvider>,
   );
-
-  return { createTemplateVersionMock };
 };
 
 describe("PublishPipelineDialog", () => {
   it("submits the form successfully for a new template", async () => {
-    const { createTemplateVersionMock } = renderPublishPipelineDialog();
+    renderPublishPipelineDialog();
 
     fireEvent.change(screen.getByLabelText("Template name"), {
       target: { value: "Test Template" },
@@ -89,16 +85,16 @@ describe("PublishPipelineDialog", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(createTemplateVersionMock).toHaveBeenCalledWith({
+      expect(createPipelineTemplateVersionMock).toHaveBeenCalledWith({
         variables: {
           input: {
             name: "Test Template",
             code: "Test Template",
             description: "Test Description",
             config: "",
-            workspace_slug: "workspace-slug",
-            pipeline_id: "pipeline-id",
-            pipeline_version_id: "version-id",
+            workspaceSlug: "workspace-slug",
+            pipelineId: "pipeline-id",
+            pipelineVersionId: "version-id",
           },
         },
       });
@@ -110,7 +106,7 @@ describe("PublishPipelineDialog", () => {
   });
 
   it("submits the form successfully for an existing template", async () => {
-    const { createTemplateVersionMock } = renderPublishPipelineDialog({
+    renderPublishPipelineDialog({
       template: { name: "template-name" },
     });
 
@@ -125,16 +121,16 @@ describe("PublishPipelineDialog", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(createTemplateVersionMock).toHaveBeenCalledWith({
+      expect(createPipelineTemplateVersionMock).toHaveBeenCalledWith({
         variables: {
           input: {
             name: "",
             code: "",
             description: "",
             config: "",
-            workspace_slug: "workspace-slug",
-            pipeline_id: "pipeline-id",
-            pipeline_version_id: "version-id",
+            workspaceSlug: "workspace-slug",
+            pipelineId: "pipeline-id",
+            pipelineVersionId: "version-id",
           },
         },
       });
