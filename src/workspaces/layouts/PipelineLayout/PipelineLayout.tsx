@@ -45,7 +45,7 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
     useState(false);
   const me = useMe();
 
-  const [pipelineTemplateFeatureEnabled] = useFeature("pipelineTemplates");
+  const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
   const userCanCreatePipelineTemplate =
     me?.permissions?.createPipelineTemplateVersion;
   const templateForThisVersion = !!pipeline.currentVersion?.templateVersion;
