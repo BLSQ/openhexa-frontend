@@ -827,8 +827,8 @@ export type CreatePipelineTemplateVersionInput = {
   config?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  pipelineId: Scalars['ID']['input'];
-  pipelineVersionId: Scalars['ID']['input'];
+  pipelineId: Scalars['UUID']['input'];
+  pipelineVersionId: Scalars['UUID']['input'];
   workspaceSlug: Scalars['String']['input'];
 };
 
@@ -2919,7 +2919,7 @@ export type PipelineTemplate = {
   code: Scalars['String']['output'];
   config?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
+  id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   versions?: Maybe<Array<PipelineTemplateVersion>>;
 };
@@ -2928,7 +2928,7 @@ export type PipelineTemplate = {
 export type PipelineTemplateVersion = {
   __typename?: 'PipelineTemplateVersion';
   createdAt: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['UUID']['output'];
   template: PipelineTemplate;
   versionNumber: Scalars['Int']['output'];
 };
