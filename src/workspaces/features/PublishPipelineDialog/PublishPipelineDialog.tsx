@@ -25,7 +25,6 @@ type PublishPipelineDialogProps = {
   workspace: PipelinePublish_WorkspaceFragment;
 };
 
-// TODO : test confirmation
 const PublishPipelineDialog = ({
   open,
   onClose,
