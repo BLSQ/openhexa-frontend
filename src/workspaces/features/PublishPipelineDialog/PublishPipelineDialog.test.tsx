@@ -2,7 +2,7 @@ import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import PublishPipelineDialog from "./PublishPipelineDialog";
 import { MockedProvider } from "@apollo/client/testing";
-import { useCreateTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
+import { useCreatePipelineTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
 import { toast } from "react-toastify";
 import i18n from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
@@ -47,7 +47,7 @@ const renderPublishPipelineDialog = (pipelineOverride = {}) => {
     },
   });
 
-  (useCreateTemplateVersionMutation as jest.Mock).mockReturnValue([
+  (useCreatePipelineTemplateVersionMutation as jest.Mock).mockReturnValue([
     createTemplateVersionMock,
   ]);
 
