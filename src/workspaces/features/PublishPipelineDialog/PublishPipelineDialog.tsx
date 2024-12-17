@@ -137,7 +137,7 @@ const PublishPipelineDialog = ({
                 fullWidth
                 className="mb-3"
                 value={form.formData.name}
-                onChange={(e) => form.setFieldValue("name", e.target.value)}
+                onChange={form.handleInputChange}
               />
               <Field
                 name="description"
@@ -150,9 +150,7 @@ const PublishPipelineDialog = ({
                   required
                   rows={10}
                   value={form.formData.description}
-                  onChange={(e) =>
-                    form.setFieldValue("description", e.target.value)
-                  }
+                  onChange={form.handleInputChange}
                 />
               </Field>
             </>
@@ -167,9 +165,7 @@ const PublishPipelineDialog = ({
               id="confirmPublishing"
               name="confirmPublishing"
               checked={form.formData.confirmPublishing}
-              onChange={(e) =>
-                form.setFieldValue("confirmPublishing", e.target.checked)
-              }
+              onChange={form.handleInputChange}
               label={t(
                 "I confirm that I want to publish this Pipeline code as a Template with all OpenHexa users.",
               )}
@@ -183,7 +179,10 @@ const PublishPipelineDialog = ({
           <Button variant="white" onClick={onClose}>
             {t("Cancel")}
           </Button>
-          <Button disabled={form.isSubmitting}>
+          <Button
+            disabled={form.isSubmitting || !form.formData.confirmPublishing}
+            type={"submit"}
+          >
             {form.isSubmitting && <Spinner size="xs" className="mr-1" />}
             {actionMessage}
           </Button>
