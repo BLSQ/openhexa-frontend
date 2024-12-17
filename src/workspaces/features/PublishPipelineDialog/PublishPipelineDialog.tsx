@@ -2,12 +2,8 @@ import { gql } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Dialog from "core/components/Dialog";
-import {
-  PipelinePublish_PipelineFragment,
-  PipelinePublish_WorkspaceFragment,
-} from "./PublishPipelineDialog.generated";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import useForm from "core/hooks/useForm";
@@ -17,6 +13,10 @@ import Textarea from "core/components/forms/Textarea";
 import Checkbox from "core/components/forms/Checkbox";
 import { useCreatePipelineTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
 import { CreatePipelineTemplateVersionError } from "graphql/types";
+import {
+  PipelinePublish_PipelineFragment,
+  PipelinePublish_WorkspaceFragment,
+} from "./PublishPipelineDialog.generated";
 
 type PublishPipelineDialogProps = {
   open: boolean;
@@ -33,7 +33,6 @@ const PublishPipelineDialog = ({
 }: PublishPipelineDialogProps) => {
   const { t } = useTranslation();
   const templateAlreadyExists = !!pipeline.template;
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const [createPipelineTemplateVersion] =
     useCreatePipelineTemplateVersionMutation();
@@ -49,10 +48,8 @@ const PublishPipelineDialog = ({
       confirmPublishing: false,
     },
     async onSubmit(values) {
-      setIsSubmitting(true);
       const pipelineVersionId = pipeline.currentVersion?.id;
       if (!pipelineVersionId) {
-        setIsSubmitting(false);
         toast.error(t("The pipeline version is not available."));
         return;
       }
@@ -69,7 +66,6 @@ const PublishPipelineDialog = ({
           },
         },
       });
-      setIsSubmitting(false);
 
       if (!data?.createPipelineTemplateVersion) {
         toast.error("Unknown error.");
@@ -124,73 +120,75 @@ const PublishPipelineDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} className={"w-300"}>
-      <Dialog.Title>{actionMessage}</Dialog.Title>
-      <Dialog.Content className={"w-300"}>
-        {templateAlreadyExists ? (
-          t(
-            "This pipeline is already published as a Template. You can add a new version by publishing {{versionName}}.",
-            { versionName: pipeline.currentVersion?.versionName },
-          )
-        ) : (
-          <>
-            <Field
-              name="name"
-              label={t("Template name")}
-              required
-              fullWidth
-              className="mb-3"
-              value={form.formData.name}
-              onChange={(e) => form.setFieldValue("name", e.target.value)}
-            />
-            <Field
-              name="description"
-              label={t("Template description")}
-              required
-            >
-              <Textarea
-                id="description"
-                name="description"
+      <form onSubmit={form.handleSubmit}>
+        <Dialog.Title>{actionMessage}</Dialog.Title>
+        <Dialog.Content className={"w-300"}>
+          {templateAlreadyExists ? (
+            t(
+              "This pipeline is already published as a Template. You can add a new version by publishing {{versionName}}.",
+              { versionName: pipeline.currentVersion?.versionName },
+            )
+          ) : (
+            <>
+              <Field
+                name="name"
+                label={t("Template name")}
                 required
-                rows={10}
-                value={form.formData.description}
-                onChange={(e) =>
-                  form.setFieldValue("description", e.target.value)
-                }
+                fullWidth
+                className="mb-3"
+                value={form.formData.name}
+                onChange={(e) => form.setFieldValue("name", e.target.value)}
               />
-            </Field>
-          </>
-        )}
-        <Field
-          name="confirmPublishing"
-          label={t("Confirm publishing")}
-          required
-          className="mt-3 mb-3"
-        >
-          <Checkbox
-            id="confirmPublishing"
+              <Field
+                name="description"
+                label={t("Template description")}
+                required
+              >
+                <Textarea
+                  id="description"
+                  name="description"
+                  required
+                  rows={10}
+                  value={form.formData.description}
+                  onChange={(e) =>
+                    form.setFieldValue("description", e.target.value)
+                  }
+                />
+              </Field>
+            </>
+          )}
+          <Field
             name="confirmPublishing"
-            checked={form.formData.confirmPublishing}
-            onChange={(e) =>
-              form.setFieldValue("confirmPublishing", e.target.checked)
-            }
-            label={t(
-              "I confirm that I want to publish this Pipeline code as a Template with all OpenHexa users.",
-            )}
-          />
-        </Field>
-        {form.submitError && (
-          <div className="mt-3 text-sm text-red-600">{form.submitError}</div>
-        )}
-      </Dialog.Content>
-      <Dialog.Actions>
-        <Button variant="white" onClick={onClose}>
-          {t("Cancel")}
-        </Button>
-        <Button onClick={form.handleSubmit} disabled={form.isSubmitting}>
-          {isSubmitting && <Spinner size="xs" className="mr-1" />}
-          {actionMessage}
-        </Button>
-      </Dialog.Actions>
+            label={t("Confirm publishing")}
+            required
+            className="mt-3 mb-3"
+          >
+            <Checkbox
+              id="confirmPublishing"
+              name="confirmPublishing"
+              checked={form.formData.confirmPublishing}
+              onChange={(e) =>
+                form.setFieldValue("confirmPublishing", e.target.checked)
+              }
+              label={t(
+                "I confirm that I want to publish this Pipeline code as a Template with all OpenHexa users.",
+              )}
+            />
+          </Field>
+          {form.submitError && (
+            <div className="mt-3 text-sm text-red-600">{form.submitError}</div>
+          )}
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button variant="white" onClick={onClose}>
+            {t("Cancel")}
+          </Button>
+          <Button disabled={form.isSubmitting}>
+            {form.isSubmitting && <Spinner size="xs" className="mr-1" />}
+            {actionMessage}
+          </Button>
+        </Dialog.Actions>
+      </form>
     </Dialog>
   );
 };
