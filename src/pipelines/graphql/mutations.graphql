@@ -12,6 +12,6 @@ mutation UpdatePipeline($input: UpdateDAGInput!) {
 }
 mutation CreatePipelineTemplateVersion($input: CreatePipelineTemplateVersionInput!) {
   createPipelineTemplateVersion(input: $input) {
-    success errors template {name code versions {versionNumber}}
+    success errors pipelineTemplate {name code versions {versionNumber}}
   }
 }

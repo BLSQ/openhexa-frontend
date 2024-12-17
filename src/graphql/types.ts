@@ -836,8 +836,8 @@ export type CreatePipelineTemplateVersionInput = {
 export type CreatePipelineTemplateVersionResult = {
   __typename?: 'CreatePipelineTemplateVersionResult';
   errors?: Maybe<Array<CreatePipelineTemplateVersionError>>;
+  pipelineTemplate?: Maybe<PipelineTemplate>;
   success: Scalars['Boolean']['output'];
-  template?: Maybe<PipelineTemplate>;
 };
 
 /** The CreateTeamError enum represents the possible errors that can occur during the createTeam mutation. */

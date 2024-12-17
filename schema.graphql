@@ -2294,7 +2294,7 @@ input CreatePipelineTemplateVersionInput {
 Represents the result of creating a new pipeline template version.
 """
 type CreatePipelineTemplateVersionResult {
-  template: PipelineTemplate
+  pipelineTemplate: PipelineTemplate
   success: Boolean!
   errors: [CreatePipelineTemplateVersionError!]
 }
