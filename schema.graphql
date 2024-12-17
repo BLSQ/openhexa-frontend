@@ -2261,7 +2261,7 @@ type Pipeline {
 
 """ Represents a pipeline template. """
 type PipelineTemplate {
-  id: ID!
+  id: UUID!
   name: String!
   code: String!
   description: String
@@ -2271,7 +2271,7 @@ type PipelineTemplate {
 
 """ Represents a version of a pipeline template. """
 type PipelineTemplateVersion {
-  id: ID!
+  id: UUID!
   versionNumber: Int!
   createdAt: String!
   template: PipelineTemplate!
@@ -2286,8 +2286,8 @@ input CreatePipelineTemplateVersionInput {
   description: String
   config: String
   workspaceSlug: String!
-  pipelineId: ID!
-  pipelineVersionId: ID!
+  pipelineId: UUID!
+  pipelineVersionId: UUID!
 }
 
 """
