@@ -23,6 +23,7 @@ type PublishPipelineDialogProps = {
 };
 
 // TODO : test confirmation
+// TODO : use form
 // TODO : rename pipelinetemplate
 const PublishPipelineDialog = ({
   open,
