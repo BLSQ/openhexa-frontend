@@ -813,6 +813,33 @@ export type CreatePipelineResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** Enum representing the possible errors that can occur when creating a pipeline template version. */
+export enum CreatePipelineTemplateVersionError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents the input for creating a new pipeline template version. */
+export type CreatePipelineTemplateVersionInput = {
+  code?: InputMaybe<Scalars['String']['input']>;
+  config?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  pipelineId: Scalars['ID']['input'];
+  pipelineVersionId: Scalars['ID']['input'];
+  workspaceSlug: Scalars['String']['input'];
+};
+
+/** Represents the result of creating a new pipeline template version. */
+export type CreatePipelineTemplateVersionResult = {
+  __typename?: 'CreatePipelineTemplateVersionResult';
+  errors?: Maybe<Array<CreatePipelineTemplateVersionError>>;
+  success: Scalars['Boolean']['output'];
+  template?: Maybe<PipelineTemplate>;
+};
+
 /** The CreateTeamError enum represents the possible errors that can occur during the createTeam mutation. */
 export enum CreateTeamError {
   /** Indicates that a team with the same name already exists. */
@@ -836,33 +863,6 @@ export type CreateTeamResult = {
   success: Scalars['Boolean']['output'];
   /** The created team object. */
   team?: Maybe<Team>;
-};
-
-/** Enum representing the possible errors that can occur when creating a template version. */
-export enum CreateTemplateVersionError {
-  PermissionDenied = 'PERMISSION_DENIED',
-  PipelineNotFound = 'PIPELINE_NOT_FOUND',
-  PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND',
-  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
-}
-
-/** Represents the input for creating a new template version. */
-export type CreateTemplateVersionInput = {
-  code?: InputMaybe<Scalars['String']['input']>;
-  config?: InputMaybe<Scalars['String']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  pipeline_id: Scalars['ID']['input'];
-  pipeline_version_id: Scalars['ID']['input'];
-  workspace_slug: Scalars['String']['input'];
-};
-
-/** Represents the result of creating a new template version. */
-export type CreateTemplateVersionResult = {
-  __typename?: 'CreateTemplateVersionResult';
-  errors?: Maybe<Array<CreateTemplateVersionError>>;
-  success: Scalars['Boolean']['output'];
-  template?: Maybe<Template>;
 };
 
 /** Enum representing the possible errors that can occur when creating a workspace. */
@@ -2063,8 +2063,8 @@ export type Mutation = {
   createMembership: CreateMembershipResult;
   /** Creates a new pipeline. */
   createPipeline: CreatePipelineResult;
+  createPipelineTemplateVersion: CreatePipelineTemplateVersionResult;
   createTeam: CreateTeamResult;
-  createTemplateVersion: CreateTemplateVersionResult;
   createWorkspace: CreateWorkspaceResult;
   declineWorkspaceInvitation: DeclineWorkspaceInvitationResult;
   deleteAccessmodAnalysis: DeleteAccessmodAnalysisResult;
@@ -2270,13 +2270,13 @@ export type MutationCreatePipelineArgs = {
 };
 
 
-export type MutationCreateTeamArgs = {
-  input: CreateTeamInput;
+export type MutationCreatePipelineTemplateVersionArgs = {
+  input: CreatePipelineTemplateVersionInput;
 };
 
 
-export type MutationCreateTemplateVersionArgs = {
-  input: CreateTemplateVersionInput;
+export type MutationCreateTeamArgs = {
+  input: CreateTeamInput;
 };
 
 
@@ -2759,7 +2759,7 @@ export type Pipeline = {
   recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
-  template?: Maybe<Template>;
+  template?: Maybe<PipelineTemplate>;
   type: PipelineType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
@@ -2913,6 +2913,26 @@ export enum PipelineRunTrigger {
   Webhook = 'webhook'
 }
 
+/**  Represents a pipeline template.  */
+export type PipelineTemplate = {
+  __typename?: 'PipelineTemplate';
+  code: Scalars['String']['output'];
+  config?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  versions?: Maybe<Array<PipelineTemplateVersion>>;
+};
+
+/**  Represents a version of a pipeline template.  */
+export type PipelineTemplateVersion = {
+  __typename?: 'PipelineTemplateVersion';
+  createdAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  template: PipelineTemplate;
+  versionNumber: Scalars['Int']['output'];
+};
+
 /** Represents the input for retrieving a pipeline token. */
 export type PipelineTokenInput = {
   pipelineCode: Scalars['String']['input'];
@@ -2946,7 +2966,7 @@ export type PipelineVersion = {
   parameters: Array<PipelineParameter>;
   permissions: PipelineVersionPermissions;
   pipeline: Pipeline;
-  templateVersion?: Maybe<TemplateVersion>;
+  templateVersion?: Maybe<PipelineTemplateVersion>;
   timeout?: Maybe<Scalars['Int']['output']>;
   user?: Maybe<User>;
   versionName: Scalars['String']['output'];
@@ -3625,26 +3645,6 @@ export type TeamPermissions = {
   delete: Scalars['Boolean']['output'];
   /** Indicates whether the user has permission to update the team. */
   update: Scalars['Boolean']['output'];
-};
-
-/**  Represents a template.  */
-export type Template = {
-  __typename?: 'Template';
-  code: Scalars['String']['output'];
-  config?: Maybe<Scalars['String']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
-  name: Scalars['String']['output'];
-  versions?: Maybe<Array<TemplateVersion>>;
-};
-
-/**  Represents a version of a template.  */
-export type TemplateVersion = {
-  __typename?: 'TemplateVersion';
-  created_at: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
-  template: Template;
-  version_number: Scalars['Int']['output'];
 };
 
 export enum UpdateAccessmodAccessibilityAnalysisError {

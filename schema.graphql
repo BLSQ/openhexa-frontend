@@ -1974,7 +1974,7 @@ type Mutation {
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
   runDAG(input: RunDAGInput!): RunDAGResult!
   updateDAG(input: UpdateDAGInput!): UpdateDAGResult!
-  createTemplateVersion(input: CreateTemplateVersionInput!): CreateTemplateVersionResult!
+  createPipelineTemplateVersion(input: CreatePipelineTemplateVersionInput!): CreatePipelineTemplateVersionResult!
   prepareDownloadURL(input: PrepareDownloadURLInput!): PrepareDownloadURLResult
   setDAGRunFavorite(input: SetDAGRunFavoriteInput!): SetDAGRunFavoriteResult
   createAccessmodProject(input: CreateAccessmodProjectInput!): CreateAccessmodProjectResult!
@@ -2256,52 +2256,52 @@ type Pipeline {
   webhookUrl: String
   type: PipelineType!
   notebookPath: String
-  template: Template
+  template: PipelineTemplate
 }
 
-""" Represents a template. """
-type Template {
+""" Represents a pipeline template. """
+type PipelineTemplate {
   id: ID!
   name: String!
   code: String!
   description: String
   config: String
-  versions: [TemplateVersion!]
+  versions: [PipelineTemplateVersion!]
 }
 
-""" Represents a version of a template. """
-type TemplateVersion {
+""" Represents a version of a pipeline template. """
+type PipelineTemplateVersion {
   id: ID!
-  version_number: Int!
-  created_at: String!
-  template: Template!
+  versionNumber: Int!
+  createdAt: String!
+  template: PipelineTemplate!
 }
 
 """
-Represents the input for creating a new template version.
+Represents the input for creating a new pipeline template version.
 """
-input CreateTemplateVersionInput {
+input CreatePipelineTemplateVersionInput {
   name: String
   code: String
   description: String
   config: String
-  workspace_slug: String!
-  pipeline_id: ID!
-  pipeline_version_id: ID!
+  workspaceSlug: String!
+  pipelineId: ID!
+  pipelineVersionId: ID!
 }
 
 """
-Represents the result of creating a new template version.
+Represents the result of creating a new pipeline template version.
 """
-type CreateTemplateVersionResult {
-  template: Template
+type CreatePipelineTemplateVersionResult {
+  template: PipelineTemplate
   success: Boolean!
-  errors: [CreateTemplateVersionError!]
+  errors: [CreatePipelineTemplateVersionError!]
 }
 """
-Enum representing the possible errors that can occur when creating a template version.
+Enum representing the possible errors that can occur when creating a pipeline template version.
 """
-enum CreateTemplateVersionError {
+enum CreatePipelineTemplateVersionError {
   PERMISSION_DENIED
   WORKSPACE_NOT_FOUND
   PIPELINE_NOT_FOUND
@@ -2478,7 +2478,7 @@ type PipelineVersion {
   timeout: Int
   permissions: PipelineVersionPermissions!
   config: JSON
-  templateVersion: TemplateVersion
+  templateVersion: PipelineTemplateVersion
 }
 
 """Represents a page of pipeline versions."""

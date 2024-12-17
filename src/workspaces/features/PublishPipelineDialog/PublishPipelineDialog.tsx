@@ -8,8 +8,6 @@ import {
   PipelinePublish_PipelineFragment,
   PipelinePublish_WorkspaceFragment,
 } from "./PublishPipelineDialog.generated";
-import { useCreateTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
-import { CreateTemplateVersionError } from "graphql/types";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import useForm from "core/hooks/useForm";
@@ -17,6 +15,8 @@ import { isEmpty } from "lodash";
 import Field from "core/components/forms/Field";
 import Textarea from "core/components/forms/Textarea";
 import Checkbox from "core/components/forms/Checkbox";
+import { useCreatePipelineTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
+import { CreatePipelineTemplateVersionError } from "graphql/types";
 
 type PublishPipelineDialogProps = {
   open: boolean;
@@ -26,7 +26,6 @@ type PublishPipelineDialogProps = {
 };
 
 // TODO : test confirmation
-// TODO : rename pipelinetemplate
 const PublishPipelineDialog = ({
   open,
   onClose,
@@ -37,7 +36,8 @@ const PublishPipelineDialog = ({
   const templateAlreadyExists = !!pipeline.template;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const [createTemplateVersion] = useCreateTemplateVersionMutation();
+  const [createPipelineTemplateVersion] =
+    useCreatePipelineTemplateVersionMutation();
 
   const form = useForm<{
     name: string;
@@ -57,33 +57,33 @@ const PublishPipelineDialog = ({
         toast.error(t("The pipeline version is not available."));
         return;
       }
-      const { data } = await createTemplateVersion({
+      const { data } = await createPipelineTemplateVersion({
         variables: {
           input: {
             name: values.name,
             code: values.name,
             description: values.description,
             config: "",
-            workspace_slug: workspace.slug,
-            pipeline_id: pipeline.id,
-            pipeline_version_id: pipelineVersionId,
+            workspaceSlug: workspace.slug,
+            pipelineId: pipeline.id,
+            pipelineVersionId: pipelineVersionId,
           },
         },
       });
       setIsSubmitting(false);
 
-      if (!data?.createTemplateVersion) {
+      if (!data?.createPipelineTemplateVersion) {
         toast.error("Unknown error.");
         return;
       }
 
-      if (data.createTemplateVersion.success) {
+      if (data.createPipelineTemplateVersion.success) {
         onClose();
         await router.push(`/workspaces/${workspace.slug}/pipelines/`);
         toast.success(successMessage);
       } else if (
-        data.createTemplateVersion.errors?.includes(
-          CreateTemplateVersionError.PermissionDenied,
+        data.createPipelineTemplateVersion.errors?.includes(
+          CreatePipelineTemplateVersionError.PermissionDenied,
         )
       ) {
         toast.error(t("You are not allowed to create a Template."));
