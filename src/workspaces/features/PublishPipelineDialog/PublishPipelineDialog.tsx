@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Dialog from "core/components/Dialog";
 import {
   PipelinePublish_PipelineFragment,
@@ -12,8 +12,11 @@ import { useCreateTemplateVersionMutation } from "pipelines/graphql/mutations.ge
 import { CreateTemplateVersionError } from "graphql/types";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
-import { PublishPipelineDialogForm } from "./PublishPipelineDialogForm";
+import useForm from "core/hooks/useForm";
 import { isEmpty } from "lodash";
+import Field from "core/components/forms/Field";
+import Textarea from "core/components/forms/Textarea";
+import Checkbox from "core/components/forms/Checkbox";
 
 type PublishPipelineDialogProps = {
   open: boolean;
@@ -23,7 +26,6 @@ type PublishPipelineDialogProps = {
 };
 
 // TODO : test confirmation
-// TODO : use form
 // TODO : rename pipelinetemplate
 const PublishPipelineDialog = ({
   open,
@@ -35,94 +37,157 @@ const PublishPipelineDialog = ({
   const templateAlreadyExists = !!pipeline.template;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [confirmPublishing, setConfirmPublishing] = useState(false);
-
   const [createTemplateVersion] = useCreateTemplateVersionMutation();
 
-  const onSubmit = async () => {
-    setIsSubmitting(true);
-    const pipelineVersionId = pipeline.currentVersion?.id;
-    if (!pipelineVersionId) {
-      setIsSubmitting(false);
-      toast.error(t("The pipeline version is not available."));
-      return;
-    }
-    const { data } = await createTemplateVersion({
-      variables: {
-        input: {
-          name,
-          code: name,
-          description,
-          config: "",
-          workspace_slug: workspace.slug,
-          pipeline_id: pipeline.id,
-          pipeline_version_id: pipelineVersionId,
+  const form = useForm<{
+    name: string;
+    description: string;
+    confirmPublishing: boolean;
+  }>({
+    initialState: {
+      name: "",
+      description: "",
+      confirmPublishing: false,
+    },
+    async onSubmit(values) {
+      setIsSubmitting(true);
+      const pipelineVersionId = pipeline.currentVersion?.id;
+      if (!pipelineVersionId) {
+        setIsSubmitting(false);
+        toast.error(t("The pipeline version is not available."));
+        return;
+      }
+      const { data } = await createTemplateVersion({
+        variables: {
+          input: {
+            name: values.name,
+            code: values.name,
+            description: values.description,
+            config: "",
+            workspace_slug: workspace.slug,
+            pipeline_id: pipeline.id,
+            pipeline_version_id: pipelineVersionId,
+          },
         },
-      },
-    });
-    setIsSubmitting(false);
+      });
+      setIsSubmitting(false);
 
-    if (!data?.createTemplateVersion) {
-      toast.error("Unknown error.");
-      return;
-    }
+      if (!data?.createTemplateVersion) {
+        toast.error("Unknown error.");
+        return;
+      }
 
-    if (data.createTemplateVersion.success) {
-      onClose();
-      await router.push(`/workspaces/${workspace.slug}/pipelines/`); // TODO : Redirect to the new template page when this feature is available
-      toast.success(successMessage);
-    } else if (
-      data.createTemplateVersion.errors?.includes(
-        CreateTemplateVersionError.PermissionDenied,
-      )
-    ) {
-      toast.error(t("You are not allowed to create a Template."));
-    } else {
-      toast.error(t("Unknown error."));
-    }
-  };
-  const templateName = pipeline.template?.name;
+      if (data.createTemplateVersion.success) {
+        onClose();
+        await router.push(`/workspaces/${workspace.slug}/pipelines/`);
+        toast.success(successMessage);
+      } else if (
+        data.createTemplateVersion.errors?.includes(
+          CreateTemplateVersionError.PermissionDenied,
+        )
+      ) {
+        toast.error(t("You are not allowed to create a Template."));
+      } else {
+        toast.error(t("Unknown error."));
+      }
+    },
+    validate(values) {
+      const errors: any = {};
+      if (!templateAlreadyExists && isEmpty(values.name)) {
+        errors.name = t("Name is required");
+      }
+      if (!templateAlreadyExists && isEmpty(values.description)) {
+        errors.description = t("Description is required");
+      }
+      if (!values.confirmPublishing) {
+        errors.confirmPublishing = t("You must confirm publishing");
+      }
+      return errors;
+    },
+  });
+
+  useEffect(() => {
+    form.resetForm();
+  }, [open, form]);
+
   const successMessage = templateAlreadyExists
     ? t("New Template Version for '{{templateName}}' created successfully.", {
-        templateName,
+        templateName: pipeline.template?.name,
       })
     : t("New Template '{{name}}' created successfully.", {
-        name,
+        name: form.formData.name,
       });
   const actionMessage = templateAlreadyExists
     ? t("Add a new version to Template '{{templateName}}'", {
-        templateName,
+        templateName: pipeline.template?.name,
       })
     : t("Create a new Template");
-  const confimationButtonIsDisabled =
-    !confirmPublishing ||
-    (!templateAlreadyExists && (isEmpty(name) || isEmpty(description)));
+
   return (
     <Dialog open={open} onClose={onClose} className={"w-300"}>
       <Dialog.Title>{actionMessage}</Dialog.Title>
       <Dialog.Content className={"w-300"}>
-        {templateAlreadyExists &&
+        {templateAlreadyExists ? (
           t(
             "This pipeline is already published as a Template. You can add a new version by publishing {{versionName}}.",
             { versionName: pipeline.currentVersion?.versionName },
-          )}
-        <PublishPipelineDialogForm
-          templateAlreadyExists={templateAlreadyExists}
-          name={name}
-          setName={setName}
-          description={description}
-          setDescription={setDescription}
-          confirmPublishing={confirmPublishing}
-          setConfirmPublishing={setConfirmPublishing}
-        />
+          )
+        ) : (
+          <>
+            <Field
+              name="name"
+              label={t("Template name")}
+              required
+              fullWidth
+              className="mb-3"
+              value={form.formData.name}
+              onChange={(e) => form.setFieldValue("name", e.target.value)}
+            />
+            <Field
+              name="description"
+              label={t("Template description")}
+              required
+            >
+              <Textarea
+                id="description"
+                name="description"
+                required
+                rows={10}
+                value={form.formData.description}
+                onChange={(e) =>
+                  form.setFieldValue("description", e.target.value)
+                }
+              />
+            </Field>
+          </>
+        )}
+        <Field
+          name="confirmPublishing"
+          label={t("Confirm publishing")}
+          required
+          className="mt-3 mb-3"
+        >
+          <Checkbox
+            id="confirmPublishing"
+            name="confirmPublishing"
+            checked={form.formData.confirmPublishing}
+            onChange={(e) =>
+              form.setFieldValue("confirmPublishing", e.target.checked)
+            }
+            label={t(
+              "I confirm that I want to publish this Pipeline code as a Template with all OpenHexa users.",
+            )}
+          />
+        </Field>
+        {form.submitError && (
+          <div className="mt-3 text-sm text-red-600">{form.submitError}</div>
+        )}
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>
           {t("Cancel")}
         </Button>
-        <Button onClick={onSubmit} disabled={confimationButtonIsDisabled}>
+        <Button onClick={form.handleSubmit} disabled={form.isSubmitting}>
           {isSubmitting && <Spinner size="xs" className="mr-1" />}
           {actionMessage}
         </Button>

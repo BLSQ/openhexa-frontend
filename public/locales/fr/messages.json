@@ -515,6 +515,7 @@
   "You don't have permission to link this dataset": "Vous n'avez pas l'autorisation de lier cet ensemble de données",
   "You have to select a notebook": "Vous devez sélectionner un cahier",
   "You have to select a workspace": "Vous devez sélectionner un workspace",
+  "You must confirm publishing": "Vous devez confirmer la publication",
   "You're about to archive the {{workspaceName}} workspace and all its content.": "Vous êtes sur le point d'archiver le workspace {{workspaceName}} et tout son contenu.",
   "You're about to remove {{name}} from this workspace.": "Vous êtes sur le point de supprimer {{name}} de ce workspace.",
   "Your account": "Votre compte",
