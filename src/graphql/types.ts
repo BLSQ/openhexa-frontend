@@ -2918,6 +2918,7 @@ export type PipelineTemplate = {
   __typename?: 'PipelineTemplate';
   code: Scalars['String']['output'];
   config?: Maybe<Scalars['String']['output']>;
+  currentVersion?: Maybe<PipelineTemplateVersion>;
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
@@ -2936,7 +2937,7 @@ export type PipelineTemplatePage = {
 /**  Represents a version of a pipeline template.  */
 export type PipelineTemplateVersion = {
   __typename?: 'PipelineTemplateVersion';
-  createdAt: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
   id: Scalars['UUID']['output'];
   template: PipelineTemplate;
   versionNumber: Scalars['Int']['output'];

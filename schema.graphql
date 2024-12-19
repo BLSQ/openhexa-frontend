@@ -2267,13 +2267,14 @@ type PipelineTemplate {
   description: String
   config: String
   versions: [PipelineTemplateVersion!]
+  currentVersion: PipelineTemplateVersion
 }
 
 """ Represents a version of a pipeline template. """
 type PipelineTemplateVersion {
   id: UUID!
   versionNumber: Int!
-  createdAt: String!
+  createdAt: DateTime!
   template: PipelineTemplate!
 }
 
