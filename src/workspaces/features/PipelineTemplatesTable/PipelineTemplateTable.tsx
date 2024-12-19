@@ -59,10 +59,7 @@ const PipelineTemplatesTable = () => {
   if (loading || debouncedLoading)
     return (
       <div className="flex items-center justify-center h-64 pt-8">
-        <Spinner
-          size={"xl"}
-          className={"flex items-center justify-center h-64 pt-8"}
-        />
+        <Spinner size={"xl"} />
       </div>
     );
 
