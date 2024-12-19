@@ -39,7 +39,7 @@ const PipelineTemplatesTable = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [debouncedLoading, setDebouncedLoading] = useState(true);
-  const perPage = 1;
+  const perPage = 5;
 
   const { data, loading, error, fetchMore } = useQuery(GET_PIPELINE_TEMPLATES, {
     variables: { page, perPage },
@@ -72,8 +72,6 @@ const PipelineTemplatesTable = () => {
     });
     setPage(newPage);
   };
-  // TODO : search bar
-  // TODO : test
 
   return (
     <>
@@ -93,8 +91,8 @@ const PipelineTemplatesTable = () => {
           />
           <BaseColumn id="actions">
             {(value) => (
-              <Button variant="outlined" size="sm">
-                {t("Action")}
+              <Button variant="secondary" size="sm">
+                {t("Create pipeline")}
               </Button>
             )}
           </BaseColumn>
