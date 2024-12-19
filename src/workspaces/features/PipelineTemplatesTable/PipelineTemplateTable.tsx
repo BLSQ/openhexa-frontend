@@ -48,14 +48,20 @@ const PipelineTemplatesTable = () => {
       updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
     }).then(() => setPage(newPage));
   };
-
+  // TODO : search bar
+  // TODO : beautiful layout
+  // TODO : why button
+  // TODO : test
   return (
     <>
       <DataGrid data={items} defaultPageSize={perPage} fixedLayout={false}>
         <BaseColumn id="name" label={t("Name")}>
           {(value) => <span>{value.name}</span>}
         </BaseColumn>
-        <DateColumn accessor={"createdAt"} label={t("Created at")} />
+        <DateColumn
+          accessor={"createdAt"}
+          label={t("Last version uploaded on")}
+        />
         <BaseColumn id="actions">
           {(value) => (
             <Button variant="outlined" size="sm">
