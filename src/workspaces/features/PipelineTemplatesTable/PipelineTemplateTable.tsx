@@ -72,7 +72,6 @@ const PipelineTemplatesTable = () => {
   // TODO : search bar
   // TODO : pagination not working
   // TODO : test
-  // TODO :  /code/hexa/core/graphql.py:18: UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list: <class 'hexa.pipeline_templates.models.PipelineTemplate'> PipelineTemplateQuerySet.
 
   if (debouncedLoading)
     return (
