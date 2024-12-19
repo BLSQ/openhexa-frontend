@@ -90,7 +90,7 @@ const PipelineTemplatesTable = () => {
             label={t("Created At")}
           />
           <BaseColumn id="actions">
-            {(value) => (
+            {() => (
               <Button variant="secondary" size="sm">
                 {t("Create pipeline")}
               </Button>
