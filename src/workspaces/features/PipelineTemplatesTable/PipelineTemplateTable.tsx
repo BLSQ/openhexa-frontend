@@ -3,9 +3,8 @@ import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import Button from "core/components/Button";
 import SimplePagination from "core/components/Pagination/SimplePagination";
 import { useTranslation } from "next-i18next";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import DateColumn from "core/components/DataGrid/DateColumn";
-import { debounce } from "lodash";
 import Spinner from "core/components/Spinner";
 import Block from "core/components/Block";
 
@@ -38,25 +37,14 @@ export const GET_PIPELINE_TEMPLATES = gql`
 const PipelineTemplatesTable = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
-  const [debouncedLoading, setDebouncedLoading] = useState(true);
   const perPage = 5;
 
   const { data, loading, error, fetchMore } = useQuery(GET_PIPELINE_TEMPLATES, {
     variables: { page, perPage },
   });
 
-  useEffect(() => {
-    const debouncedSetLoading = debounce((isLoading) => {
-      setDebouncedLoading(isLoading);
-    }, 300);
-    debouncedSetLoading(loading);
-    return () => {
-      debouncedSetLoading.cancel();
-    };
-  }, [loading]);
-
   if (error) return <p>{t("Error loading templates")}</p>;
-  if (loading || debouncedLoading)
+  if (loading)
     return (
       <div className="flex items-center justify-center h-64 pt-8">
         <Spinner size={"xl"} />
