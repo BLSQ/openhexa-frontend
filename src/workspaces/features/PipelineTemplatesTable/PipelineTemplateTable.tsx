@@ -56,29 +56,28 @@ const PipelineTemplatesTable = () => {
   }, [loading]);
 
   if (error) return <p>{t("Error loading templates")}</p>;
+  if (loading || debouncedLoading)
+    return (
+      <div className="flex items-center justify-center h-64 pt-8">
+        <Spinner
+          size={"xl"}
+          className={"flex items-center justify-center h-64 pt-8"}
+        />
+      </div>
+    );
 
-  const { items, pageNumber, totalPages } = data?.pipelineTemplates || {
-    items: [],
-    pageNumber: 1,
-    totalPages: 1,
-  };
+  const { items, pageNumber, totalPages } = data.pipelineTemplates;
 
   const handlePageChange = (newPage: number) => {
     fetchMore({
       variables: { page: newPage, perPage },
       updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
-    }).then(() => setPage(newPage));
+    });
+    setPage(newPage);
   };
   // TODO : search bar
-  // TODO : pagination not working
   // TODO : test
 
-  if (debouncedLoading)
-    return (
-      <div className="flex items-center justify-center h-64 pt-8">
-        <Spinner size={"xl"} />
-      </div>
-    );
   return (
     <>
       <Block className="divide divide-y divide-gray-100 mt-10">
