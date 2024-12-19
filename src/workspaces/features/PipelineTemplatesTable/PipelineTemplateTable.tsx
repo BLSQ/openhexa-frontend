@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { debounce } from "lodash";
 import Spinner from "core/components/Spinner";
+import Block from "core/components/Block";
 
 export const PIPELINE_TEMPLATE_FRAGMENT = gql`
   fragment PipelineTemplateFragment on PipelineTemplate {
@@ -38,7 +39,7 @@ const PipelineTemplatesTable = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const [debouncedLoading, setDebouncedLoading] = useState(true);
-  const perPage = 15;
+  const perPage = 1;
 
   const { data, loading, error, fetchMore } = useQuery(GET_PIPELINE_TEMPLATES, {
     variables: { page, perPage },
@@ -69,7 +70,7 @@ const PipelineTemplatesTable = () => {
     }).then(() => setPage(newPage));
   };
   // TODO : search bar
-  // TODO : beautiful layout
+  // TODO : pagination not working
   // TODO : why button
   // TODO : test
   // TODO :  /code/hexa/core/graphql.py:18: UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list: <class 'hexa.pipeline_templates.models.PipelineTemplate'> PipelineTemplateQuerySet.
@@ -82,27 +83,29 @@ const PipelineTemplatesTable = () => {
     );
   return (
     <>
-      <DataGrid data={items} defaultPageSize={perPage} fixedLayout={false}>
-        <BaseColumn id="name" label={t("Name")}>
-          {(value) => <span>{value.name}</span>}
-        </BaseColumn>
-        <BaseColumn id="version" label={t("Version")}>
-          {({ currentVersion: { versionNumber } }) => (
-            <span>{`v${versionNumber}`}</span>
-          )}
-        </BaseColumn>
-        <DateColumn
-          accessor={"currentVersion.createdAt"}
-          label={t("Created At")}
-        />
-        <BaseColumn id="actions">
-          {(value) => (
-            <Button variant="outlined" size="sm">
-              {t("Action")}
-            </Button>
-          )}
-        </BaseColumn>
-      </DataGrid>
+      <Block className="divide divide-y divide-gray-100 mt-10">
+        <DataGrid data={items} defaultPageSize={perPage} fixedLayout={false}>
+          <BaseColumn id="name" label={t("Name")}>
+            {(value) => <span>{value.name}</span>}
+          </BaseColumn>
+          <BaseColumn id="version" label={t("Version")}>
+            {({ currentVersion: { versionNumber } }) => (
+              <span>{`v${versionNumber}`}</span>
+            )}
+          </BaseColumn>
+          <DateColumn
+            accessor={"currentVersion.createdAt"}
+            label={t("Created At")}
+          />
+          <BaseColumn id="actions">
+            {(value) => (
+              <Button variant="outlined" size="sm">
+                {t("Action")}
+              </Button>
+            )}
+          </BaseColumn>
+        </DataGrid>
+      </Block>
       <SimplePagination
         hasNextPage={pageNumber < totalPages}
         hasPreviousPage={pageNumber > 1}
