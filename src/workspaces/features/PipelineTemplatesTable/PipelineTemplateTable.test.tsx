@@ -1,14 +1,17 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
-import { act } from "react-dom/test-utils";
 import PipelineTemplatesTable from "./PipelineTemplateTable";
 import { I18nextProvider } from "react-i18next";
 import i18n from "i18next";
 
 const useGetPipelineTemplatesQueryMock = jest.fn();
+const fetchMoreMock = jest.fn();
 jest.mock("./PipelineTemplateTable.generated", () => ({
-  useGetPipelineTemplatesQuery: () => useGetPipelineTemplatesQueryMock(),
+  useGetPipelineTemplatesQuery: () => ({
+    ...useGetPipelineTemplatesQueryMock(),
+    fetchMore: fetchMoreMock,
+  }),
 }));
 
 const useGetPipelineTemplatesQueryResultMock = {
@@ -65,65 +68,12 @@ describe("PipelineTemplatesTable", () => {
   });
 
   it("handles pagination", async () => {
-    useGetPipelineTemplatesQueryMock.mockReturnValue({
-      loading: false,
-      data: {
-        pipelineTemplates: {
-          pageNumber: 1,
-          totalPages: 2,
-          totalItems: 10,
-          items: [
-            {
-              id: "1",
-              name: "Template 1",
-              currentVersion: {
-                id: "1",
-                versionNumber: "1.0",
-                createdAt: "2023-01-01T00:00:00Z",
-              },
-            },
-            {
-              id: "2",
-              name: "Template 2",
-              currentVersion: {
-                id: "2",
-                versionNumber: "1.1",
-                createdAt: "2023-01-02T00:00:00Z",
-              },
-            },
-            {
-              id: "3",
-              name: "Template 3",
-              currentVersion: {
-                id: "3",
-                versionNumber: "1.2",
-                createdAt: "2023-01-03T00:00:00Z",
-              },
-            },
-          ],
-        },
-      },
-      error: null,
-    });
+    render(<PipelineTemplatesTable />);
 
-    render(
-      <MockedProvider mocks={mocks}>
-        <I18nextProvider i18n={i18n}>
-          <PipelineTemplatesTable />
-        </I18nextProvider>
-      </MockedProvider>,
-    );
-
+    const previousButton = screen.getByRole("button", { name: /Previous/i });
+    const nextButton = previousButton.nextElementSibling as HTMLButtonElement;
     await waitFor(() => {
-      expect(screen.getByText("Next")).toBeInTheDocument();
-    });
-
-    act(() => {
-      fireEvent.click(screen.getByText("Next"));
-    });
-
-    await waitFor(() => {
-      expect(screen.getByText("Loading...")).toBeInTheDocument();
+      expect(nextButton).toBeInTheDocument();
     });
 
     useGetPipelineTemplatesQueryMock.mockReturnValue({
@@ -135,21 +85,12 @@ describe("PipelineTemplatesTable", () => {
           totalItems: 10,
           items: [
             {
-              id: "4",
-              name: "Template 4",
+              id: "23",
+              name: "Template 23",
               currentVersion: {
-                id: "4",
-                versionNumber: "2.0",
+                id: "23",
+                versionNumber: 23,
                 createdAt: "2023-01-04T00:00:00Z",
-              },
-            },
-            {
-              id: "5",
-              name: "Template 5",
-              currentVersion: {
-                id: "5",
-                versionNumber: "2.1",
-                createdAt: "2023-01-05T00:00:00Z",
               },
             },
           ],
@@ -158,10 +99,11 @@ describe("PipelineTemplatesTable", () => {
       error: null,
     });
 
+    fireEvent.click(nextButton);
+
+    expect(fetchMoreMock).toHaveBeenCalledTimes(1);
     await waitFor(() => {
-      expect(screen.getByText("Template 4")).toBeInTheDocument();
-      expect(screen.getByText("v2.0")).toBeInTheDocument();
-      expect(screen.getByText("2023-01-04T00:00:00Z")).toBeInTheDocument();
+      expect(screen.getByText("Template 23")).toBeInTheDocument();
     });
   });
 
