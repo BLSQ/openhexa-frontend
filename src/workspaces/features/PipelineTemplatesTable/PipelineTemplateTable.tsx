@@ -1,4 +1,3 @@
-import { gql, useQuery } from "@apollo/client";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import Button from "core/components/Button";
 import SimplePagination from "core/components/Pagination/SimplePagination";
@@ -7,39 +6,15 @@ import React, { useState } from "react";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import Spinner from "core/components/Spinner";
 import Block from "core/components/Block";
-
-export const PIPELINE_TEMPLATE_FRAGMENT = gql`
-  fragment PipelineTemplateFragment on PipelineTemplate {
-    id
-    name
-    currentVersion {
-      id
-      versionNumber
-      createdAt
-    }
-  }
-`;
-
-export const GET_PIPELINE_TEMPLATES = gql`
-  query GetPipelineTemplates($page: Int = 1, $perPage: Int = 15) {
-    pipelineTemplates(page: $page, perPage: $perPage) {
-      pageNumber
-      totalPages
-      totalItems
-      items {
-        ...PipelineTemplateFragment
-      }
-    }
-  }
-  ${PIPELINE_TEMPLATE_FRAGMENT}
-`;
+import { useGetPipelineTemplatesQuery } from "./PipelineTemplateTable.generated";
+import { gql } from "@apollo/client";
 
 const PipelineTemplatesTable = () => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const perPage = 5;
 
-  const { data, loading, error, fetchMore } = useQuery(GET_PIPELINE_TEMPLATES, {
+  const { data, loading, error, fetchMore } = useGetPipelineTemplatesQuery({
     variables: { page, perPage },
   });
 
@@ -51,7 +26,11 @@ const PipelineTemplatesTable = () => {
       </div>
     );
 
-  const { items, pageNumber, totalPages } = data.pipelineTemplates;
+  const { items, pageNumber, totalPages } = data?.pipelineTemplates || {
+    items: [],
+    pageNumber: 1,
+    totalPages: 1,
+  };
 
   const handlePageChange = (newPage: number) => {
     fetchMore({
@@ -94,6 +73,27 @@ const PipelineTemplatesTable = () => {
       />
     </>
   );
+};
+
+PipelineTemplatesTable.fragments = {
+  getPipelineTemplates: gql`
+    query GetPipelineTemplates($page: Int!, $perPage: Int!) {
+      pipelineTemplates(page: $page, perPage: $perPage) {
+        pageNumber
+        totalPages
+        totalItems
+        items {
+          id
+          name
+          currentVersion {
+            id
+            versionNumber
+            createdAt
+          }
+        }
+      }
+    }
+  `,
 };
 
 export default PipelineTemplatesTable;
