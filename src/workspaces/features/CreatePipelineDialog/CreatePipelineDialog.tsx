@@ -225,7 +225,7 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
           <Button onClick={onClose} variant="outlined">
             {t("Close")}
           </Button>
-          {tabIndex === 0 && (
+          {tabIndex === 1 && (
             <Button disabled={form.isSubmitting} type="submit">
               {t("Create")}
             </Button>
