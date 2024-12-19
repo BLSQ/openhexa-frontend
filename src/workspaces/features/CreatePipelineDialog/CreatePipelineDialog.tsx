@@ -17,6 +17,8 @@ import {
   CreatePipelineDialog_WorkspaceFragment,
   GenerateWorkspaceTokenMutation,
 } from "./CreatePipelineDialog.generated";
+import useFeature from "identity/hooks/useFeature";
+import PipelineTemplateTable from "../PipelineTemplatesTable";
 
 type CreatePipelineDialogProps = {
   open: boolean;
@@ -28,6 +30,7 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
   const { t } = useTranslation();
   const { open, onClose, workspace } = props;
   const router = useRouter();
+  const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
   const [tabIndex, setTabIndex] = useState<number | null>(0);
 
   const [mutate] = useCreatePipelineMutation();
@@ -113,6 +116,11 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
         <Dialog.Title>{t("How to create a pipeline")}</Dialog.Title>
         <Dialog.Content className="space-y-4">
           <Tabs onChange={(index) => setTabIndex(index)}>
+            {pipelineTemplateFeatureEnabled && (
+              <Tabs.Tab label={t("From Template")} className={"space-y-2 pt-2"}>
+                <PipelineTemplateTable />
+              </Tabs.Tab>
+            )}
             <Tabs.Tab label={t("From Notebook")} className={"space-y-2 pt-2"}>
               <p className="mb-6">
                 <Trans>

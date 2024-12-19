@@ -2278,6 +2278,16 @@ type PipelineTemplateVersion {
 }
 
 """
+Represents paged result of fetching pipeline templates.
+"""
+type PipelineTemplatePage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [PipelineTemplate!]!
+}
+
+"""
 Represents the input for creating a new pipeline template version.
 """
 input CreatePipelineTemplateVersionInput {
@@ -2671,6 +2681,9 @@ type Query {
 
   """Search datasets."""
   datasets(query: String, page: Int = 1, perPage: Int = 15): DatasetPage!
+
+  """Search pipeline templates."""
+  pipelineTemplates(page: Int = 1, perPage: Int = 15): PipelineTemplatePage!
 }
 
 """
