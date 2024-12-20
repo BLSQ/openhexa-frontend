@@ -16,6 +16,10 @@ import {
   PipelineLayout_PipelineFragment,
   PipelineLayout_WorkspaceFragment,
 } from "./PipelineLayout.generated";
+import PublishPipelineDialog from "workspaces/features/PublishPipelineDialog";
+import useFeature from "identity/hooks/useFeature";
+import { PipelineType } from "graphql/types";
+import useMe from "identity/hooks/useMe";
 
 type PipelineLayoutProps = {
   pipeline: PipelineLayout_PipelineFragment;
@@ -35,8 +39,22 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
   } = props;
 
   const { t } = useTranslation();
+  const [isPublishPipelineDialogOpen, setPublishPipelineDialogOpen] =
+    useState(false);
   const [isDeletePipelineDialogOpen, setDeletePipelineDialogOpen] =
     useState(false);
+  const me = useMe();
+
+  const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
+  const userCanCreatePipelineTemplate =
+    me?.permissions?.createPipelineTemplateVersion;
+  const templateForThisVersion = !!pipeline.currentVersion?.templateVersion;
+  const showPublishAsTemplateButton =
+    pipeline.currentVersion &&
+    pipeline.type !== PipelineType.Notebook &&
+    pipelineTemplateFeatureEnabled &&
+    userCanCreatePipelineTemplate &&
+    !templateForThisVersion;
 
   return (
     <TabLayout
@@ -104,6 +122,14 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
           ))}
         </Breadcrumbs>
         <div className="flex items-center gap-2">
+          {showPublishAsTemplateButton && (
+            <Button
+              onClick={() => setPublishPipelineDialogOpen(true)}
+              variant={"secondary"}
+            >
+              {t("Publish as Template")}
+            </Button>
+          )}
           {pipeline.currentVersion && (
             <DownloadPipelineVersion version={pipeline.currentVersion}>
               {({ onClick, isDownloading }) => (
@@ -145,6 +171,12 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
           pipeline={pipeline}
           workspace={workspace}
         />
+        <PublishPipelineDialog
+          open={isPublishPipelineDialogOpen}
+          onClose={() => setPublishPipelineDialogOpen(false)}
+          pipeline={pipeline}
+          workspace={workspace}
+        />
       </TabLayout.PageContent>
     </TabLayout>
   );
@@ -174,12 +206,18 @@ PipelineLayout.fragments = {
         delete
         update
       }
+      template {
+        name
+      }
       currentVersion {
         id
         name
         description
         config
         externalLink
+        templateVersion {
+          id
+        }
         ...PipelineVersionPicker_version
         ...DownloadPipelineVersion_version
       }
