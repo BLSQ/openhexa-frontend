@@ -11,7 +11,13 @@ export type GetPipelineTemplatesQueryVariables = Types.Exact<{
 
 export type GetPipelineTemplatesQuery = { __typename?: 'Query', pipelineTemplates: { __typename?: 'PipelineTemplatePage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'PipelineTemplate', id: string, name: string, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number, createdAt: any } | null }> } };
 
+export type PipelineTemplateTable_WorkspaceFragment = { __typename?: 'Workspace', slug: string };
 
+export const PipelineTemplateTable_WorkspaceFragmentDoc = gql`
+    fragment PipelineTemplateTable_workspace on Workspace {
+  slug
+}
+    `;
 export const GetPipelineTemplatesDocument = gql`
     query GetPipelineTemplates($page: Int!, $perPage: Int!) {
   pipelineTemplates(page: $page, perPage: $perPage) {

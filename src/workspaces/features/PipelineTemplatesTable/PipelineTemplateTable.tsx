@@ -6,13 +6,27 @@ import React, { useState } from "react";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import Spinner from "core/components/Spinner";
 import Block from "core/components/Block";
-import { useGetPipelineTemplatesQuery } from "./PipelineTemplateTable.generated";
 import { gql } from "@apollo/client";
+import useCacheKey from "core/hooks/useCacheKey";
+import { useCreatePipelineFromTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
+import {
+  PipelineTemplateTable_WorkspaceFragment,
+  useGetPipelineTemplatesQuery,
+} from "./PipelineTemplateTable.generated";
+import { toast } from "react-toastify";
+import router from "next/router";
 
-const PipelineTemplatesTable = () => {
+type PipelineTemplatesTableProps = {
+  workspace: PipelineTemplateTable_WorkspaceFragment;
+};
+
+const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
   const perPage = 5;
+  const clearCache = useCacheKey(["pipelines"]);
+  const [createPipelineFromTemplateVersion] =
+    useCreatePipelineFromTemplateVersionMutation();
 
   const { data, loading, error, fetchMore } = useGetPipelineTemplatesQuery({
     variables: { page, perPage },
@@ -36,6 +50,40 @@ const PipelineTemplatesTable = () => {
     setPage(newPage);
   };
 
+  const createPipeline = (pipelineTemplateVersionId: string) => () => {
+    createPipelineFromTemplateVersion({
+      variables: {
+        input: {
+          pipelineTemplateVersionId: pipelineTemplateVersionId,
+          workspaceSlug: workspace.slug,
+        },
+      },
+    })
+      .then((result) => {
+        const success = result.data?.createPipelineFromTemplateVersion?.success;
+        const pipeline =
+          result.data?.createPipelineFromTemplateVersion?.pipeline;
+        if (success && pipeline) {
+          clearCache();
+          router.push(
+            `/workspaces/${encodeURIComponent(
+              workspace.slug,
+            )}/pipelines/${encodeURIComponent(pipeline.id)}`,
+          );
+          toast.success(
+            t("Successfully created pipeline {{pipelineName}}", {
+              pipelineName: pipeline.name,
+            }),
+          );
+        } else {
+          toast.error(t("Failed to create pipeline"));
+        }
+      })
+      .catch(() => {
+        toast.error(t("Failed to create pipeline"));
+      });
+  };
+
   return (
     <>
       <Block className="divide divide-y divide-gray-100 mt-10">
@@ -53,8 +101,12 @@ const PipelineTemplatesTable = () => {
             label={t("Created At")}
           />
           <BaseColumn id="actions">
-            {() => (
-              <Button variant="secondary" size="sm">
+            {({ currentVersion: { id } }) => (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={createPipeline(id)}
+              >
                 {t("Create pipeline")}
               </Button>
             )}
@@ -88,6 +140,11 @@ PipelineTemplatesTable.fragments = {
           }
         }
       }
+    }
+  `,
+  workspace: gql`
+    fragment PipelineTemplateTable_workspace on Workspace {
+      slug
     }
   `,
 };

@@ -15,3 +15,8 @@ mutation CreatePipelineTemplateVersion($input: CreatePipelineTemplateVersionInpu
     success errors pipelineTemplate {name code versions {versionNumber}}
   }
 }
+mutation CreatePipelineFromTemplateVersion($input: CreatePipelineFromTemplateVersionInput!) {
+  createPipelineFromTemplateVersion(input: $input) {
+    success errors pipeline {id name code}
+  }
+}

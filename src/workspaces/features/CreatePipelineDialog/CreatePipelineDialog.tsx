@@ -118,7 +118,7 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
           <Tabs onChange={(index) => setTabIndex(index)}>
             {pipelineTemplateFeatureEnabled && (
               <Tabs.Tab label={t("From Template")} className={"space-y-2 pt-2"}>
-                <PipelineTemplateTable />
+                <PipelineTemplateTable workspace={workspace} />
               </Tabs.Tab>
             )}
             <Tabs.Tab label={t("From Notebook")} className={"space-y-2 pt-2"}>
