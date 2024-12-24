@@ -72,7 +72,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           router.push(
             `/workspaces/${encodeURIComponent(
               workspace.slug,
-            )}/pipelines/${encodeURIComponent(pipeline.id)}`,
+            )}/pipelines/${encodeURIComponent(pipeline.code)}`,
           );
           toast.success(
             t("Successfully created pipeline {{pipelineName}}", {
