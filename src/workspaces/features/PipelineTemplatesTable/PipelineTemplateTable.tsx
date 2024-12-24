@@ -31,6 +31,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
 
   const { data, loading, error, fetchMore } = useGetPipelineTemplatesQuery({
     variables: { page, perPage },
+    fetchPolicy: "cache-and-network", // The template list is a global list across the instance, so we want to check the network for updates and show the cached data in the meantime
   });
 
   if (error) return <p>{t("Error loading templates")}</p>;
