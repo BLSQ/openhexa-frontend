@@ -111,7 +111,7 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
   }, [open]);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="max-w-2xl">
+    <Dialog open={open} onClose={onClose} maxWidth="max-w-3xl">
       <form onSubmit={form.handleSubmit}>
         <Dialog.Title>{t("How to create a pipeline")}</Dialog.Title>
         <Dialog.Content className="space-y-4">
