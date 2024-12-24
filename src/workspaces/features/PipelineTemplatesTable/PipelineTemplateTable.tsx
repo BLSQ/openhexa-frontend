@@ -15,6 +15,7 @@ import {
 } from "./PipelineTemplateTable.generated";
 import { toast } from "react-toastify";
 import router from "next/router";
+import { CreatePipelineFromTemplateVersionError } from "graphql/types";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -63,6 +64,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
     })
       .then((result) => {
         const success = result.data?.createPipelineFromTemplateVersion?.success;
+        const errors = result.data?.createPipelineFromTemplateVersion?.errors;
         const pipeline =
           result.data?.createPipelineFromTemplateVersion?.pipeline;
         if (success && pipeline) {
@@ -77,8 +79,20 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
               pipelineName: pipeline.name,
             }),
           );
+        } else if (
+          errors?.includes(
+            CreatePipelineFromTemplateVersionError.PermissionDenied,
+          )
+        ) {
+          toast.error(t("You are not allowed to create a pipeline."));
+        } else if (
+          errors?.includes(
+            CreatePipelineFromTemplateVersionError.PipelineAlreadyExists,
+          )
+        ) {
+          toast.error(t("A pipeline with the same name already exists."));
         } else {
-          toast.error(t("Failed to create pipeline"));
+          toast.error(t("Unknown error : Failed to create pipeline"));
         }
       })
       .catch(() => {
@@ -103,13 +117,22 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
             label={t("Created At")}
           />
           <BaseColumn id="actions">
-            {({ currentVersion: { id } }) => (
+            {({
+              currentVersion: {
+                template: {
+                  sourcePipeline: { name },
+                },
+                id,
+              },
+            }) => (
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={createPipeline(id)}
               >
-                {t("Create pipeline")}
+                {t("Create pipeline {{pipelineName}}", {
+                  pipelineName: name,
+                })}
               </Button>
             )}
           </BaseColumn>
@@ -139,6 +162,11 @@ PipelineTemplatesTable.fragments = {
             id
             versionNumber
             createdAt
+            template {
+              sourcePipeline {
+                name
+              }
+            }
           }
         }
       }

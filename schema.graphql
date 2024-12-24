@@ -2269,6 +2269,7 @@ type PipelineTemplate {
   config: String
   versions: [PipelineTemplateVersion!]
   currentVersion: PipelineTemplateVersion
+  sourcePipeline: Pipeline
 }
 
 """ Represents a version of a pipeline template. """
