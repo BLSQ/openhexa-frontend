@@ -2684,7 +2684,7 @@ type Query {
   datasets(query: String, page: Int = 1, perPage: Int = 15): DatasetPage!
 
   """Search pipeline templates."""
-  pipelineTemplates(page: Int = 1, perPage: Int = 15): PipelineTemplatePage!
+  pipelineTemplates(page: Int = 1, perPage: Int = 15, search: String): PipelineTemplatePage!
 }
 
 """

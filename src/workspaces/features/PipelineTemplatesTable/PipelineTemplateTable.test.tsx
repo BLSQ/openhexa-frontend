@@ -104,6 +104,22 @@ describe("PipelineTemplatesTable", () => {
     });
   });
 
+  it("handles search functionality", async () => {
+    render(<PipelineTemplatesTable />);
+
+    const searchInput = screen.getByRole("textbox");
+
+    fireEvent.change(searchInput, { target: { value: "Template 1" } });
+    fireEvent.submit(searchInput);
+
+    await waitFor(() => {
+      expect(fetchMoreMock).toHaveBeenCalledWith({
+        variables: { page: 1, perPage: 5, search: "Template 1" },
+        updateQuery: expect.any(Function),
+      });
+    });
+  });
+
   it("displays error message on error", async () => {
     useGetPipelineTemplatesQueryMock.mockReturnValue({
       loading: false,

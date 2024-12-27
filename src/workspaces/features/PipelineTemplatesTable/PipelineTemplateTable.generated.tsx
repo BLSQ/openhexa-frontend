@@ -6,6 +6,7 @@ const defaultOptions = {} as const;
 export type GetPipelineTemplatesQueryVariables = Types.Exact<{
   page: Types.Scalars['Int']['input'];
   perPage: Types.Scalars['Int']['input'];
+  search?: Types.InputMaybe<Types.Scalars['String']['input']>;
 }>;
 
 
@@ -13,8 +14,8 @@ export type GetPipelineTemplatesQuery = { __typename?: 'Query', pipelineTemplate
 
 
 export const GetPipelineTemplatesDocument = gql`
-    query GetPipelineTemplates($page: Int!, $perPage: Int!) {
-  pipelineTemplates(page: $page, perPage: $perPage) {
+    query GetPipelineTemplates($page: Int!, $perPage: Int!, $search: String) {
+  pipelineTemplates(page: $page, perPage: $perPage, search: $search) {
     pageNumber
     totalPages
     totalItems
@@ -45,6 +46,7 @@ export const GetPipelineTemplatesDocument = gql`
  *   variables: {
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
+ *      search: // value for 'search'
  *   },
  * });
  */
