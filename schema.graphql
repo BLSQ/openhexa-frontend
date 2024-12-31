@@ -2258,6 +2258,8 @@ type Pipeline {
   type: PipelineType!
   notebookPath: String
   template: PipelineTemplate
+  sourceTemplate: PipelineTemplate
+  newTemplateVersionAvailable: Boolean!
 }
 
 """ Represents a pipeline template. """
