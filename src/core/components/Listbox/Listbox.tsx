@@ -129,10 +129,17 @@ const IntersectionObserverWrapper = ({
   onScrollBottom: () => void;
 }) => {
   const endRef = useRef<HTMLDivElement>(null);
-  const list = useIntersectionObserver(endRef, {});
+  const [isMounted, setIsMounted] = useState(false);
+  const list = useIntersectionObserver(endRef, {
+    freezeOnceVisible: !isMounted,
+  });
 
   useEffect(() => {
-    if (list?.isIntersecting && onScrollBottom) {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && list?.isIntersecting) {
       onScrollBottom();
     }
   }, [onScrollBottom, list]);
