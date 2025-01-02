@@ -128,16 +128,16 @@ const IntersectionObserverWrapper = ({
 }: {
   onScrollBottom: () => void;
 }) => {
-  const [endRef, setEndRef] = useState<HTMLDivElement | null>(null);
-  const list = useIntersectionObserver(endRef, {});
+  const [lastElement, setLastElement] = useState<Element | null>(null);
+  const list = useIntersectionObserver(lastElement, {});
 
   useEffect(() => {
-    if (endRef && list?.isIntersecting) {
+    if (lastElement && list?.isIntersecting) {
       onScrollBottom();
     }
-  }, [onScrollBottom, list, endRef]);
+  }, [onScrollBottom, list, lastElement]);
 
-  return <div ref={setEndRef}></div>;
+  return <div ref={setLastElement}></div>;
 };
 
 export default Listbox;

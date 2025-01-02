@@ -31,7 +31,7 @@ const createMockData = (totalItems: number, itemsPerPage: number) => ({
 });
 
 describe("DatasetVersionPicker component", () => {
-  it("calls onScrollBottom when scrolling to the last element", async () => {
+  it("pull additional data when scrolling to the last element", async () => {
     const dataset = { id: faker.string.uuid() };
     const version = null;
 
