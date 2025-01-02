@@ -7,7 +7,7 @@ import {
 } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
 import { sameWidthModifier } from "core/helpers/popper";
 import { usePopper } from "react-popper";
@@ -128,23 +128,16 @@ const IntersectionObserverWrapper = ({
 }: {
   onScrollBottom: () => void;
 }) => {
-  const endRef = useRef<HTMLDivElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
-  const list = useIntersectionObserver(endRef, {
-    freezeOnceVisible: !isMounted,
-  });
+  const [endRef, setEndRef] = useState<HTMLDivElement | null>(null);
+  const list = useIntersectionObserver(endRef, {});
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (isMounted && list?.isIntersecting) {
+    if (endRef && list?.isIntersecting) {
       onScrollBottom();
     }
-  }, [onScrollBottom, list]);
+  }, [onScrollBottom, list, endRef]);
 
-  return <div ref={endRef}></div>;
+  return <div ref={setEndRef}></div>;
 };
 
 export default Listbox;
