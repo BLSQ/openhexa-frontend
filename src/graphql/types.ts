@@ -2782,11 +2782,13 @@ export type Pipeline = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
+  newTemplateVersionAvailable: Scalars['Boolean']['output'];
   notebookPath?: Maybe<Scalars['String']['output']>;
   permissions: PipelinePermissions;
   recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
+  sourceTemplate?: Maybe<PipelineTemplate>;
   template?: Maybe<PipelineTemplate>;
   type: PipelineType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;

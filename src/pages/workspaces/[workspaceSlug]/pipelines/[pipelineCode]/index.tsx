@@ -19,10 +19,10 @@ import { useState } from "react";
 import GeneratePipelineWebhookUrlDialog from "workspaces/features/GeneratePipelineWebhookUrlDialog";
 import PipelineVersionConfigDialog from "workspaces/features/PipelineVersionConfigDialog";
 import {
+  useWorkspacePipelinePageQuery,
   WorkspacePipelinePageDocument,
   WorkspacePipelinePageQuery,
   WorkspacePipelinePageQueryVariables,
-  useWorkspacePipelinePageQuery,
 } from "workspaces/graphql/queries.generated";
 import {
   formatPipelineType,
@@ -151,6 +151,25 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   >
                     {property.displayValue.versionName}
                   </Link>
+                </div>
+              )}
+            </RenderProperty>
+          )}
+          {pipeline.sourceTemplate && (
+            <RenderProperty
+              id="source_remplate"
+              accessor={"sourceTemplate.name"}
+              label={t("Source Template")}
+              readonly
+            >
+              {(sourceTemplateName) => (
+                <div className="flex items-center gap-2">
+                  <p>{sourceTemplateName.displayValue}</p>
+                  {pipeline.newTemplateVersionAvailable && (
+                    <Button variant={"secondary"} size={"sm"}>
+                      {t("Upgrade to new version")}
+                    </Button>
+                  )}
                 </div>
               )}
             </RenderProperty>

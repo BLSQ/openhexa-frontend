@@ -89,6 +89,10 @@ query WorkspacePipelinePage(
     schedule
     type
     notebookPath
+    sourceTemplate {
+      name
+    }
+    newTemplateVersionAvailable
     currentVersion {
       id
       versionName
