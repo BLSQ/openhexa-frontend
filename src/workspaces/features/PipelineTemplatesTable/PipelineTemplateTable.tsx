@@ -58,8 +58,6 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
     setPage(newPage);
   };
 
-  // TODO : extract names
-  // TODO : test calling the mutation
   const createPipeline = (pipelineTemplateVersionId: string) => () => {
     createPipelineFromTemplateVersion({
       variables: {
