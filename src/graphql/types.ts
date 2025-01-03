@@ -2918,16 +2918,26 @@ export type PipelineTemplate = {
   __typename?: 'PipelineTemplate';
   code: Scalars['String']['output'];
   config?: Maybe<Scalars['String']['output']>;
+  currentVersion?: Maybe<PipelineTemplateVersion>;
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   versions?: Maybe<Array<PipelineTemplateVersion>>;
 };
 
+/** Represents paged result of fetching pipeline templates. */
+export type PipelineTemplatePage = {
+  __typename?: 'PipelineTemplatePage';
+  items: Array<PipelineTemplate>;
+  pageNumber: Scalars['Int']['output'];
+  totalItems: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
 /**  Represents a version of a pipeline template.  */
 export type PipelineTemplateVersion = {
   __typename?: 'PipelineTemplateVersion';
-  createdAt: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
   id: Scalars['UUID']['output'];
   template: PipelineTemplate;
   versionNumber: Scalars['Int']['output'];
@@ -3154,6 +3164,8 @@ export type Query = {
   pipelineByCode?: Maybe<Pipeline>;
   /** Retrieves a pipeline run by ID. */
   pipelineRun?: Maybe<PipelineRun>;
+  /** Search pipeline templates. */
+  pipelineTemplates: PipelineTemplatePage;
   /** Retrieves a pipeline version by ID. */
   pipelineVersion?: Maybe<PipelineVersion>;
   /** Retrieves a page of pipelines. */
@@ -3319,6 +3331,13 @@ export type QueryPipelineByCodeArgs = {
 
 export type QueryPipelineRunArgs = {
   id: Scalars['UUID']['input'];
+};
+
+
+export type QueryPipelineTemplatesArgs = {
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 

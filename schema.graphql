@@ -2267,14 +2267,25 @@ type PipelineTemplate {
   description: String
   config: String
   versions: [PipelineTemplateVersion!]
+  currentVersion: PipelineTemplateVersion
 }
 
 """ Represents a version of a pipeline template. """
 type PipelineTemplateVersion {
   id: UUID!
   versionNumber: Int!
-  createdAt: String!
+  createdAt: DateTime!
   template: PipelineTemplate!
+}
+
+"""
+Represents paged result of fetching pipeline templates.
+"""
+type PipelineTemplatePage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [PipelineTemplate!]!
 }
 
 """
@@ -2671,6 +2682,9 @@ type Query {
 
   """Search datasets."""
   datasets(query: String, page: Int = 1, perPage: Int = 15): DatasetPage!
+
+  """Search pipeline templates."""
+  pipelineTemplates(page: Int = 1, perPage: Int = 15, search: String): PipelineTemplatePage!
 }
 
 """
