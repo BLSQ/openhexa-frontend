@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.3](https://github.com/BLSQ/openhexa-frontend/compare/0.56.2...0.56.3) (2025-01-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/lodash to v4.17.14 ([#982](https://github.com/BLSQ/openhexa-frontend/issues/982)) ([ec042eb](https://github.com/BLSQ/openhexa-frontend/commit/ec042eb3d6ac14630fc0e95ee6bc79d0aec27e36))
+
 ## [0.56.2](https://github.com/BLSQ/openhexa-frontend/compare/0.56.1...0.56.2) (2025-01-03)
 
 
