@@ -813,6 +813,33 @@ export type CreatePipelineResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** Enum representing the possible errors that can occur when creating a pipeline template version. */
+export enum CreatePipelineTemplateVersionError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents the input for creating a new pipeline template version. */
+export type CreatePipelineTemplateVersionInput = {
+  code?: InputMaybe<Scalars['String']['input']>;
+  config?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  pipelineId: Scalars['UUID']['input'];
+  pipelineVersionId: Scalars['UUID']['input'];
+  workspaceSlug: Scalars['String']['input'];
+};
+
+/** Represents the result of creating a new pipeline template version. */
+export type CreatePipelineTemplateVersionResult = {
+  __typename?: 'CreatePipelineTemplateVersionResult';
+  errors?: Maybe<Array<CreatePipelineTemplateVersionError>>;
+  pipelineTemplate?: Maybe<PipelineTemplate>;
+  success: Scalars['Boolean']['output'];
+};
+
 /** The CreateTeamError enum represents the possible errors that can occur during the createTeam mutation. */
 export enum CreateTeamError {
   /** Indicates that a team with the same name already exists. */
@@ -1926,6 +1953,7 @@ export type MePermissions = {
   /** Indicates whether the user has permission to access the admin panel. */
   adminPanel: Scalars['Boolean']['output'];
   createAccessmodProject: Scalars['Boolean']['output'];
+  createPipelineTemplateVersion: Scalars['Boolean']['output'];
   /** Indicates whether the user has permission to create a team. */
   createTeam: Scalars['Boolean']['output'];
   createWorkspace: Scalars['Boolean']['output'];
@@ -2035,6 +2063,7 @@ export type Mutation = {
   createMembership: CreateMembershipResult;
   /** Creates a new pipeline. */
   createPipeline: CreatePipelineResult;
+  createPipelineTemplateVersion: CreatePipelineTemplateVersionResult;
   createTeam: CreateTeamResult;
   createWorkspace: CreateWorkspaceResult;
   declineWorkspaceInvitation: DeclineWorkspaceInvitationResult;
@@ -2238,6 +2267,11 @@ export type MutationCreateMembershipArgs = {
 
 export type MutationCreatePipelineArgs = {
   input: CreatePipelineInput;
+};
+
+
+export type MutationCreatePipelineTemplateVersionArgs = {
+  input: CreatePipelineTemplateVersionInput;
 };
 
 
@@ -2725,6 +2759,7 @@ export type Pipeline = {
   recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
+  template?: Maybe<PipelineTemplate>;
   type: PipelineType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
@@ -2878,6 +2913,26 @@ export enum PipelineRunTrigger {
   Webhook = 'webhook'
 }
 
+/**  Represents a pipeline template.  */
+export type PipelineTemplate = {
+  __typename?: 'PipelineTemplate';
+  code: Scalars['String']['output'];
+  config?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  versions?: Maybe<Array<PipelineTemplateVersion>>;
+};
+
+/**  Represents a version of a pipeline template.  */
+export type PipelineTemplateVersion = {
+  __typename?: 'PipelineTemplateVersion';
+  createdAt: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  template: PipelineTemplate;
+  versionNumber: Scalars['Int']['output'];
+};
+
 /** Represents the input for retrieving a pipeline token. */
 export type PipelineTokenInput = {
   pipelineCode: Scalars['String']['input'];
@@ -2911,6 +2966,7 @@ export type PipelineVersion = {
   parameters: Array<PipelineParameter>;
   permissions: PipelineVersionPermissions;
   pipeline: Pipeline;
+  templateVersion?: Maybe<PipelineTemplateVersion>;
   timeout?: Maybe<Scalars['Int']['output']>;
   user?: Maybe<User>;
   versionName: Scalars['String']['output'];

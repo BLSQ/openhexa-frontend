@@ -1904,6 +1904,7 @@ type MePermissions {
   createAccessmodProject: Boolean!
   manageAccessmodAccessRequests: Boolean!
   createWorkspace: Boolean!
+  createPipelineTemplateVersion: Boolean!
 }
 
 """An enumeration representing the priority levels of a message."""
@@ -1973,6 +1974,7 @@ type Mutation {
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
   runDAG(input: RunDAGInput!): RunDAGResult!
   updateDAG(input: UpdateDAGInput!): UpdateDAGResult!
+  createPipelineTemplateVersion(input: CreatePipelineTemplateVersionInput!): CreatePipelineTemplateVersionResult!
   prepareDownloadURL(input: PrepareDownloadURLInput!): PrepareDownloadURLResult
   setDAGRunFavorite(input: SetDAGRunFavoriteInput!): SetDAGRunFavoriteResult
   createAccessmodProject(input: CreateAccessmodProjectInput!): CreateAccessmodProjectResult!
@@ -2254,6 +2256,56 @@ type Pipeline {
   webhookUrl: String
   type: PipelineType!
   notebookPath: String
+  template: PipelineTemplate
+}
+
+""" Represents a pipeline template. """
+type PipelineTemplate {
+  id: UUID!
+  name: String!
+  code: String!
+  description: String
+  config: String
+  versions: [PipelineTemplateVersion!]
+}
+
+""" Represents a version of a pipeline template. """
+type PipelineTemplateVersion {
+  id: UUID!
+  versionNumber: Int!
+  createdAt: String!
+  template: PipelineTemplate!
+}
+
+"""
+Represents the input for creating a new pipeline template version.
+"""
+input CreatePipelineTemplateVersionInput {
+  name: String
+  code: String
+  description: String
+  config: String
+  workspaceSlug: String!
+  pipelineId: UUID!
+  pipelineVersionId: UUID!
+}
+
+"""
+Represents the result of creating a new pipeline template version.
+"""
+type CreatePipelineTemplateVersionResult {
+  pipelineTemplate: PipelineTemplate
+  success: Boolean!
+  errors: [CreatePipelineTemplateVersionError!]
+}
+"""
+Enum representing the possible errors that can occur when creating a pipeline template version.
+"""
+enum CreatePipelineTemplateVersionError {
+  PERMISSION_DENIED
+  WORKSPACE_NOT_FOUND
+  PIPELINE_NOT_FOUND
+  PIPELINE_VERSION_NOT_FOUND
 }
 
 enum PipelineError {
@@ -2426,6 +2478,7 @@ type PipelineVersion {
   timeout: Int
   permissions: PipelineVersionPermissions!
   config: JSON
+  templateVersion: PipelineTemplateVersion
 }
 
 """Represents a page of pipeline versions."""
