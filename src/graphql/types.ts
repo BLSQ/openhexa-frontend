@@ -790,6 +790,28 @@ export type CreateMetadataAttributeResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** Enum representing the possible errors that can occur when creating a pipeline from a template version. */
+export enum CreatePipelineFromTemplateVersionError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineAlreadyExists = 'PIPELINE_ALREADY_EXISTS',
+  PipelineTemplateVersionNotFound = 'PIPELINE_TEMPLATE_VERSION_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents the input for creating a new pipeline from a template version. */
+export type CreatePipelineFromTemplateVersionInput = {
+  pipelineTemplateVersionId: Scalars['UUID']['input'];
+  workspaceSlug: Scalars['String']['input'];
+};
+
+/** Represents the result of creating a new pipeline from a template version. */
+export type CreatePipelineFromTemplateVersionResult = {
+  __typename?: 'CreatePipelineFromTemplateVersionResult';
+  errors?: Maybe<Array<CreatePipelineFromTemplateVersionError>>;
+  pipeline?: Maybe<Pipeline>;
+  success: Scalars['Boolean']['output'];
+};
+
 /** Represents the input for creating a pipeline. */
 export type CreatePipelineInput = {
   code: Scalars['String']['input'];
@@ -810,6 +832,33 @@ export type CreatePipelineResult = {
   __typename?: 'CreatePipelineResult';
   errors: Array<PipelineError>;
   pipeline?: Maybe<Pipeline>;
+  success: Scalars['Boolean']['output'];
+};
+
+/** Enum representing the possible errors that can occur when creating a pipeline template version. */
+export enum CreatePipelineTemplateVersionError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents the input for creating a new pipeline template version. */
+export type CreatePipelineTemplateVersionInput = {
+  code?: InputMaybe<Scalars['String']['input']>;
+  config?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  pipelineId: Scalars['UUID']['input'];
+  pipelineVersionId: Scalars['UUID']['input'];
+  workspaceSlug: Scalars['String']['input'];
+};
+
+/** Represents the result of creating a new pipeline template version. */
+export type CreatePipelineTemplateVersionResult = {
+  __typename?: 'CreatePipelineTemplateVersionResult';
+  errors?: Maybe<Array<CreatePipelineTemplateVersionError>>;
+  pipelineTemplate?: Maybe<PipelineTemplate>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -1926,6 +1975,7 @@ export type MePermissions = {
   /** Indicates whether the user has permission to access the admin panel. */
   adminPanel: Scalars['Boolean']['output'];
   createAccessmodProject: Scalars['Boolean']['output'];
+  createPipelineTemplateVersion: Scalars['Boolean']['output'];
   /** Indicates whether the user has permission to create a team. */
   createTeam: Scalars['Boolean']['output'];
   createWorkspace: Scalars['Boolean']['output'];
@@ -2035,6 +2085,8 @@ export type Mutation = {
   createMembership: CreateMembershipResult;
   /** Creates a new pipeline. */
   createPipeline: CreatePipelineResult;
+  createPipelineFromTemplateVersion: CreatePipelineFromTemplateVersionResult;
+  createPipelineTemplateVersion: CreatePipelineTemplateVersionResult;
   createTeam: CreateTeamResult;
   createWorkspace: CreateWorkspaceResult;
   declineWorkspaceInvitation: DeclineWorkspaceInvitationResult;
@@ -2238,6 +2290,16 @@ export type MutationCreateMembershipArgs = {
 
 export type MutationCreatePipelineArgs = {
   input: CreatePipelineInput;
+};
+
+
+export type MutationCreatePipelineFromTemplateVersionArgs = {
+  input: CreatePipelineFromTemplateVersionInput;
+};
+
+
+export type MutationCreatePipelineTemplateVersionArgs = {
+  input: CreatePipelineTemplateVersionInput;
 };
 
 
@@ -2720,11 +2782,14 @@ export type Pipeline = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
+  newTemplateVersionAvailable: Scalars['Boolean']['output'];
   notebookPath?: Maybe<Scalars['String']['output']>;
   permissions: PipelinePermissions;
   recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
+  sourceTemplate?: Maybe<PipelineTemplate>;
+  template?: Maybe<PipelineTemplate>;
   type: PipelineType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
@@ -2878,6 +2943,37 @@ export enum PipelineRunTrigger {
   Webhook = 'webhook'
 }
 
+/**  Represents a pipeline template.  */
+export type PipelineTemplate = {
+  __typename?: 'PipelineTemplate';
+  code: Scalars['String']['output'];
+  config?: Maybe<Scalars['String']['output']>;
+  currentVersion?: Maybe<PipelineTemplateVersion>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  sourcePipeline?: Maybe<Pipeline>;
+  versions?: Maybe<Array<PipelineTemplateVersion>>;
+};
+
+/** Represents paged result of fetching pipeline templates. */
+export type PipelineTemplatePage = {
+  __typename?: 'PipelineTemplatePage';
+  items: Array<PipelineTemplate>;
+  pageNumber: Scalars['Int']['output'];
+  totalItems: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+/**  Represents a version of a pipeline template.  */
+export type PipelineTemplateVersion = {
+  __typename?: 'PipelineTemplateVersion';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['UUID']['output'];
+  template: PipelineTemplate;
+  versionNumber: Scalars['Int']['output'];
+};
+
 /** Represents the input for retrieving a pipeline token. */
 export type PipelineTokenInput = {
   pipelineCode: Scalars['String']['input'];
@@ -2911,6 +3007,7 @@ export type PipelineVersion = {
   parameters: Array<PipelineParameter>;
   permissions: PipelineVersionPermissions;
   pipeline: Pipeline;
+  templateVersion?: Maybe<PipelineTemplateVersion>;
   timeout?: Maybe<Scalars['Int']['output']>;
   user?: Maybe<User>;
   versionName: Scalars['String']['output'];
@@ -3098,6 +3195,8 @@ export type Query = {
   pipelineByCode?: Maybe<Pipeline>;
   /** Retrieves a pipeline run by ID. */
   pipelineRun?: Maybe<PipelineRun>;
+  /** Search pipeline templates. */
+  pipelineTemplates: PipelineTemplatePage;
   /** Retrieves a pipeline version by ID. */
   pipelineVersion?: Maybe<PipelineVersion>;
   /** Retrieves a page of pipelines. */
@@ -3263,6 +3362,13 @@ export type QueryPipelineByCodeArgs = {
 
 export type QueryPipelineRunArgs = {
   id: Scalars['UUID']['input'];
+};
+
+
+export type QueryPipelineTemplatesArgs = {
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 

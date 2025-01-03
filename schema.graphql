@@ -1904,6 +1904,7 @@ type MePermissions {
   createAccessmodProject: Boolean!
   manageAccessmodAccessRequests: Boolean!
   createWorkspace: Boolean!
+  createPipelineTemplateVersion: Boolean!
 }
 
 """An enumeration representing the priority levels of a message."""
@@ -1973,6 +1974,8 @@ type Mutation {
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
   runDAG(input: RunDAGInput!): RunDAGResult!
   updateDAG(input: UpdateDAGInput!): UpdateDAGResult!
+  createPipelineTemplateVersion(input: CreatePipelineTemplateVersionInput!): CreatePipelineTemplateVersionResult!
+  createPipelineFromTemplateVersion(input: CreatePipelineFromTemplateVersionInput!): CreatePipelineFromTemplateVersionResult!
   prepareDownloadURL(input: PrepareDownloadURLInput!): PrepareDownloadURLResult
   setDAGRunFavorite(input: SetDAGRunFavoriteInput!): SetDAGRunFavoriteResult
   createAccessmodProject(input: CreateAccessmodProjectInput!): CreateAccessmodProjectResult!
@@ -2254,6 +2257,97 @@ type Pipeline {
   webhookUrl: String
   type: PipelineType!
   notebookPath: String
+  template: PipelineTemplate
+  sourceTemplate: PipelineTemplate
+  newTemplateVersionAvailable: Boolean!
+}
+
+""" Represents a pipeline template. """
+type PipelineTemplate {
+  id: UUID!
+  name: String!
+  code: String!
+  description: String
+  config: String
+  versions: [PipelineTemplateVersion!]
+  currentVersion: PipelineTemplateVersion
+  sourcePipeline: Pipeline
+}
+
+""" Represents a version of a pipeline template. """
+type PipelineTemplateVersion {
+  id: UUID!
+  versionNumber: Int!
+  createdAt: DateTime!
+  template: PipelineTemplate!
+}
+
+"""
+Represents paged result of fetching pipeline templates.
+"""
+type PipelineTemplatePage {
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  items: [PipelineTemplate!]!
+}
+
+"""
+Represents the input for creating a new pipeline template version.
+"""
+input CreatePipelineTemplateVersionInput {
+  name: String
+  code: String
+  description: String
+  config: String
+  workspaceSlug: String!
+  pipelineId: UUID!
+  pipelineVersionId: UUID!
+}
+
+"""
+Represents the result of creating a new pipeline template version.
+"""
+type CreatePipelineTemplateVersionResult {
+  pipelineTemplate: PipelineTemplate
+  success: Boolean!
+  errors: [CreatePipelineTemplateVersionError!]
+}
+"""
+Enum representing the possible errors that can occur when creating a pipeline template version.
+"""
+enum CreatePipelineTemplateVersionError {
+  PERMISSION_DENIED
+  WORKSPACE_NOT_FOUND
+  PIPELINE_NOT_FOUND
+  PIPELINE_VERSION_NOT_FOUND
+}
+
+"""
+Represents the input for creating a new pipeline from a template version.
+"""
+input CreatePipelineFromTemplateVersionInput {
+  workspaceSlug: String!
+  pipelineTemplateVersionId: UUID!
+}
+
+"""
+Represents the result of creating a new pipeline from a template version.
+"""
+type CreatePipelineFromTemplateVersionResult {
+  pipeline: Pipeline
+  success: Boolean!
+  errors: [CreatePipelineFromTemplateVersionError!]
+}
+
+"""
+Enum representing the possible errors that can occur when creating a pipeline from a template version.
+"""
+enum CreatePipelineFromTemplateVersionError {
+  PERMISSION_DENIED
+  WORKSPACE_NOT_FOUND
+  PIPELINE_TEMPLATE_VERSION_NOT_FOUND
+  PIPELINE_ALREADY_EXISTS
 }
 
 enum PipelineError {
@@ -2426,6 +2520,7 @@ type PipelineVersion {
   timeout: Int
   permissions: PipelineVersionPermissions!
   config: JSON
+  templateVersion: PipelineTemplateVersion
 }
 
 """Represents a page of pipeline versions."""
@@ -2618,6 +2713,9 @@ type Query {
 
   """Search datasets."""
   datasets(query: String, page: Int = 1, perPage: Int = 15): DatasetPage!
+
+  """Search pipeline templates."""
+  pipelineTemplates(page: Int = 1, perPage: Int = 15, search: String): PipelineTemplatePage!
 }
 
 """

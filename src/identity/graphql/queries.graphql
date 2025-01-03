@@ -5,6 +5,7 @@ query GetUser {
       adminPanel
       superUser
       createWorkspace
+      createPipelineTemplateVersion
     }
     features {
       code
