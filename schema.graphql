@@ -1975,6 +1975,7 @@ type Mutation {
   runDAG(input: RunDAGInput!): RunDAGResult!
   updateDAG(input: UpdateDAGInput!): UpdateDAGResult!
   createPipelineTemplateVersion(input: CreatePipelineTemplateVersionInput!): CreatePipelineTemplateVersionResult!
+  createPipelineFromTemplateVersion(input: CreatePipelineFromTemplateVersionInput!): CreatePipelineFromTemplateVersionResult!
   prepareDownloadURL(input: PrepareDownloadURLInput!): PrepareDownloadURLResult
   setDAGRunFavorite(input: SetDAGRunFavoriteInput!): SetDAGRunFavoriteResult
   createAccessmodProject(input: CreateAccessmodProjectInput!): CreateAccessmodProjectResult!
@@ -2268,6 +2269,7 @@ type PipelineTemplate {
   config: String
   versions: [PipelineTemplateVersion!]
   currentVersion: PipelineTemplateVersion
+  sourcePipeline: Pipeline
 }
 
 """ Represents a version of a pipeline template. """
@@ -2317,6 +2319,33 @@ enum CreatePipelineTemplateVersionError {
   WORKSPACE_NOT_FOUND
   PIPELINE_NOT_FOUND
   PIPELINE_VERSION_NOT_FOUND
+}
+
+"""
+Represents the input for creating a new pipeline from a template version.
+"""
+input CreatePipelineFromTemplateVersionInput {
+  workspaceSlug: String!
+  pipelineTemplateVersionId: UUID!
+}
+
+"""
+Represents the result of creating a new pipeline from a template version.
+"""
+type CreatePipelineFromTemplateVersionResult {
+  pipeline: Pipeline
+  success: Boolean!
+  errors: [CreatePipelineFromTemplateVersionError!]
+}
+
+"""
+Enum representing the possible errors that can occur when creating a pipeline from a template version.
+"""
+enum CreatePipelineFromTemplateVersionError {
+  PERMISSION_DENIED
+  WORKSPACE_NOT_FOUND
+  PIPELINE_TEMPLATE_VERSION_NOT_FOUND
+  PIPELINE_ALREADY_EXISTS
 }
 
 enum PipelineError {

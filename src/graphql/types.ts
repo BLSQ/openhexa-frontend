@@ -790,6 +790,28 @@ export type CreateMetadataAttributeResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** Enum representing the possible errors that can occur when creating a pipeline from a template version. */
+export enum CreatePipelineFromTemplateVersionError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineAlreadyExists = 'PIPELINE_ALREADY_EXISTS',
+  PipelineTemplateVersionNotFound = 'PIPELINE_TEMPLATE_VERSION_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents the input for creating a new pipeline from a template version. */
+export type CreatePipelineFromTemplateVersionInput = {
+  pipelineTemplateVersionId: Scalars['UUID']['input'];
+  workspaceSlug: Scalars['String']['input'];
+};
+
+/** Represents the result of creating a new pipeline from a template version. */
+export type CreatePipelineFromTemplateVersionResult = {
+  __typename?: 'CreatePipelineFromTemplateVersionResult';
+  errors?: Maybe<Array<CreatePipelineFromTemplateVersionError>>;
+  pipeline?: Maybe<Pipeline>;
+  success: Scalars['Boolean']['output'];
+};
+
 /** Represents the input for creating a pipeline. */
 export type CreatePipelineInput = {
   code: Scalars['String']['input'];
@@ -2063,6 +2085,7 @@ export type Mutation = {
   createMembership: CreateMembershipResult;
   /** Creates a new pipeline. */
   createPipeline: CreatePipelineResult;
+  createPipelineFromTemplateVersion: CreatePipelineFromTemplateVersionResult;
   createPipelineTemplateVersion: CreatePipelineTemplateVersionResult;
   createTeam: CreateTeamResult;
   createWorkspace: CreateWorkspaceResult;
@@ -2267,6 +2290,11 @@ export type MutationCreateMembershipArgs = {
 
 export type MutationCreatePipelineArgs = {
   input: CreatePipelineInput;
+};
+
+
+export type MutationCreatePipelineFromTemplateVersionArgs = {
+  input: CreatePipelineFromTemplateVersionInput;
 };
 
 
@@ -2922,6 +2950,7 @@ export type PipelineTemplate = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
+  sourcePipeline?: Maybe<Pipeline>;
   versions?: Maybe<Array<PipelineTemplateVersion>>;
 };
 
