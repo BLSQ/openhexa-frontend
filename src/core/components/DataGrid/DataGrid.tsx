@@ -33,6 +33,7 @@ import {
   TableBody,
   TableCell,
   TableCellProps,
+  TableClasses,
   TableHead,
   TableRow,
 } from "../Table";
@@ -267,7 +268,7 @@ function DataGrid(props: DataGridProps) {
       <Overflow horizontal gradientWidth="w-12">
         <Table
           {...getTableProps()}
-          className={clsx(fixedLayout && "table-fixed")}
+          className={clsx(TableClasses.table, fixedLayout && "table-fixed")}
         >
           <TableHead className={headerClassName}>
             {headerGroups.map((headerGroup, i) => {
