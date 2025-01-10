@@ -22,6 +22,7 @@ const Tag = (props: TagProps) => {
   return (
     <Badge
       title={tag.name}
+      defaultStyle={false}
       className={clsx(
         onClick && "cursor-pointer",
         className,
