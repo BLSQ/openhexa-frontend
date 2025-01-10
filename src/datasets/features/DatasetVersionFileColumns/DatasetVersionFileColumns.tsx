@@ -1,18 +1,22 @@
 import { gql, useQuery } from "@apollo/client";
-import { useEffect, useMemo } from "react";
+import { PencilIcon } from "@heroicons/react/24/outline";
+import Badge from "core/components/Badge";
+import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
+import { Table, TableBody, TableCell, TableRow } from "core/components/Table";
+import Title from "core/components/Title";
+import { trackEvent } from "core/helpers/analytics";
+import { percentage } from "datasets/helpers/dataset";
 import { MetadataAttribute } from "graphql/types";
 import { camelCase } from "lodash";
-import Card from "core/components/Card";
-import DescriptionList from "core/components/DescriptionList";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Badge from "core/components/Badge";
-import { percentage } from "datasets/helpers/dataset";
-import { trackEvent } from "core/helpers/analytics";
 import {
   DatasetVersionFileColumns_FileFragment,
   DatasetVersionFileColumns_VersionFragment,
 } from "./DatasetVersionFileColumns.generated";
+import Drawer from "core/components/Drawer/Drawer";
+import Dialog from "core/components/Dialog";
 
 export type DatasetColumn = {
   id: string;
@@ -55,6 +59,8 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
       },
     },
   );
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     const { dataset } = version;
@@ -111,40 +117,78 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
-      {columns.map((column: DatasetColumn) => (
-        <Card
-          key={column.key}
-          title={
-            <div className="flex justify-between">
-              <span className="max-w-[80%] font-semibold text-sm font-mono">
-                {column.columnName}
-              </span>
-              <div>
-                <Badge className="text-xs bg-gray-100 font-mono">
-                  {column.dataType}
-                </Badge>
-              </div>
+    <>
+      <div className="divide-y divide-gray-200">
+        {columns.map((column: DatasetColumn) => (
+          <div
+            key={column.key}
+            className="py-6 first:pt-2 hover:bg-gray-50 -mx-4 px-4 group relative"
+          >
+            <div className="absolute right-4 top-4 invisible group-hover:visible">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setIsDrawerOpen(true)}
+              >
+                <PencilIcon className="h-4 w-4" />
+              </Button>
             </div>
-          }
-        >
-          <Card.Content>
-            <DescriptionList compact>
-              <DescriptionList.Item label={t("Distinct")}>
-                <code className="font-mono text-sm text-gray-600">
-                  {`${column.distinctValues} (${total ? `${percentage(column.distinctValues, total)}%` : "-"})`}
-                </code>
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Missing")} className="gap-4">
-                <code className="font-mono text-sm text-gray-600 ">
-                  {`${column.missingValues} (${total ? `${percentage(column.missingValues, total)}%` : "-"})`}
-                </code>
-              </DescriptionList.Item>
-            </DescriptionList>
-          </Card.Content>
-        </Card>
-      ))}
-    </div>
+            <Title level={3}>{column.columnName}</Title>
+            <div className="flex flex-row divide divide-x divide-gray-200">
+              <Table className="flex-1/3 flex-grow-0 ">
+                <TableBody className="font-mono">
+                  <TableRow>
+                    <TableCell spacing="tight">{t("Distinct")}</TableCell>
+                    <TableCell spacing="tight">
+                      {`${column.distinctValues} (${total ? `${percentage(column.distinctValues, total)}%` : "-"})`}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell spacing="tight">{t("Missing")}</TableCell>
+                    <TableCell spacing="tight">
+                      {`${column.missingValues} (${total ? `${percentage(column.missingValues, total)}%` : "-"})`}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell spacing="tight">{t("Constant")}</TableCell>
+                    <TableCell spacing="tight">
+                      {column.constantValues ? t("Yes") : t("No")}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              {false && (
+                <div className="px-4">
+                  <i>No description</i>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-row gap-2 mt-2">
+              <Badge
+                defaultStyle={false}
+                className="font-mono bg-amber-50 ring-amber-500/20"
+                size="sm"
+              >
+                {column.dataType}
+              </Badge>
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* <Drawer open={isDrawerOpen} setOpen={setIsDrawerOpen}>
+        <Drawer.Title>Coucou</Drawer.Title>
+        <Drawer.Content>Content</Drawer.Content>
+        <Drawer.Actions>
+          <Button variant="secondary" onClick={() => setIsDrawerOpen(false)}>
+            Cancel
+          </Button>
+          <Button>Save</Button>
+        </Drawer.Actions>
+      </Drawer> */}
+      <Dialog open={isDrawerOpen} onClose={setIsDrawerOpen}>
+        <Dialog.Content>Coucou</Dialog.Content>
+      </Dialog>
+    </>
   );
 };
 

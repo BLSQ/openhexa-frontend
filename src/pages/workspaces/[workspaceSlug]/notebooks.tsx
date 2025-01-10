@@ -73,8 +73,7 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
           },
         ]}
         forceCompactSidebar
-      >
-        <WorkspaceLayout.Header className="flex items-center justify-between">
+        header={
           <Breadcrumbs withHome={false}>
             <Breadcrumbs.Part
               isFirst
@@ -91,7 +90,8 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
               {t("Notebooks")}
             </Breadcrumbs.Part>
           </Breadcrumbs>
-        </WorkspaceLayout.Header>
+        }
+      >
         {server?.ready ? (
           <iframe className="h-full w-full flex-1" src={server.url}></iframe>
         ) : (
