@@ -138,7 +138,7 @@ export const getServerSideProps = createGetServerSideProps({
           redirect: {
             destination: `/workspaces/${encodeURIComponent(
               data.workspace.slug,
-            )}/datasets/${encodeURIComponent(data.datasetLink.dataset.slug)}/files/${version.files.items[0].id}`,
+            )}/datasets/${encodeURIComponent(data.datasetLink.dataset.slug)}/files/${encodeURIComponent(version.files.items[0].id)}?version=${encodeURIComponent(version.id)}`,
             permanent: false,
           },
         };

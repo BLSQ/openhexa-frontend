@@ -2014,10 +2014,14 @@ export enum MessagePriority {
 /** Generic metadata attribute */
 export type MetadataAttribute = {
   __typename?: 'MetadataAttribute';
+  createdAt: Scalars['DateTime']['output'];
+  createdBy?: Maybe<User>;
   id: Scalars['UUID']['output'];
   key: Scalars['String']['output'];
   label?: Maybe<Scalars['String']['output']>;
   system: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  updatedBy?: Maybe<User>;
   value?: Maybe<Scalars['JSON']['output']>;
 };
 

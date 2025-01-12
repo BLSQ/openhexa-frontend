@@ -1,4 +1,4 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import Badge from "core/components/Badge";
 import Button from "core/components/Button";
@@ -7,29 +7,15 @@ import { Table, TableBody, TableCell, TableRow } from "core/components/Table";
 import Title from "core/components/Title";
 import { trackEvent } from "core/helpers/analytics";
 import { percentage } from "datasets/helpers/dataset";
-import { MetadataAttribute } from "graphql/types";
-import { camelCase } from "lodash";
-import { useEffect, useMemo, useState } from "react";
+import useTabularFileMetadata from "datasets/hooks/useTabularFileMetadata";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import ColumnMetadataDrawer from "../ColumnMetadataDrawer/ColumnMetadataDrawer";
+import RenderColumnAttribute from "../RenderColumnAttribute";
 import {
   DatasetVersionFileColumns_FileFragment,
   DatasetVersionFileColumns_VersionFragment,
 } from "./DatasetVersionFileColumns.generated";
-import Drawer from "core/components/Drawer/Drawer";
-import Dialog from "core/components/Dialog";
-
-export type DatasetColumn = {
-  id: string;
-  columnName: string;
-  constantValues?: boolean;
-  dataType: string;
-  distinctValues: number;
-  key: string;
-  missingValues: number;
-  system: boolean;
-  uniqueValues?: number;
-  count: number;
-};
 
 type DatasetVersionFileColumnsProps = {
   file: DatasetVersionFileColumns_FileFragment;
@@ -39,28 +25,9 @@ type DatasetVersionFileColumnsProps = {
 const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
   const { t } = useTranslation();
   const { file, version } = props;
-  const { data, loading } = useQuery(
-    gql`
-      query DatasetVersionFileColumnsMetadata($id: ID!) {
-        datasetVersionFile(id: $id) {
-          id
-          attributes {
-            id
-            key
-            value
-            system
-          }
-        }
-      }
-    `,
-    {
-      variables: {
-        id: file.id,
-      },
-    },
-  );
+  const { columns, loading, refetch } = useTabularFileMetadata(file.id);
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
 
   useEffect(() => {
     const { dataset } = version;
@@ -73,33 +40,6 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
       });
     }
   }, []);
-
-  const { columns, total } = useMemo(() => {
-    if (!data?.datasetVersionFile.attributes) {
-      return { columns: [], total: 0 };
-    }
-
-    const { attributes } = data.datasetVersionFile;
-    const res: Array<DatasetColumn> = Object.values(
-      attributes.reduce((acc: any, item: MetadataAttribute) => {
-        const [columnKey, property] = item.key.split(".");
-        if (!acc[columnKey]) {
-          acc[columnKey] = {
-            id: item.id,
-            key: columnKey,
-            system: item.system,
-          };
-        }
-        acc[columnKey][camelCase(property)] = item.value;
-        return acc;
-      }, {}),
-    );
-
-    return {
-      columns: res,
-      total: res.length ? res[0].count + res[0].missingValues : 0,
-    };
-  }, [data]);
 
   if (loading)
     return (
@@ -116,78 +56,155 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
     );
   }
 
+  const onDrawerClose = () => {
+    setSelectedColumn(null);
+    refetch();
+  };
+
   return (
     <>
       <div className="divide-y divide-gray-200">
-        {columns.map((column: DatasetColumn) => (
+        {columns.map((column) => (
           <div
             key={column.key}
-            className="py-6 first:pt-2 hover:bg-gray-50 -mx-4 px-4 group relative"
+            className="hover:bg-gray-50 -mx-4 px-4 group relative py-4 first:pt-2"
           >
-            <div className="absolute right-4 top-4 invisible group-hover:visible">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => setIsDrawerOpen(true)}
-              >
-                <PencilIcon className="h-4 w-4" />
-              </Button>
-            </div>
-            <Title level={3}>{column.columnName}</Title>
+            {version.dataset?.permissions?.update && (
+              <div className="absolute right-4 top-4 invisible group-hover:visible">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setSelectedColumn(column.key)}
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            <Title level={3} className="mt-0">
+              {column.name}
+            </Title>
             <div className="flex flex-row divide divide-x divide-gray-200">
-              <Table className="flex-1/3 flex-grow-0 ">
-                <TableBody className="font-mono">
-                  <TableRow>
-                    <TableCell spacing="tight">{t("Distinct")}</TableCell>
-                    <TableCell spacing="tight">
-                      {`${column.distinctValues} (${total ? `${percentage(column.distinctValues, total)}%` : "-"})`}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell spacing="tight">{t("Missing")}</TableCell>
-                    <TableCell spacing="tight">
-                      {`${column.missingValues} (${total ? `${percentage(column.missingValues, total)}%` : "-"})`}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell spacing="tight">{t("Constant")}</TableCell>
-                    <TableCell spacing="tight">
-                      {column.constantValues ? t("Yes") : t("No")}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              {false && (
-                <div className="px-4">
-                  <i>No description</i>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-row gap-2 mt-2">
-              <Badge
-                defaultStyle={false}
-                className="font-mono bg-amber-50 ring-amber-500/20"
-                size="sm"
+              <div className="flex-1/3 flex-grow-0">
+                <Table>
+                  <TableBody className="font-mono">
+                    <TableRow>
+                      <TableCell spacing="tight">{t("Distinct")}</TableCell>
+                      <RenderColumnAttribute
+                        column={column}
+                        attributeKeys={["distinct_values", "count"]}
+                      >
+                        {(distinctValues, count) =>
+                          distinctValues && (
+                            <TableCell spacing="tight">
+                              {distinctValues.value}
+                              {count?.value && (
+                                <span className="text-xs text-gray-500">
+                                  &nbsp;(
+                                  {percentage(
+                                    distinctValues.value,
+                                    count.value,
+                                  )}
+                                  %)
+                                </span>
+                              )}
+                            </TableCell>
+                          )
+                        }
+                      </RenderColumnAttribute>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell spacing="tight">{t("Missing")}</TableCell>
+                      <RenderColumnAttribute
+                        column={column}
+                        attributeKeys={["missing_values", "count"]}
+                      >
+                        {(missingValues, count) =>
+                          missingValues && (
+                            <TableCell spacing="tight">
+                              {missingValues.value}
+                              {count?.value && (
+                                <span className="text-xs text-gray-500">
+                                  &nbsp;(
+                                  {percentage(missingValues.value, count.value)}
+                                  %)
+                                </span>
+                              )}
+                            </TableCell>
+                          )
+                        }
+                      </RenderColumnAttribute>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell spacing="tight">{t("Constant")}</TableCell>
+                      <RenderColumnAttribute
+                        column={column}
+                        attributeKeys={["constant_values", "count"]}
+                      >
+                        {(constantValues, count) =>
+                          constantValues && (
+                            <TableCell spacing="tight">
+                              {constantValues.value ? t("Yes") : t("No")}
+                            </TableCell>
+                          )
+                        }
+                      </RenderColumnAttribute>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+              <RenderColumnAttribute
+                column={column}
+                attributeKeys={"description"}
               >
-                {column.dataType}
-              </Badge>
+                {(description) =>
+                  description?.value && (
+                    <div className="px-4">{description.value}</div>
+                  )
+                }
+              </RenderColumnAttribute>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4 text-xs">
+              <RenderColumnAttribute
+                column={column}
+                attributeKeys={"data_type"}
+              >
+                {(dataType) =>
+                  dataType && (
+                    <Badge
+                      defaultStyle={false}
+                      className="font-mono bg-amber-50 ring-amber-500/20"
+                      size="xs"
+                    >
+                      {dataType.value}
+                    </Badge>
+                  )
+                }
+              </RenderColumnAttribute>
+              {column.attributes
+                .filter(
+                  (attr) =>
+                    !attr.system && attr.key !== `${column.key}.description`,
+                )
+                .map((attribute) => (
+                  <Badge
+                    key={attribute.key}
+                    size="xs"
+                    className="font-mono bg-slate-50 ring-slate-200"
+                    defaultStyle={false}
+                  >
+                    {attribute.label}: {attribute.value}
+                  </Badge>
+                ))}
             </div>
           </div>
         ))}
       </div>
-      {/* <Drawer open={isDrawerOpen} setOpen={setIsDrawerOpen}>
-        <Drawer.Title>Coucou</Drawer.Title>
-        <Drawer.Content>Content</Drawer.Content>
-        <Drawer.Actions>
-          <Button variant="secondary" onClick={() => setIsDrawerOpen(false)}>
-            Cancel
-          </Button>
-          <Button>Save</Button>
-        </Drawer.Actions>
-      </Drawer> */}
-      <Dialog open={isDrawerOpen} onClose={setIsDrawerOpen}>
-        <Dialog.Content>Coucou</Dialog.Content>
-      </Dialog>
+      <ColumnMetadataDrawer
+        onClose={onDrawerClose}
+        file={file}
+        columns={columns}
+        columnKey={selectedColumn}
+      />
     </>
   );
 };
@@ -197,13 +214,18 @@ DatasetVersionFileColumns.fragments = {
     fragment DatasetVersionFileColumns_file on DatasetVersionFile {
       id
       filename
+      ...ColumnMetadataDrawer_file
     }
+    ${ColumnMetadataDrawer.fragments.file}
   `,
   version: gql`
     fragment DatasetVersionFileColumns_version on DatasetVersion {
       name
       dataset {
         slug
+        permissions {
+          update
+        }
         workspace {
           slug
         }

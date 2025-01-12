@@ -1942,6 +1942,10 @@ type MetadataAttribute {
   label: String
   value: JSON
   system: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdBy: User
+  updatedBy: User
 }
 
 """Interface for type implementing metadata"""
@@ -2885,8 +2889,8 @@ input SetMetadataAttributeInput {
 
 type SetMetadataAttributeResult {
   success: Boolean!
-  errors: [SetMetadataAttributeError!]!
   attribute: MetadataAttribute
+  errors: [SetMetadataAttributeError!]!
 }
 
 """
