@@ -44,3 +44,11 @@ export async function waitForDialog(options?: ByRoleOptions) {
   const dialog = await screen.findByRole("dialog", options);
   return dialog;
 }
+
+export async function frames(count: number) {
+  for (let n = 0; n <= count; n++) {
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
+  }
+}
