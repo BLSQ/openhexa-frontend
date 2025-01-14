@@ -23,8 +23,7 @@ import { DateTime } from "luxon";
 
 type ColumnMetadataDrawerProps = {
   onClose: () => void;
-  columnKey: string | null;
-  columns: TabularColumn[];
+  column: TabularColumn | null;
   file: ColumnMetadataDrawer_FileFragment;
 };
 
@@ -86,18 +85,13 @@ type Form = {
 
 export default function ColumnMetadataDrawer({
   onClose,
-  columnKey,
-  columns,
+  column,
   file,
 }: ColumnMetadataDrawerProps) {
-  const column = useMemo(() => {
-    return columns.find((col) => col.key === columnKey);
-  }, [columns, columnKey]);
-
   const form = useForm<Form>({
     getInitialState() {
       const descriptionAttribute = column?.attributes.find(
-        (attr) => attr.key === `${columnKey}.description`,
+        (attr) => attr.key === `${column.key}.description`,
       );
       return {
         description: descriptionAttribute?.value ?? "",
@@ -105,7 +99,7 @@ export default function ColumnMetadataDrawer({
           ? column.attributes
               .filter(
                 (attr) =>
-                  !attr.system && attr.key !== `${columnKey}.description`,
+                  !attr.system && attr.key !== `${column.key}.description`,
               )
               .map((attr) => ({
                 key: attr.key,
@@ -132,7 +126,7 @@ export default function ColumnMetadataDrawer({
         await setColumnMetadataAttribute(
           file.targetId,
           column!.key,
-          `${columnKey}.description`,
+          `${column!.key}.description`,
           null,
           values.description ?? "",
         );

@@ -7,7 +7,9 @@ import { Table, TableBody, TableCell, TableRow } from "core/components/Table";
 import Title from "core/components/Title";
 import { trackEvent } from "core/helpers/analytics";
 import { percentage } from "datasets/helpers/dataset";
-import useTabularFileMetadata from "datasets/hooks/useTabularFileMetadata";
+import useTabularFileMetadata, {
+  TabularColumn,
+} from "datasets/hooks/useTabularFileMetadata";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ColumnMetadataDrawer from "../ColumnMetadataDrawer/ColumnMetadataDrawer";
@@ -27,7 +29,9 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
   const { file, version } = props;
   const { columns, loading, refetch } = useTabularFileMetadata(file.id);
 
-  const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
+  const [selectedColumn, setSelectedColumn] = useState<TabularColumn | null>(
+    null,
+  );
 
   useEffect(() => {
     const { dataset } = version;
@@ -74,7 +78,7 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
                 <Button
                   variant="secondary"
                   size="sm"
-                  onClick={() => setSelectedColumn(column.key)}
+                  onClick={() => setSelectedColumn(column)}
                 >
                   <PencilIcon className="h-4 w-4" />
                 </Button>
@@ -200,8 +204,7 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
       <ColumnMetadataDrawer
         onClose={onDrawerClose}
         file={file}
-        columns={columns}
-        columnKey={selectedColumn}
+        column={selectedColumn}
       />
     </>
   );
