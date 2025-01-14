@@ -14,7 +14,6 @@ const CountryBadge = (props: CountryBadgeProps) => {
   return (
     <Badge
       title={country.name}
-      defaultStyle={false}
       className={clsx(
         "relative flex items-center gap-1",
         "border ring-gray-300 bg-gray-50",

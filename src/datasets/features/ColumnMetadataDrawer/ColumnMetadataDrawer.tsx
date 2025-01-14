@@ -210,7 +210,6 @@ export default function ColumnMetadataDrawer({
               >
                 {(data_type) => (
                   <Badge
-                    defaultStyle={false}
                     className="font-mono bg-amber-50 ring-amber-500/20"
                     size="sm"
                   >

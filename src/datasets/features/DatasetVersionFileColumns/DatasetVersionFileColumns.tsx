@@ -171,7 +171,6 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
                 {(dataType) =>
                   dataType && (
                     <Badge
-                      defaultStyle={false}
                       className="font-mono bg-amber-50 ring-amber-500/20"
                       size="xs"
                     >
@@ -190,7 +189,6 @@ const DatasetVersionFileColumns = (props: DatasetVersionFileColumnsProps) => {
                     key={attribute.key}
                     size="xs"
                     className="font-mono bg-slate-50 ring-slate-200"
-                    defaultStyle={false}
                   >
                     {attribute.label}: {attribute.value}
                   </Badge>

@@ -28,7 +28,7 @@ const Badge = ({
         size === "xs" && Classes.xs,
         size === "sm" && Classes.sm,
         size === "md" && Classes.md,
-        defaultStyle ? "ring-gray-500/20" : className,
+        className ?? "ring-gray-500/20",
       )}
     >
       {children}

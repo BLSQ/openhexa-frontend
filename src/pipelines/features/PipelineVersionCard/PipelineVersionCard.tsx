@@ -88,10 +88,7 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
           </div>
           {version.isLatestVersion && (
             <div>
-              <Badge
-                className="ml-2 text-gray-500 text-sm ring-gray-300"
-                defaultStyle={false}
-              >
+              <Badge className="ml-2 text-gray-500 text-sm ring-gray-300">
                 {t("Latest version")}
               </Badge>
             </div>
