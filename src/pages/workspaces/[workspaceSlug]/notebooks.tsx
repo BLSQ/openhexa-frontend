@@ -65,7 +65,6 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
     <Page title={data.workspace.name}>
       <WorkspaceLayout
         workspace={data.workspace}
-        className="min-h-screen"
         helpLinks={[
           {
             label: t("Using notebooks in OpenHEXA"),
@@ -73,6 +72,7 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
           },
         ]}
         forceCompactSidebar
+        withMarginBottom={false}
         header={
           <Breadcrumbs withHome={false}>
             <Breadcrumbs.Part
@@ -93,7 +93,11 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
         }
       >
         {server?.ready ? (
-          <iframe className="h-full w-full flex-1" src={server.url}></iframe>
+          <iframe
+            width="100%"
+            style={{ height: "calc(100vh - 4rem)" }}
+            src={server.url}
+          ></iframe>
         ) : (
           <div className="flex h-60 flex-1 flex-col items-center justify-center gap-4">
             <Spinner size="lg" />

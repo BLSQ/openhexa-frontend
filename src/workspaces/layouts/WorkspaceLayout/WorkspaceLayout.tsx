@@ -25,6 +25,7 @@ export type WorkspaceLayoutProps = {
   helpLinks?: ComponentProps<typeof Help>["links"];
   header?: ReactNode | ReactNode[];
   headerClassName?: string;
+  withMarginBottom?: boolean;
 };
 
 export const LayoutContext = createContext<{
@@ -54,7 +55,9 @@ const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
     forceCompactSidebar = false,
     helpLinks,
     header,
+    className,
     headerClassName = "flex items-center justify-between",
+    withMarginBottom = true,
   } = props;
   const [_, setLastWorkspace] = useLocalStorage("last-visited-workspace");
   const defaultSidebarOpen = getDefaultSidebarOpen();
@@ -108,9 +111,13 @@ const WorkspaceLayout = (props: WorkspaceLayoutProps) => {
       )}
       <main
         className={clsx(
-          "w-full mb-12", // The margin bottom is to avoid the Help button to hide the content of the page while at the bottom
+          "w-full",
+          withMarginBottom
+            ? "mb-12" // The margin bottom is to avoid the Help button to hide the content of the page while at the bottom
+            : "",
           isSidebarOpen ? "pl-64 2xl:pl-72" : "pl-16",
           header && "pt-16",
+          className,
         )}
       >
         {children}
