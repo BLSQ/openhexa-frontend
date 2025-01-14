@@ -17,6 +17,7 @@ type DrawerProps = {
   children: React.ReactNode;
   backdropBlur?: boolean;
   backdrop?: boolean;
+  autoFocus?: boolean;
 };
 
 export default function Drawer({
@@ -27,12 +28,20 @@ export default function Drawer({
   backdropBlur = true,
   backdrop = true,
   width = "max-w-md 2xl:max-w-xl",
+  autoFocus = true,
 }: DrawerProps) {
   return (
-    <Dialog open={open} onClose={setOpen} className="relative z-50">
+    <Dialog
+      autoFocus={autoFocus}
+      open={open}
+      onClose={setOpen}
+      className="relative z-50"
+      data-testid="drawer"
+    >
       {backdrop && (
         <DialogBackdrop
           transition
+          data-testid="drawer-backdrop"
           className={clsx(
             "fixed inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0",
             backdropBlur && "backdrop-blur-sm data-[closed]:backdrop-blur-none",

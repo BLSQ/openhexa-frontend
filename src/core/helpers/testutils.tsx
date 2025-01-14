@@ -52,3 +52,27 @@ export async function frames(count: number) {
     );
   }
 }
+
+export function assertHidden(element: HTMLElement | null) {
+  try {
+    if (element === null) return expect(element).not.toBe(null);
+
+    expect(element).toHaveAttribute("hidden");
+    expect(element).toHaveStyle({ display: "none" });
+  } catch (err) {
+    if (err instanceof Error) Error.captureStackTrace(err, assertHidden);
+    throw err;
+  }
+}
+
+export function assertVisible(element: HTMLElement | null) {
+  try {
+    if (element === null) return expect(element).not.toBe(null);
+
+    expect(element).not.toHaveAttribute("hidden");
+    expect(element).not.toHaveStyle({ display: "none" });
+  } catch (err) {
+    if (err instanceof Error) Error.captureStackTrace(err, assertVisible);
+    throw err;
+  }
+}
