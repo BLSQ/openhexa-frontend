@@ -11,7 +11,7 @@ const RenderColumnAttribute = ({
   column: TabularColumn;
   attributeKeys: string | string[];
   children: (
-    ...attributes: (MetadataAttribute | undefined)[]
+    ...attributes: (TabularColumn["attributes"][0] | undefined)[]
   ) => React.ReactNode;
 }) => {
   const attributes = useMemo(() => {
