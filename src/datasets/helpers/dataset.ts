@@ -1,9 +1,11 @@
 import { gql } from "@apollo/client";
 import { getApolloClient } from "core/helpers/apollo";
+import { i18n } from "next-i18next";
 import {
   CreateDatasetVersionError,
   DeleteDatasetError,
   DeleteDatasetLinkError,
+  SetMetadataAttributeError,
 } from "graphql/types";
 import {
   CreateDatasetVersionFileMutation,
@@ -375,9 +377,25 @@ export async function setColumnMetadataAttribute(
   });
 
   if (data?.setMetadataAttribute.success) {
-    return true;
+    return data.setMetadataAttribute.attribute;
+  } else if (
+    data?.setMetadataAttribute.errors.includes(
+      SetMetadataAttributeError.PermissionDenied,
+    )
+  ) {
+    throw new Error(
+      i18n!.t("You do not have permission to set this attribute"),
+    );
+  } else if (
+    data?.setMetadataAttribute.errors.includes(
+      SetMetadataAttributeError.TargetNotFound,
+    )
+  ) {
+    throw new Error(
+      i18n!.t("The object on which you try to add metadata does not exist"),
+    );
   } else {
-    throw new Error("An unknown error occurred");
+    throw new Error(i18n!.t("An unknown error occurred"));
   }
 }
 

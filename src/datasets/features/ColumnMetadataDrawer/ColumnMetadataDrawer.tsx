@@ -115,7 +115,7 @@ export default function ColumnMetadataDrawer({
 
       for (const attr of values.attributes!) {
         if (attr.label.trim() === "" || attr.value.trim() === "") {
-          errors.attributes = "Label and value are required";
+          errors.attributes = t("Label and value are required");
         }
       }
       return errors;
