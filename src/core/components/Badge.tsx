@@ -2,7 +2,6 @@ import { ComponentPropsWithoutRef } from "react";
 import clsx from "clsx";
 
 export interface BadgeProps extends ComponentPropsWithoutRef<"span"> {
-  defaultStyle?: boolean;
   className?: string;
   size?: "xs" | "sm" | "md";
 }
@@ -17,7 +16,6 @@ const Badge = ({
   children,
   className,
   size = "xs",
-  defaultStyle = true,
   ...delegated
 }: BadgeProps) => {
   return (
