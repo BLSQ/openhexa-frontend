@@ -3180,6 +3180,7 @@ export type Query = {
   pipelineByCode?: Maybe<Pipeline>;
   /** Retrieves a pipeline run by ID. */
   pipelineRun?: Maybe<PipelineRun>;
+  /** Search pipeline templates. */
   pipelineTemplates: PipelineTemplatePage;
   /** Retrieves a pipeline version by ID. */
   pipelineVersion?: Maybe<PipelineVersion>;
