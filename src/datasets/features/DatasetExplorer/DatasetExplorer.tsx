@@ -14,10 +14,11 @@ import {
   DatasetExplorer_VersionFragment,
 } from "./DatasetExplorer.generated";
 import ErrorBoundary from "core/components/ErrorBoundary";
+import DatasetVersionFileColumns from "../DatasetVersionFileColumns";
 
 type DatasetExplorerProps = {
   version: DatasetExplorer_VersionFragment;
-  currentFile?: DatasetExplorer_FileFragment | null;
+  currentFile: NonNullable<DatasetExplorer_FileFragment>;
   onClickFile: (file: DatasetExplorer_FileFragment) => void;
 };
 
@@ -42,7 +43,7 @@ const DatasetExplorer = ({
               title={file.filename}
               className={clsx(
                 "pl-6 pr-3 py-2 text-xs font-mono tracking-tighter hover:bg-gray-100 hover:text-gray-900 cursor-pointer truncate text-ellipsis max-w-[30ch] xl:max-w-[50ch]",
-                currentFile?.id === file.id &&
+                currentFile.id === file.id &&
                   "bg-gray-100 text-gray-800 font-semibold",
               )}
             >
@@ -51,50 +52,56 @@ const DatasetExplorer = ({
           ))}
         </ul>
       </Overflow>
-      <div className="flex-1 py-2 space-y-4">
-        {currentFile && (
-          <div className="px-4 py-1 space-y-6">
-            <Title level={3} className="flex justify-between gap-4">
-              <span className="font-mono tracking-tight">
-                {currentFile.filename}
-              </span>
-              <DownloadVersionFile
-                file={currentFile}
-                variant="secondary"
-                size="sm"
-              />
-            </Title>
-            <DescriptionList compact>
-              <DescriptionList.Item label={t("Created at")}>
-                <Time datetime={currentFile.createdAt} />
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Created by")}>
-                {currentFile.createdBy?.displayName ?? "-"}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Type")}>
-                <code className="font-mono text-sm text-gray-600">
-                  {currentFile.contentType}
-                </code>
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Size")}>
-                <code className="font-mono text-sm text-gray-600">
-                  <Filesize size={currentFile.size} />
-                </code>
-              </DescriptionList.Item>
-            </DescriptionList>
-
-            <Tabs>
-              <Tabs.Tab
-                label={t("Preview")}
-                className="space-y-2 mt-2 h-[560px] xtall:h-[700px] relative"
-              >
-                <ErrorBoundary fullScreen={false}>
-                  <DatasetVersionFileSample file={currentFile} />
-                </ErrorBoundary>
-              </Tabs.Tab>
-            </Tabs>
-          </div>
-        )}
+      <div className="flex-1 py-2 space-y-4 min-w-0">
+        <div className="px-4 py-1 space-y-6">
+          <Title level={3} className="flex justify-between gap-4">
+            <span className="font-mono tracking-tight">
+              {currentFile.filename}
+            </span>
+            <DownloadVersionFile
+              file={currentFile}
+              variant="secondary"
+              size="sm"
+            />
+          </Title>
+          <DescriptionList compact>
+            <DescriptionList.Item label={t("Created at")}>
+              <Time datetime={currentFile.createdAt} />
+            </DescriptionList.Item>
+            <DescriptionList.Item label={t("Created by")}>
+              {currentFile.createdBy?.displayName ?? "-"}
+            </DescriptionList.Item>
+            <DescriptionList.Item label={t("Type")}>
+              <code className="font-mono text-sm text-gray-600">
+                {currentFile.contentType}
+              </code>
+            </DescriptionList.Item>
+            <DescriptionList.Item label={t("Size")}>
+              <code className="font-mono text-sm text-gray-600">
+                <Filesize size={currentFile.size} />
+              </code>
+            </DescriptionList.Item>
+          </DescriptionList>
+          <Tabs>
+            <Tabs.Tab
+              label={t("Preview")}
+              className="mt-2 min-h-[560px] xtall:min-h-[780px] relative"
+            >
+              <ErrorBoundary fullScreen={false}>
+                <DatasetVersionFileSample
+                  file={currentFile}
+                  version={version}
+                />
+              </ErrorBoundary>
+            </Tabs.Tab>
+            <Tabs.Tab
+              label={t("Columns")}
+              className="mt-2 min-h-[560px] xtall:min-h-[780px] relative"
+            >
+              <DatasetVersionFileColumns file={currentFile} version={version} />
+            </Tabs.Tab>
+          </Tabs>
+        </div>
       </div>
     </div>
   );
@@ -111,12 +118,14 @@ DatasetExplorer.fragments = {
       }
       ...DownloadVersionFile_file
       ...DatasetVersionFileSample_file
+      ...DatasetVersionFileColumns_file
       contentType
       size
       uri
     }
     ${DownloadVersionFile.fragments.file}
     ${DatasetVersionFileSample.fragments.file}
+    ${DatasetVersionFileColumns.fragments.file}
   `,
   version: gql`
     fragment DatasetExplorer_version on DatasetVersion {
@@ -126,7 +135,11 @@ DatasetExplorer.fragments = {
           ...DatasetExplorer_file
         }
       }
+      ...DatasetVersionFileSample_version
+      ...DatasetVersionFileColumns_version
     }
+    ${DatasetVersionFileSample.fragments.version}
+    ${DatasetVersionFileColumns.fragments.version}
   `,
 };
 

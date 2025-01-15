@@ -21,6 +21,8 @@ import {
   BucketExplorer_WorkspaceFragment,
 } from "./BucketExplorer.generated";
 import SimpleSelect from "core/components/forms/SimpleSelect";
+import DropzoneOverlay from "core/components/DropzoneOverlay";
+import { useUploadFiles } from "workspaces/hooks/useUploadFiles";
 
 type BucketExplorerProps = {
   workspace: BucketExplorer_WorkspaceFragment;
@@ -32,9 +34,10 @@ type BucketExplorerProps = {
 
 const BucketExplorer = (props: BucketExplorerProps) => {
   const { t } = useTranslation();
-  const { workspace, objects, perPage, onChangePage } = props;
+  const { workspace, objects, prefix, perPage, onChangePage } = props;
+  const uploadFiles = useUploadFiles({ workspace, prefix });
   return (
-    <>
+    <DropzoneOverlay onDroppingFiles={uploadFiles}>
       <DataGrid
         data={objects.items}
         defaultPageSize={perPage}
@@ -145,7 +148,7 @@ const BucketExplorer = (props: BucketExplorerProps) => {
           />
         </div>
       ) : null}
-    </>
+    </DropzoneOverlay>
   );
 };
 

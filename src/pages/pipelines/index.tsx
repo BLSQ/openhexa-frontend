@@ -1,12 +1,10 @@
 import Block from "core/components/Block";
-import Breadcrumbs from "core/components/Breadcrumbs";
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import ChevronLinkColumn from "core/components/DataGrid/ChevronLinkColumn";
 import CountryColumn from "core/components/DataGrid/CountryColumn";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import { TextColumn } from "core/components/DataGrid/TextColumn";
 import Page from "core/components/Page";
-import DefaultLayout from "core/layouts/default";
 import Link from "core/components/Link";
 import { createGetServerSideProps } from "core/helpers/page";
 import { useTranslation } from "next-i18next";
@@ -20,6 +18,7 @@ import {
 } from "pipelines/graphql/queries.generated";
 import { useMemo } from "react";
 import BackLayout from "core/layouts/back/BackLayout";
+import Button from "core/components/Button";
 
 type Props = {
   page: number;
@@ -58,7 +57,22 @@ const PipelinesPage = (props: Props) => {
 
   return (
     <Page title={t("Airflow Pipelines")}>
-      <BackLayout title={t("Airflow Pipelines")}>
+      <BackLayout
+        title={
+          <div className="flex gap-2">
+            <Button onClick={() => router.push("/pipelines")} size="sm">
+              {t("Airflow Pipelines")}
+            </Button>
+            <Button
+              onClick={() => router.push("/notebooks")}
+              variant="white"
+              size="sm"
+            >
+              {t("Notebooks")}
+            </Button>
+          </div>
+        }
+      >
         <Block>
           <DataGrid
             defaultPageSize={props.perPage}

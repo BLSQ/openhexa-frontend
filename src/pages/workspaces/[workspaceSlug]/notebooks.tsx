@@ -1,9 +1,7 @@
 import { useApolloClient } from "@apollo/client";
-import Alert from "core/components/Alert";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Page from "core/components/Page";
 import Spinner from "core/components/Spinner";
-import { AlertType } from "core/helpers/alert";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { NotebookServer } from "graphql/types";
@@ -17,6 +15,7 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { launchNotebookServer } from "workspaces/helpers/notebooks";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
+import { ErrorAlert } from "core/components/Alert";
 
 type Props = {
   server: NotebookServer;
@@ -49,17 +48,16 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
 
   if (!server) {
     return (
-      <Alert
+      <ErrorAlert
         onClose={() => {
           router.push({
             pathname: "/workspaces/[workspaceSlug]",
             query: { workspaceSlug: workspaceSlug },
           });
         }}
-        type={AlertType.error}
       >
         {t("Unable to start JupytherHub for this workspace.")}
-      </Alert>
+      </ErrorAlert>
     );
   }
 
@@ -67,7 +65,6 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
     <Page title={data.workspace.name}>
       <WorkspaceLayout
         workspace={data.workspace}
-        className="min-h-screen"
         helpLinks={[
           {
             label: t("Using notebooks in OpenHEXA"),
@@ -75,8 +72,8 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
           },
         ]}
         forceCompactSidebar
-      >
-        <WorkspaceLayout.Header className="flex items-center justify-between">
+        withMarginBottom={false}
+        header={
           <Breadcrumbs withHome={false}>
             <Breadcrumbs.Part
               isFirst
@@ -93,9 +90,14 @@ const WorkspaceNotebooksPage: NextPageWithLayout = (props: Props) => {
               {t("Notebooks")}
             </Breadcrumbs.Part>
           </Breadcrumbs>
-        </WorkspaceLayout.Header>
+        }
+      >
         {server?.ready ? (
-          <iframe className="h-full w-full flex-1" src={server.url}></iframe>
+          <iframe
+            width="100%"
+            style={{ height: "calc(100vh - 4rem)" }}
+            src={server.url}
+          ></iframe>
         ) : (
           <div className="flex h-60 flex-1 flex-col items-center justify-center gap-4">
             <Spinner size="lg" />

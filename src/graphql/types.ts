@@ -339,6 +339,13 @@ export type AddPipelineOutputResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type AddPipelineRecipientResult = {
+  __typename?: 'AddPipelineRecipientResult';
+  errors: Array<PipelineRecipientError>;
+  recipient?: Maybe<PipelineRecipient>;
+  success: Scalars['Boolean']['output'];
+};
+
 export enum ApproveAccessmodAccessRequestError {
   Invalid = 'INVALID'
 }
@@ -763,23 +770,25 @@ export type CreateMembershipResult = {
   success: Scalars['Boolean']['output'];
 };
 
-/** Errors that can occur when creating an attribute. */
-export enum CreateMetadataAttributeError {
-  DuplicateKey = 'DUPLICATE_KEY',
+/** Enum representing the possible errors that can occur when creating a pipeline from a template version. */
+export enum CreatePipelineFromTemplateVersionError {
   PermissionDenied = 'PERMISSION_DENIED',
-  TargetNotFound = 'TARGET_NOT_FOUND'
+  PipelineAlreadyExists = 'PIPELINE_ALREADY_EXISTS',
+  PipelineTemplateVersionNotFound = 'PIPELINE_TEMPLATE_VERSION_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
 }
 
-/** Input to add a custom attribute, empty field for value is accepted */
-export type CreateMetadataAttributeInput = {
-  key: Scalars['String']['input'];
-  targetId: Scalars['OpaqueID']['input'];
-  value?: InputMaybe<Scalars['JSON']['input']>;
+/** Represents the input for creating a new pipeline from a template version. */
+export type CreatePipelineFromTemplateVersionInput = {
+  pipelineTemplateVersionId: Scalars['UUID']['input'];
+  workspaceSlug: Scalars['String']['input'];
 };
 
-export type CreateMetadataAttributeResult = {
-  __typename?: 'CreateMetadataAttributeResult';
-  errors: Array<CreateMetadataAttributeError>;
+/** Represents the result of creating a new pipeline from a template version. */
+export type CreatePipelineFromTemplateVersionResult = {
+  __typename?: 'CreatePipelineFromTemplateVersionResult';
+  errors?: Maybe<Array<CreatePipelineFromTemplateVersionError>>;
+  pipeline?: Maybe<Pipeline>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -791,11 +800,45 @@ export type CreatePipelineInput = {
   workspaceSlug: Scalars['String']['input'];
 };
 
+/** Represents the input for adding a recipient to a pipeline. */
+export type CreatePipelineRecipientInput = {
+  notificationLevel: PipelineNotificationLevel;
+  pipelineId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
 /** Represents the result of creating a pipeline. */
 export type CreatePipelineResult = {
   __typename?: 'CreatePipelineResult';
   errors: Array<PipelineError>;
   pipeline?: Maybe<Pipeline>;
+  success: Scalars['Boolean']['output'];
+};
+
+/** Enum representing the possible errors that can occur when creating a pipeline template version. */
+export enum CreatePipelineTemplateVersionError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND',
+  WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents the input for creating a new pipeline template version. */
+export type CreatePipelineTemplateVersionInput = {
+  code?: InputMaybe<Scalars['String']['input']>;
+  config?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  pipelineId: Scalars['UUID']['input'];
+  pipelineVersionId: Scalars['UUID']['input'];
+  workspaceSlug: Scalars['String']['input'];
+};
+
+/** Represents the result of creating a new pipeline template version. */
+export type CreatePipelineTemplateVersionResult = {
+  __typename?: 'CreatePipelineTemplateVersionResult';
+  errors?: Maybe<Array<CreatePipelineTemplateVersionError>>;
+  pipelineTemplate?: Maybe<PipelineTemplate>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -945,29 +988,37 @@ export type DagTemplate = {
   sampleConfig?: Maybe<Scalars['JSON']['output']>;
 };
 
-export type Dhis2DataElement = {
-  __typename?: 'DHIS2DataElement';
-  code: Scalars['String']['output'];
-  createdAt: Scalars['DateTime']['output'];
-  id: Scalars['String']['output'];
-  instance: Dhis2Instance;
-  name: Scalars['String']['output'];
-  updatedAt: Scalars['DateTime']['output'];
+/** DHIS2 connection object */
+export type Dhis2Connection = {
+  __typename?: 'DHIS2Connection';
+  query: Dhis2QueryResult;
 };
 
-export type Dhis2DataElementPage = {
-  __typename?: 'DHIS2DataElementPage';
-  items: Array<Dhis2DataElement>;
-  pageNumber: Scalars['Int']['output'];
-  totalItems: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
+
+/** DHIS2 connection object */
+export type Dhis2ConnectionQueryArgs = {
+  filter?: InputMaybe<Scalars['String']['input']>;
+  type: Scalars['String']['input'];
 };
 
-export type Dhis2Instance = {
-  __typename?: 'DHIS2Instance';
+export enum Dhis2ConnectionError {
+  ConnectionError = 'CONNECTION_ERROR',
+  UnknownError = 'UNKNOWN_ERROR'
+}
+
+/** DHIS2 metadata item */
+export type Dhis2MetadataItem = {
+  __typename?: 'DHIS2MetadataItem';
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  url?: Maybe<Scalars['String']['output']>;
+};
+
+/** DHIS2 metadata query result */
+export type Dhis2QueryResult = {
+  __typename?: 'DHIS2QueryResult';
+  data?: Maybe<Array<Dhis2MetadataItem>>;
+  errors: Array<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type Database = {
@@ -1432,6 +1483,17 @@ export type DeletePipelineInput = {
   id: Scalars['UUID']['input'];
 };
 
+/** Represents the input for deleting a pipeline recipient. */
+export type DeletePipelineRecipientInput = {
+  recipientId: Scalars['UUID']['input'];
+};
+
+export type DeletePipelineRecipientResult = {
+  __typename?: 'DeletePipelineRecipientResult';
+  errors: Array<PipelineRecipientError>;
+  success: Scalars['Boolean']['output'];
+};
+
 /** Represents the result of deleting a pipeline. */
 export type DeletePipelineResult = {
   __typename?: 'DeletePipelineResult';
@@ -1582,25 +1644,6 @@ export type DisableTwoFactorInput = {
 export type DisableTwoFactorResult = {
   __typename?: 'DisableTwoFactorResult';
   errors?: Maybe<Array<DisableTwoFactorError>>;
-  success: Scalars['Boolean']['output'];
-};
-
-/** Errors that can occur when editing an attribute. */
-export enum EditMetadataAttributeError {
-  PermissionDenied = 'PERMISSION_DENIED',
-  TargetNotFound = 'TARGET_NOT_FOUND'
-}
-
-/** Input to edit a custom attribute, empty field for value is accepted */
-export type EditMetadataAttributeInput = {
-  key: Scalars['String']['input'];
-  targetId: Scalars['OpaqueID']['input'];
-  value?: InputMaybe<Scalars['JSON']['input']>;
-};
-
-export type EditMetadataAttributeResult = {
-  __typename?: 'EditMetadataAttributeResult';
-  errors: Array<EditMetadataAttributeError>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -1901,6 +1944,7 @@ export type MePermissions = {
   /** Indicates whether the user has permission to access the admin panel. */
   adminPanel: Scalars['Boolean']['output'];
   createAccessmodProject: Scalars['Boolean']['output'];
+  createPipelineTemplateVersion: Scalars['Boolean']['output'];
   /** Indicates whether the user has permission to create a team. */
   createTeam: Scalars['Boolean']['output'];
   createWorkspace: Scalars['Boolean']['output'];
@@ -1970,9 +2014,14 @@ export enum MessagePriority {
 /** Generic metadata attribute */
 export type MetadataAttribute = {
   __typename?: 'MetadataAttribute';
+  createdAt: Scalars['DateTime']['output'];
+  createdBy?: Maybe<User>;
   id: Scalars['UUID']['output'];
   key: Scalars['String']['output'];
+  label?: Maybe<Scalars['String']['output']>;
   system: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTime']['output'];
+  updatedBy?: Maybe<User>;
   value?: Maybe<Scalars['JSON']['output']>;
 };
 
@@ -1984,10 +2033,10 @@ export type MetadataObject = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Add a custom metadata attribute to an object instance */
-  addMetadataAttribute: CreateMetadataAttributeResult;
   /** Adds an output to a pipeline. */
   addPipelineOutput: AddPipelineOutputResult;
+  /** Adds a recipient to a pipeline. */
+  addPipelineRecipient: AddPipelineRecipientResult;
   approveAccessmodAccessRequest: ApproveAccessmodAccessRequestResult;
   archiveWorkspace: ArchiveWorkspaceResult;
   createAccessmodAccessibilityAnalysis: CreateAccessmodAccessibilityAnalysisResult;
@@ -2008,6 +2057,9 @@ export type Mutation = {
   createMembership: CreateMembershipResult;
   /** Creates a new pipeline. */
   createPipeline: CreatePipelineResult;
+  createPipelineFromTemplateVersion: CreatePipelineFromTemplateVersionResult;
+  /** Creates a new pipeline template version. */
+  createPipelineTemplateVersion: CreatePipelineTemplateVersionResult;
   createTeam: CreateTeamResult;
   createWorkspace: CreateWorkspaceResult;
   declineWorkspaceInvitation: DeclineWorkspaceInvitationResult;
@@ -2029,6 +2081,8 @@ export type Mutation = {
   deleteMetadataAttribute: DeleteMetadataAttributeResult;
   /** Deletes a pipeline. */
   deletePipeline: DeletePipelineResult;
+  /** Deletes a pipeline recipient. */
+  deletePipelineRecipient: DeletePipelineRecipientResult;
   /** Deletes a pipeline version. */
   deletePipelineVersion: DeletePipelineVersionResult;
   deleteTeam: DeleteTeamResult;
@@ -2039,8 +2093,6 @@ export type Mutation = {
   denyAccessmodAccessRequest: DenyAccessmodAccessRequestResult;
   /** Disables two-factor authentication for the currently authenticated user. */
   disableTwoFactor: DisableTwoFactorResult;
-  /** Edit metadata attribute for an object instance */
-  editMetadataAttribute: EditMetadataAttributeResult;
   /** Enables two-factor authentication for the currently authenticated user. */
   enableTwoFactor: EnableTwoFactorResult;
   /** Generates a challenge for two-factor authentication. */
@@ -2049,6 +2101,7 @@ export type Mutation = {
   generateDatasetUploadUrl: GenerateDatasetUploadUrlResult;
   /** Generates a new password for a database. */
   generateNewDatabasePassword: GenerateNewDatabasePasswordResult;
+  /** Generates a webhook URL for a pipeline. */
   generatePipelineWebhookUrl: GeneratePipelineWebhookUrlResult;
   generateWorkspaceToken: GenerateWorkspaceTokenResult;
   inviteWorkspaceMember: InviteWorkspaceMemberResult;
@@ -2087,6 +2140,8 @@ export type Mutation = {
   /** Runs a pipeline. */
   runPipeline: RunPipelineResult;
   setDAGRunFavorite?: Maybe<SetDagRunFavoriteResult>;
+  /** Set a custom metadata attribute to an object instance */
+  setMetadataAttribute: SetMetadataAttributeResult;
   /** Sets a new password for the user. */
   setPassword: SetPasswordResult;
   /** Stops a pipeline. */
@@ -2105,6 +2160,8 @@ export type Mutation = {
   updatePipeline: UpdatePipelineResult;
   /** Updates the progress of a pipeline. */
   updatePipelineProgress: UpdatePipelineProgressResult;
+  /** Updates a pipeline recipient. */
+  updatePipelineRecipient: UpdatePipelineRecipientResult;
   /** Updates a pipeline version. */
   updatePipelineVersion: UpdatePipelineVersionResult;
   updateTeam: UpdateTeamResult;
@@ -2119,13 +2176,13 @@ export type Mutation = {
 };
 
 
-export type MutationAddMetadataAttributeArgs = {
-  input: CreateMetadataAttributeInput;
+export type MutationAddPipelineOutputArgs = {
+  input: AddPipelineOutputInput;
 };
 
 
-export type MutationAddPipelineOutputArgs = {
-  input: AddPipelineOutputInput;
+export type MutationAddPipelineRecipientArgs = {
+  input: CreatePipelineRecipientInput;
 };
 
 
@@ -2204,6 +2261,16 @@ export type MutationCreatePipelineArgs = {
 };
 
 
+export type MutationCreatePipelineFromTemplateVersionArgs = {
+  input: CreatePipelineFromTemplateVersionInput;
+};
+
+
+export type MutationCreatePipelineTemplateVersionArgs = {
+  input: CreatePipelineTemplateVersionInput;
+};
+
+
 export type MutationCreateTeamArgs = {
   input: CreateTeamInput;
 };
@@ -2279,6 +2346,11 @@ export type MutationDeletePipelineArgs = {
 };
 
 
+export type MutationDeletePipelineRecipientArgs = {
+  input: DeletePipelineRecipientInput;
+};
+
+
 export type MutationDeletePipelineVersionArgs = {
   input: DeletePipelineVersionInput;
 };
@@ -2316,11 +2388,6 @@ export type MutationDenyAccessmodAccessRequestArgs = {
 
 export type MutationDisableTwoFactorArgs = {
   input?: InputMaybe<DisableTwoFactorInput>;
-};
-
-
-export type MutationEditMetadataAttributeArgs = {
-  input: EditMetadataAttributeInput;
 };
 
 
@@ -2464,6 +2531,11 @@ export type MutationSetDagRunFavoriteArgs = {
 };
 
 
+export type MutationSetMetadataAttributeArgs = {
+  input: SetMetadataAttributeInput;
+};
+
+
 export type MutationSetPasswordArgs = {
   input: SetPasswordInput;
 };
@@ -2526,6 +2598,11 @@ export type MutationUpdatePipelineArgs = {
 
 export type MutationUpdatePipelineProgressArgs = {
   input: UpdatePipelineProgressInput;
+};
+
+
+export type MutationUpdatePipelineRecipientArgs = {
+  input: UpdatePipelineRecipientInput;
 };
 
 
@@ -2673,11 +2750,14 @@ export type Pipeline = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
+  newTemplateVersionAvailable: Scalars['Boolean']['output'];
   notebookPath?: Maybe<Scalars['String']['output']>;
   permissions: PipelinePermissions;
   recipients: Array<PipelineRecipient>;
   runs: PipelineRunPage;
   schedule?: Maybe<Scalars['String']['output']>;
+  sourceTemplate?: Maybe<PipelineTemplate>;
+  template?: Maybe<PipelineTemplate>;
   type: PipelineType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   versions: PipelineVersionPage;
@@ -2703,6 +2783,7 @@ export type PipelineVersionsArgs = {
 
 export enum PipelineError {
   CannotUpdateNotebookPipeline = 'CANNOT_UPDATE_NOTEBOOK_PIPELINE',
+  DuplicatePipelineVersionName = 'DUPLICATE_PIPELINE_VERSION_NAME',
   FileNotFound = 'FILE_NOT_FOUND',
   InvalidConfig = 'INVALID_CONFIG',
   InvalidTimeoutValue = 'INVALID_TIMEOUT_VALUE',
@@ -2715,6 +2796,12 @@ export enum PipelineError {
   PipelineVersionNotFound = 'PIPELINE_VERSION_NOT_FOUND',
   TableNotFound = 'TABLE_NOT_FOUND',
   WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
+}
+
+/** Represents the notification level for a pipeline recipient. */
+export enum PipelineNotificationLevel {
+  All = 'ALL',
+  Error = 'ERROR'
 }
 
 /** Represents a parameter of a pipeline. */
@@ -2744,9 +2831,19 @@ export type PipelinePermissions = {
 /** Represents a recipient of a pipeline. */
 export type PipelineRecipient = {
   __typename?: 'PipelineRecipient';
+  id: Scalars['UUID']['output'];
+  notificationLevel: PipelineNotificationLevel;
   pipeline: Pipeline;
   user: User;
 };
+
+export enum PipelineRecipientError {
+  AlreadyExists = 'ALREADY_EXISTS',
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  RecipientNotFound = 'RECIPIENT_NOT_FOUND',
+  UserNotFound = 'USER_NOT_FOUND'
+}
 
 /** Represents a pipeline run. */
 export type PipelineRun = {
@@ -2755,6 +2852,7 @@ export type PipelineRun = {
   config: Scalars['JSON']['output'];
   datasetVersions: Array<DatasetVersion>;
   duration?: Maybe<Scalars['Int']['output']>;
+  enableDebugLogs: Scalars['Boolean']['output'];
   executionDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['UUID']['output'];
   logs?: Maybe<Scalars['String']['output']>;
@@ -2814,6 +2912,50 @@ export enum PipelineRunTrigger {
   Webhook = 'webhook'
 }
 
+/** Represents a pipeline template. */
+export type PipelineTemplate = {
+  __typename?: 'PipelineTemplate';
+  code: Scalars['String']['output'];
+  config?: Maybe<Scalars['String']['output']>;
+  currentVersion?: Maybe<PipelineTemplateVersion>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  sourcePipeline?: Maybe<Pipeline>;
+  versions?: Maybe<Array<PipelineTemplateVersion>>;
+};
+
+/** Represents paged result of fetching pipeline templates. */
+export type PipelineTemplatePage = {
+  __typename?: 'PipelineTemplatePage';
+  items: Array<PipelineTemplate>;
+  pageNumber: Scalars['Int']['output'];
+  totalItems: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+/** Represents the permissions for a pipeline template. */
+export type PipelineTemplatePermissions = {
+  __typename?: 'PipelineTemplatePermissions';
+  createVersion: Scalars['Boolean']['output'];
+};
+
+/** Represents a version of a pipeline template. */
+export type PipelineTemplateVersion = {
+  __typename?: 'PipelineTemplateVersion';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['UUID']['output'];
+  template: PipelineTemplate;
+  versionNumber: Scalars['Int']['output'];
+};
+
+/** Represents the permissions for a pipeline template version. */
+export type PipelineTemplateVersionPermissions = {
+  __typename?: 'PipelineTemplateVersionPermissions';
+  delete: Scalars['Boolean']['output'];
+  update: Scalars['Boolean']['output'];
+};
+
 /** Represents the input for retrieving a pipeline token. */
 export type PipelineTokenInput = {
   pipelineCode: Scalars['String']['input'];
@@ -2843,14 +2985,17 @@ export type PipelineVersion = {
   externalLink?: Maybe<Scalars['URL']['output']>;
   id: Scalars['UUID']['output'];
   isLatestVersion: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
-  /** @deprecated Use name field instead */
-  number?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  /** @deprecated Use 'versionNumber' instead */
+  number?: Maybe<Scalars['Int']['output']>;
   parameters: Array<PipelineParameter>;
   permissions: PipelineVersionPermissions;
   pipeline: Pipeline;
+  templateVersion?: Maybe<PipelineTemplateVersion>;
   timeout?: Maybe<Scalars['Int']['output']>;
   user?: Maybe<User>;
+  versionName: Scalars['String']['output'];
+  versionNumber: Scalars['Int']['output'];
   zipfile: Scalars['String']['output'];
 };
 
@@ -3021,6 +3166,7 @@ export type Query = {
   datasetVersionFile?: Maybe<DatasetVersionFile>;
   /** Search datasets. */
   datasets: DatasetPage;
+  dhis2connection?: Maybe<Dhis2Connection>;
   /** Retrieves the currently authenticated user. */
   me: Me;
   metadataAttributes: Array<Maybe<MetadataAttribute>>;
@@ -3034,6 +3180,7 @@ export type Query = {
   pipelineByCode?: Maybe<Pipeline>;
   /** Retrieves a pipeline run by ID. */
   pipelineRun?: Maybe<PipelineRun>;
+  pipelineTemplates: PipelineTemplatePage;
   /** Retrieves a pipeline version by ID. */
   pipelineVersion?: Maybe<PipelineVersion>;
   /** Retrieves a page of pipelines. */
@@ -3175,6 +3322,11 @@ export type QueryDatasetsArgs = {
 };
 
 
+export type QueryDhis2connectionArgs = {
+  slug: Scalars['String']['input'];
+};
+
+
 export type QueryMetadataAttributesArgs = {
   targetId: Scalars['OpaqueID']['input'];
 };
@@ -3199,6 +3351,13 @@ export type QueryPipelineByCodeArgs = {
 
 export type QueryPipelineRunArgs = {
   id: Scalars['UUID']['input'];
+};
+
+
+export type QueryPipelineTemplatesArgs = {
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -3345,6 +3504,7 @@ export type RunDagResult = {
 /** Represents the input for running a pipeline. */
 export type RunPipelineInput = {
   config: Scalars['JSON']['input'];
+  enableDebugLogs?: InputMaybe<Scalars['Boolean']['input']>;
   id: Scalars['UUID']['input'];
   sendMailNotifications?: InputMaybe<Scalars['Boolean']['input']>;
   versionId?: InputMaybe<Scalars['UUID']['input']>;
@@ -3406,6 +3566,27 @@ export type SetDagRunFavoriteResult = {
   __typename?: 'SetDAGRunFavoriteResult';
   dagRun?: Maybe<DagRun>;
   errors: Array<SetDagRunFavoriteError>;
+  success: Scalars['Boolean']['output'];
+};
+
+/** Errors that can occur when setting an attribute. */
+export enum SetMetadataAttributeError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  TargetNotFound = 'TARGET_NOT_FOUND'
+}
+
+/** Input to set a custom attribute, empty field for value is accepted */
+export type SetMetadataAttributeInput = {
+  key: Scalars['String']['input'];
+  label?: InputMaybe<Scalars['String']['input']>;
+  targetId: Scalars['OpaqueID']['input'];
+  value?: InputMaybe<Scalars['JSON']['input']>;
+};
+
+export type SetMetadataAttributeResult = {
+  __typename?: 'SetMetadataAttributeResult';
+  attribute?: Maybe<MetadataAttribute>;
+  errors: Array<SetMetadataAttributeError>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -3744,7 +3925,6 @@ export type UpdatePipelineInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['UUID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
-  recipientIds?: InputMaybe<Array<Scalars['UUID']['input']>>;
   schedule?: InputMaybe<Scalars['String']['input']>;
   webhookEnabled?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -3758,6 +3938,19 @@ export type UpdatePipelineProgressInput = {
 export type UpdatePipelineProgressResult = {
   __typename?: 'UpdatePipelineProgressResult';
   errors: Array<PipelineError>;
+  success: Scalars['Boolean']['output'];
+};
+
+/** Represents the input for updating a recipient. */
+export type UpdatePipelineRecipientInput = {
+  notificationLevel: PipelineNotificationLevel;
+  recipientId: Scalars['UUID']['input'];
+};
+
+export type UpdatePipelineRecipientResult = {
+  __typename?: 'UpdatePipelineRecipientResult';
+  errors: Array<PipelineRecipientError>;
+  recipient?: Maybe<PipelineRecipient>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -3898,7 +4091,7 @@ export type UploadPipelineInput = {
   config?: InputMaybe<Scalars['JSON']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   externalLink?: InputMaybe<Scalars['URL']['input']>;
-  name: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
   parameters: Array<ParameterInput>;
   pipelineCode?: InputMaybe<Scalars['String']['input']>;
   timeout?: InputMaybe<Scalars['Int']['input']>;
@@ -3912,8 +4105,6 @@ export type UploadPipelineResult = {
   errors: Array<PipelineError>;
   pipelineVersion?: Maybe<PipelineVersion>;
   success: Scalars['Boolean']['output'];
-  /** @deprecated Use 'pipelineVersion' field instead */
-  version?: Maybe<Scalars['String']['output']>;
 };
 
 /** The User type represents a user in the system. */
@@ -4100,6 +4291,7 @@ export type WorkspacePermissions = {
   /** User can create objects in the workspace's bucket. */
   createObject: Scalars['Boolean']['output'];
   createPipeline: Scalars['Boolean']['output'];
+  createPipelineTemplateVersion: Scalars['Boolean']['output'];
   delete: Scalars['Boolean']['output'];
   deleteDatabaseTable: Scalars['Boolean']['output'];
   /** User can delete objects in the workspace's bucket. */

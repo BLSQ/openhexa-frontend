@@ -1,20 +1,17 @@
 import { gql, useLazyQuery } from "@apollo/client";
-import { PlayIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, PlayIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import Alert from "core/components/Alert";
 import Button from "core/components/Button";
 import Dialog from "core/components/Dialog";
 import Spinner from "core/components/Spinner";
-import Checkbox from "core/components/forms/Checkbox/Checkbox";
 import Field from "core/components/forms/Field";
-import { AlertType } from "core/helpers/alert";
 import { ensureArray } from "core/helpers/array";
 import useCacheKey from "core/hooks/useCacheKey";
 import useForm from "core/hooks/useForm";
-import { PipelineType, PipelineVersion } from "graphql/types";
+import { PipelineType } from "graphql/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   convertParametersToPipelineInput,
   isConnectionParameter,
@@ -28,6 +25,13 @@ import {
   RunPipelineDialog_RunFragment,
   RunPipelineDialog_VersionFragment,
 } from "./RunPipelineDialog.generated";
+import { ErrorAlert } from "core/components/Alert";
+import Checkbox from "core/components/forms/Checkbox";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 
 type RunPipelineDialogProps = {
   children(onClick: () => void): React.ReactNode;
@@ -38,7 +42,7 @@ type RunPipelineDialogProps = {
 const VERSION_FRAGMENT = gql`
   fragment RunPipelineDialog_version on PipelineVersion {
     id
-    name
+    versionName
     createdAt
     config
     user {
@@ -54,7 +58,6 @@ const VERSION_FRAGMENT = gql`
 const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   const router = useRouter();
   const { pipeline, run, children } = props;
-  const [showVersionPicker, setShowVersionPicker] = useState(false);
   const clearCache = useCacheKey(["pipelines", pipeline.code]);
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -79,7 +82,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
     }
   };
 
-  const [fetch, { data }] = useLazyQuery<PipelineCurrentVersionQuery>(
+  const [fetch] = useLazyQuery<PipelineCurrentVersionQuery>(
     gql`
       query PipelineCurrentVersion(
         $workspaceSlug: String!
@@ -88,7 +91,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
         pipelineByCode(workspaceSlug: $workspaceSlug, code: $pipelineCode) {
           currentVersion {
             id
-            name
+            versionName
             createdAt
             user {
               displayName
@@ -107,7 +110,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
 
   const form = useForm<{ [key: string]: any }>({
     async onSubmit(values) {
-      const { sendMailNotifications, ...params } = values;
+      const { sendMailNotifications, enableDebugLogs, ...params } = values;
       if (!activeVersion) {
         throw new Error("No active version found");
       }
@@ -116,6 +119,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
         convertParametersToPipelineInput(activeVersion!, params),
         activeVersion!.id,
         sendMailNotifications,
+        enableDebugLogs,
       );
       await router.push(
         `/workspaces/${encodeURIComponent(
@@ -130,12 +134,14 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
     getInitialState() {
       if (run) {
         return {
-          sendMailNotifications: false,
+          sendMailNotifications: true,
+          enableDebugLogs: false,
           ...run.config,
         };
       } else if (activeVersion) {
         return {
-          sendMailNotifications: false,
+          sendMailNotifications: true,
+          enableDebugLogs: false,
           ...activeVersion.config,
         };
       }
@@ -179,7 +185,6 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   });
 
   useEffect(() => {
-    setShowVersionPicker(false);
     if (!open) {
       setActiveVersion(null);
     } else if (run?.version) {
@@ -209,9 +214,9 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
 
   if (!pipeline.currentVersion && open) {
     return (
-      <Alert onClose={onClose} type={AlertType.error}>
+      <ErrorAlert onClose={onClose}>
         {t("This pipeline has not been uploaded yet")}
-      </Alert>
+      </ErrorAlert>
     );
   }
 
@@ -225,7 +230,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           onClose={onClose}
           centered={false}
           onSubmit={form.handleSubmit}
-          maxWidth={"max-w-3xl"}
+          maxWidth={"max-w-2xl"}
         >
           <Dialog.Title>{t("Run pipeline")}</Dialog.Title>
           {!activeVersion ? (
@@ -235,40 +240,6 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
           ) : (
             <>
               <Dialog.Content>
-                {!showVersionPicker ? (
-                  <div className="mb-6 gap-x-1">
-                    <p>
-                      {!props.run
-                        ? t("This pipeline will run using the latest version.")
-                        : t("This pipeline will run using the same version.")}
-                      &nbsp;
-                      <button
-                        className="text-sm text-blue-600 hover:text-blue-500 inline"
-                        role="link"
-                        onClick={() => {
-                          setShowVersionPicker(true);
-                        }}
-                      >
-                        {t("Select specific version")}
-                      </button>
-                    </p>
-                  </div>
-                ) : (
-                  <Field
-                    name="version"
-                    label={t("Version")}
-                    required
-                    className="mb-6"
-                  >
-                    <PipelineVersionPicker
-                      required
-                      pipeline={pipeline}
-                      value={activeVersion}
-                      onChange={(value) => setActiveVersion(value)}
-                    />
-                  </Field>
-                )}
-
                 <div
                   className={clsx(
                     "grid gap-x-3 gap-y-4",
@@ -303,19 +274,85 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                     {form.submitError}
                   </div>
                 )}
+                <Disclosure as="div" className={"mt-5"}>
+                  {({ open }) => (
+                    <>
+                      <DisclosureButton className="group flex w-full justify-between text-left">
+                        <div className="flex flex-col">
+                          <span
+                            className={
+                              "font-bold text-sm group-data-[hover]:text-black/80"
+                            }
+                          >
+                            {t("Advanced settings")}
+                          </span>
+                          {!open && (
+                            <span className="text-gray-500 text-sm mt-1">
+                              {t("Pipeline version, notifications and logs")}
+                            </span>
+                          )}
+                        </div>
+                        <ChevronDownIcon
+                          className={`size-5 mt-1 ml-5 group-data-[hover]:text-black/80 ${
+                            open ? "rotate-180" : ""
+                          }`}
+                        />
+                      </DisclosureButton>
+                      <DisclosurePanel>
+                        <Field
+                          name="version"
+                          label={t("Version")}
+                          required
+                          className="mb-3"
+                        >
+                          <PipelineVersionPicker
+                            required
+                            pipeline={pipeline}
+                            value={activeVersion}
+                            onChange={(value) => setActiveVersion(value)}
+                          />
+                        </Field>
+                        <Field
+                          name="notification"
+                          label={t("Notifications")}
+                          required
+                          className="mb-4"
+                        >
+                          <Checkbox
+                            checked={form.formData.sendMailNotifications}
+                            name="sendMailNotifications"
+                            onChange={(event) =>
+                              form.setFieldValue(
+                                "sendMailNotifications",
+                                event.target.checked,
+                              )
+                            }
+                            label={t("Send notifications")}
+                            help={t("Notifications will be sent for this run.")}
+                          />
+                        </Field>
+                        <Field name="logs" label={t("Logs")} required>
+                          <Checkbox
+                            checked={form.formData.enableDebugLogs}
+                            name="enableDebugLogs"
+                            onChange={(event) =>
+                              form.setFieldValue(
+                                "enableDebugLogs",
+                                event.target.checked,
+                              )
+                            }
+                            label={t("Show debug messages")}
+                            help={t(
+                              "Debug messages will be shown for this run.",
+                            )}
+                          />
+                        </Field>
+                      </DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
               </Dialog.Content>
               <Dialog.Actions className="flex-1 items-center">
-                <div className="flex flex-1 items-center">
-                  <Checkbox
-                    checked={form.formData.sendMailNotifications}
-                    name="sendMailNotifications"
-                    onChange={form.handleInputChange}
-                    label={t("Receive mail notification")}
-                    help={t(
-                      "You will receive an email when the pipeline is done",
-                    )}
-                  />
-                </div>
                 <Button variant="white" onClick={onClose}>
                   {t("Cancel")}
                 </Button>
@@ -362,7 +399,7 @@ RunPipelineDialog.fragments = {
       config
       version {
         id
-        name
+        versionName
         createdAt
         parameters {
           ...ParameterField_parameter

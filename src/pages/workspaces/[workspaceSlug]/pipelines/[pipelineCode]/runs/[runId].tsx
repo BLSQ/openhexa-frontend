@@ -11,7 +11,6 @@ import Link from "core/components/Link";
 import Page from "core/components/Page";
 import Switch from "core/components/Switch";
 import Time from "core/components/Time";
-import Checkbox from "core/components/forms/Checkbox";
 import User from "core/features/User";
 import { createGetServerSideProps } from "core/helpers/page";
 import { formatDuration } from "core/helpers/time";
@@ -29,15 +28,15 @@ import { useTranslation } from "next-i18next";
 import PipelineRunStatusBadge from "pipelines/features/PipelineRunStatusBadge";
 import RunLogs from "pipelines/features/RunLogs";
 import RunMessages from "pipelines/features/RunMessages";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import RunOutputsTable from "workspaces/features/RunOutputsTable";
 import RunPipelineDialog from "workspaces/features/RunPipelineDialog";
 import StopPipelineDialog from "workspaces/features/StopPipelineDialog";
 import {
+  useWorkspacePipelineRunPageQuery,
   WorkspacePipelineRunPageDocument,
   WorkspacePipelineRunPageQuery,
   WorkspacePipelineRunPageQueryVariables,
-  useWorkspacePipelineRunPageQuery,
 } from "workspaces/graphql/queries.generated";
 import {
   formatPipelineType,
@@ -138,67 +137,75 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
             href: "https://github.com/BLSQ/openhexa/wiki/Writing-OpenHEXA-pipelines",
           },
         ]}
+        header={
+          <>
+            <Breadcrumbs withHome={false}>
+              <Breadcrumbs.Part
+                isFirst
+                href={`/workspaces/${encodeURIComponent(workspace.slug)}`}
+              >
+                {workspace.name}
+              </Breadcrumbs.Part>
+              <Breadcrumbs.Part
+                href={`/workspaces/${encodeURIComponent(
+                  workspace.slug,
+                )}/pipelines`}
+              >
+                {t("Pipelines")}
+              </Breadcrumbs.Part>
+              <Breadcrumbs.Part
+                href={`/workspaces/${encodeURIComponent(
+                  workspace.slug,
+                )}/pipelines/${encodeURIComponent(run.pipeline.code)}`}
+              >
+                {run.pipeline.name}
+              </Breadcrumbs.Part>
+              <Breadcrumbs.Part
+                href={`/workspaces/${encodeURIComponent(
+                  workspace.slug,
+                )}/pipelines/${encodeURIComponent(run.pipeline.code)}/runs`}
+              >
+                {t("Runs")}
+              </Breadcrumbs.Part>
+              <Breadcrumbs.Part
+                isLast
+                href={{
+                  pathname:
+                    "/workspaces/[workspaceSlug]/pipelines/[pipelineCode]/runs/[runId]",
+                  query: {
+                    workspaceSlug: workspace.slug,
+                    pipelineCode: run.pipeline.code,
+                    runId: run.id,
+                  },
+                }}
+              >
+                <Time datetime={run.executionDate} />
+              </Breadcrumbs.Part>
+            </Breadcrumbs>
+            {isFinished && (
+              <RunPipelineDialog pipeline={run.pipeline} run={run}>
+                {(onClick) => (
+                  <Button
+                    leadingIcon={<ArrowPathIcon className="h-4 w-4" />}
+                    onClick={onClick}
+                  >
+                    {t("Run again")}
+                  </Button>
+                )}
+              </RunPipelineDialog>
+            )}
+            {!isFinished && run.pipeline.permissions.stopPipeline && (
+              <Button
+                leadingIcon={<StopIcon className="h-4 w-4" />}
+                className="bg-red-500 hover:bg-red-700 focus:ring-red-500"
+                onClick={() => setIsStopPipelineDialogOpen(true)}
+              >
+                {t("Stop")}
+              </Button>
+            )}
+          </>
+        }
       >
-        <WorkspaceLayout.Header className="flex items-center justify-between gap-2">
-          <Breadcrumbs withHome={false}>
-            <Breadcrumbs.Part
-              isFirst
-              href={`/workspaces/${encodeURIComponent(workspace.slug)}`}
-            >
-              {workspace.name}
-            </Breadcrumbs.Part>
-            <Breadcrumbs.Part
-              href={`/workspaces/${encodeURIComponent(
-                workspace.slug,
-              )}/pipelines`}
-            >
-              {t("Pipelines")}
-            </Breadcrumbs.Part>
-            <Breadcrumbs.Part
-              href={`/workspaces/${encodeURIComponent(
-                workspace.slug,
-              )}/pipelines/${encodeURIComponent(run.pipeline.code)}`}
-            >
-              {run.pipeline.name}
-            </Breadcrumbs.Part>
-            <Breadcrumbs.Part
-              isLast
-              href={{
-                pathname:
-                  "/workspaces/[workspaceSlug]/pipelines/[pipelineCode]/runs/[runId]",
-                query: {
-                  workspaceSlug: workspace.slug,
-                  pipelineCode: run.pipeline.code,
-                  runId: run.id,
-                },
-              }}
-            >
-              <Time datetime={run.executionDate} />
-            </Breadcrumbs.Part>
-          </Breadcrumbs>
-          {isFinished && (
-            <RunPipelineDialog pipeline={run.pipeline} run={run}>
-              {(onClick) => (
-                <Button
-                  leadingIcon={<ArrowPathIcon className="h-4 w-4" />}
-                  onClick={onClick}
-                >
-                  {t("Run again")}
-                </Button>
-              )}
-            </RunPipelineDialog>
-          )}
-          {!isFinished && run.pipeline.permissions.stopPipeline && (
-            <Button
-              leadingIcon={<StopIcon className="h-4 w-4" />}
-              className="bg-red-500 hover:bg-red-700 focus:ring-red-500"
-              onClick={() => setIsStopPipelineDialogOpen(true)}
-            >
-              {t("Stop")}
-            </Button>
-          )}
-        </WorkspaceLayout.Header>
-
         <WorkspaceLayout.PageContent>
           <Block className="divide-y-2 divide-gray-100">
             <Block.Header>
@@ -295,7 +302,7 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                 )}
                 {run.version && (
                   <DescriptionList.Item label={t("Version")}>
-                    {run.version.name}
+                    {run.version.versionName}
                   </DescriptionList.Item>
                 )}
                 <DescriptionList.Item
@@ -303,9 +310,6 @@ const WorkspacePipelineRunPage: NextPageWithLayout = (props: Props) => {
                   help={t("See documentation for more info.")}
                 >
                   {run.timeout ? formatDuration(run.timeout) : "-"}
-                </DescriptionList.Item>
-                <DescriptionList.Item label={t("Notifications")}>
-                  <Checkbox checked={run.sendMailNotifications} disabled />
                 </DescriptionList.Item>
               </DescriptionList>
             </Block.Section>

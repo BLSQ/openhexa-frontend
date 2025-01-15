@@ -1,4 +1,10 @@
-import { Combobox as UICombobox, Portal } from "@headlessui/react";
+import {
+  Combobox as UICombobox,
+  ComboboxButton as UIComboboxButton,
+  ComboboxInput as UIComboboxInput,
+  ComboboxOptions as UIComboboxOptions,
+  Portal,
+} from "@headlessui/react";
 import { ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Modifier } from "@popperjs/core";
 import clsx from "clsx";
@@ -17,7 +23,6 @@ import {
 import { usePopper } from "react-popper";
 import CheckOption from "./CheckOption";
 import OptionsWrapper from "./OptionsWrapper";
-import { ByComparator } from "@headlessui/react/dist/types";
 
 type MultiComboboxProps<T> = {
   onInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -100,7 +105,7 @@ function MultiCombobox<T extends { [key: string]: any }>(
   );
 
   const optionsElement = (
-    <UICombobox.Options
+    <UIComboboxOptions
       className={Classes.Options}
       ref={setPopperElement}
       style={styles.popper}
@@ -113,7 +118,7 @@ function MultiCombobox<T extends { [key: string]: any }>(
         </OptionsWrapper>
       </div>
       {footer && footer({ close, clear: onClear })}
-    </UICombobox.Options>
+    </UIComboboxOptions>
   );
 
   return (
@@ -121,9 +126,9 @@ function MultiCombobox<T extends { [key: string]: any }>(
       onChange={onChange}
       value={value}
       disabled={disabled}
-      multiple
+      multiple={true as any}
       name={name}
-      by={by as ByComparator<T>}
+      by={by as any}
     >
       {({ open }) => (
         <div className={clsx("relative", className)} ref={setReferenceElement}>
@@ -137,7 +142,10 @@ function MultiCombobox<T extends { [key: string]: any }>(
           >
             <div className="mr-1 flex flex-1 flex-wrap items-center gap-2 truncate">
               {value?.map((val, i) => (
-                <Badge className="bg-gray-100 py-0 hover:bg-gray-50" key={i}>
+                <Badge
+                  className="bg-gray-100 py-0 hover:bg-gray-50 ring-gray-500/20"
+                  key={i}
+                >
                   {displayValue(val)}
                   {!disabled && !required && (
                     <XMarkIcon
@@ -147,16 +155,16 @@ function MultiCombobox<T extends { [key: string]: any }>(
                   )}
                 </Badge>
               ))}
-              <UICombobox.Input as={Fragment} onChange={onInputChange}>
+              <UIComboboxInput as={Fragment} onChange={onInputChange}>
                 <input
                   data-testid="combobox-input"
                   className="flex-1 placeholder-gray-600 placeholder-opacity-70 outline-none"
                   autoComplete="off"
                   placeholder={placeholder}
                 />
-              </UICombobox.Input>
+              </UIComboboxInput>
             </div>
-            <UICombobox.Button ref={btnRef} data-testid="combobox-button">
+            <UIComboboxButton ref={btnRef} data-testid="combobox-button">
               <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-none">
                 {(Array.isArray(value) ? value?.length > 0 : value) && (
                   <XMarkIcon
@@ -174,7 +182,7 @@ function MultiCombobox<T extends { [key: string]: any }>(
                   />
                 )}
               </div>
-            </UICombobox.Button>
+            </UIComboboxButton>
           </div>
 
           {withPortal ? <Portal>{optionsElement}</Portal> : optionsElement}

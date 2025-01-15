@@ -1,9 +1,6 @@
 import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Page from "core/components/Page";
-import DefaultLayout from "core/layouts/default";
-import Title from "core/components/Title";
-import { AlertType, displayAlert } from "core/helpers/alert";
 import { createGetServerSideProps } from "core/helpers/page";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
@@ -17,6 +14,7 @@ import { getPipelineRun } from "pipelines/helpers/runs";
 import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import BackLayout from "core/layouts/back/BackLayout";
+import { toast } from "react-toastify";
 
 type Props = {
   run: Awaited<ReturnType<typeof getPipelineRun>>;
@@ -39,10 +37,7 @@ const PipelineConfigureRunPage = (props: Props) => {
         query: { pipelineId: dag.id, runId: dagRun.id },
       });
     } catch (err) {
-      displayAlert(
-        (err as Error).message ?? "An unexpected error ocurred.",
-        AlertType.error,
-      );
+      toast.error((err as Error).message ?? t("An unexpected error occurred."));
     }
   };
   const description = useMemo(
@@ -86,7 +81,7 @@ const PipelineConfigureRunPage = (props: Props) => {
                 externalId: dag.externalId,
               })}
             </Block.Header>
-            <Block.Content className="">
+            <Block.Content>
               <PipelineRunForm
                 fromConfig={run?.config}
                 dag={dag}

@@ -4,13 +4,19 @@ import { TextColumn } from "core/components/DataGrid/TextColumn";
 import DescriptionList from "core/components/DescriptionList";
 import Spinner from "core/components/Spinner";
 import { ApolloComponent } from "core/helpers/types";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import useFeature from "identity/hooks/useFeature";
-import { DatasetVersionFileSample_FileFragment } from "./DatasetVersionFileSample.generated";
+import {
+  DatasetVersionFileSample_FileFragment,
+  DatasetVersionFileSample_VersionFragment,
+} from "./DatasetVersionFileSample.generated";
+import { Iframe } from "core/components/Iframe";
+import { trackEvent } from "core/helpers/analytics";
 
 interface DatasetVersionFileSampleProps {
   file: DatasetVersionFileSample_FileFragment;
+  version: DatasetVersionFileSample_VersionFragment;
 }
 
 const NoPreviewMessage = () => {
@@ -54,14 +60,22 @@ const SmartPreviewer = ({
     );
   } else if (file.contentType.startsWith("text/html")) {
     return (
-      <iframe
-        sandbox="allow-scripts allow-forms allow-popups allow-presentation allow-modals allow-popups-to-escape-sandbox"
+      <Iframe
+        autoResize
+        sandbox="allow-presentation allow-modals allow-scripts allow-popups-to-escape-sandbox"
         src={file.downloadUrl}
-        className="w-full h-full"
-      ></iframe>
+        width="100%"
+      ></Iframe>
     );
   } else if (file.contentType.startsWith("text")) {
-    return <iframe src={file.downloadUrl} className="w-full h-full"></iframe>;
+    return (
+      <Iframe
+        autoResize
+        sandbox="allow-presentation allow-modals allow-popups-to-escape-sandbox"
+        src={file.downloadUrl}
+        width="100%"
+      ></Iframe>
+    );
   } else if (file.contentType.startsWith("application/pdf")) {
     return (
       <embed
@@ -91,7 +105,7 @@ const GET_DATASET_VERSION_FILE_SAMPLE = gql`
 
 export const DatasetVersionFileSample: ApolloComponent<
   DatasetVersionFileSampleProps
-> = ({ file }) => {
+> = ({ file, version }) => {
   const { t } = useTranslation();
   const [isSmartPreviewerEnabled] = useFeature("datasets.smart_previewer");
   const { data, loading } = useQuery(GET_DATASET_VERSION_FILE_SAMPLE, {
@@ -99,6 +113,18 @@ export const DatasetVersionFileSample: ApolloComponent<
       id: file.id,
     },
   });
+
+  useEffect(() => {
+    const { dataset } = version;
+    if (dataset) {
+      trackEvent("datasets.dataset_file_previewed", {
+        dataset_id: dataset.slug,
+        workspace: dataset?.workspace?.slug,
+        dataset_version: version.name,
+        filename: file.filename,
+      });
+    }
+  }, []);
 
   const { sample, columns, status } = useMemo(() => {
     if (!data?.datasetVersionFile.fileSample) {
@@ -158,22 +184,28 @@ export const DatasetVersionFileSample: ApolloComponent<
     case "FINISHED":
       return (
         <div className="space-y-4 mt-4">
-          <code>
-            <DescriptionList>
-              <DescriptionList.Item label={t("Columns")}>
+          <DescriptionList>
+            <DescriptionList.Item label={t("Columns")}>
+              <code className="font-mono text-sm text-gray-600">
                 {columns.length}
-              </DescriptionList.Item>
-              <DescriptionList.Item label={t("Rows in sample")}>
+              </code>
+            </DescriptionList.Item>
+            <DescriptionList.Item label={t("Rows in sample")}>
+              <code className="font-mono text-sm text-gray-600">
                 {sample.length}
-              </DescriptionList.Item>
-            </DescriptionList>
-          </code>
+              </code>
+            </DescriptionList.Item>
+          </DescriptionList>
 
           <DataGrid
             data={sample}
             sortable
             spacing="tight"
-            className="border border-gray-100 rounded-md overflow-hidden font-mono tracking-tight"
+            className="border border-gray-100 rounded-md overflow-hidden tracking-tight"
+            headerClassName="font-mono"
+            rowClassName="font-mono"
+            totalItems={sample.length}
+            fixedLayout={false}
           >
             {columns.map((col) => (
               <TextColumn id={col} label={col} accessor={col} key={col} />
@@ -192,6 +224,17 @@ DatasetVersionFileSample.fragments = {
       contentType
       size
       downloadUrl(attachment: false)
+    }
+  `,
+  version: gql`
+    fragment DatasetVersionFileSample_version on DatasetVersion {
+      name
+      dataset {
+        slug
+        workspace {
+          slug
+        }
+      }
     }
   `,
 };

@@ -16,7 +16,6 @@ import { ItemProvider } from "core/hooks/useItemContext";
 import { UpdatePipelineVersionError } from "graphql/types";
 import { DateTime } from "luxon";
 import { Trans, useTranslation } from "next-i18next";
-import { useState } from "react";
 import DeletePipelineVersionTrigger from "workspaces/features/DeletePipelineVersionTrigger";
 import DownloadPipelineVersion from "../DownloadPipelineVersion";
 import PipelineVersionParametersTable from "../PipelineVersionParametersTable";
@@ -78,7 +77,7 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
         <Block.Header className="flex gap-4 items-center ">
           <div className="flex-1">
             <span className="font-bold text-xl">
-              {t("Version")} {version.name}
+              {t("Version")} {version.versionName}
             </span>{" "}
             <span className="text-gray-500">
               <Trans>
@@ -89,10 +88,7 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
           </div>
           {version.isLatestVersion && (
             <div>
-              <Badge
-                className="ml-2 text-gray-500 text-sm"
-                borderColor="border-gray-300"
-              >
+              <Badge className="ml-2 text-gray-500 text-sm ring-gray-300">
                 {t("Latest version")}
               </Badge>
             </div>
@@ -190,6 +186,7 @@ PipelineVersionCard.fragments = {
   version: gql`
     fragment PipelineVersionCard_version on PipelineVersion {
       id
+      versionName
       name
       description
       externalLink
