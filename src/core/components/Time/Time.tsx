@@ -5,7 +5,6 @@ import { useMemo } from "react";
 
 type Props = {
   datetime: string;
-  zone?: string;
   className?: string;
   relative?: boolean;
   format?: DateTimeOptions;
