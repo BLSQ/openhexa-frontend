@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { useTranslation } from "react-i18next";
 import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Dialog from "core/components/Dialog";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
@@ -34,6 +34,7 @@ const PublishPipelineDialog = ({
   const { t } = useTranslation();
   const templateAlreadyExists = !!pipeline.template;
   const router = useRouter();
+  const [isFormValid, setIsFormValid] = useState(false);
   const [createPipelineTemplateVersion] =
     useCreatePipelineTemplateVersionMutation();
 
@@ -59,7 +60,6 @@ const PublishPipelineDialog = ({
             name: values.name,
             code: values.name,
             description: values.description,
-            config: "",
             workspaceSlug: workspace.slug,
             pipelineId: pipeline.id,
             pipelineVersionId: pipelineVersionId,
@@ -68,14 +68,14 @@ const PublishPipelineDialog = ({
       });
 
       if (!data?.createPipelineTemplateVersion) {
-        toast.error("Unknown error.");
+        toast.error(t("Unknown error."));
         return;
       }
 
       if (data.createPipelineTemplateVersion.success) {
+        toast.success(successMessage);
         onClose();
         await router.push(`/workspaces/${workspace.slug}/pipelines/`);
-        toast.success(successMessage);
       } else if (
         data.createPipelineTemplateVersion.errors?.includes(
           CreatePipelineTemplateVersionError.PermissionDenied,
@@ -97,9 +97,14 @@ const PublishPipelineDialog = ({
       if (!values.confirmPublishing) {
         errors.confirmPublishing = t("You must confirm publishing");
       }
+      setIsFormValid(isEmpty(errors));
       return errors;
     },
   });
+
+  useEffect(() => {
+    form.validate();
+  }, [form.formData]);
 
   useEffect(() => {
     form.resetForm();
@@ -138,6 +143,7 @@ const PublishPipelineDialog = ({
                 className="mb-3"
                 value={form.formData.name}
                 onChange={form.handleInputChange}
+                maxLength={255}
               />
               <Field
                 name="description"
@@ -179,10 +185,7 @@ const PublishPipelineDialog = ({
           <Button variant="white" onClick={onClose}>
             {t("Cancel")}
           </Button>
-          <Button
-            disabled={form.isSubmitting || !form.formData.confirmPublishing}
-            type={"submit"}
-          >
+          <Button disabled={form.isSubmitting || !isFormValid} type={"submit"}>
             {form.isSubmitting && <Spinner size="xs" className="mr-1" />}
             {actionMessage}
           </Button>
@@ -201,6 +204,7 @@ PublishPipelineDialog.fragment = {
         versionName
       }
       template {
+        id
         name
       }
     }

@@ -147,7 +147,7 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
                   error={
                     form.touched.notebookObject && form.errors.notebookObject
                   }
-                  className={"max-w-[300px]"}
+                  className={"max-w-[230px]"}
                 >
                   <BucketObjectPicker
                     onChange={(value) =>

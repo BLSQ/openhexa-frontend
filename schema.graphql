@@ -1924,7 +1924,6 @@ type MePermissions {
   manageAccessmodAccessRequests: Boolean!
   createPipelineTemplateVersion: Boolean!
   createWorkspace: Boolean!
-  createPipelineTemplateVersion: Boolean!
 }
 
 """An enumeration representing the priority levels of a message."""
@@ -1999,8 +1998,6 @@ type Mutation {
   deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult!
   runDAG(input: RunDAGInput!): RunDAGResult!
   updateDAG(input: UpdateDAGInput!): UpdateDAGResult!
-  createPipelineTemplateVersion(input: CreatePipelineTemplateVersionInput!): CreatePipelineTemplateVersionResult!
-  createPipelineFromTemplateVersion(input: CreatePipelineFromTemplateVersionInput!): CreatePipelineFromTemplateVersionResult!
   prepareDownloadURL(input: PrepareDownloadURLInput!): PrepareDownloadURLResult
   setDAGRunFavorite(input: SetDAGRunFavoriteInput!): SetDAGRunFavoriteResult
   createAccessmodProject(input: CreateAccessmodProjectInput!): CreateAccessmodProjectResult!
@@ -2665,7 +2662,6 @@ type Query {
 
   """Retrieves a pipeline run by ID."""
   pipelineRun(id: UUID!): PipelineRun
-  pipelineTemplates(page: Int = 1, perPage: Int = 15, search: String): PipelineTemplatePage!
   workspace(slug: String!): Workspace
   workspaces(query: String, page: Int, perPage: Int): WorkspacePage!
   pendingWorkspaceInvitations(page: Int! = 1, perPage: Int = 10): WorkspaceInvitationPage!

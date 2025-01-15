@@ -1,8 +1,7 @@
 import DataGrid, { BaseColumn } from "core/components/DataGrid";
 import Button from "core/components/Button";
-import SimplePagination from "core/components/Pagination/SimplePagination";
 import { useTranslation } from "next-i18next";
-import React, { FormEventHandler, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import DateColumn from "core/components/DataGrid/DateColumn";
 import Spinner from "core/components/Spinner";
 import Block from "core/components/Block";
@@ -25,17 +24,22 @@ type PipelineTemplatesTableProps = {
 const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const { t } = useTranslation();
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [page, setPage] = useState(1);
-  const perPage = 5;
+  const perPage = 1;
   const clearCache = useCacheKey(["pipelines"]);
   const [createPipelineFromTemplateVersion] =
     useCreatePipelineFromTemplateVersionMutation();
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data, loading, error, fetchMore } = useGetPipelineTemplatesQuery({
-    variables: { page, perPage },
+    variables: { page: 1, perPage },
     fetchPolicy: "cache-and-network", // The template list is a global list across the instance, so we want to check the network for updates and show the cached data in the meantime
   });
+
+  const fetchMoreData = (newPage: number = 1) =>
+    fetchMore({
+      variables: { page: newPage, perPage, search: searchQuery },
+      updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
+    });
 
   if (error) return <p>{t("Error loading templates")}</p>;
   if (!data || loading)
@@ -45,18 +49,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
       </div>
     );
 
-  const { items, pageNumber, totalPages } = data.pipelineTemplates;
-
-  const fetchMoreData = (newPage: number) =>
-    fetchMore({
-      variables: { page: newPage, perPage, search: searchQuery },
-      updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
-    });
-
-  const handlePageChange = (newPage: number) => {
-    fetchMoreData(newPage);
-    setPage(newPage);
-  };
+  const { items, totalItems } = data.pipelineTemplates;
 
   const createPipeline = (pipelineTemplateVersionId: string) => () => {
     createPipelineFromTemplateVersion({
@@ -105,25 +98,26 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
       });
   };
 
-  const onSubmitSearchQuery: FormEventHandler = (event) => {
-    event.preventDefault();
-    fetchMoreData(1);
-    setPage(1);
-  };
-
   return (
     <>
-      <div className="flex mt-5 mb-5">
-        <SearchInput
-          ref={searchInputRef}
-          onSubmit={onSubmitSearchQuery}
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value ?? "")}
-          className="shadow-sm border-gray-50 w-96"
-        />
-      </div>
+      <SearchInput
+        ref={searchInputRef}
+        onSubmit={(event) => {
+          event.preventDefault();
+          fetchMoreData();
+        }}
+        value={searchQuery}
+        onChange={(event) => setSearchQuery(event.target.value ?? "")}
+        className="my-5 shadow-sm border-gray-50 w-96"
+      />
       <Block className="divide divide-y divide-gray-100 mt-10">
-        <DataGrid data={items} defaultPageSize={perPage} fixedLayout={false}>
+        <DataGrid
+          data={items}
+          defaultPageSize={perPage}
+          totalItems={totalItems}
+          fetchData={({ page }) => fetchMoreData(page)}
+          fixedLayout={false}
+        >
           <BaseColumn id="name" label={t("Name")}>
             {(value) => <span>{value.name}</span>}
           </BaseColumn>
@@ -158,40 +152,35 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           </BaseColumn>
         </DataGrid>
       </Block>
-      <SimplePagination
-        hasNextPage={pageNumber < totalPages}
-        hasPreviousPage={pageNumber > 1}
-        page={pageNumber}
-        onChange={handlePageChange}
-      />
     </>
   );
 };
 
-PipelineTemplatesTable.fragments = {
-  getPipelineTemplates: gql`
-    query GetPipelineTemplates($page: Int!, $perPage: Int!, $search: String) {
-      pipelineTemplates(page: $page, perPage: $perPage, search: $search) {
-        pageNumber
-        totalPages
-        totalItems
-        items {
+const GET_PIPELINE_TEMPLATES = gql`
+  query GetPipelineTemplates($page: Int!, $perPage: Int!, $search: String) {
+    pipelineTemplates(page: $page, perPage: $perPage, search: $search) {
+      pageNumber
+      totalPages
+      totalItems
+      items {
+        id
+        name
+        currentVersion {
           id
-          name
-          currentVersion {
-            id
-            versionNumber
-            createdAt
-            template {
-              sourcePipeline {
-                name
-              }
+          versionNumber
+          createdAt
+          template {
+            sourcePipeline {
+              name
             }
           }
         }
       }
     }
-  `,
+  }
+`;
+
+PipelineTemplatesTable.fragments = {
   workspace: gql`
     fragment PipelineTemplateTable_workspace on Workspace {
       slug

@@ -61,10 +61,7 @@ query WorkspaceNotebooksPage($workspaceSlug: String!) {
   }
 }
 
-query WorkspacePipelinePage(
-  $workspaceSlug: String!
-  $pipelineCode: String!
-) {
+query WorkspacePipelinePage($workspaceSlug: String!, $pipelineCode: String!) {
   workspace(slug: $workspaceSlug) {
     slug
     name
@@ -90,6 +87,7 @@ query WorkspacePipelinePage(
     type
     notebookPath
     sourceTemplate {
+      id
       name
     }
     newTemplateVersionAvailable
@@ -166,7 +164,7 @@ query WorkspacePipelineNotificationsPage(
     code
     type
     schedule
-    permissions{
+    permissions {
       schedule
       update
     }

@@ -46,8 +46,7 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
   const me = useMe();
 
   const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
-  const userCanCreatePipelineTemplate =
-    me?.permissions?.createPipelineTemplateVersion;
+  const userCanCreatePipelineTemplate = true;
   const templateForThisVersion = !!pipeline.currentVersion?.templateVersion;
   const showPublishAsTemplateButton =
     pipeline.currentVersion &&
@@ -207,6 +206,7 @@ PipelineLayout.fragments = {
         update
       }
       template {
+        id
         name
       }
       currentVersion {
