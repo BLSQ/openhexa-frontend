@@ -167,7 +167,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   <p>{sourceTemplateName.displayValue}</p>
                   {pipeline.newTemplateVersionAvailable && (
                     <Button variant={"secondary"} size={"sm"}>
-                      {t("Upgrade to new version")}
+                      {t("Upgrade to latest version")}
                     </Button>
                   )}
                 </div>
