@@ -422,6 +422,7 @@ export const WorkspacePipelinePageDocument = gql`
       update
       schedule
       delete
+      createTemplateVersion
     }
     webhookUrl
     webhookEnabled
