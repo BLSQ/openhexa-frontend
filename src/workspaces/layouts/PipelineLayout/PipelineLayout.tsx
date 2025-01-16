@@ -117,8 +117,8 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
                   variant={"secondary"}
                 >
                   {pipeline.template
-                    ? t("Publish as Template")
-                    : t("Publish a new Template Version")}
+                    ? t("Publish a new Template Version")
+                    : t("Publish as Template")}
                 </Button>
               )}
             {pipeline.currentVersion && (
