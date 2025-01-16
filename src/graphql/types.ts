@@ -2820,6 +2820,7 @@ export type PipelineParameter = {
 /** Represents the permissions for a pipeline. */
 export type PipelinePermissions = {
   __typename?: 'PipelinePermissions';
+  createTemplateVersion: Scalars['Boolean']['output'];
   createVersion: Scalars['Boolean']['output'];
   delete: Scalars['Boolean']['output'];
   run: Scalars['Boolean']['output'];

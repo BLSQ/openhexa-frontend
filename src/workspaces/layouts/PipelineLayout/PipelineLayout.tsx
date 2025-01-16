@@ -18,8 +18,6 @@ import {
 } from "./PipelineLayout.generated";
 import PublishPipelineDialog from "workspaces/features/PublishPipelineDialog";
 import useFeature from "identity/hooks/useFeature";
-import { PipelineType } from "graphql/types";
-import useMe from "identity/hooks/useMe";
 
 type PipelineLayoutProps = {
   pipeline: PipelineLayout_PipelineFragment;
@@ -43,17 +41,8 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
     useState(false);
   const [isDeletePipelineDialogOpen, setDeletePipelineDialogOpen] =
     useState(false);
-  const me = useMe();
 
   const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
-  const userCanCreatePipelineTemplate = true;
-  const templateForThisVersion = !!pipeline.currentVersion?.templateVersion;
-  const showPublishAsTemplateButton =
-    pipeline.currentVersion &&
-    pipeline.type !== PipelineType.Notebook &&
-    pipelineTemplateFeatureEnabled &&
-    userCanCreatePipelineTemplate &&
-    !templateForThisVersion;
 
   return (
     <TabLayout
@@ -121,14 +110,17 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
             ))}
           </Breadcrumbs>
           <div className="flex items-center gap-2">
-            {showPublishAsTemplateButton && (
-              <Button
-                onClick={() => setPublishPipelineDialogOpen(true)}
-                variant={"secondary"}
-              >
-                {t("Publish as Template")}
-              </Button>
-            )}
+            {pipelineTemplateFeatureEnabled &&
+              pipeline.permissions.createTemplateVersion && (
+                <Button
+                  onClick={() => setPublishPipelineDialogOpen(true)}
+                  variant={"secondary"}
+                >
+                  {pipeline.template
+                    ? t("Publish as Template")
+                    : t("Publish a new Template Version")}
+                </Button>
+              )}
             {pipeline.currentVersion && (
               <DownloadPipelineVersion version={pipeline.currentVersion}>
                 {({ onClick, isDownloading }) => (
@@ -204,6 +196,7 @@ PipelineLayout.fragments = {
         run
         delete
         update
+        createTemplateVersion
       }
       template {
         id

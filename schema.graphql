@@ -2328,6 +2328,7 @@ type PipelinePermissions {
   schedule: Boolean!
   createVersion: Boolean!
   stopPipeline: Boolean!
+  createTemplateVersion: Boolean!
 }
 
 """Represents a recipient of a pipeline."""
