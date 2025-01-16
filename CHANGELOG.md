@@ -1,5 +1,81 @@
 # Changelog
 
+## [0.57.0](https://github.com/BLSQ/openhexa-frontend/compare/0.56.2...0.57.0) (2025-01-15)
+
+
+### Features
+
+* **datasets:** Annotations of the datasets columns by the user ([b93931e](https://github.com/BLSQ/openhexa-frontend/commit/b93931e79f5fa8b66c2f7a3355b4eb65ba2da90b))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @apollo/client to v3.12.5 ([#995](https://github.com/BLSQ/openhexa-frontend/issues/995)) ([6c97679](https://github.com/BLSQ/openhexa-frontend/commit/6c97679e146538ef9bbcac2e040618a006d567e2))
+* **deps:** update dependency @apollo/client to v3.12.6 ([#1002](https://github.com/BLSQ/openhexa-frontend/issues/1002)) ([5fd992c](https://github.com/BLSQ/openhexa-frontend/commit/5fd992cc86d714285f429d8d5ed7f5b4dfaed15e))
+* **deps:** update dependency @sentry/nextjs to v8.48.0 ([#992](https://github.com/BLSQ/openhexa-frontend/issues/992)) ([666e843](https://github.com/BLSQ/openhexa-frontend/commit/666e843ff61c8b131af0ff048981fe716256576a))
+* **deps:** update dependency @tailwindcss/forms to v0.5.10 ([#989](https://github.com/BLSQ/openhexa-frontend/issues/989)) ([896ee3f](https://github.com/BLSQ/openhexa-frontend/commit/896ee3f02335ef98e1c4487cd765f73208571441))
+* **deps:** update dependency @tailwindcss/typography to v0.5.16 ([#990](https://github.com/BLSQ/openhexa-frontend/issues/990)) ([7bbae37](https://github.com/BLSQ/openhexa-frontend/commit/7bbae376927585f9cde1e6f8a6b72cdfce2b93b3))
+* **deps:** update dependency @types/lodash to v4.17.14 ([#982](https://github.com/BLSQ/openhexa-frontend/issues/982)) ([ec042eb](https://github.com/BLSQ/openhexa-frontend/commit/ec042eb3d6ac14630fc0e95ee6bc79d0aec27e36))
+* **deps:** update dependency @types/node to v22.10.6 ([#999](https://github.com/BLSQ/openhexa-frontend/issues/999)) ([32f6168](https://github.com/BLSQ/openhexa-frontend/commit/32f61687ccfbdbb07abb5595f1a6aeac29c76ea3))
+* **deps:** update dependency i18next to v24.2.1 ([#987](https://github.com/BLSQ/openhexa-frontend/issues/987)) ([0b7eaf7](https://github.com/BLSQ/openhexa-frontend/commit/0b7eaf7459da887d6d2d6d1b6747592243d468cb))
+* **deps:** update dependency react-markdown to v9.0.2 ([#985](https://github.com/BLSQ/openhexa-frontend/issues/985)) ([fe04b23](https://github.com/BLSQ/openhexa-frontend/commit/fe04b23a2b7da21396a0db3d1397febf318ba867))
+* **deps:** update dependency react-markdown to v9.0.3 ([#986](https://github.com/BLSQ/openhexa-frontend/issues/986)) ([db6929f](https://github.com/BLSQ/openhexa-frontend/commit/db6929f3f75cb54aa134fa2db302e6ca3e37f49b))
+* **deps:** update dependency typescript to v5.7.3 ([#993](https://github.com/BLSQ/openhexa-frontend/issues/993)) ([75ae12f](https://github.com/BLSQ/openhexa-frontend/commit/75ae12fa382f7ad8a5aac2eca43cac9c4ebccf5a))
+* **deps:** update dependency uuid to v11.0.4 ([#984](https://github.com/BLSQ/openhexa-frontend/issues/984)) ([b0bf496](https://github.com/BLSQ/openhexa-frontend/commit/b0bf496f5142fdaa3302ced3afd2ff098e16257d))
+* **deps:** update dependency uuid to v11.0.5 ([#996](https://github.com/BLSQ/openhexa-frontend/issues/996)) ([8177652](https://github.com/BLSQ/openhexa-frontend/commit/81776522e2e4a7268d6f0f6752d3d93f7e2653ae))
+* **deps:** update nextjs monorepo to v15.1.4 ([#991](https://github.com/BLSQ/openhexa-frontend/issues/991)) ([f9fa8ff](https://github.com/BLSQ/openhexa-frontend/commit/f9fa8ffc055d0b0bc76b6ec059f56c88905392d8))
+* set default state for sidebar ([#988](https://github.com/BLSQ/openhexa-frontend/issues/988)) ([3f0ed22](https://github.com/BLSQ/openhexa-frontend/commit/3f0ed221b35f348f177fce066c4d8472902f83ba))
+
+## [0.56.2](https://github.com/BLSQ/openhexa-frontend/compare/0.56.1...0.56.2) (2025-01-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @apollo/client to v3.12.3 ([#946](https://github.com/BLSQ/openhexa-frontend/issues/946)) ([2574c67](https://github.com/BLSQ/openhexa-frontend/commit/2574c67561721226de32ff5be8d808cb3628ff76))
+* **deps:** update dependency @apollo/client to v3.12.4 ([#967](https://github.com/BLSQ/openhexa-frontend/issues/967)) ([4af9216](https://github.com/BLSQ/openhexa-frontend/commit/4af9216129f84cfd9352af64543490bf488fd434))
+* **deps:** update dependency @sentry/nextjs to v8.44.0 ([#944](https://github.com/BLSQ/openhexa-frontend/issues/944)) ([d7ac3f6](https://github.com/BLSQ/openhexa-frontend/commit/d7ac3f662b0ce615eabfd5786e29a068ae65bba1))
+* **deps:** update dependency @sentry/nextjs to v8.45.0 ([#948](https://github.com/BLSQ/openhexa-frontend/issues/948)) ([aa6f864](https://github.com/BLSQ/openhexa-frontend/commit/aa6f864af7e10bfbbcd080f5a9a1b53f1c2262cc))
+* **deps:** update dependency @sentry/nextjs to v8.45.1 ([#951](https://github.com/BLSQ/openhexa-frontend/issues/951)) ([64a9cfb](https://github.com/BLSQ/openhexa-frontend/commit/64a9cfb5c081f61daa1e0ad55d01edc22e8f8836))
+* **deps:** update dependency @sentry/nextjs to v8.46.0 ([#959](https://github.com/BLSQ/openhexa-frontend/issues/959)) ([cbd6000](https://github.com/BLSQ/openhexa-frontend/commit/cbd6000b9b3189608d2e107fd4b4674b8b43144e))
+* **deps:** update dependency @sentry/nextjs to v8.47.0 ([#964](https://github.com/BLSQ/openhexa-frontend/issues/964)) ([e4ee140](https://github.com/BLSQ/openhexa-frontend/commit/e4ee1400910b405c0af77a2683073c35c7b868f5))
+* **deps:** update dependency @tanstack/react-table to v8.20.6 ([#947](https://github.com/BLSQ/openhexa-frontend/issues/947)) ([71abda2](https://github.com/BLSQ/openhexa-frontend/commit/71abda25dc058f41dad04bf4a2affef294ef52ab))
+* **deps:** update dependency @types/node to v22.10.2 ([#943](https://github.com/BLSQ/openhexa-frontend/issues/943)) ([2bfab5f](https://github.com/BLSQ/openhexa-frontend/commit/2bfab5fdcc34739c4b9263194cfd6a38046a5473))
+* **deps:** update dependency @types/node to v22.10.3 ([#977](https://github.com/BLSQ/openhexa-frontend/issues/977)) ([415b1a0](https://github.com/BLSQ/openhexa-frontend/commit/415b1a0cf7b72dbef7ef5e2c5aaff53124cf1a2b))
+* **deps:** update dependency @types/node to v22.10.4 ([#978](https://github.com/BLSQ/openhexa-frontend/issues/978)) ([4293a1f](https://github.com/BLSQ/openhexa-frontend/commit/4293a1fa233429fa997ab20bb49f9dffd912d3a5))
+* **deps:** update dependency @types/node to v22.10.5 ([#980](https://github.com/BLSQ/openhexa-frontend/issues/980)) ([ad07e1a](https://github.com/BLSQ/openhexa-frontend/commit/ad07e1a8b8e1d07e23e3a49a916786c599d38fc1))
+* **deps:** update dependency @types/react to v18.3.15 ([#939](https://github.com/BLSQ/openhexa-frontend/issues/939)) ([cf3c6c6](https://github.com/BLSQ/openhexa-frontend/commit/cf3c6c6b01eef8d83c297d4c2f69ef2e9dd37cff))
+* **deps:** update dependency @types/react to v18.3.16 ([#940](https://github.com/BLSQ/openhexa-frontend/issues/940)) ([00ce458](https://github.com/BLSQ/openhexa-frontend/commit/00ce458995b70c8b41d7a4533ee4145545439187))
+* **deps:** update dependency @types/react to v18.3.17 ([#952](https://github.com/BLSQ/openhexa-frontend/issues/952)) ([2fe0c13](https://github.com/BLSQ/openhexa-frontend/commit/2fe0c13dedbfcf1f50680eefcdad4bab68014736))
+* **deps:** update dependency @types/react to v18.3.18 ([#969](https://github.com/BLSQ/openhexa-frontend/issues/969)) ([947d468](https://github.com/BLSQ/openhexa-frontend/commit/947d4681c1eb4d03a02bcf0191adfa88800f202a))
+* **deps:** update dependency @uiw/react-codemirror to v4.23.7 ([#950](https://github.com/BLSQ/openhexa-frontend/issues/950)) ([e433816](https://github.com/BLSQ/openhexa-frontend/commit/e4338165884b90c752e9e386428f2ecf092da191))
+* **deps:** update dependency graphql to v16.10.0 ([#949](https://github.com/BLSQ/openhexa-frontend/issues/949)) ([8d2e20c](https://github.com/BLSQ/openhexa-frontend/commit/8d2e20c8d994483b3087f39d8e90f4f4965b56c8))
+* **deps:** update dependency i18next to v24.1.0 ([#941](https://github.com/BLSQ/openhexa-frontend/issues/941)) ([c36aa92](https://github.com/BLSQ/openhexa-frontend/commit/c36aa925473651ad92e7e356ee7c5d74d14d4a11))
+* **deps:** update dependency i18next to v24.1.1 ([#955](https://github.com/BLSQ/openhexa-frontend/issues/955)) ([cae6597](https://github.com/BLSQ/openhexa-frontend/commit/cae6597448b0240b32a1185cabc3ad6bd9e32e3c))
+* **deps:** update dependency i18next to v24.1.2 ([#957](https://github.com/BLSQ/openhexa-frontend/issues/957)) ([5b2a920](https://github.com/BLSQ/openhexa-frontend/commit/5b2a9203fa19775e2c033fa4d47001047a6be810))
+* **deps:** update dependency i18next to v24.2.0 ([#970](https://github.com/BLSQ/openhexa-frontend/issues/970)) ([1825ede](https://github.com/BLSQ/openhexa-frontend/commit/1825edecffe7c8605aa1ce173638f317d9b7535f))
+* **deps:** update dependency next-i18next to v15.4.1 ([#956](https://github.com/BLSQ/openhexa-frontend/issues/956)) ([df87d7c](https://github.com/BLSQ/openhexa-frontend/commit/df87d7c06990bf2a075898ed5fcb49bb042d4923))
+* **deps:** update dependency react-i18next to v15.2.0 ([#945](https://github.com/BLSQ/openhexa-frontend/issues/945)) ([7a99f59](https://github.com/BLSQ/openhexa-frontend/commit/7a99f59c0ba67bc6b2fb4254e72889180f141e58))
+* **deps:** update dependency react-i18next to v15.3.0 ([#975](https://github.com/BLSQ/openhexa-frontend/issues/975)) ([7b81c93](https://github.com/BLSQ/openhexa-frontend/commit/7b81c93f1b91b51a52abbe990bcffa8c30f078a6))
+* **deps:** update dependency react-i18next to v15.4.0 ([#976](https://github.com/BLSQ/openhexa-frontend/issues/976)) ([9fa8d77](https://github.com/BLSQ/openhexa-frontend/commit/9fa8d77e751b13e1be1379f8af3f26386c780834))
+* **deps:** update dependency react-toastify to v11 ([#954](https://github.com/BLSQ/openhexa-frontend/issues/954)) ([e48af86](https://github.com/BLSQ/openhexa-frontend/commit/e48af86913199a2f720bc3ac9da5d783ee8bd332))
+* **deps:** update dependency react-toastify to v11.0.1 ([#962](https://github.com/BLSQ/openhexa-frontend/issues/962)) ([388e179](https://github.com/BLSQ/openhexa-frontend/commit/388e179c6d93eab1f56b73c5142f82d51340fb61))
+* **deps:** update dependency react-toastify to v11.0.2 ([#966](https://github.com/BLSQ/openhexa-frontend/issues/966)) ([d483e27](https://github.com/BLSQ/openhexa-frontend/commit/d483e27e79a5ee67038ab376b3697b4e1736fcae))
+* **deps:** update nextjs monorepo to v15.1.0 ([#937](https://github.com/BLSQ/openhexa-frontend/issues/937)) ([b88bb31](https://github.com/BLSQ/openhexa-frontend/commit/b88bb311025fc286b4c4c93cd7bec4a6796b3ab7))
+* **deps:** update nextjs monorepo to v15.1.1 ([#961](https://github.com/BLSQ/openhexa-frontend/issues/961)) ([7f8f04a](https://github.com/BLSQ/openhexa-frontend/commit/7f8f04a87d3b5f8c975ab5eeec688b48a4045e42))
+* **deps:** update nextjs monorepo to v15.1.2 ([#965](https://github.com/BLSQ/openhexa-frontend/issues/965)) ([70f0631](https://github.com/BLSQ/openhexa-frontend/commit/70f06317320ca4d6e406f7e237f1aca988c7b3b0))
+* **deps:** update nextjs monorepo to v15.1.3 ([#973](https://github.com/BLSQ/openhexa-frontend/issues/973)) ([c756cff](https://github.com/BLSQ/openhexa-frontend/commit/c756cffaa704f58b09f1a622fc185e2b50656570))
+* HEXA-1147 props in Datagrid ([#968](https://github.com/BLSQ/openhexa-frontend/issues/968)) ([fe2e7a2](https://github.com/BLSQ/openhexa-frontend/commit/fe2e7a2f36ce59ebb8e3bfa68330154915aeae08))
+* HEXA-1153 scrolling dataset versions ([#979](https://github.com/BLSQ/openhexa-frontend/issues/979)) ([4e9bf9f](https://github.com/BLSQ/openhexa-frontend/commit/4e9bf9f5d6c937aa55923f68ad69f8a6c8e7f7b4))
+
+## [0.56.1](https://github.com/BLSQ/openhexa-frontend/compare/0.56.0...0.56.1) (2024-12-10)
+
+
+### Bug Fixes
+
+* **Datasets:** do not throw when column total values is not available ([#933](https://github.com/BLSQ/openhexa-frontend/issues/933)) ([06bca97](https://github.com/BLSQ/openhexa-frontend/commit/06bca97bab2527c0cffc0d58fbd785b56261d546))
+* **deps:** update dependency @sentry/nextjs to v8.43.0 ([#934](https://github.com/BLSQ/openhexa-frontend/issues/934)) ([570545b](https://github.com/BLSQ/openhexa-frontend/commit/570545b9a636fdffe798f75ad9543c49dce499eb))
+* **deps:** update dependency react-i18next to v15.1.4 ([#930](https://github.com/BLSQ/openhexa-frontend/issues/930)) ([f6c0ae2](https://github.com/BLSQ/openhexa-frontend/commit/f6c0ae2d8b3201355c7b11d6381a20a5c9f3de4f))
+
 ## [0.56.0](https://github.com/BLSQ/openhexa-frontend/compare/0.55.0...0.56.0) (2024-12-09)
 
 

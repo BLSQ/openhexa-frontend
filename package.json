@@ -84,7 +84,8 @@
     "react-popper": "^2.3.0",
     "react-popper-tooltip": "^4.4.2",
     "react-table": "^7.8.0",
-    "react-toastify": "^10.0.6",
+    "react-toastify": "^11.0.0",
+    "react-world-flags": "^1.6.0",
     "typescript": "^5.6.2",
     "use-onclickoutside": "^0.4.1",
     "uuid": "^11.0.0"
@@ -105,6 +106,7 @@
     "@types/luxon": "^3.4.2",
     "@types/pluralize": "^0.0.33",
     "@types/react-table": "^7.7.20",
+    "@types/react-world-flags": "^1.6.0",
     "@types/sync-fetch": "^0.4.3",
     "autoprefixer": "10.4.20",
     "babel-jest": "^29.7.0",
@@ -112,12 +114,13 @@
     "deepl-node": "^1.14.0",
     "eslint": "^8",
     "eslint-config-next": "^15.0.1",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.6",
     "i18next-parser": "^9.0.2",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "jsdom-testing-mocks": "^1.13.1",
     "lint-staged": "^15.2.10",
     "next-router-mock": "^0.9.13",
     "npm-run-all2": "^7.0.0",
@@ -126,5 +129,5 @@
     "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^3.4.12"
   },
-  "version": "0.56.0"
+  "version": "0.57.0"
 }

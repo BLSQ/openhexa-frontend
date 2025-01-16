@@ -33,6 +33,7 @@ import {
   TableBody,
   TableCell,
   TableCellProps,
+  TableClasses,
   TableHead,
   TableRow,
 } from "../Table";
@@ -73,6 +74,7 @@ interface IDataGridProps {
   emptyLabel?: string;
   defaultSortBy?: SortingRule<object>[];
   pageSizeOptions?: number[];
+  headerClassName?: string;
   rowClassName?: string;
   spacing?: TableCellProps["spacing"];
 }
@@ -85,6 +87,7 @@ function DataGrid(props: DataGridProps) {
     children,
     data,
     rowClassName,
+    headerClassName,
     fixedLayout = true,
     onSelectionChange,
     emptyLabel = t("No elements to display"),
@@ -265,66 +268,91 @@ function DataGrid(props: DataGridProps) {
       <Overflow horizontal gradientWidth="w-12">
         <Table
           {...getTableProps()}
-          className={clsx(fixedLayout && "table-fixed")}
+          className={clsx(TableClasses.table, fixedLayout && "table-fixed")}
         >
-          <TableHead>
-            {headerGroups.map((headerGroup, i) => (
-              <TableRow {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <TableCell
-                    heading
-                    className={column.headerClassName}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    spacing={spacing}
-                  >
-                    {column.hideLabel ? (
-                      <span className="sr-only">{column.render("Header")}</span>
-                    ) : (
-                      <>
-                        {column.render("Header")}
-                        {column.isSorted && i === headerGroups.length - 1 && (
-                          <div
-                            className={clsx(
-                              "ml-2 inline-block w-3 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300",
-                            )}
-                          >
-                            {column.isSortedDesc ? (
-                              <ChevronDownIcon
-                                className="h-3 w-3"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <ChevronUpIcon
-                                className="h-3 w-3"
-                                aria-hidden="true"
-                              />
-                            )}
-                          </div>
+          <TableHead className={headerClassName}>
+            {headerGroups.map((headerGroup, i) => {
+              const rowProps = headerGroup.getHeaderGroupProps();
+              const { key: rowKey, ...otherRowProps } = rowProps;
+              return (
+                <TableRow key={rowKey} {...otherRowProps}>
+                  {headerGroup.headers.map((column) => {
+                    const cellProps = column.getHeaderProps(
+                      column.getSortByToggleProps(),
+                    );
+                    const { key: cellKey, ...otherCellProps } = cellProps;
+                    return (
+                      <TableCell
+                        key={cellKey}
+                        heading
+                        className={column.headerClassName}
+                        {...otherCellProps}
+                        spacing={spacing}
+                      >
+                        {column.hideLabel ? (
+                          <span className="sr-only">
+                            {column.render("Header")}
+                          </span>
+                        ) : (
+                          <>
+                            {column.render("Header")}
+                            {column.isSorted &&
+                              i === headerGroups.length - 1 && (
+                                <div
+                                  className={clsx(
+                                    "ml-2 inline-block w-3 flex-none rounded bg-gray-200 text-gray-900 group-hover:bg-gray-300",
+                                  )}
+                                >
+                                  {column.isSortedDesc ? (
+                                    <ChevronDownIcon
+                                      className="h-3 w-3"
+                                      aria-hidden="true"
+                                    />
+                                  ) : (
+                                    <ChevronUpIcon
+                                      className="h-3 w-3"
+                                      aria-hidden="true"
+                                    />
+                                  )}
+                                </div>
+                              )}
+                          </>
                         )}
-                      </>
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableHead>
           <TableBody {...getTableBodyProps()}>
             {page.map((row, i) => {
               prepareRow(row);
+              const rowProps = row.getRowProps();
+              const { key: rowKey, ...otherRowProps } = rowProps;
               return (
-                <TableRow {...row.getRowProps()} className={rowClassName}>
-                  {row.cells.map((cell) => (
-                    <TableCell
-                      {...cell.getCellProps({
-                        className: cell.column.className,
-                      })}
-                      spacing={spacing}
-                    >
-                      <CellContextProvider cell={cell}>
-                        {cell.render("Cell")}
-                      </CellContextProvider>
-                    </TableCell>
-                  ))}
+                <TableRow
+                  key={rowKey}
+                  {...otherRowProps}
+                  className={rowClassName}
+                >
+                  {row.cells.map((cell) => {
+                    const cellProps = cell.getCellProps({
+                      className: cell.column.className,
+                    });
+                    const { key: cellKey, ...otherCellProps } = cellProps;
+                    return (
+                      <TableCell
+                        key={cellKey}
+                        {...otherCellProps}
+                        spacing={spacing}
+                      >
+                        <CellContextProvider cell={cell}>
+                          {cell.render("Cell")}
+                        </CellContextProvider>
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               );
             })}
