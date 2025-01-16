@@ -2,9 +2,9 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { PipelineType } from "graphql/types";
 import { MockedProvider } from "@apollo/client/testing";
-import useMe from "identity/hooks/useMe";
 import useFeature from "identity/hooks/useFeature";
 import PipelineLayout from "./index";
+import useMe from "identity/hooks/useMe";
 
 jest.mock("identity/hooks/useMe", () => jest.fn());
 jest.mock("identity/hooks/useFeature", () => jest.fn());
@@ -12,7 +12,7 @@ jest.mock("identity/hooks/useFeature", () => jest.fn());
 describe("PipelineLayout", () => {
   beforeEach(() => {
     (useMe as jest.Mock).mockReturnValue({
-      permissions: { createPipelineTemplateVersion: true },
+      permissions: { createWorkspace: true },
     });
     (useFeature as jest.Mock).mockReturnValue([true]);
   });
