@@ -44,6 +44,8 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const [isGenerateWebhookUrlDialogOpen, setIsGenerateWebhookUrlDialogOpen] =
     useState(false);
   const [isWebhookFeatureEnabled] = useFeature("pipeline_webhook");
+  const [isPipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
+
   const { data } = useWorkspacePipelinePageQuery({
     variables: {
       workspaceSlug,
@@ -155,7 +157,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               )}
             </RenderProperty>
           )}
-          {pipeline.sourceTemplate && (
+          {isPipelineTemplateFeatureEnabled && pipeline.sourceTemplate && (
             <RenderProperty
               id="source_remplate"
               accessor={"sourceTemplate.name"}
@@ -165,11 +167,12 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               {(sourceTemplateName) => (
                 <div className="flex items-center gap-2">
                   <p>{sourceTemplateName.displayValue}</p>
-                  {pipeline.newTemplateVersionAvailable && (
-                    <Button variant={"secondary"} size={"sm"}>
-                      {t("Upgrade to latest version")}
-                    </Button>
-                  )}
+                  {pipeline.newTemplateVersionAvailable &&
+                    pipeline.permissions.createVersion && (
+                      <Button variant={"secondary"} size={"sm"}>
+                        {t("Upgrade to latest version")}
+                      </Button>
+                    )}
                 </div>
               )}
             </RenderProperty>
