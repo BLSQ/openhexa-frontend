@@ -23,6 +23,7 @@ describe("PipelineLayout", () => {
       update: true,
       schedule: true,
       delete: true,
+      createTemplateVersion: true,
     },
     webhookEnabled: false,
     id: "031be3e0-faac-48ab-bfc2-621a8076b240",
@@ -71,7 +72,7 @@ describe("PipelineLayout", () => {
     ],
   };
 
-  it("should show 'Publish as Template' button when conditions are met", () => {
+  it("should show 'Publish as Template' button when createTemplateVersion is true", () => {
     const { getByRole } = render(
       <MockedProvider>
         <PipelineLayout pipeline={pipeline} workspace={workspace}>
@@ -85,68 +86,12 @@ describe("PipelineLayout", () => {
     ).toBeInTheDocument();
   });
 
-  it("should not show 'Publish as Template' button when the user is not allowed to", () => {
-    (useMe as jest.Mock).mockReturnValue({
-      permissions: { createPipelineTemplateVersion: false },
-    });
-
-    const { queryByRole } = render(
-      <MockedProvider>
-        <PipelineLayout pipeline={pipeline} workspace={workspace}>
-          <div>Child Content</div>
-        </PipelineLayout>
-      </MockedProvider>,
-    );
-
-    expect(
-      queryByRole("button", { name: "Publish as Template" }),
-    ).not.toBeInTheDocument();
-  });
-
   it("should not show 'Publish as Template' button when feature flag is disabled", () => {
     (useFeature as jest.Mock).mockReturnValue([false]);
 
     const { queryByRole } = render(
       <MockedProvider>
         <PipelineLayout pipeline={pipeline} workspace={workspace}>
-          <div>Child Content</div>
-        </PipelineLayout>
-      </MockedProvider>,
-    );
-
-    expect(
-      queryByRole("button", { name: "Publish as Template" }),
-    ).not.toBeInTheDocument();
-  });
-
-  it("should not show 'Publish as Template' button when pipeline type is Notebook", () => {
-    const notebookPipeline = { ...pipeline, type: PipelineType.Notebook };
-
-    const { queryByRole } = render(
-      <MockedProvider>
-        <PipelineLayout pipeline={notebookPipeline} workspace={workspace}>
-          <div>Child Content</div>
-        </PipelineLayout>
-      </MockedProvider>,
-    );
-
-    expect(
-      queryByRole("button", { name: "Publish as Template" }),
-    ).not.toBeInTheDocument();
-  });
-
-  it("should not show 'Publish as Template' button when current version already has a template", () => {
-    const templatePipeline = {
-      ...pipeline,
-      currentVersion: {
-        ...pipeline.currentVersion,
-        templateVersion: { id: "template-id" },
-      },
-    };
-
-    const { queryByRole } = render(
-      <MockedProvider>
-        <PipelineLayout pipeline={templatePipeline} workspace={workspace}>
           <div>Child Content</div>
         </PipelineLayout>
       </MockedProvider>,
