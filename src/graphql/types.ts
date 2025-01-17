@@ -825,6 +825,7 @@ export enum CreatePipelineTemplateVersionError {
 
 /** Represents the input for creating a new pipeline template version. */
 export type CreatePipelineTemplateVersionInput = {
+  changelog?: InputMaybe<Scalars['String']['input']>;
   code?: InputMaybe<Scalars['String']['input']>;
   config?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;

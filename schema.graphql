@@ -778,6 +778,7 @@ input CreatePipelineTemplateVersionInput {
   name: String
   code: String
   description: String
+  changelog: String
   config: String
   workspaceSlug: String!
   pipelineId: UUID!

@@ -42,11 +42,13 @@ const PublishPipelineDialog = ({
     name: string;
     description: string;
     confirmPublishing: boolean;
+    changelog: string;
   }>({
     initialState: {
       name: "",
       description: "",
       confirmPublishing: false,
+      changelog: "",
     },
     async onSubmit(values) {
       const pipelineVersionId = pipeline.currentVersion?.id;
@@ -60,6 +62,7 @@ const PublishPipelineDialog = ({
             name: values.name,
             code: values.name,
             description: values.description,
+            changelog: values.changelog,
             workspaceSlug: workspace.slug,
             pipelineId: pipeline.id,
             pipelineVersionId: pipelineVersionId,
@@ -129,10 +132,15 @@ const PublishPipelineDialog = ({
         <Dialog.Title>{actionMessage}</Dialog.Title>
         <Dialog.Content className={"w-300"}>
           {templateAlreadyExists ? (
-            t(
-              "This pipeline is already published as a Template. You can add a new version by publishing {{versionName}}.",
-              { versionName: pipeline.currentVersion?.versionName },
-            )
+            <Field name="changelog" label={t("Changelog")}>
+              <Textarea
+                id="changelog"
+                name="changelog"
+                value={form.formData.changelog}
+                onChange={form.handleInputChange}
+                rows={10}
+              />
+            </Field>
           ) : (
             <>
               <Field
