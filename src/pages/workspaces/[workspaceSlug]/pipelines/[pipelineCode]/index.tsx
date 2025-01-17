@@ -12,7 +12,6 @@ import Tooltip from "core/components/Tooltip";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { PipelineType } from "graphql/types";
-import useFeature from "identity/hooks/useFeature";
 import { useTranslation } from "next-i18next";
 import PipelineVersionParametersTable from "pipelines/features/PipelineVersionParametersTable";
 import { useState } from "react";
@@ -43,7 +42,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     useState(false);
   const [isGenerateWebhookUrlDialogOpen, setIsGenerateWebhookUrlDialogOpen] =
     useState(false);
-  const [isWebhookFeatureEnabled] = useFeature("pipeline_webhook");
   const { data } = useWorkspacePipelinePageQuery({
     variables: {
       workspaceSlug,
@@ -191,88 +189,85 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
         ) : (
           <></>
         )}
-        {isWebhookFeatureEnabled ? (
-          <DataCard.FormSection
-            title={
-              <div className="flex items-center">
-                {t("Webhook")}{" "}
-                <Tooltip
-                  placement="top"
-                  renderTrigger={(ref) => (
-                    <span ref={ref} data-testid="help">
-                      <InformationCircleIcon className="ml-1 h-3 w-3 cursor-pointer" />
-                    </span>
-                  )}
-                  label={t(
-                    "You can use a webhook to trigger this pipeline from an external system using a POST request.",
-                  )}
-                />
-              </div>
-            }
-            defaultOpen={false}
-            onSave={pipeline.permissions.update ? onSaveWebhook : undefined}
-            collapsible={false}
+        <DataCard.FormSection
+          title={
+            <div className="flex items-center">
+              {t("Webhook")}{" "}
+              <Tooltip
+                placement="top"
+                renderTrigger={(ref) => (
+                  <span ref={ref} data-testid="help">
+                    <InformationCircleIcon className="ml-1 h-3 w-3 cursor-pointer" />
+                  </span>
+                )}
+                label={t(
+                  "You can use a webhook to trigger this pipeline from an external system using a POST request.",
+                )}
+              />
+            </div>
+          }
+          defaultOpen={false}
+          onSave={pipeline.permissions.update ? onSaveWebhook : undefined}
+          collapsible={false}
+        >
+          <RenderProperty
+            label={t("Enabled")}
+            id="webhookEnabled"
+            accessor="webhookEnabled"
           >
-            <RenderProperty
-              label={t("Enabled")}
-              id="webhookEnabled"
-              accessor="webhookEnabled"
-            >
-              {(property, section) => (
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={property.formValue}
-                    onChange={property.setValue}
-                  />
-                  {section.isEdited && (
-                    <span className="text-xs text-gray-500">
-                      {t(
-                        "Anyone with the URL will be able to trigger this pipeline",
-                      )}
-                    </span>
-                  )}
-                </div>
-              )}
-            </RenderProperty>
-            <RenderProperty
-              visible={(_, isEdited) => Boolean(pipeline.webhookUrl)}
-              readonly
-              id="webhookUrl"
-              label={t("URL")}
-              accessor="webhookUrl"
-            >
-              {(property, section) => (
-                <div className="flex items-center gap-2">
-                  <code className="text-xs max-w-[100ch] text-ellipsis overflow-x-hidden">
-                    {property.displayValue}
-                  </code>
-                  {!section.isEdited && (
-                    <Clipboard value={property.displayValue} />
-                  )}
-                  {section.isEdited && (
-                    <>
-                      <Button
-                        className="whitespace-nowrap"
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setIsGenerateWebhookUrlDialogOpen(true)}
-                      >
-                        {t("Generate a new URL")}
-                      </Button>
-                      <GeneratePipelineWebhookUrlDialog
-                        onClose={() => setIsGenerateWebhookUrlDialogOpen(false)}
-                        pipeline={pipeline}
-                        open={isGenerateWebhookUrlDialogOpen}
-                      />
-                    </>
-                  )}
-                </div>
-              )}
-            </RenderProperty>
-          </DataCard.FormSection>
-        ) : (
-          <></>
-        )}
+            {(property, section) => (
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={property.formValue}
+                  onChange={property.setValue}
+                  disabled={!section.isEdited}
+                />
+                {section.isEdited && (
+                  <span className="text-xs text-gray-500">
+                    {t(
+                      "Anyone with the URL will be able to trigger this pipeline",
+                    )}
+                  </span>
+                )}
+              </div>
+            )}
+          </RenderProperty>
+          <RenderProperty
+            visible={(_, isEdited) => Boolean(pipeline.webhookUrl)}
+            readonly
+            id="webhookUrl"
+            label={t("URL")}
+            accessor="webhookUrl"
+          >
+            {(property, section) => (
+              <div className="flex items-center gap-2">
+                <code className="text-xs max-w-[100ch] text-ellipsis overflow-x-hidden">
+                  {property.displayValue}
+                </code>
+                {!section.isEdited && (
+                  <Clipboard value={property.displayValue} />
+                )}
+                {section.isEdited && (
+                  <>
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setIsGenerateWebhookUrlDialogOpen(true)}
+                    >
+                      {t("Generate a new URL")}
+                    </Button>
+                    <GeneratePipelineWebhookUrlDialog
+                      onClose={() => setIsGenerateWebhookUrlDialogOpen(false)}
+                      pipeline={pipeline}
+                      open={isGenerateWebhookUrlDialogOpen}
+                    />
+                  </>
+                )}
+              </div>
+            )}
+          </RenderProperty>
+        </DataCard.FormSection>
       </PipelineLayout>
     </Page>
   );

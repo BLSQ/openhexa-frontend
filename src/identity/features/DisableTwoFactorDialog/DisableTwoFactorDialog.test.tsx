@@ -25,7 +25,7 @@ describe("DisableTwoFactorDialog", () => {
   });
   it("displays an alert if user is not verified", async () => {
     const onClose = jest.fn();
-    const { container } = render(
+    render(
       <TestApp>
         <DisableTwoFactorDialog open onClose={onClose} />
       </TestApp>,
@@ -39,10 +39,8 @@ describe("DisableTwoFactorDialog", () => {
   it("disables the two factor for the user", async () => {
     const user = userEvent.setup();
     const onClose = jest.fn();
-    const { container } = render(
-      <TestApp
-        me={{ features: [{ code: "two_factor" }], hasTwoFactorEnabled: true }}
-      >
+    render(
+      <TestApp me={{ hasTwoFactorEnabled: true }}>
         <DisableTwoFactorDialog open onClose={onClose} />
       </TestApp>,
     );
@@ -71,10 +69,8 @@ describe("DisableTwoFactorDialog", () => {
   it("does nothing without the token", async () => {
     const user = userEvent.setup();
     const onClose = jest.fn();
-    const { container } = render(
-      <TestApp
-        me={{ features: [{ code: "two_factor" }], hasTwoFactorEnabled: true }}
-      >
+    render(
+      <TestApp me={{ hasTwoFactorEnabled: true }}>
         <DisableTwoFactorDialog open onClose={onClose} />
       </TestApp>,
     );

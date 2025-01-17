@@ -15,50 +15,6 @@ describe("AccountPage", () => {
     mockRouter.setCurrentUrl("/user/account");
   });
 
-  it("renders without two-factor enabled", async () => {
-    const graphqlMocks: MockedResponse[] = [
-      {
-        request: {
-          query: AccountPageDocument,
-        },
-        result: {
-          data: {
-            pendingWorkspaceInvitations: { totalItems: 0, items: [] },
-            me: {
-              __typename: "Me",
-              hasTwoFactorEnabled: false,
-              user: {
-                __typename: "User",
-                id: "id",
-                avatar: {
-                  __typename: "Avatar",
-                  color: "gray",
-                  initials: "AB",
-                },
-                firstName: "Alphonsa",
-                lastName: "Brown",
-                dateJoined: "20230120",
-                displayName: "Alphonse Brown",
-                email: "abrown@bluesquarehub.com",
-              },
-            },
-          },
-        },
-      },
-    ];
-
-    const { container } = render(
-      <TestApp mocks={graphqlMocks}>
-        <AccountPage />
-      </TestApp>,
-    );
-    const elm = await screen.findByText("Alphonse Brown");
-    expect(elm).toBeInTheDocument();
-
-    const securitySection = screen.queryByText("Security");
-    expect(securitySection).not.toBeInTheDocument();
-  });
-
   it("renders with two-factor enabled and not active for the user", async () => {
     const graphqlMocks: MockedResponse[] = [
       {
@@ -92,7 +48,7 @@ describe("AccountPage", () => {
     ];
 
     const { container } = render(
-      <TestApp mocks={graphqlMocks} me={{ features: [{ code: "two_factor" }] }}>
+      <TestApp mocks={graphqlMocks}>
         <AccountPage />
       </TestApp>,
     );
