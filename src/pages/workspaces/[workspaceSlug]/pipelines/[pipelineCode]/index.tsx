@@ -75,9 +75,6 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     });
   };
 
-  // TODO : on confirm call the upgrade endpoint
-  // TODO : show the changelogs
-
   return (
     <Page title={pipeline.name ?? t("Pipeline")}>
       <PipelineLayout workspace={workspace} pipeline={pipeline}>

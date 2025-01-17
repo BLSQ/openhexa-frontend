@@ -8,6 +8,9 @@ type UpgradePipelineFromTemplateDialogProps = {
   onClose: () => void;
 };
 
+// TODO : on confirm call the upgrade endpoint
+// TODO : show the changelogs
+
 const UpgradePipelineFromTemplateDialog = ({
   open,
   onClose,
