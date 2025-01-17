@@ -29,6 +29,7 @@ import {
   updatePipeline,
 } from "workspaces/helpers/pipelines";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
+import UpgradePipelineFromTemplateDialog from "workspaces/features/UpgradePipelineFromTemplateDialog";
 
 type Props = {
   pipelineCode: string;
@@ -42,6 +43,8 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const [isVersionConfigDialogOpen, setVersionConfigDialogOpen] =
     useState(false);
   const [isGenerateWebhookUrlDialogOpen, setIsGenerateWebhookUrlDialogOpen] =
+    useState(false);
+  const [isUpgradeFromTemplateDialogOpen, setUpgradeFromTemplateDialogOpen] =
     useState(false);
   const [isWebhookFeatureEnabled] = useFeature("pipeline_webhook");
   const [isPipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
@@ -71,6 +74,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
       webhookEnabled: values.webhookEnabled,
     });
   };
+
+  // TODO : on confirm call the upgrade endpoint
+  // TODO : show the changelogs
 
   return (
     <Page title={pipeline.name ?? t("Pipeline")}>
@@ -169,7 +175,11 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   <p>{sourceTemplateName.displayValue}</p>
                   {pipeline.newTemplateVersionAvailable &&
                     pipeline.permissions.createVersion && (
-                      <Button variant={"secondary"} size={"sm"}>
+                      <Button
+                        variant={"secondary"}
+                        size={"sm"}
+                        onClick={() => setUpgradeFromTemplateDialogOpen(true)}
+                      >
                         {t("Upgrade to latest version")}
                       </Button>
                     )}
@@ -295,6 +305,10 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
         ) : (
           <></>
         )}
+        <UpgradePipelineFromTemplateDialog
+          open={isUpgradeFromTemplateDialogOpen}
+          onClose={() => setUpgradeFromTemplateDialogOpen(false)}
+        />
       </PipelineLayout>
     </Page>
   );
