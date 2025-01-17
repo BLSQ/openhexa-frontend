@@ -12,16 +12,17 @@ import Tooltip from "core/components/Tooltip";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { PipelineType } from "graphql/types";
+import useFeature from "identity/hooks/useFeature";
 import { useTranslation } from "next-i18next";
 import PipelineVersionParametersTable from "pipelines/features/PipelineVersionParametersTable";
 import { useState } from "react";
 import GeneratePipelineWebhookUrlDialog from "workspaces/features/GeneratePipelineWebhookUrlDialog";
 import PipelineVersionConfigDialog from "workspaces/features/PipelineVersionConfigDialog";
 import {
+  useWorkspacePipelinePageQuery,
   WorkspacePipelinePageDocument,
   WorkspacePipelinePageQuery,
   WorkspacePipelinePageQueryVariables,
-  useWorkspacePipelinePageQuery,
 } from "workspaces/graphql/queries.generated";
 import {
   formatPipelineType,
@@ -42,6 +43,8 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
     useState(false);
   const [isGenerateWebhookUrlDialogOpen, setIsGenerateWebhookUrlDialogOpen] =
     useState(false);
+  const [isPipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
+
   const { data } = useWorkspacePipelinePageQuery({
     variables: {
       workspaceSlug,
@@ -149,6 +152,26 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                   >
                     {property.displayValue.versionName}
                   </Link>
+                </div>
+              )}
+            </RenderProperty>
+          )}
+          {isPipelineTemplateFeatureEnabled && pipeline.sourceTemplate && (
+            <RenderProperty
+              id="source_remplate"
+              accessor={"sourceTemplate.name"}
+              label={t("Source Template")}
+              readonly
+            >
+              {(sourceTemplateName) => (
+                <div className="flex items-center gap-2">
+                  <p>{sourceTemplateName.displayValue}</p>
+                  {pipeline.newTemplateVersionAvailable &&
+                    pipeline.permissions.createVersion && (
+                      <Button variant={"secondary"} size={"sm"}>
+                        {t("Upgrade to latest version")}
+                      </Button>
+                    )}
                 </div>
               )}
             </RenderProperty>
