@@ -303,6 +303,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
           <></>
         )}
         <UpgradePipelineFromTemplateDialog
+          pipeline={pipeline}
           open={isUpgradeFromTemplateDialogOpen}
           onClose={() => setUpgradeFromTemplateDialogOpen(false)}
         />
