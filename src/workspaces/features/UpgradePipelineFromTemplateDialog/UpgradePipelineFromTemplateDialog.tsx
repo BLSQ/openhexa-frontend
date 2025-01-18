@@ -8,6 +8,8 @@ import {
   UpgradePipelineFromTemplateDialog_PipelineFragment,
   useGetAvailableUpgradePipelineTemplateVersionsQuery,
 } from "./UpgradePipelineFromTemplateDialog.generated";
+import MarkdownViewer from "core/components/MarkdownViewer";
+import Block from "core/components/Block";
 
 type UpgradePipelineFromTemplateDialogProps = {
   pipeline: UpgradePipelineFromTemplateDialog_PipelineFragment;
@@ -15,7 +17,6 @@ type UpgradePipelineFromTemplateDialogProps = {
   onClose: () => void;
 };
 
-// TODO : beautiful layout
 // TODO : on confirm call the upgrade endpoint
 
 const UpgradePipelineFromTemplateDialog = ({
@@ -35,23 +36,30 @@ const UpgradePipelineFromTemplateDialog = ({
   );
 
   if (!open) return null;
+
+  const loader = (
+    <div className="inline-flex items-center">
+      <Spinner size="xs" className="mr-2" />
+      {t("Loading...")}
+    </div>
+  );
+
   return (
-    <Dialog open={open} onClose={onClose} className={"w-300"}>
+    <Dialog open={open} onClose={onClose}>
       <Dialog.Title>{t("Upgrade to latest version")}</Dialog.Title>
       <Dialog.Content className={"w-300"}>
-        {loading ? (
-          <div className="inline-flex items-center">
-            <Spinner size="xs" className="mr-2" />
-            {t("Loading...")}
-          </div>
-        ) : (
-          data?.availableUpgradePipelineTemplateVersions.map((version) => (
-            <p key={version.id}>
-              {version.versionNumber}
-              {version.changelog}
-            </p>
-          ))
-        )}
+        {loading
+          ? loader
+          : data?.availableUpgradePipelineTemplateVersions
+              .filter((version) => version.changelog)
+              .map((version) => (
+                <Block key={version.id} className={"my-2"}>
+                  <Block.Header>Version {version.versionNumber}</Block.Header>
+                  <Block.Content>
+                    <MarkdownViewer>{version.changelog || ""}</MarkdownViewer>
+                  </Block.Content>
+                </Block>
+              ))}
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>
