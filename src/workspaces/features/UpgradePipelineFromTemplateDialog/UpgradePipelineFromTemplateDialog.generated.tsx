@@ -8,7 +8,7 @@ export type GetAvailableUpgradePipelineTemplateVersionsQueryVariables = Types.Ex
 }>;
 
 
-export type GetAvailableUpgradePipelineTemplateVersionsQuery = { __typename?: 'Query', availableUpgradePipelineTemplateVersions: Array<{ __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number, changelog?: string | null }> };
+export type GetAvailableUpgradePipelineTemplateVersionsQuery = { __typename?: 'Query', availableUpgradePipelineTemplateVersions: Array<{ __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number, changelog?: string | null, createdAt: any }> };
 
 export type UpgradePipelineFromTemplateDialog_PipelineFragment = { __typename?: 'Pipeline', id: string };
 
@@ -23,6 +23,7 @@ export const GetAvailableUpgradePipelineTemplateVersionsDocument = gql`
     id
     versionNumber
     changelog
+    createdAt
   }
 }
     `;

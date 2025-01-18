@@ -10,6 +10,7 @@ import {
 } from "./UpgradePipelineFromTemplateDialog.generated";
 import MarkdownViewer from "core/components/MarkdownViewer";
 import Block from "core/components/Block";
+import Time from "core/components/Time";
 
 type UpgradePipelineFromTemplateDialogProps = {
   pipeline: UpgradePipelineFromTemplateDialog_PipelineFragment;
@@ -46,20 +47,33 @@ const UpgradePipelineFromTemplateDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <Dialog.Title>{t("Upgrade to latest version")}</Dialog.Title>
+      <Dialog.Title>{t("Upgrade to latest template version")}</Dialog.Title>
       <Dialog.Content className={"w-300"}>
         {loading
           ? loader
-          : data?.availableUpgradePipelineTemplateVersions
-              .filter((version) => version.changelog)
-              .map((version) => (
-                <Block key={version.id} className={"my-2"}>
-                  <Block.Header>Version {version.versionNumber}</Block.Header>
-                  <Block.Content>
-                    <MarkdownViewer>{version.changelog || ""}</MarkdownViewer>
+          : data?.availableUpgradePipelineTemplateVersions.map((version) => (
+              <Block
+                key={version.id}
+                className="mb-2 border rounded-md shadow-sm"
+              >
+                <Block.Header className="flex justify-start">
+                  <div className="font-bold text-lg">
+                    {t("Version")} {version.versionNumber}
+                  </div>
+                  <div className="text-gray-500 ml-1 mt-1 text-sm">
+                    ({t("published")}{" "}
+                    <Time relative datetime={version.createdAt} />)
+                  </div>
+                </Block.Header>
+                {version.changelog && (
+                  <Block.Content className="text-sm">
+                    <MarkdownViewer sm={true}>
+                      {version.changelog}
+                    </MarkdownViewer>
                   </Block.Content>
-                </Block>
-              ))}
+                )}
+              </Block>
+            ))}
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>
@@ -80,6 +94,7 @@ const GET_AVAILABLE_TEMPLATE_VERSIONS = gql`
       id
       versionNumber
       changelog
+      createdAt
     }
   }
 `;
