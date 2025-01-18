@@ -17,7 +17,6 @@ type UpgradePipelineFromTemplateDialogProps = {
 
 // TODO : beautiful layout
 // TODO : on confirm call the upgrade endpoint
-// TODO : log time
 
 const UpgradePipelineFromTemplateDialog = ({
   pipeline: { id: pipelineId },
@@ -35,11 +34,12 @@ const UpgradePipelineFromTemplateDialog = ({
     },
   );
 
+  if (!open) return null;
   return (
     <Dialog open={open} onClose={onClose} className={"w-300"}>
-      <Dialog.Title>Upgrade</Dialog.Title>
+      <Dialog.Title>{t("Upgrade to latest version")}</Dialog.Title>
       <Dialog.Content className={"w-300"}>
-        {!loading ? (
+        {loading ? (
           <div className="inline-flex items-center">
             <Spinner size="xs" className="mr-2" />
             {t("Loading...")}
@@ -57,8 +57,8 @@ const UpgradePipelineFromTemplateDialog = ({
         <Button variant="white" onClick={onClose}>
           {t("Cancel")}
         </Button>
-        <Button disabled={!loading} type={"submit"}>
-          {!loading && <Spinner size="xs" className="mr-1" />}
+        <Button disabled={loading} type={"submit"}>
+          {loading && <Spinner size="xs" className="mr-1" />}
           {t("Upgrade")}
         </Button>
       </Dialog.Actions>
