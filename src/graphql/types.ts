@@ -2170,6 +2170,8 @@ export type Mutation = {
   updateUser: UpdateUserResult;
   updateWorkspace: UpdateWorkspaceResult;
   updateWorkspaceMember: UpdateWorkspaceMemberResult;
+  /**  Upgrades a pipeline version using the latest template version. */
+  upgradePipelineVersionFromTemplate: UpgradePipelineVersionFromTemplateResult;
   /** Uploads a pipeline. */
   uploadPipeline: UploadPipelineResult;
   /** Verifies a device for two-factor authentication. */
@@ -2629,6 +2631,11 @@ export type MutationUpdateWorkspaceArgs = {
 
 export type MutationUpdateWorkspaceMemberArgs = {
   input: UpdateWorkspaceMemberInput;
+};
+
+
+export type MutationUpgradePipelineVersionFromTemplateArgs = {
+  input: UpgradePipelineVersionFromTemplateInput;
 };
 
 
@@ -4095,6 +4102,26 @@ export type UpdateWorkspaceResult = {
   errors: Array<UpdateWorkspaceError>;
   success: Scalars['Boolean']['output'];
   workspace?: Maybe<Workspace>;
+};
+
+/**  Enum representing the possible errors that can occur when upgrading a pipeline version from the latest template version.  */
+export enum UpgradePipelineVersionFromTemplateError {
+  NoNewTemplateVersionAvailable = 'NO_NEW_TEMPLATE_VERSION_AVAILABLE',
+  PipelineNotFound = 'PIPELINE_NOT_FOUND',
+  PipelineNotFromTemplate = 'PIPELINE_NOT_FROM_TEMPLATE'
+}
+
+/**  Represents the input for upgrading a pipeline version from the latest template version.  */
+export type UpgradePipelineVersionFromTemplateInput = {
+  pipelineId: Scalars['UUID']['input'];
+};
+
+/**  Represents the result of upgrading a pipeline version from the latest template version.  */
+export type UpgradePipelineVersionFromTemplateResult = {
+  __typename?: 'UpgradePipelineVersionFromTemplateResult';
+  errors: Array<UpgradePipelineVersionFromTemplateError>;
+  pipelineVersion?: Maybe<PipelineVersion>;
+  success: Scalars['Boolean']['output'];
 };
 
 /** Represents the input for uploading a pipeline. */

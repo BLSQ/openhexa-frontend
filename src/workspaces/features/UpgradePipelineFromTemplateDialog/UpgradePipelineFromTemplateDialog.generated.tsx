@@ -10,11 +10,12 @@ export type GetAvailableUpgradePipelineTemplateVersionsQueryVariables = Types.Ex
 
 export type GetAvailableUpgradePipelineTemplateVersionsQuery = { __typename?: 'Query', availableUpgradePipelineTemplateVersions: Array<{ __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number, changelog?: string | null, createdAt: any }> };
 
-export type UpgradePipelineFromTemplateDialog_PipelineFragment = { __typename?: 'Pipeline', id: string };
+export type UpgradePipelineFromTemplateDialog_PipelineFragment = { __typename?: 'Pipeline', id: string, code: string };
 
 export const UpgradePipelineFromTemplateDialog_PipelineFragmentDoc = gql`
     fragment UpgradePipelineFromTemplateDialog_pipeline on Pipeline {
   id
+  code
 }
     `;
 export const GetAvailableUpgradePipelineTemplateVersionsDocument = gql`

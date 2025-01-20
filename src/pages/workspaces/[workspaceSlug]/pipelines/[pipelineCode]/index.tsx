@@ -30,6 +30,7 @@ import {
 } from "workspaces/helpers/pipelines";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
 import UpgradePipelineFromTemplateDialog from "workspaces/features/UpgradePipelineFromTemplateDialog";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type Props = {
   pipelineCode: string;
@@ -49,12 +50,13 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
   const [isWebhookFeatureEnabled] = useFeature("pipeline_webhook");
   const [isPipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
 
-  const { data } = useWorkspacePipelinePageQuery({
+  const { data, refetch } = useWorkspacePipelinePageQuery({
     variables: {
       workspaceSlug,
       pipelineCode,
     },
   });
+  const clearCache = useCacheKey(["pipelines"], refetch);
 
   if (!data?.workspace || !data?.pipeline) {
     return null;
@@ -306,6 +308,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
           pipeline={pipeline}
           open={isUpgradeFromTemplateDialogOpen}
           onClose={() => setUpgradeFromTemplateDialogOpen(false)}
+          onSuccess={clearCache}
         />
       </PipelineLayout>
     </Page>

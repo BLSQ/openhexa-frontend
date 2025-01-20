@@ -1362,6 +1362,25 @@ type DeletePipelineRecipientResult {
   errors: [PipelineRecipientError!]!
 }
 
+""" Represents the input for upgrading a pipeline version from the latest template version. """
+input UpgradePipelineVersionFromTemplateInput {
+  pipelineId: UUID!
+}
+
+""" Represents the result of upgrading a pipeline version from the latest template version. """
+type UpgradePipelineVersionFromTemplateResult {
+  success: Boolean!
+  errors: [UpgradePipelineVersionFromTemplateError!]!
+  pipelineVersion: PipelineVersion
+}
+
+""" Enum representing the possible errors that can occur when upgrading a pipeline version from the latest template version. """
+enum UpgradePipelineVersionFromTemplateError {
+  PIPELINE_NOT_FOUND
+  PIPELINE_NOT_FROM_TEMPLATE
+  NO_NEW_TEMPLATE_VERSION_AVAILABLE
+}
+
 """Represents the result of deleting a pipeline."""
 type DeletePipelineResult {
   success: Boolean!
@@ -2072,6 +2091,9 @@ type Mutation {
 
   """Deletes a pipeline recipient."""
   deletePipelineRecipient(input: DeletePipelineRecipientInput!): DeletePipelineRecipientResult!
+
+  """ Upgrades a pipeline version using the latest template version."""
+  upgradePipelineVersionFromTemplate(input: UpgradePipelineVersionFromTemplateInput!): UpgradePipelineVersionFromTemplateResult!
 
   """Creates a new pipeline template version."""
   createPipelineTemplateVersion(input: CreatePipelineTemplateVersionInput!): CreatePipelineTemplateVersionResult!

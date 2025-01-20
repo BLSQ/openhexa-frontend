@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Button from "core/components/Button";
-import React from "react";
+import React, { useState } from "react";
 import Dialog from "core/components/Dialog";
 import Spinner from "core/components/Spinner";
 import { gql } from "@apollo/client";
@@ -11,21 +11,24 @@ import {
 import MarkdownViewer from "core/components/MarkdownViewer";
 import Block from "core/components/Block";
 import Time from "core/components/Time";
+import { useUpgradePipelineVersionFromTemplateMutation } from "../../graphql/mutations.generated";
+import { toast } from "react-toastify";
 
 type UpgradePipelineFromTemplateDialogProps = {
   pipeline: UpgradePipelineFromTemplateDialog_PipelineFragment;
   open: boolean;
   onClose: () => void;
+  onSuccess: () => void;
 };
 
-// TODO : on confirm call the upgrade endpoint
-
 const UpgradePipelineFromTemplateDialog = ({
-  pipeline: { id: pipelineId },
+  pipeline: { id: pipelineId, code },
   open,
   onClose,
+  onSuccess,
 }: UpgradePipelineFromTemplateDialogProps) => {
   const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data, loading } = useGetAvailableUpgradePipelineTemplateVersionsQuery(
     {
@@ -36,7 +39,31 @@ const UpgradePipelineFromTemplateDialog = ({
     },
   );
 
+  const [upgradePipeline] = useUpgradePipelineVersionFromTemplateMutation();
+
   if (!open) return null;
+
+  const onSubmit = async () => {
+    setIsSubmitting(true);
+    const { data } = await upgradePipeline({
+      variables: {
+        input: {
+          pipelineId,
+        },
+      },
+    });
+    if (!data?.upgradePipelineVersionFromTemplate) {
+      toast.error(t("Unknown error upgrading pipeline"));
+    }
+    if (data?.upgradePipelineVersionFromTemplate.success) {
+      onSuccess();
+      toast.success(t("Pipeline upgraded successfully"));
+      onClose();
+    } else {
+      toast.error(t("Error upgrading pipeline"));
+    }
+    setIsSubmitting(false);
+  };
 
   const loader = (
     <div className="inline-flex items-center">
@@ -79,8 +106,12 @@ const UpgradePipelineFromTemplateDialog = ({
         <Button variant="white" onClick={onClose}>
           {t("Cancel")}
         </Button>
-        <Button disabled={loading} type={"submit"}>
-          {loading && <Spinner size="xs" className="mr-1" />}
+        <Button
+          disabled={loading || isSubmitting}
+          type={"submit"}
+          onClick={onSubmit}
+        >
+          {isSubmitting && <Spinner size="xs" className="mr-1" />}
           {t("Upgrade")}
         </Button>
       </Dialog.Actions>
@@ -103,6 +134,7 @@ UpgradePipelineFromTemplateDialog.fragments = {
   pipeline: gql`
     fragment UpgradePipelineFromTemplateDialog_pipeline on Pipeline {
       id
+      code
     }
   `,
 };

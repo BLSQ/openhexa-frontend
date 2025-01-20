@@ -88,6 +88,13 @@ export type DeletePipelineMutationVariables = Types.Exact<{
 
 export type DeletePipelineMutation = { __typename?: 'Mutation', deletePipeline: { __typename?: 'DeletePipelineResult', success: boolean, errors: Array<Types.PipelineError> } };
 
+export type UpgradePipelineVersionFromTemplateMutationVariables = Types.Exact<{
+  input: Types.UpgradePipelineVersionFromTemplateInput;
+}>;
+
+
+export type UpgradePipelineVersionFromTemplateMutation = { __typename?: 'Mutation', upgradePipelineVersionFromTemplate: { __typename?: 'UpgradePipelineVersionFromTemplateResult', success: boolean, errors: Array<Types.UpgradePipelineVersionFromTemplateError> } };
+
 export type StopPipelineMutationVariables = Types.Exact<{
   input: Types.StopPipelineInput;
 }>;
@@ -591,6 +598,40 @@ export function useDeletePipelineMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeletePipelineMutationHookResult = ReturnType<typeof useDeletePipelineMutation>;
 export type DeletePipelineMutationResult = Apollo.MutationResult<DeletePipelineMutation>;
 export type DeletePipelineMutationOptions = Apollo.BaseMutationOptions<DeletePipelineMutation, DeletePipelineMutationVariables>;
+export const UpgradePipelineVersionFromTemplateDocument = gql`
+    mutation upgradePipelineVersionFromTemplate($input: UpgradePipelineVersionFromTemplateInput!) {
+  upgradePipelineVersionFromTemplate(input: $input) {
+    success
+    errors
+  }
+}
+    `;
+export type UpgradePipelineVersionFromTemplateMutationFn = Apollo.MutationFunction<UpgradePipelineVersionFromTemplateMutation, UpgradePipelineVersionFromTemplateMutationVariables>;
+
+/**
+ * __useUpgradePipelineVersionFromTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpgradePipelineVersionFromTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpgradePipelineVersionFromTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [upgradePipelineVersionFromTemplateMutation, { data, loading, error }] = useUpgradePipelineVersionFromTemplateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpgradePipelineVersionFromTemplateMutation(baseOptions?: Apollo.MutationHookOptions<UpgradePipelineVersionFromTemplateMutation, UpgradePipelineVersionFromTemplateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpgradePipelineVersionFromTemplateMutation, UpgradePipelineVersionFromTemplateMutationVariables>(UpgradePipelineVersionFromTemplateDocument, options);
+      }
+export type UpgradePipelineVersionFromTemplateMutationHookResult = ReturnType<typeof useUpgradePipelineVersionFromTemplateMutation>;
+export type UpgradePipelineVersionFromTemplateMutationResult = Apollo.MutationResult<UpgradePipelineVersionFromTemplateMutation>;
+export type UpgradePipelineVersionFromTemplateMutationOptions = Apollo.BaseMutationOptions<UpgradePipelineVersionFromTemplateMutation, UpgradePipelineVersionFromTemplateMutationVariables>;
 export const StopPipelineDocument = gql`
     mutation stopPipeline($input: StopPipelineInput!) {
   stopPipeline(input: $input) {
