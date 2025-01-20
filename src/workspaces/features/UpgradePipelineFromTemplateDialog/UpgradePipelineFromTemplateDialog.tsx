@@ -22,7 +22,7 @@ type UpgradePipelineFromTemplateDialogProps = {
 };
 
 const UpgradePipelineFromTemplateDialog = ({
-  pipeline: { id: pipelineId, code },
+  pipeline: { id: pipelineId },
   open,
   onClose,
   onSuccess,
