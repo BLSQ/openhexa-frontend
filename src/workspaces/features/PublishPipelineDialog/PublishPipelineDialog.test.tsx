@@ -128,6 +128,7 @@ describe("PublishPipelineDialog", () => {
             code: "",
             description: "",
             config: undefined,
+            changelog: "",
             workspaceSlug: "workspace-slug",
             pipelineId: "pipeline-id",
             pipelineVersionId: "version-id",
