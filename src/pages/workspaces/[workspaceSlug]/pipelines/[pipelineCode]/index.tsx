@@ -156,7 +156,9 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
                       workspace.slug,
                     )}/pipelines/${encodeURIComponent(pipeline.code)}/versions`}
                   >
-                    {property.displayValue.versionName}
+                    {property.displayValue
+                      ? property.displayValue.versionName
+                      : t("No version yet")}
                   </Link>
                 </div>
               )}
