@@ -86,13 +86,21 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
               </Trans>
             </span>
           </div>
-          {version.isLatestVersion && (
-            <div>
+          <div>
+            {version.isLatestVersion && (
               <Badge className="ml-2 text-gray-500 text-sm ring-gray-300">
                 {t("Latest version")}
               </Badge>
-            </div>
-          )}
+            )}
+            {version.templateVersion && (
+              <Badge className="ml-2 text-gray-500 text-sm ring-gray-300">
+                {t("Source of template {{template}} (v{{version}})", {
+                  template: version.templateVersion.template.name,
+                  version: version.templateVersion.versionNumber,
+                })}
+              </Badge>
+            )}
+          </div>
         </Block.Header>
         <DataCard.FormSection
           title={t("Details")}
@@ -209,6 +217,14 @@ PipelineVersionCard.fragments = {
       pipeline {
         id
         code
+      }
+      templateVersion {
+        id
+        versionNumber
+        template {
+          id
+          name
+        }
       }
       ...DownloadPipelineVersion_version
       ...DeletePipelineVersionTrigger_version
