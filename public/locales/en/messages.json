@@ -393,6 +393,8 @@
   "Sign out": "Sign out",
   "Size": "Size",
   "someone": "someone",
+  "Source of template": "Source of template",
+  "Source of template {{template}} (v{{version}})": "Source of template {{template}} (v{{version}})",
   "Source Template": "Source Template",
   "Source workspace": "Source workspace",
   "Standard pipeline": "Standard pipeline",
