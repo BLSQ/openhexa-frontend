@@ -24,6 +24,7 @@ import {
   UpdatePipelineVersionMutation,
   UpdatePipelineVersionMutationVariables,
 } from "./PipelineVersionCard.generated";
+import useFeature from "identity/hooks/useFeature";
 
 type PipelineVersionCardProps = {
   version: PipelineVersionCard_VersionFragment;
@@ -33,6 +34,7 @@ type PipelineVersionCardProps = {
 const PipelineVersionCard = (props: PipelineVersionCardProps) => {
   const { t } = useTranslation();
   const { version } = props;
+  const [isPipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
   const [updateVersion] = useMutation<
     UpdatePipelineVersionMutation,
     UpdatePipelineVersionMutationVariables
@@ -92,7 +94,7 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
                 {t("Latest version")}
               </Badge>
             )}
-            {version.templateVersion && (
+            {isPipelineTemplateFeatureEnabled && version.templateVersion && (
               <Badge className="ml-2 text-gray-500 text-sm ring-gray-300">
                 {t("Source of template {{template}} (v{{version}})", {
                   template: version.templateVersion.template.name,
