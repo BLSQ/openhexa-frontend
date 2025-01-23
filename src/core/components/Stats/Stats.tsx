@@ -1,5 +1,5 @@
 import { useTranslation } from "next-i18next";
-import React, { ReactElement, useTransition } from "react";
+import React, { ReactElement } from "react";
 import Block from "../Block";
 import Link from "../Link";
 

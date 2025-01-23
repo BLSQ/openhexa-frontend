@@ -1,5 +1,3 @@
-import { QuestionMarkCircleIcon } from "@heroicons/react/20/solid";
-
 const Comments = () => {
   const user = {
     name: "Whitney Francis",
