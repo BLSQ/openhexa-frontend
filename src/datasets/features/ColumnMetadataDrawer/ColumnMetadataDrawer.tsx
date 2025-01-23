@@ -246,7 +246,7 @@ export default function ColumnMetadataDrawer({
                 </Button>
               </Title>
               {form.formData.attributes!.length > 0 ? (
-                <div className="rounded overflow-hidden">
+                <div className="rounded-sm overflow-hidden">
                   <Table>
                     <thead>
                       <tr className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ">
