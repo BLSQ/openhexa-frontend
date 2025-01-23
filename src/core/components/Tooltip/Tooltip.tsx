@@ -4,6 +4,7 @@ import React, { LegacyRef, ReactElement, ReactNode } from "react";
 import { Config, usePopperTooltip } from "react-popper-tooltip";
 
 import styles from "./Tooltip.module.css";
+import clsx from "clsx";
 
 type Props = {
   label: ReactNode;
@@ -49,7 +50,10 @@ const Tooltip = (props: Props) => {
             <div
               ref={setTooltipRef}
               {...getTooltipProps({
-                className: styles["tooltip"],
+                className: clsx(
+                  "z-50 flex max-w-sm flex-col rounded-sm border bg-white px-2.5 py-1.5 text-xs text-gray-600 shadow-md",
+                  styles["tooltip"],
+                ),
               })}
             >
               <div {...getArrowProps({ className: styles["arrow"] })} />

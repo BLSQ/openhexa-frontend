@@ -1,37 +1,37 @@
-.tooltip {
-  @apply z-50 flex max-w-sm flex-col rounded border bg-white px-2.5 py-1.5 text-xs text-gray-600 shadow-md;
-}
-
 .tooltip[data-popper-interactive="false"] {
-  @apply pointer-events-none;
+  pointer-events: none;
 }
 
 .arrow,
 .arrow::before {
-  @apply absolute h-2 w-2 bg-inherit;
+  position: absolute;
+  height: 0.5rem;
+  width: 0.5rem;
+  background-color: inherit;
 }
 
 .arrow {
-  @apply invisible;
+  visibility: hidden;
 }
 
 .arrow::before {
   content: "";
-  @apply visible rotate-45;
+  visibility: visible;
+  transform: rotate(45deg);
 }
 
 .tooltip[data-popper-placement^="top"] > .arrow {
-  @apply -bottom-1;
+  bottom: 0.25rem;
 }
 
 .tooltip[data-popper-placement^="bottom"] > .arrow {
-  @apply -top-1;
+  top: 0.25rem;
 }
 
 .tooltip[data-popper-placement^="left"] > .arrow {
-  @apply -right-1;
+  right: 0.25rem;
 }
 
 .tooltip[data-popper-placement^="right"] > .arrow {
-  @apply -left-1;
+  left: 0.25rem;
 }
