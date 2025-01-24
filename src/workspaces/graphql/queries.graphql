@@ -92,7 +92,12 @@ query WorkspacePipelinePage($workspaceSlug: String!, $pipelineCode: String!) {
       id
       name
     }
-    newTemplateVersionAvailable
+    newTemplateVersions {
+      id
+      changelog
+      versionNumber
+      createdAt
+    }
     currentVersion {
       id
       versionName

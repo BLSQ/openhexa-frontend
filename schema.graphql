@@ -2305,7 +2305,7 @@ type Pipeline {
   notebookPath: String
   template: PipelineTemplate
   sourceTemplate: PipelineTemplate
-  newTemplateVersionAvailable: Boolean!
+  newTemplateVersions: [PipelineTemplateVersion!]
 }
 
 enum PipelineError {
@@ -2718,9 +2718,6 @@ type Query {
 
   """Search pipeline templates."""
   pipelineTemplates(page: Int = 1, perPage: Int = 15, search: String): PipelineTemplatePage!
-
-  """Retrieves template versions available for upgrades for a pipeline."""
-  availableUpgradePipelineTemplateVersions(pipelineId: UUID!): [PipelineTemplateVersion!]!
 }
 
 """

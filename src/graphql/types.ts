@@ -2758,7 +2758,7 @@ export type Pipeline = {
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
-  newTemplateVersionAvailable: Scalars['Boolean']['output'];
+  newTemplateVersions?: Maybe<Array<PipelineTemplateVersion>>;
   notebookPath?: Maybe<Scalars['String']['output']>;
   permissions: PipelinePermissions;
   recipients: Array<PipelineRecipient>;
@@ -3153,8 +3153,6 @@ export type Query = {
   accessmodFilesets: AccessmodFilesetPage;
   accessmodProject?: Maybe<AccessmodProject>;
   accessmodProjects: AccessmodProjectPage;
-  /** Retrieves template versions available for upgrades for a pipeline. */
-  availableUpgradePipelineTemplateVersions: Array<PipelineTemplateVersion>;
   boundaries: Array<WhoBoundary>;
   /** Retrieves the configuration of the system. */
   config: Config;
@@ -3255,11 +3253,6 @@ export type QueryAccessmodProjectsArgs = {
   perPage?: InputMaybe<Scalars['Int']['input']>;
   teams?: InputMaybe<Array<Scalars['String']['input']>>;
   term?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryAvailableUpgradePipelineTemplateVersionsArgs = {
-  pipelineId: Scalars['UUID']['input'];
 };
 
 
