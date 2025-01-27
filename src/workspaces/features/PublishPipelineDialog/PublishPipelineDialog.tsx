@@ -127,10 +127,10 @@ const PublishPipelineDialog = ({
     : t("Create a new Template");
 
   return (
-    <Dialog open={open} onClose={onClose} className={"w-300"}>
+    <Dialog open={open} onClose={onClose} className={"w-140"}>
       <form onSubmit={form.handleSubmit}>
         <Dialog.Title>{actionMessage}</Dialog.Title>
-        <Dialog.Content className={"w-300"}>
+        <Dialog.Content>
           {templateAlreadyExists ? (
             <Field name="changelog" label={t("Changelog")}>
               <Textarea
