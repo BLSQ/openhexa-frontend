@@ -18,14 +18,14 @@ const CountryBadge = (props: CountryBadgeProps) => {
       className={clsx(
         "relative flex items-center gap-1",
         "border ring-gray-300 bg-gray-50",
-        "hover-bg-opacity-70",
+        "hover:bg-opacity-70",
         className,
         onClick && "cursor-pointer",
       )}
     >
       <Flag
         code={country.code}
-        className="absolute w-4 h-3 flex-shrink rounded-sm"
+        className="absolute w-4 h-3 shrink rounded-xs"
       />
       <span className="ml-5 max-w-[20ch] truncate">{country.name}</span>
     </Badge>
