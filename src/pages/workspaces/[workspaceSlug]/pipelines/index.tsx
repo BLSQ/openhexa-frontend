@@ -18,7 +18,8 @@ import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import { useState } from "react";
 import CreatePipelineDialog from "workspaces/features/CreatePipelineDialog/CreatePipelineDialog";
 import Tabs from "core/components/Tabs";
-import PipelineTemplateTable from "../../../../workspaces/features/PipelineTemplatesTable/PipelineTemplateTable";
+import PipelineTemplateTable from "workspaces/features/PipelineTemplatesTable/PipelineTemplateTable";
+import useFeature from "identity/hooks/useFeature";
 
 type Props = {
   page: number;
@@ -30,7 +31,8 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const { page, perPage, workspaceSlug } = props;
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [tabIndex, setTabIndex] = useState<number | null>(0);
+  const [, setTabIndex] = useState<number | null>(0);
+  const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
 
   const router = useRouter();
   const { data } = useWorkspacePipelinesPageQuery({
@@ -132,12 +134,14 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
                 </>
               )}
             </Tabs.Tab>
-            <Tabs.Tab
-              label={t("Available Templates")}
-              className={"space-y-2 pt-2"}
-            >
-              <PipelineTemplateTable workspace={workspace} />
-            </Tabs.Tab>
+            {pipelineTemplateFeatureEnabled && (
+              <Tabs.Tab
+                label={t("Available Templates")}
+                className={"space-y-2 pt-2"}
+              >
+                <PipelineTemplateTable workspace={workspace} />
+              </Tabs.Tab>
+            )}
           </Tabs>
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
