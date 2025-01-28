@@ -68,7 +68,6 @@ const MarkdownEditor = ({
           styles.editor,
         )}
         plugins={[
-          markdownShortcutPlugin(),
           toolbarPlugin({
             toolbarClassName: styles.toolbar,
             toolbarContents: () => (
@@ -129,6 +128,7 @@ const MarkdownEditor = ({
           thematicBreakPlugin(),
           linkPlugin(),
           linkDialogPlugin(),
+          markdownShortcutPlugin(),
         ]}
         {...delegated}
       />
