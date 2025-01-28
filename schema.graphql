@@ -2730,7 +2730,7 @@ type Query {
 
   """Retrieves a pipeline run by ID."""
   pipelineRun(id: UUID!): PipelineRun
-  pipelineTemplates(page: Int = 1, perPage: Int = 15, search: String): PipelineTemplatePage!
+  pipelineTemplates(page: Int = 1, perPage: Int = 15, search: String, workspaceSlug: String): PipelineTemplatePage!
   workspace(slug: String!): Workspace
   workspaces(query: String, page: Int, perPage: Int): WorkspacePage!
   pendingWorkspaceInvitations(page: Int! = 1, perPage: Int = 10): WorkspaceInvitationPage!

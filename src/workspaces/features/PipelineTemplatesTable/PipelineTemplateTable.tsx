@@ -32,20 +32,32 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
     useCreatePipelineFromTemplateVersionMutation();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const options = [
-    { id: 1, label: "All templates" },
-    { id: 2, label: "From this workspace" },
+  const workspaceFilterOptions = [
+    { id: 1, label: "All templates", workspaceSlug: "" },
+    { id: 2, label: "From this workspace", workspaceSlug: workspace.slug },
   ];
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  const [workspaceFilter, setWorkspaceFilter] = useState(
+    workspaceFilterOptions[0],
+  );
 
   const { data, error, fetchMore } = useGetPipelineTemplatesQuery({
-    variables: { page: 1, perPage, search: debouncedSearchQuery },
+    variables: {
+      page: 1,
+      perPage,
+      search: debouncedSearchQuery,
+      workspaceSlug: workspaceFilter.workspaceSlug,
+    },
     fetchPolicy: "cache-and-network", // The template list is a global list across the instance, so we want to check the network for updates and show the cached data in the meantime
   });
 
   const fetchMoreData = (newPage: number = 1) =>
     fetchMore({
-      variables: { page: newPage, perPage, search: searchQuery },
+      variables: {
+        page: newPage,
+        perPage,
+        search: searchQuery,
+        workspaceSlug: workspaceFilter.workspaceSlug,
+      },
       updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
     });
 
@@ -114,9 +126,9 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           className="shadow-xs border-gray-50 w-96"
         />
         <Listbox
-          value={selectedOption}
-          onChange={setSelectedOption}
-          options={options}
+          value={workspaceFilter}
+          onChange={setWorkspaceFilter}
+          options={workspaceFilterOptions}
           by="id"
           getOptionLabel={(option) => option.label}
           className={"min-w-72"}
@@ -143,14 +155,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
             label={t("Created At")}
           />
           <BaseColumn id="actions" className={"text-right"}>
-            {({
-              currentVersion: {
-                template: {
-                  sourcePipeline: { name },
-                },
-                id,
-              },
-            }) => (
+            {({ currentVersion: { id } }) => (
               <div className={"space-x-1"}>
                 <Button
                   variant="primary"
@@ -178,8 +183,18 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
 };
 
 const GET_PIPELINE_TEMPLATES = gql`
-  query GetPipelineTemplates($page: Int!, $perPage: Int!, $search: String) {
-    pipelineTemplates(page: $page, perPage: $perPage, search: $search) {
+  query GetPipelineTemplates(
+    $page: Int!
+    $perPage: Int!
+    $search: String
+    $workspaceSlug: String
+  ) {
+    pipelineTemplates(
+      page: $page
+      perPage: $perPage
+      search: $search
+      workspaceSlug: $workspaceSlug
+    ) {
       pageNumber
       totalPages
       totalItems

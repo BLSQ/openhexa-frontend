@@ -7,6 +7,7 @@ export type GetPipelineTemplatesQueryVariables = Types.Exact<{
   page: Types.Scalars['Int']['input'];
   perPage: Types.Scalars['Int']['input'];
   search?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  workspaceSlug?: Types.InputMaybe<Types.Scalars['String']['input']>;
 }>;
 
 
@@ -20,8 +21,13 @@ export const PipelineTemplateTable_WorkspaceFragmentDoc = gql`
 }
     `;
 export const GetPipelineTemplatesDocument = gql`
-    query GetPipelineTemplates($page: Int!, $perPage: Int!, $search: String) {
-  pipelineTemplates(page: $page, perPage: $perPage, search: $search) {
+    query GetPipelineTemplates($page: Int!, $perPage: Int!, $search: String, $workspaceSlug: String) {
+  pipelineTemplates(
+    page: $page
+    perPage: $perPage
+    search: $search
+    workspaceSlug: $workspaceSlug
+  ) {
     pageNumber
     totalPages
     totalItems
@@ -58,6 +64,7 @@ export const GetPipelineTemplatesDocument = gql`
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
  *      search: // value for 'search'
+ *      workspaceSlug: // value for 'workspaceSlug'
  *   },
  * });
  */
