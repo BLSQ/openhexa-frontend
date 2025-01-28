@@ -1525,6 +1525,18 @@ export type DeletePipelineResult = {
   success: Scalars['Boolean']['output'];
 };
 
+/** Represents the input for deleting a pipeline template. */
+export type DeletePipelineTemplateInput = {
+  id: Scalars['UUID']['input'];
+};
+
+/** Represents the result of deleting a pipeline. */
+export type DeletePipelineTemplateResult = {
+  __typename?: 'DeletePipelineTemplateResult';
+  errors: Array<PipelineTemplateError>;
+  success: Scalars['Boolean']['output'];
+};
+
 export enum DeletePipelineVersionError {
   PermissionDenied = 'PERMISSION_DENIED',
   PipelineNotFound = 'PIPELINE_NOT_FOUND',
@@ -2136,6 +2148,7 @@ export type Mutation = {
   deletePipeline: DeletePipelineResult;
   /** Deletes a pipeline recipient. */
   deletePipelineRecipient: DeletePipelineRecipientResult;
+  deletePipelineTemplate: DeletePipelineTemplateResult;
   /** Deletes a pipeline version. */
   deletePipelineVersion: DeletePipelineVersionResult;
   deleteTeam: DeleteTeamResult;
@@ -2403,6 +2416,11 @@ export type MutationDeletePipelineArgs = {
 
 export type MutationDeletePipelineRecipientArgs = {
   input: DeletePipelineRecipientInput;
+};
+
+
+export type MutationDeletePipelineTemplateArgs = {
+  input?: InputMaybe<DeletePipelineTemplateInput>;
 };
 
 
@@ -2985,6 +3003,11 @@ export type PipelineTemplate = {
   sourcePipeline?: Maybe<Pipeline>;
   versions?: Maybe<Array<PipelineTemplateVersion>>;
 };
+
+export enum PipelineTemplateError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  PipelineTemplateNotFound = 'PIPELINE_TEMPLATE_NOT_FOUND'
+}
 
 /** Represents paged result of fetching pipeline templates. */
 export type PipelineTemplatePage = {

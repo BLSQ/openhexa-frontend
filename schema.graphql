@@ -725,6 +725,26 @@ enum CreatePipelineFromTemplateVersionError {
 }
 
 """
+Represents the input for deleting a pipeline template.
+"""
+input DeletePipelineTemplateInput {
+  id: UUID!
+}
+
+"""
+Represents the result of deleting a pipeline.
+"""
+type DeletePipelineTemplateResult {
+  success: Boolean!
+  errors: [PipelineTemplateError!]!
+}
+
+enum PipelineTemplateError {
+  PIPELINE_TEMPLATE_NOT_FOUND
+  PERMISSION_DENIED
+}
+
+"""
 Represents the input for creating a new pipeline from a template version.
 """
 input CreatePipelineFromTemplateVersionInput {
@@ -2129,6 +2149,7 @@ type Mutation {
   """Creates a new pipeline template version."""
   createPipelineTemplateVersion(input: CreatePipelineTemplateVersionInput!): CreatePipelineTemplateVersionResult!
   createPipelineFromTemplateVersion(input: CreatePipelineFromTemplateVersionInput!): CreatePipelineFromTemplateVersionResult!
+  deletePipelineTemplate(input: DeletePipelineTemplateInput): DeletePipelineTemplateResult! @loginRequired
   createWorkspace(input: CreateWorkspaceInput!): CreateWorkspaceResult!
   updateWorkspace(input: UpdateWorkspaceInput!): UpdateWorkspaceResult!
   deleteWorkspace(input: DeleteWorkspaceInput!): DeleteWorkspaceResult!
