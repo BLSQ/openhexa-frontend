@@ -1,19 +1,13 @@
 import {
   Dialog as BaseDialog,
   DialogTitle as BaseDialogTitle,
-  Transition,
-  TransitionChild,
+  DialogBackdrop,
+  DialogPanel,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import useEventListener from "core/hooks/useEventListener";
-import {
-  FormEventHandler,
-  Fragment,
-  ReactElement,
-  ReactNode,
-  useRef,
-} from "react";
+import { FormEventHandler, ReactElement, ReactNode, useRef } from "react";
 
 type DialogProps = {
   open: boolean;
@@ -22,10 +16,10 @@ type DialogProps = {
   padding?: string;
   children: ReactElement | ReactElement[] | ReactNode[] | ReactNode;
   onSubmit?: FormEventHandler;
-  closeOnOutsideClick?: boolean;
   closeOnEsc?: boolean;
   className?: string;
   maxWidth?: string;
+  persistent?: boolean;
 };
 
 const DialogTitle = (props: { children: ReactNode; onClose?: () => void }) => {
@@ -104,69 +98,41 @@ function Dialog(props: DialogProps) {
   const ContentElement = onSubmit ? "form" : "div";
 
   return (
-    <Transition show={open} as={Fragment}>
-      <BaseDialog
-        ref={dialogRef}
-        className="fixed inset-0 z-20"
-        onClose={onClose}
-      >
-        <TransitionChild
-          as="div"
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+    <BaseDialog
+      ref={dialogRef}
+      className="fixed inset-0 z-20"
+      open={open}
+      onClose={onClose}
+    >
+      <DialogBackdrop
+        transition
+        className="fixed inset-0 bg-black/30 duration-300 backdrop-blur-xs ease-out data-[closed]:opacity-0"
+      />
+      <div className="h-screen px-4 pb-20 pt-4 text-center sm:block sm:p-0">
+        <DialogPanel
+          transition
           className={clsx(
-            "fixed inset-0 -z-10 bg-gray-800/50 backdrop-blur-xs transition-opacity",
-            !closeOnOutsideClick && "pointer-events-none", // Let's prevent mouse events to be triggered to ensure the dialog stay open.
+            "duration-300 transform ease-out data-[closed]:scale-95 data-[closed]:opacity-0",
+            "my-8 inline-block px-2 sm:w-full sm:px-4 tall:my-20 max-h-full",
+            maxWidth ?? "max-w-lg",
+            centered && "sm:align-middle",
           )}
-        />
-        <div className="h-screen px-4 pb-20 pt-4 text-center sm:block sm:p-0">
-          {/* This element is to trick the browser into centering the modal contents. */}
-          <span
+        >
+          <ContentElement
+            onSubmit={onSubmit}
             className={clsx(
-              "hidden sm:inline-block sm:h-screen",
-              centered && "sm:align-middle",
+              "rounded-lg bg-white text-left text-gray-600 shadow-2xl",
+              padding ?? "px-4 py-5 tall:p-6",
+              "flex flex-col",
+              className,
             )}
-            aria-hidden="true"
+            style={{ maxHeight: "calc(100vh - 5rem)" }}
           >
-            &#8203;
-          </span>
-          <TransitionChild
-            as={Fragment}
-            enter="transition-all transform ease-out duration-300"
-            enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            enterTo="opacity-100 translate-y-0 sm:scale-100"
-            leave="transition-all transform ease-in duration-200"
-            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-            leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          >
-            <div
-              className={clsx(
-                "my-8 inline-block transform px-2 transition-all sm:w-full sm:px-4 tall:my-20 max-h-full",
-                maxWidth ?? "max-w-lg",
-                centered && "sm:align-middle",
-              )}
-            >
-              <ContentElement
-                onSubmit={onSubmit}
-                className={clsx(
-                  "rounded-lg bg-white text-left text-gray-600 shadow-2xl",
-                  padding ?? "px-4 py-5 tall:p-6",
-                  "flex flex-col",
-                  className,
-                )}
-                style={{ maxHeight: "calc(100vh - 5rem)" }}
-              >
-                {children}
-              </ContentElement>
-            </div>
-          </TransitionChild>
-        </div>
-      </BaseDialog>
-    </Transition>
+            {children}
+          </ContentElement>
+        </DialogPanel>
+      </div>
+    </BaseDialog>
   );
 }
 
