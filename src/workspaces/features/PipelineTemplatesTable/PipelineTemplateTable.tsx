@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import router from "next/router";
 import { CreatePipelineFromTemplateVersionError } from "graphql/types";
 import SearchInput from "core/features/SearchInput";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -110,7 +111,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
         onChange={(event) => setSearchQuery(event.target.value ?? "")}
         className="my-5 shadow-xs border-gray-50 w-96"
       />
-      <Block className="divide divide-y divide-gray-100 mt-10 max-w-4xl">
+      <Block className="divide divide-y divide-gray-100 mt-4 max-w-4xl">
         <DataGrid
           data={items}
           defaultPageSize={perPage}
@@ -120,6 +121,9 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
         >
           <BaseColumn id="name" label={t("Name")}>
             {(value) => <span>{value.name}</span>}
+          </BaseColumn>
+          <BaseColumn id="description" label={t("Description")}>
+            {(value) => <span>{value.description}</span>}
           </BaseColumn>
           <BaseColumn id="version" label={t("Version")}>
             {({ currentVersion: { versionNumber } }) => (
@@ -139,15 +143,24 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
                 id,
               },
             }) => (
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={createPipeline(id)}
-              >
-                {t("Create pipeline {{pipelineName}}", {
-                  pipelineName: name,
-                })}
-              </Button>
+              <div className={"space-x-1"}>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={createPipeline(id)}
+                  leadingIcon={<PlusIcon className="h-4 w-4" />}
+                >
+                  {t("Create pipeline")}
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={createPipeline(id)}
+                  leadingIcon={<TrashIcon className="h-4 w-4" />}
+                >
+                  {t("Delete")}
+                </Button>
+              </div>
             )}
           </BaseColumn>
         </DataGrid>
@@ -165,6 +178,7 @@ const GET_PIPELINE_TEMPLATES = gql`
       items {
         id
         name
+        description
         currentVersion {
           id
           versionNumber
