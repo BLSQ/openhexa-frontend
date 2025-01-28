@@ -110,7 +110,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
         onChange={(event) => setSearchQuery(event.target.value ?? "")}
         className="my-5 shadow-xs border-gray-50 w-96"
       />
-      <Block className="divide divide-y divide-gray-100 mt-10">
+      <Block className="divide divide-y divide-gray-100 mt-10 max-w-4xl">
         <DataGrid
           data={items}
           defaultPageSize={perPage}
@@ -130,7 +130,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
             accessor={"currentVersion.createdAt"}
             label={t("Created At")}
           />
-          <BaseColumn id="actions">
+          <BaseColumn id="actions" className={"text-right"}>
             {({
               currentVersion: {
                 template: {
