@@ -3,7 +3,6 @@ import Button from "core/components/Button";
 import { useTranslation } from "next-i18next";
 import React, { useRef, useState } from "react";
 import DateColumn from "core/components/DataGrid/DateColumn";
-import Spinner from "core/components/Spinner";
 import Block from "core/components/Block";
 import { gql } from "@apollo/client";
 import useCacheKey from "core/hooks/useCacheKey";
@@ -18,6 +17,7 @@ import { CreatePipelineFromTemplateVersionError } from "graphql/types";
 import SearchInput from "core/features/SearchInput";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Listbox from "core/components/Listbox";
+import useDebounce from "core/hooks/useDebounce";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -31,14 +31,15 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const [createPipelineFromTemplateVersion] =
     useCreatePipelineFromTemplateVersionMutation();
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const options = [
     { id: 1, label: "All templates" },
     { id: 2, label: "From this workspace" },
   ];
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
-  const { data, loading, error, fetchMore } = useGetPipelineTemplatesQuery({
-    variables: { page: 1, perPage },
+  const { data, error, fetchMore } = useGetPipelineTemplatesQuery({
+    variables: { page: 1, perPage, search: debouncedSearchQuery },
     fetchPolicy: "cache-and-network", // The template list is a global list across the instance, so we want to check the network for updates and show the cached data in the meantime
   });
 
@@ -49,14 +50,11 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
     });
 
   if (error) return <p>{t("Error loading templates")}</p>;
-  if (!data || loading)
-    return (
-      <div className="flex items-center justify-center h-64 pt-8">
-        <Spinner size={"xl"} />
-      </div>
-    );
 
-  const { items, totalItems } = data.pipelineTemplates;
+  const { items, totalItems } = data?.pipelineTemplates ?? {
+    items: [],
+    totalItems: 0,
+  };
 
   const createPipeline = (pipelineTemplateVersionId: string) => () => {
     createPipelineFromTemplateVersion({
@@ -110,10 +108,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
       <div className={"my-5 flex justify-between"}>
         <SearchInput
           ref={searchInputRef}
-          onSubmit={(event) => {
-            event.preventDefault();
-            fetchMoreData();
-          }}
+          onSubmit={(event) => event.preventDefault()}
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value ?? "")}
           className="shadow-xs border-gray-50 w-96"
