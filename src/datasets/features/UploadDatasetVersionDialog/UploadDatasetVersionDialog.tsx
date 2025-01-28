@@ -126,7 +126,7 @@ from openhexa.sdk import workspace
 dataset = workspace.get_dataset("${datasetLink.dataset.slug}")
 
 # Create a new version
-version = dataset.create_version("v2")
+version = dataset.create_version("v2", changelog="This is a changelog in markdown")
 
 # Upload a single file
 version.add_file("/path/to/file.csv")`}
