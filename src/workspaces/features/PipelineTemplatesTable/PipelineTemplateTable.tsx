@@ -133,9 +133,6 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           <BaseColumn id="name" label={t("Name")}>
             {(value) => <span>{value.name}</span>}
           </BaseColumn>
-          <BaseColumn id="description" label={t("Description")}>
-            {(value) => <span>{value.description}</span>}
-          </BaseColumn>
           <BaseColumn id="version" label={t("Version")}>
             {({ currentVersion: { versionNumber } }) => (
               <span>{`v${versionNumber}`}</span>
@@ -189,7 +186,6 @@ const GET_PIPELINE_TEMPLATES = gql`
       items {
         id
         name
-        description
         currentVersion {
           id
           versionNumber
