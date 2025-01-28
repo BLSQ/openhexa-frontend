@@ -77,7 +77,6 @@ function Dialog(props: DialogProps) {
     children,
     centered = true,
     padding,
-    closeOnOutsideClick = true,
     closeOnEsc = true,
     className,
     maxWidth,
