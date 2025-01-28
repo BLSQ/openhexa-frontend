@@ -17,6 +17,7 @@ import router from "next/router";
 import { CreatePipelineFromTemplateVersionError } from "graphql/types";
 import SearchInput from "core/features/SearchInput";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import Listbox from "core/components/Listbox";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -30,6 +31,11 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const [createPipelineFromTemplateVersion] =
     useCreatePipelineFromTemplateVersionMutation();
   const [searchQuery, setSearchQuery] = useState("");
+  const options = [
+    { id: 1, label: "All templates" },
+    { id: 2, label: "From this workspace" },
+  ];
+  const [selectedOption, setSelectedOption] = useState(options[0]);
 
   const { data, loading, error, fetchMore } = useGetPipelineTemplatesQuery({
     variables: { page: 1, perPage },
@@ -100,18 +106,28 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   };
 
   return (
-    <>
-      <SearchInput
-        ref={searchInputRef}
-        onSubmit={(event) => {
-          event.preventDefault();
-          fetchMoreData();
-        }}
-        value={searchQuery}
-        onChange={(event) => setSearchQuery(event.target.value ?? "")}
-        className="my-5 shadow-xs border-gray-50 w-96"
-      />
-      <Block className="divide divide-y divide-gray-100 mt-4 max-w-4xl">
+    <div className={"max-w-4xl"}>
+      <div className={"my-5 flex justify-between"}>
+        <SearchInput
+          ref={searchInputRef}
+          onSubmit={(event) => {
+            event.preventDefault();
+            fetchMoreData();
+          }}
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value ?? "")}
+          className="shadow-xs border-gray-50 w-96"
+        />
+        <Listbox
+          value={selectedOption}
+          onChange={setSelectedOption}
+          options={options}
+          by="id"
+          getOptionLabel={(option) => option.label}
+          className={"min-w-72"}
+        />
+      </div>
+      <Block className="divide divide-y divide-gray-100 mt-4">
         <DataGrid
           data={items}
           defaultPageSize={perPage}
@@ -165,7 +181,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           </BaseColumn>
         </DataGrid>
       </Block>
-    </>
+    </div>
   );
 };
 
