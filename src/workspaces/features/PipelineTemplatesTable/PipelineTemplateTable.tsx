@@ -13,11 +13,15 @@ import {
 } from "./PipelineTemplateTable.generated";
 import { toast } from "react-toastify";
 import router from "next/router";
-import { CreatePipelineFromTemplateVersionError } from "graphql/types";
+import {
+  CreatePipelineFromTemplateVersionError,
+  PipelineTemplateError,
+} from "graphql/types";
 import SearchInput from "core/features/SearchInput";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Listbox from "core/components/Listbox";
 import useDebounce from "core/hooks/useDebounce";
+import { useDeletePipelineTemplateMutation } from "../../graphql/mutations.generated";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -28,6 +32,8 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const perPage = 1;
   const clearCache = useCacheKey(["pipelines"]);
+  const clearTemplateCache = useCacheKey(["templates"]);
+
   const [createPipelineFromTemplateVersion] =
     useCreatePipelineFromTemplateVersionMutation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,7 +46,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
     workspaceFilterOptions[0],
   );
 
-  const { data, error, fetchMore } = useGetPipelineTemplatesQuery({
+  const { data, error, fetchMore, refetch } = useGetPipelineTemplatesQuery({
     variables: {
       page: 1,
       perPage,
@@ -49,6 +55,8 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
     },
     fetchPolicy: "cache-and-network", // The template list is a global list across the instance, so we want to check the network for updates and show the cached data in the meantime
   });
+
+  useCacheKey("templates", () => refetch());
 
   const fetchMoreData = (newPage: number = 1) =>
     fetchMore({
@@ -60,6 +68,8 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
       },
       updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
     });
+
+  const [deletePipelineTemplate] = useDeletePipelineTemplateMutation();
 
   if (error) return <p>{t("Error loading templates")}</p>;
 
@@ -115,6 +125,32 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
       });
   };
 
+  const deleteTemplate = (templateId: string) => async () => {
+    const { data } = await deletePipelineTemplate({
+      variables: {
+        input: {
+          id: templateId,
+        },
+      },
+    });
+
+    if (!data?.deletePipelineTemplate) {
+      throw new Error("Unknown error.");
+    }
+
+    if (data.deletePipelineTemplate.success) {
+      clearTemplateCache();
+      toast.success(t("Successfully deleted pipeline template"));
+    }
+    if (
+      data.deletePipelineTemplate.errors.includes(
+        PipelineTemplateError.PermissionDenied,
+      )
+    ) {
+      toast.error(t("You are not allowed to delete this template."));
+    }
+  };
+
   return (
     <div className={"max-w-4xl"}>
       <div className={"my-5 flex justify-between"}>
@@ -155,12 +191,12 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
             label={t("Created At")}
           />
           <BaseColumn id="actions" className={"text-right"}>
-            {({ currentVersion: { id } }) => (
+            {({ id: templatedId, currentVersion: { id: pipelineId } }) => (
               <div className={"space-x-1"}>
                 <Button
                   variant="primary"
                   size="sm"
-                  onClick={createPipeline(id)}
+                  onClick={createPipeline(pipelineId)}
                   leadingIcon={<PlusIcon className="h-4 w-4" />}
                 >
                   {t("Create pipeline")}
@@ -168,7 +204,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
                 <Button
                   variant="danger"
                   size="sm"
-                  onClick={createPipeline(id)}
+                  onClick={deleteTemplate(templatedId)}
                   leadingIcon={<TrashIcon className="h-4 w-4" />}
                 >
                   {t("Delete")}
