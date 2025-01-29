@@ -29,7 +29,7 @@ import {
   updatePipeline,
 } from "workspaces/helpers/pipelines";
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
-import UpgradePipelineFromTemplateDialog from "workspaces/features/UpgradePipelineFromTemplateDialog";
+import UpgradePipelineFromTemplateDialog from "pipelines/features/UpgradePipelineFromTemplateDialog";
 import useCacheKey from "core/hooks/useCacheKey";
 import { isEmpty } from "lodash";
 
