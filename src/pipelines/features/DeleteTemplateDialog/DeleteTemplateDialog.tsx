@@ -5,16 +5,22 @@ import Dialog from "core/components/Dialog";
 import { toast } from "react-toastify";
 import { useDeletePipelineTemplateMutation } from "workspaces/graphql/mutations.generated";
 import useCacheKey from "core/hooks/useCacheKey";
+import { gql } from "@apollo/client";
+import { PipelineTemplateDialog_PipelineTemplateFragment } from "./DeleteTemplateDialog.generated";
 
 type DeleteTemplateDialogProps = {
   open: boolean;
-  templateId: string;
+  pipelineTemplate: PipelineTemplateDialog_PipelineTemplateFragment;
   onClose: () => void;
 };
 
 const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
   const { t } = useTranslation();
-  const { open, templateId, onClose } = props;
+  const {
+    open,
+    pipelineTemplate: { id, name },
+    onClose,
+  } = props;
 
   const clearTemplateCache = useCacheKey(["templates"]);
 
@@ -24,7 +30,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
     const { data } = await deletePipelineTemplate({
       variables: {
         input: {
-          id: templateId,
+          id,
         },
       },
     });
@@ -35,14 +41,16 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
 
     if (data.deletePipelineTemplate.success) {
       clearTemplateCache();
-      toast.success(t("Successfully deleted pipeline template"));
+      toast.success(t("Successfully deleted template {{ name }}", { name }));
     }
     if (
       data.deletePipelineTemplate.errors.includes(
         PipelineTemplateError.PermissionDenied,
       )
     ) {
-      toast.error(t("You are not allowed to delete this template."));
+      toast.error(
+        t("You are not allowed to delete the template {{ name }}", { name }),
+      );
     }
   };
 
@@ -51,7 +59,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
       <Dialog.Title>{t("Delete template")}</Dialog.Title>
       <Dialog.Content className="space-y-4">
         <p>
-          <Trans>Are you sure you want to delete this template ?</Trans>
+          <Trans>Are you sure you want to delete the template {name}</Trans>
         </p>
       </Dialog.Content>
       <Dialog.Actions>
@@ -68,6 +76,15 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
       </Dialog.Actions>
     </Dialog>
   );
+};
+
+DeleteTemplateDialog.fragment = {
+  pipelineTemplate: gql`
+    fragment PipelineTemplateDialog_pipelineTemplate on PipelineTemplate {
+      id
+      name
+    }
+  `,
 };
 
 export default DeleteTemplateDialog;

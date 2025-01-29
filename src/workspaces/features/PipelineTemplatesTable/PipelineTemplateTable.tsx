@@ -19,7 +19,7 @@ import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Listbox from "core/components/Listbox";
 import useDebounce from "core/hooks/useDebounce";
 import DeleteTemplateDialog from "pipelines/features/DeleteTemplateDialog";
-import { isEmpty } from "lodash";
+import { PipelineTemplateDialog_PipelineTemplateFragment } from "pipelines/features/DeleteTemplateDialog/DeleteTemplateDialog.generated";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -28,7 +28,8 @@ type PipelineTemplatesTableProps = {
 const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const { t } = useTranslation();
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [templateIdToDelete, setTemplateToDelete] = useState("");
+  const [templateToDelete, setTemplateToDelete] =
+    useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
   const perPage = 1;
   const clearCache = useCacheKey(["pipelines"]);
 
@@ -161,42 +162,46 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
             label={t("Created At")}
           />
           <BaseColumn id="actions" className={"text-right"}>
-            {({
-              id: templatedId,
-              canDelete,
-              currentVersion: { id: pipelineId },
-            }) => (
-              <div className={"space-x-1"}>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={createPipeline(pipelineId)}
-                  leadingIcon={<PlusIcon className="h-4 w-4" />}
-                >
-                  {t("Create pipeline")}
-                </Button>
-                {canDelete && (
-                  <>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => setTemplateToDelete(templatedId)}
-                      leadingIcon={<TrashIcon className="h-4 w-4" />}
-                    >
-                      {t("Delete")}
-                    </Button>
-                  </>
-                )}
-              </div>
-            )}
+            {(template) => {
+              const {
+                canDelete,
+                currentVersion: { id: pipelineId },
+              } = template;
+              return (
+                <div className={"space-x-1"}>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={createPipeline(pipelineId)}
+                    leadingIcon={<PlusIcon className="h-4 w-4" />}
+                  >
+                    {t("Create pipeline")}
+                  </Button>
+                  {canDelete && (
+                    <>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => setTemplateToDelete(template)}
+                        leadingIcon={<TrashIcon className="h-4 w-4" />}
+                      >
+                        {t("Delete")}
+                      </Button>
+                    </>
+                  )}
+                </div>
+              );
+            }}
           </BaseColumn>
         </DataGrid>
       </Block>
-      <DeleteTemplateDialog
-        open={!isEmpty(templateIdToDelete)}
-        templateId={templateIdToDelete}
-        onClose={() => setTemplateToDelete("")}
-      />
+      {templateToDelete && (
+        <DeleteTemplateDialog
+          open={true}
+          pipelineTemplate={templateToDelete}
+          onClose={() => setTemplateToDelete(null)}
+        />
+      )}
     </div>
   );
 };
