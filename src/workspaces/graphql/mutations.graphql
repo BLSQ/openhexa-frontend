@@ -128,15 +128,6 @@ mutation deletePipeline($input: DeletePipelineInput!) {
   }
 }
 
-mutation upgradePipelineVersionFromTemplate(
-  $input: UpgradePipelineVersionFromTemplateInput!
-) {
-  upgradePipelineVersionFromTemplate(input: $input) {
-    success
-    errors
-  }
-}
-
 mutation stopPipeline($input: StopPipelineInput!) {
   stopPipeline(input: $input) {
     success

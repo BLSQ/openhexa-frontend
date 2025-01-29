@@ -7,9 +7,9 @@ import { gql } from "@apollo/client";
 import MarkdownViewer from "core/components/MarkdownViewer";
 import Block from "core/components/Block";
 import Time from "core/components/Time";
-import { useUpgradePipelineVersionFromTemplateMutation } from "../../../workspaces/graphql/mutations.generated";
 import { toast } from "react-toastify";
 import { UpgradePipelineFromTemplateDialog_PipelineFragment } from "./UpgradePipelineFromTemplateDialog.generated";
+import { useUpgradePipelineVersionFromTemplateMutation } from "../../graphql/mutations.generated";
 
 type UpgradePipelineFromTemplateDialogProps = {
   pipeline: UpgradePipelineFromTemplateDialog_PipelineFragment;
