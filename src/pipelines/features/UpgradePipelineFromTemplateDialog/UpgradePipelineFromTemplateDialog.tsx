@@ -5,7 +5,6 @@ import Dialog from "core/components/Dialog";
 import Spinner from "core/components/Spinner";
 import { gql } from "@apollo/client";
 import MarkdownViewer from "core/components/MarkdownViewer";
-import Block from "core/components/Block";
 import Time from "core/components/Time";
 import { toast } from "react-toastify";
 import { UpgradePipelineFromTemplateDialog_PipelineFragment } from "./UpgradePipelineFromTemplateDialog.generated";
@@ -56,10 +55,13 @@ const UpgradePipelineFromTemplateDialog = ({
   return (
     <Dialog open={open} onClose={onClose}>
       <Dialog.Title>{t("Upgrade to latest template version")}</Dialog.Title>
-      <Dialog.Content className={"w-300"}>
+      <Dialog.Content>
         {newTemplateVersions?.map((version) => (
-          <Block key={version.id} className="mb-2 border rounded-md shadow-sm">
-            <Block.Header className="flex justify-start">
+          <div
+            key={version.id}
+            className="mb-2 border rounded-md shadow-sm p-4"
+          >
+            <div className="flex justify-start">
               <div className="font-bold text-lg">
                 {t("Version")} {version.versionNumber}
               </div>
@@ -67,13 +69,13 @@ const UpgradePipelineFromTemplateDialog = ({
                 ({t("published")} <Time relative datetime={version.createdAt} />
                 )
               </div>
-            </Block.Header>
+            </div>
             {version.changelog && (
-              <Block.Content className="text-sm">
+              <div className="text-sm">
                 <MarkdownViewer sm={true}>{version.changelog}</MarkdownViewer>
-              </Block.Content>
+              </div>
             )}
-          </Block>
+          </div>
         ))}
       </Dialog.Content>
       <Dialog.Actions>
