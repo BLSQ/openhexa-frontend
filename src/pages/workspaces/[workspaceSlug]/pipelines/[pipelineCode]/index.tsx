@@ -31,7 +31,6 @@ import {
 import PipelineLayout from "workspaces/layouts/PipelineLayout";
 import UpgradePipelineFromTemplateDialog from "pipelines/features/UpgradePipelineFromTemplateDialog";
 import useCacheKey from "core/hooks/useCacheKey";
-import { isEmpty } from "lodash";
 
 type Props = {
   pipelineCode: string;
@@ -175,7 +174,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
               {(sourceTemplateName) => (
                 <div className="flex items-center gap-2">
                   <p>{sourceTemplateName.displayValue}</p>
-                  {!isEmpty(pipeline?.newTemplateVersions) &&
+                  {pipeline.hasNewTemplateVersions &&
                     pipeline.permissions.createVersion && (
                       <Button
                         variant={"secondary"}

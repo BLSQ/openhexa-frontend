@@ -92,6 +92,7 @@ query WorkspacePipelinePage($workspaceSlug: String!, $pipelineCode: String!) {
       id
       name
     }
+    hasNewTemplateVersions
     newTemplateVersions {
       id
       changelog

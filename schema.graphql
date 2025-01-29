@@ -2337,6 +2337,7 @@ type Pipeline {
   notebookPath: String
   template: PipelineTemplate
   sourceTemplate: PipelineTemplate
+  hasNewTemplateVersions: Boolean!
   newTemplateVersions: [PipelineTemplateVersion!]
 }
 

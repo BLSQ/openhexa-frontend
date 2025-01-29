@@ -2809,6 +2809,7 @@ export type Pipeline = {
   createdAt: Scalars['DateTime']['output'];
   currentVersion?: Maybe<PipelineVersion>;
   description?: Maybe<Scalars['String']['output']>;
+  hasNewTemplateVersions: Scalars['Boolean']['output'];
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   newTemplateVersions?: Maybe<Array<PipelineTemplateVersion>>;
