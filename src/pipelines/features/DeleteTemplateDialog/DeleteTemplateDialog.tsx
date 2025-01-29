@@ -68,7 +68,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
         </Button>
         <Button
           onClick={() => {
-            deleteTemplate().then((r) => onClose());
+            deleteTemplate().then(() => onClose());
           }}
         >
           {t("Delete")}
