@@ -191,7 +191,11 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
             label={t("Created At")}
           />
           <BaseColumn id="actions" className={"text-right"}>
-            {({ id: templatedId, currentVersion: { id: pipelineId } }) => (
+            {({
+              id: templatedId,
+              canDelete,
+              currentVersion: { id: pipelineId },
+            }) => (
               <div className={"space-x-1"}>
                 <Button
                   variant="primary"
@@ -201,14 +205,16 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
                 >
                   {t("Create pipeline")}
                 </Button>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={deleteTemplate(templatedId)}
-                  leadingIcon={<TrashIcon className="h-4 w-4" />}
-                >
-                  {t("Delete")}
-                </Button>
+                {canDelete && (
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={deleteTemplate(templatedId)}
+                    leadingIcon={<TrashIcon className="h-4 w-4" />}
+                  >
+                    {t("Delete")}
+                  </Button>
+                )}
               </div>
             )}
           </BaseColumn>
@@ -237,6 +243,7 @@ const GET_PIPELINE_TEMPLATES = gql`
       items {
         id
         name
+        canDelete
         currentVersion {
           id
           versionNumber

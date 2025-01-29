@@ -2994,6 +2994,7 @@ export enum PipelineRunTrigger {
 /** Represents a pipeline template. */
 export type PipelineTemplate = {
   __typename?: 'PipelineTemplate';
+  canDelete?: Maybe<Scalars['Boolean']['output']>;
   code: Scalars['String']['output'];
   config?: Maybe<Scalars['String']['output']>;
   currentVersion?: Maybe<PipelineTemplateVersion>;

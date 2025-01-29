@@ -2506,6 +2506,7 @@ type PipelineTemplate {
   versions: [PipelineTemplateVersion!]
   currentVersion: PipelineTemplateVersion
   sourcePipeline: Pipeline
+  canDelete: Boolean
 }
 
 """Represents paged result of fetching pipeline templates."""
