@@ -59,7 +59,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
       <Dialog.Title>{t("Delete template")}</Dialog.Title>
       <Dialog.Content className="space-y-4">
         <p>
-          <Trans>Are you sure you want to delete the template {name}</Trans>
+          <Trans>Are you sure you want to delete the template {name} ?</Trans>
         </p>
       </Dialog.Content>
       <Dialog.Actions>
