@@ -13,15 +13,13 @@ import {
 } from "./PipelineTemplateTable.generated";
 import { toast } from "react-toastify";
 import router from "next/router";
-import {
-  CreatePipelineFromTemplateVersionError,
-  PipelineTemplateError,
-} from "graphql/types";
+import { CreatePipelineFromTemplateVersionError } from "graphql/types";
 import SearchInput from "core/features/SearchInput";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Listbox from "core/components/Listbox";
 import useDebounce from "core/hooks/useDebounce";
-import { useDeletePipelineTemplateMutation } from "../../graphql/mutations.generated";
+import DeleteTemplateDialog from "pipelines/features/DeleteTemplateDialog";
+import { isEmpty } from "lodash";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -30,9 +28,9 @@ type PipelineTemplatesTableProps = {
 const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const { t } = useTranslation();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [templateIdToDelete, setTemplateToDelete] = useState("");
   const perPage = 1;
   const clearCache = useCacheKey(["pipelines"]);
-  const clearTemplateCache = useCacheKey(["templates"]);
 
   const [createPipelineFromTemplateVersion] =
     useCreatePipelineFromTemplateVersionMutation();
@@ -68,8 +66,6 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
       },
       updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
     });
-
-  const [deletePipelineTemplate] = useDeletePipelineTemplateMutation();
 
   if (error) return <p>{t("Error loading templates")}</p>;
 
@@ -123,32 +119,6 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
       .catch(() => {
         toast.error(t("Failed to create pipeline"));
       });
-  };
-
-  const deleteTemplate = (templateId: string) => async () => {
-    const { data } = await deletePipelineTemplate({
-      variables: {
-        input: {
-          id: templateId,
-        },
-      },
-    });
-
-    if (!data?.deletePipelineTemplate) {
-      throw new Error("Unknown error.");
-    }
-
-    if (data.deletePipelineTemplate.success) {
-      clearTemplateCache();
-      toast.success(t("Successfully deleted pipeline template"));
-    }
-    if (
-      data.deletePipelineTemplate.errors.includes(
-        PipelineTemplateError.PermissionDenied,
-      )
-    ) {
-      toast.error(t("You are not allowed to delete this template."));
-    }
   };
 
   return (
@@ -206,20 +176,27 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
                   {t("Create pipeline")}
                 </Button>
                 {canDelete && (
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={deleteTemplate(templatedId)}
-                    leadingIcon={<TrashIcon className="h-4 w-4" />}
-                  >
-                    {t("Delete")}
-                  </Button>
+                  <>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => setTemplateToDelete(templatedId)}
+                      leadingIcon={<TrashIcon className="h-4 w-4" />}
+                    >
+                      {t("Delete")}
+                    </Button>
+                  </>
                 )}
               </div>
             )}
           </BaseColumn>
         </DataGrid>
       </Block>
+      <DeleteTemplateDialog
+        open={!isEmpty(templateIdToDelete)}
+        templateId={templateIdToDelete}
+        onClose={() => setTemplateToDelete("")}
+      />
     </div>
   );
 };
