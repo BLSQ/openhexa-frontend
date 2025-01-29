@@ -48,19 +48,23 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <Dialog.Title>{t("Delete pipeline")}</Dialog.Title>
+      <Dialog.Title>{t("Delete template")}</Dialog.Title>
       <Dialog.Content className="space-y-4">
         <p>
-          <Trans>
-            Are you sure you want to delete pipeline <b>name</b> ?
-          </Trans>
+          <Trans>Are you sure you want to delete this template ?</Trans>
         </p>
       </Dialog.Content>
       <Dialog.Actions>
         <Button variant="white" onClick={onClose}>
           {t("Cancel")}
         </Button>
-        <Button onClick={deleteTemplate}>{t("Delete")}</Button>
+        <Button
+          onClick={() => {
+            deleteTemplate().then((r) => onClose());
+          }}
+        >
+          {t("Delete")}
+        </Button>
       </Dialog.Actions>
     </Dialog>
   );
