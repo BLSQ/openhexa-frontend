@@ -9,6 +9,7 @@ import WorkspaceConnectionPicker from "../WorkspaceConnectionPicker/WorkspaceCon
 import { isConnectionParameter } from "workspaces/helpers/pipelines";
 import DatasetPicker from "datasets/features/DatasetPicker";
 import { ensureArray } from "core/helpers/array";
+import GenericConnectionWidget from "./GenericConnectionWidget";
 
 type ParameterFieldProps = {
   parameter: any;
@@ -45,6 +46,16 @@ const ParameterField = (props: ParameterFieldProps) => {
   }
 
   if (isConnectionParameter(parameter.type)) {
+    console.log(parameter.type);
+    if (parameter.type === "dhis2")
+      return (
+        <GenericConnectionWidget
+          parameter={parameter}
+          value={value}
+          onChange={handleChange}
+          workspaceSlug="workspaceSlug"
+        />
+      );
     return (
       <WorkspaceConnectionPicker
         workspaceSlug={workspaceSlug || ""}
@@ -155,6 +166,8 @@ ParameterField.fragments = {
       default
       required
       choices
+      connection
+      widget
       multiple
     }
   `,
