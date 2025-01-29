@@ -80,8 +80,12 @@ const UpgradePipelineFromTemplateDialog = ({
         <Button variant="white" onClick={onClose}>
           {t("Cancel")}
         </Button>
-        <Button disabled={isSubmitting} type={"submit"} onClick={onSubmit} leadingIcon={isSubmitting && <Spinner size="xs" />}>
-          {isSubmitting && <Spinner size="xs" className="mr-1" />}
+        <Button
+          disabled={isSubmitting}
+          type={"submit"}
+          onClick={onSubmit}
+          leadingIcon={isSubmitting ? <Spinner size="xs" /> : undefined}
+        >
           {t("Upgrade")}
         </Button>
       </Dialog.Actions>
