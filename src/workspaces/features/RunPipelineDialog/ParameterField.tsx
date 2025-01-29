@@ -14,13 +14,14 @@ import GenericConnectionWidget from "./GenericConnectionWidget";
 type ParameterFieldProps = {
   parameter: any;
   value: any;
+  form: any;
   onChange(value: any): void;
   workspaceSlug?: string;
 };
 
 const ParameterField = (props: ParameterFieldProps) => {
   const { t } = useTranslation();
-  const { parameter, value, onChange, workspaceSlug } = props;
+  const { parameter, value, form, onChange, workspaceSlug } = props;
 
   const handleChange = useCallback(
     (value: any) => {
@@ -44,18 +45,20 @@ const ParameterField = (props: ParameterFieldProps) => {
       />
     );
   }
-
+  if (parameter.widget !== null && form !== undefined) {
+    console.log("Found a widget", parameter.widget);
+    return (
+      <GenericConnectionWidget
+        parameter={parameter}
+        form={form}
+        value={value}
+        onChange={handleChange}
+        workspaceSlug={workspaceSlug || ""}
+      />
+    );
+  }
   if (isConnectionParameter(parameter.type)) {
     console.log(parameter.type);
-    if (parameter.type === "dhis2")
-      return (
-        <GenericConnectionWidget
-          parameter={parameter}
-          value={value}
-          onChange={handleChange}
-          workspaceSlug="workspaceSlug"
-        />
-      );
     return (
       <WorkspaceConnectionPicker
         workspaceSlug={workspaceSlug || ""}

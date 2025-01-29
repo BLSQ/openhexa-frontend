@@ -264,6 +264,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                         onChange={(value: any) => {
                           form.setFieldValue(param.code, value);
                         }}
+                        form={form}
                         workspaceSlug={pipeline.workspace?.slug}
                       />
                     </Field>

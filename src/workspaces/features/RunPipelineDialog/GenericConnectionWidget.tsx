@@ -32,19 +32,26 @@ const GET_CONNECTION_METADATA = gql`
   }
 `;
 
+const widgetToQueryType: { [key: string]: string } = {
+  organisation_unit_picker: "ORGANISATION_UNIT",
+};
+
 const GenericConnectionWidget = ({
   parameter,
+  form,
   value,
   onChange,
   workspaceSlug,
 }: GenericConnectionWidgetProps) => {
+  console.log("Parameter", parameter);
+  console.log("Form", form);
   const { data, loading, error } = useQuery(GET_CONNECTION_METADATA, {
     variables: {
       workspaceSlug,
-      connectionSlug: parameter.connection.slug,
-      type: parameter.metadataType || "ORGANISATION_UNITS", // Adjust dynamically if needed
+      connectionSlug: form.formData[parameter.connection],
+      type: "ORGANISATION_UNIT",
     },
-    skip: !workspaceSlug || !parameter.connection?.slug,
+    skip: !form.formData[parameter.connection],
   });
 
   // Convert API response into Select-compatible options
@@ -53,7 +60,8 @@ const GenericConnectionWidget = ({
       console.error("Error fetching connection metadata:", error);
       return [];
     }
-
+    console.log("Data", data);
+    console.log("Error", error);
     return (
       data?.connectionBySlug?.queryMetadata?.items?.map(
         (item: { id: string; name: string }) => ({
