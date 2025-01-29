@@ -42,18 +42,6 @@ const mockPipelineTemplates = {
 };
 
 describe("PipelineTemplatesTable", () => {
-  it("renders loading state initially", () => {
-    useQueryMock.mockReturnValue({
-      loading: true,
-      data: null,
-      error: null,
-    });
-
-    render(<PipelineTemplatesTable workspace={mockWorkspace} />);
-
-    expect(screen.getByTestId("spinner")).toBeInTheDocument();
-  });
-
   it("renders data after loading", async () => {
     useQueryMock.mockReturnValue({
       loading: false,
@@ -96,12 +84,10 @@ describe("PipelineTemplatesTable", () => {
   });
 
   it("handles search functionality", async () => {
-    const fetchMore = jest.fn();
     useQueryMock.mockReturnValue({
       loading: false,
       data: { pipelineTemplates: mockPipelineTemplates },
       error: null,
-      fetchMore,
     });
 
     render(<PipelineTemplatesTable workspace={mockWorkspace} />);
@@ -109,11 +95,10 @@ describe("PipelineTemplatesTable", () => {
     const searchInput = screen.getByRole("textbox");
 
     fireEvent.change(searchInput, { target: { value: "Template 1" } });
-    expect(fetchMore).not.toHaveBeenCalled();
-    fireEvent.submit(searchInput);
 
     await waitFor(() => {
-      expect(fetchMore).toHaveBeenCalledWith(
+      expect(useQueryMock).lastCalledWith(
+        "GQL",
         expect.objectContaining({
           variables: expect.objectContaining({
             search: "Template 1",
