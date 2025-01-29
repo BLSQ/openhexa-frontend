@@ -2937,12 +2937,14 @@ export type PipelineParameter = {
   __typename?: 'PipelineParameter';
   choices?: Maybe<Array<Scalars['Generic']['output']>>;
   code: Scalars['String']['output'];
+  connection?: Maybe<Scalars['String']['output']>;
   default?: Maybe<Scalars['Generic']['output']>;
   help?: Maybe<Scalars['String']['output']>;
   multiple: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
   required: Scalars['Boolean']['output'];
   type: ParameterType;
+  widget?: Maybe<Scalars['String']['output']>;
 };
 
 /** Represents the permissions for a pipeline. */

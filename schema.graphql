@@ -2405,6 +2405,8 @@ type PipelineParameter {
   multiple: Boolean!
   required: Boolean!
   default: Generic
+  connection: String
+  widget: String
   help: String
   choices: [Generic!]
 }
