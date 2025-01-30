@@ -181,7 +181,7 @@ const WorkspacePipelinePage: NextPageWithLayout = (props: Props) => {
             <TextProperty
               id="template"
               accessor={"template.name"}
-              label={t("Source of template")}
+              label={t("Template")}
               readonly
             />
           )}

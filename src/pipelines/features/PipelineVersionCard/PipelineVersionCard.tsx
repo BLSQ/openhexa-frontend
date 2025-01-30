@@ -96,7 +96,7 @@ const PipelineVersionCard = (props: PipelineVersionCardProps) => {
             )}
             {isPipelineTemplateFeatureEnabled && version.templateVersion && (
               <Badge className="ml-2 text-gray-500 text-sm ring-gray-300">
-                {t("Source of template {{template}} (v{{version}})", {
+                {t("Template {{template}} (v{{version}})", {
                   template: version.templateVersion.template.name,
                   version: version.templateVersion.versionNumber,
                 })}
