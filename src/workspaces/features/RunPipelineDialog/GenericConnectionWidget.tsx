@@ -1,6 +1,14 @@
 import { gql, useQuery } from "@apollo/client";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import Select from "core/components/forms/Select";
+import { PipelineNotificationLevel } from "../../../graphql/types";
+import { formatNotificationLevel } from "../../helpers/recipients/utils";
+import { i18n } from "next-i18next";
+import { ensureArray } from "../../../core/helpers/array";
+import {
+  Combobox,
+  MultiCombobox,
+} from "../../../core/components/forms/Combobox";
 
 type GenericConnectionWidgetProps = {
   parameter: any;
@@ -33,14 +41,14 @@ const GET_CONNECTION_METADATA = gql`
 `;
 
 const widgetToQueryType: { [key: string]: string } = {
-  organisation_unit_picker: "ORGANISATION_UNITS",
-  organisation_unit_group_picker: "ORGANISATION_UNIT_GROUPS",
-  organisation_unit_level_picker: "ORGANISATION_UNIT_LEVELS",
-  dataset_picker: "DATASETS",
-  data_element_picker: "DATA_ELEMENTS",
-  data_element_group_picker: "DATA_ELEMENT_GROUPS",
-  indicator_picker: "INDICATORS",
-  indicator_group_picker: "INDICATOR_GROUPS",
+  organisation_units_picker: "ORGANISATION_UNITS",
+  organisation_unit_groups_picker: "ORGANISATION_UNIT_GROUPS",
+  organisation_unit_levels_picker: "ORGANISATION_UNIT_LEVELS",
+  datasets_picker: "DATASETS",
+  data_elements_picker: "DATA_ELEMENTS",
+  data_element_groups_picker: "DATA_ELEMENT_GROUPS",
+  indicators_picker: "INDICATORS",
+  indicator_groups_picker: "INDICATOR_GROUPS",
 };
 
 const GenericConnectionWidget = ({
@@ -52,11 +60,26 @@ const GenericConnectionWidget = ({
 }: GenericConnectionWidgetProps) => {
   console.log("Parameter", parameter);
   console.log("Form", form);
+  console.log("Widget", widgetToQueryType[parameter.widget]);
+
+  const handleChange = useCallback(
+    (value: any) => {
+      if (parameter.multiple && (value === null || value === undefined)) {
+        return onChange([]);
+      } else if (parameter.multiple && !parameter.choices) {
+        onChange(value.split(","));
+      } else {
+        onChange(value);
+      }
+    },
+    [onChange, parameter.multiple, parameter.choices],
+  );
+
   const { data, loading, error } = useQuery(GET_CONNECTION_METADATA, {
     variables: {
       workspaceSlug,
       connectionSlug: form.formData[parameter.connection],
-      type: "ORGANISATION_UNIT",
+      type: widgetToQueryType[parameter.widget],
     },
     skip: !form.formData[parameter.connection],
   });
@@ -76,15 +99,24 @@ const GenericConnectionWidget = ({
       ) || []
     );
   }, [data, error]);
-
+  console.log("Options", options);
+  const PickerComponent: any = parameter.multiple ? MultiCombobox : Combobox;
   return (
     <Select
-      label="Select an option"
+      value={parameter.multiple ? ensureArray(value) : value}
       loading={loading}
+      displayValue={(value) => value?.label}
+      placeholder={i18n!.t("Select notification level")}
+      onChange={handleChange}
+      required={Boolean(parameter.required)}
+      getOptionLabel={(option) => option.label}
       options={options}
-      placeholder="Select a value"
-      required
-      fullWidth
+      filterOptions={(options, query) => {
+        console.log("Query", query);
+        return options.filter((opt) =>
+          opt.label.toLowerCase().includes(query.toLowerCase()),
+        );
+      }}
     />
   );
 };
