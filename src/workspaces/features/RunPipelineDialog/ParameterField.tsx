@@ -3,7 +3,7 @@ import Switch from "core/components/Switch/Switch";
 import Input from "core/components/forms/Input/Input";
 import Select from "core/components/forms/Select";
 import Textarea from "core/components/forms/Textarea/Textarea";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "next-i18next";
 import WorkspaceConnectionPicker from "../WorkspaceConnectionPicker/WorkspaceConnectionPicker";
 import { isConnectionParameter } from "workspaces/helpers/pipelines";
@@ -22,13 +22,16 @@ type ParameterFieldProps = {
 const ParameterField = (props: ParameterFieldProps) => {
   const { t } = useTranslation();
   const { parameter, value, form, onChange, workspaceSlug } = props;
+  const [valueState, setValueState] = useState(
+    parameter.multiple ? [] : parameter.default,
+  );
 
   const handleChange = useCallback(
     (value: any) => {
       if (parameter.multiple && (value === null || value === undefined)) {
         return onChange([]);
       } else if (parameter.multiple && !parameter.choices) {
-        onChange(value.split("\n"));
+        onChange(value.split(","));
       } else {
         onChange(value);
       }
@@ -45,14 +48,22 @@ const ParameterField = (props: ParameterFieldProps) => {
       />
     );
   }
+  const appendValues = (newValue: any) => {
+    if (parameter.multiple) {
+      setValueState([...valueState, newValue]);
+    } else {
+      setValueState(newValue);
+    }
+  };
+
   if (parameter.widget !== null && form !== undefined) {
     console.log("Found a widget", parameter.widget);
     return (
       <GenericConnectionWidget
         parameter={parameter}
         form={form}
-        value={value}
-        onChange={handleChange}
+        value={valueState}
+        onChange={appendValues}
         workspaceSlug={workspaceSlug || ""}
       />
     );
