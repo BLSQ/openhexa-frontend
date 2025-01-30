@@ -33,7 +33,14 @@ const GET_CONNECTION_METADATA = gql`
 `;
 
 const widgetToQueryType: { [key: string]: string } = {
-  organisation_unit_picker: "ORGANISATION_UNIT",
+  organisation_unit_picker: "ORGANISATION_UNITS",
+  organisation_unit_group_picker: "ORGANISATION_UNIT_GROUPS",
+  organisation_unit_level_picker: "ORGANISATION_UNIT_LEVELS",
+  dataset_picker: "DATASETS",
+  data_element_picker: "DATA_ELEMENTS",
+  data_element_group_picker: "DATA_ELEMENT_GROUPS",
+  indicator_picker: "INDICATORS",
+  indicator_group_picker: "INDICATOR_GROUPS",
 };
 
 const GenericConnectionWidget = ({
@@ -60,8 +67,6 @@ const GenericConnectionWidget = ({
       console.error("Error fetching connection metadata:", error);
       return [];
     }
-    console.log("Data", data);
-    console.log("Error", error);
     return (
       data?.connectionBySlug?.queryMetadata?.items?.map(
         (item: { id: string; name: string }) => ({
