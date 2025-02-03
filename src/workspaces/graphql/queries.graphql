@@ -577,3 +577,28 @@ query CheckWorkspaceAvailability($slug: String!) {
     slug
   }
 }
+
+query WorkspaceTemplatesPage(
+  $workspaceSlug: String!
+  $page: Int
+  $perPage: Int
+) {
+  workspace(slug: $workspaceSlug) {
+    slug
+    name
+    ...WorkspaceLayout_workspace
+  }
+
+  pipelineTemplates(
+    workspaceSlug: $workspaceSlug
+    page: $page
+    perPage: $perPage
+  ) {
+    items {
+      ...TemplateCard_template
+    }
+    totalItems
+    totalPages
+    pageNumber
+  }
+}
