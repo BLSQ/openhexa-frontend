@@ -30,7 +30,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [templateToDelete, setTemplateToDelete] =
     useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
-  const perPage = 1;
+  const perPage = 5;
   const clearCache = useCacheKey(["pipelines"]);
 
   const [createPipelineFromTemplateVersion] =
