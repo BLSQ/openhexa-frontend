@@ -1550,7 +1550,7 @@ type DHIS2Connection implements Connection {
   user: User
   fields: [ConnectionField!]!
   permissions: ConnectionPermissions!
-  queryMetadata(type: String!, filter: String): DHIS2QueryResult!
+  queryMetadata(type: String!, filter: String, search: String, limit: Int, offset: Int ): DHIS2QueryResult!
 }
 
 enum DHIS2ConnectionError {
@@ -1567,9 +1567,12 @@ type DHIS2MetadataItem {
 """DHIS2 metadata query result"""
 type DHIS2QueryResult {
   items: [DHIS2MetadataItem!]
+  totalCount: Int
   success: Boolean!
   error: DHIS2ConnectionError
 }
+
+
 
 """
 The DisableTwoFactorError enum represents the possible errors that can occur during the disableTwoFactor mutation.

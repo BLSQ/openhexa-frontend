@@ -22,9 +22,7 @@ type ParameterFieldProps = {
 const ParameterField = (props: ParameterFieldProps) => {
   const { t } = useTranslation();
   const { parameter, value, form, onChange, workspaceSlug } = props;
-  const [valueState, setValueState] = useState(
-    parameter.multiple ? [] : parameter.default,
-  );
+  const [valueState, setValueState] = useState([]);
 
   const handleChange = useCallback(
     (value: any) => {
@@ -57,7 +55,6 @@ const ParameterField = (props: ParameterFieldProps) => {
   };
 
   if (parameter.widget !== null && form !== undefined) {
-    console.log("Found a widget", parameter.widget);
     return (
       <GenericConnectionWidget
         parameter={parameter}

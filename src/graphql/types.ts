@@ -1025,6 +1025,9 @@ export type Dhis2Connection = Connection & {
 /** DHIS2 connection object */
 export type Dhis2ConnectionQueryMetadataArgs = {
   filter?: InputMaybe<Scalars['String']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
   type: Scalars['String']['input'];
 };
 
@@ -1046,6 +1049,7 @@ export type Dhis2QueryResult = {
   error?: Maybe<Dhis2ConnectionError>;
   items?: Maybe<Array<Dhis2MetadataItem>>;
   success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
 };
 
 export type Database = {
