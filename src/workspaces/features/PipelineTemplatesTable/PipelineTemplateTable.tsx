@@ -164,7 +164,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           <BaseColumn id="actions" className={"text-right"}>
             {(template) => {
               const {
-                canDelete,
+                permissions: { delete: canDelete },
                 currentVersion: { id: pipelineId },
               } = template;
               return (
@@ -225,7 +225,9 @@ const GET_PIPELINE_TEMPLATES = gql`
       items {
         id
         name
-        canDelete
+        permissions {
+          delete
+        }
         currentVersion {
           id
           versionNumber

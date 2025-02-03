@@ -2994,13 +2994,13 @@ export enum PipelineRunTrigger {
 /** Represents a pipeline template. */
 export type PipelineTemplate = {
   __typename?: 'PipelineTemplate';
-  canDelete?: Maybe<Scalars['Boolean']['output']>;
   code: Scalars['String']['output'];
   config?: Maybe<Scalars['String']['output']>;
   currentVersion?: Maybe<PipelineTemplateVersion>;
   description?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
+  permissions: PipelineTemplatePermissions;
   sourcePipeline?: Maybe<Pipeline>;
   versions?: Maybe<Array<PipelineTemplateVersion>>;
 };
@@ -3022,7 +3022,7 @@ export type PipelineTemplatePage = {
 /** Represents the permissions for a pipeline template. */
 export type PipelineTemplatePermissions = {
   __typename?: 'PipelineTemplatePermissions';
-  createVersion: Scalars['Boolean']['output'];
+  delete: Scalars['Boolean']['output'];
 };
 
 /** Represents a version of a pipeline template. */

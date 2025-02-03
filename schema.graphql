@@ -2506,7 +2506,7 @@ type PipelineTemplate {
   versions: [PipelineTemplateVersion!]
   currentVersion: PipelineTemplateVersion
   sourcePipeline: Pipeline
-  canDelete: Boolean
+  permissions: PipelineTemplatePermissions!
 }
 
 """Represents paged result of fetching pipeline templates."""
@@ -2519,7 +2519,7 @@ type PipelineTemplatePage {
 
 """Represents the permissions for a pipeline template."""
 type PipelineTemplatePermissions {
-  createVersion: Boolean!
+  delete: Boolean!
 }
 
 """Represents a version of a pipeline template."""
