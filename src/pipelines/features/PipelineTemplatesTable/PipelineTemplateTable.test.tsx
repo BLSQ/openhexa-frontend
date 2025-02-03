@@ -27,6 +27,9 @@ const mockPipelineTemplates = {
     return {
       id: indexAsString,
       name: `Template ${indexAsString}`,
+      permissions: {
+        delete: true,
+      },
       currentVersion: {
         id: indexAsString,
         versionNumber: indexAsString,
