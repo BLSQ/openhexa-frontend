@@ -18,8 +18,8 @@ import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import { useState } from "react";
 import CreatePipelineDialog from "workspaces/features/CreatePipelineDialog/CreatePipelineDialog";
 import Tabs from "core/components/Tabs";
-import PipelineTemplateTable from "workspaces/features/PipelineTemplatesTable/PipelineTemplateTable";
 import useFeature from "identity/hooks/useFeature";
+import PipelineTemplateTable from "pipelines/features/PipelineTemplatesTable";
 
 type Props = {
   page: number;
