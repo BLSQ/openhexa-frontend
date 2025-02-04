@@ -2221,6 +2221,9 @@ type Mutation {
 
   """Pin or unpin a dataset for a workspace."""
   pinDataset(input: PinDatasetInput!): PinDatasetResult!
+
+  """Updates an existing template."""
+  updatePipelineTemplate(input: UpdateTemplateInput!): UpdateTemplateResult!
 }
 
 type NotebookServer {
@@ -3364,6 +3367,29 @@ input UpdatePipelineInput {
   schedule: String
   description: String
   webhookEnabled: Boolean
+}
+
+"""
+Enum representing the possible errors that can occur when updating a template.
+"""
+enum UpdateTemplateError {
+  NOT_FOUND
+  PERMISSION_DENIED
+}
+
+"""Represents the input for updating a template."""
+input UpdateTemplateInput {
+  id: UUID!
+  name: String
+  config: JSON
+  description: String
+}
+
+"""Represents the result of updating a template."""
+type UpdateTemplateResult {
+  success: Boolean!
+  errors: [UpdateTemplateError!]!
+  template: PipelineTemplate
 }
 
 """Represents the input for updating the progress of a pipeline."""

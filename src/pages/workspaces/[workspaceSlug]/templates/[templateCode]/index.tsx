@@ -10,19 +10,18 @@ import {
   WorkspaceTemplatePageQuery,
   WorkspaceTemplatePageQueryVariables,
 } from "workspaces/graphql/queries.generated";
-import { updatePipeline } from "workspaces/helpers/pipelines";
 import useCacheKey from "core/hooks/useCacheKey";
 import TemplateLayout from "workspaces/layouts/TemplateLayout";
+import { updateTemplate } from "workspaces/helpers/templates";
 
 type Props = {
   templateCode: string;
   workspaceSlug: string;
 };
 
-// TODO : update is working
 // TODO : delete is working
 // TODO : beautiful card
-// TODO : beatufil form
+// TODO : beautiful form
 
 const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   const { templateCode, workspaceSlug } = props;
@@ -43,8 +42,7 @@ const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   const { workspace, template } = data;
 
   const onSaveTemplate = async (values: any) => {
-    await updatePipeline(template.id, {
-      // TODO
+    await updateTemplate(template.id, {
       name: values.name,
       description: values.description,
     });

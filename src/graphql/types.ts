@@ -2229,6 +2229,8 @@ export type Mutation = {
   updatePipelineProgress: UpdatePipelineProgressResult;
   /** Updates a pipeline recipient. */
   updatePipelineRecipient: UpdatePipelineRecipientResult;
+  /** Updates an existing template. */
+  updatePipelineTemplate: UpdateTemplateResult;
   /** Updates a pipeline version. */
   updatePipelineVersion: UpdatePipelineVersionResult;
   updateTeam: UpdateTeamResult;
@@ -2677,6 +2679,11 @@ export type MutationUpdatePipelineProgressArgs = {
 
 export type MutationUpdatePipelineRecipientArgs = {
   input: UpdatePipelineRecipientInput;
+};
+
+
+export type MutationUpdatePipelineTemplateArgs = {
+  input: UpdateTemplateInput;
 };
 
 
@@ -4133,6 +4140,28 @@ export type UpdateTeamResult = {
   success: Scalars['Boolean']['output'];
   /** The updated team object. */
   team?: Maybe<Team>;
+};
+
+/** Enum representing the possible errors that can occur when updating a template. */
+export enum UpdateTemplateError {
+  NotFound = 'NOT_FOUND',
+  PermissionDenied = 'PERMISSION_DENIED'
+}
+
+/** Represents the input for updating a template. */
+export type UpdateTemplateInput = {
+  config?: InputMaybe<Scalars['JSON']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['UUID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Represents the result of updating a template. */
+export type UpdateTemplateResult = {
+  __typename?: 'UpdateTemplateResult';
+  errors: Array<UpdateTemplateError>;
+  success: Scalars['Boolean']['output'];
+  template?: Maybe<PipelineTemplate>;
 };
 
 /** The UpdateUserError enum represents the possible errors that can occur during the updateUser mutation. */
