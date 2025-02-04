@@ -3032,6 +3032,7 @@ export type PipelineTemplatePage = {
 export type PipelineTemplatePermissions = {
   __typename?: 'PipelineTemplatePermissions';
   delete: Scalars['Boolean']['output'];
+  update: Scalars['Boolean']['output'];
 };
 
 /** Represents a version of a pipeline template. */

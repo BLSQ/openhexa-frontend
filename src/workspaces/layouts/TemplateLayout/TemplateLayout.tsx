@@ -11,6 +11,7 @@ import {
   TemplateLayout_TemplateFragment,
   TemplateLayout_WorkspaceFragment,
 } from "./TemplateLayout.generated";
+import DeleteTemplateDialog from "../../../pipelines/features/DeleteTemplateDialog";
 
 type TemplateLayoutProps = {
   template: TemplateLayout_TemplateFragment;
@@ -85,12 +86,11 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
       }
     >
       {children}
-      {/*<DeletePipelineDialog*/}
-      {/*  open={isDeletePipelineDialogOpen}*/}
-      {/*  onClose={() => setDeletePipelineDialogOpen(false)}*/}
-      {/*  pipeline={pipeline}*/}
-      {/*  workspace={workspace}*/}
-      {/*/> TODO */}
+      <DeleteTemplateDialog
+        open={isDeleteTemplateDialogOpen}
+        onClose={() => setDeleteTemplateDialogOpen(false)}
+        pipelineTemplate={template}
+      />
     </TabLayout>
   );
 };

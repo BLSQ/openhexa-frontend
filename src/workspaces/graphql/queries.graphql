@@ -611,7 +611,7 @@ query WorkspaceTemplatePage($workspaceSlug: String!, $templateCode: String!) {
   template: templateByCode(workspaceSlug: $workspaceSlug, code: $templateCode) {
     ...TemplateLayout_template
     permissions {
-      # update
+      update
       delete
     }
     id
@@ -620,12 +620,6 @@ query WorkspaceTemplatePage($workspaceSlug: String!, $templateCode: String!) {
     description
     currentVersion {
       id
-      #      versionName
-      #      description
-      #      config
-      #      externalLink
-      #      ...PipelineVersionParametersTable_version # TODO
-      #      ...PipelineVersionConfigDialog_version
     }
   }
 }

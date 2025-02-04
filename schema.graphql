@@ -2525,6 +2525,7 @@ type PipelineTemplatePage {
 """Represents the permissions for a pipeline template."""
 type PipelineTemplatePermissions {
   delete: Boolean!
+  update: Boolean!
 }
 
 """Represents a version of a pipeline template."""

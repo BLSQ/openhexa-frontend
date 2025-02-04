@@ -19,7 +19,6 @@ type Props = {
   workspaceSlug: string;
 };
 
-// TODO : delete is working
 // TODO : beautiful card
 // TODO : beautiful form
 
@@ -53,7 +52,7 @@ const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
       <TemplateLayout workspace={workspace} template={template}>
         <DataCard.FormSection
           title={t("Information")}
-          onSave={template.permissions.delete ? onSaveTemplate : undefined} // TODO
+          onSave={template.permissions.update ? onSaveTemplate : undefined}
           collapsible={false}
         >
           <TextProperty
