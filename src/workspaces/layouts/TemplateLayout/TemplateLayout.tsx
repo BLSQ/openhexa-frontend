@@ -4,11 +4,9 @@ import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import { useState } from "react";
 import { useTranslation } from "next-i18next";
-import Spinner from "core/components/Spinner";
 import TabLayout from "../TabLayout";
 import { GetServerSidePropsContext } from "next";
 import { CustomApolloClient } from "core/helpers/apollo";
-import DownloadTemplateVersion from "pipelines/features/DownloadTemplateVersion";
 import {
   TemplateLayout_TemplateFragment,
   TemplateLayout_WorkspaceFragment,
@@ -74,27 +72,15 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
               </Breadcrumbs.Part>
             ))}
           </Breadcrumbs>
-          <div className="flex items-center gap-2">
-            {template.currentVersion && (
-              <DownloadTemplateVersion version={template.currentVersion}>
-                {({ onClick, isDownloading }) => (
-                  <Button onClick={onClick} variant="secondary">
-                    {isDownloading && <Spinner size="sm" />}
-                    {t("Download code")}
-                  </Button>
-                )}
-              </DownloadTemplateVersion>
-            )}
-            {template.permissions.delete && (
-              <Button
-                onClick={() => setDeleteTemplateDialogOpen(true)}
-                className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
-                leadingIcon={<TrashIcon className="w-4" />}
-              >
-                {t("Delete")}
-              </Button>
-            )}
-          </div>
+          {template.permissions.delete && (
+            <Button
+              onClick={() => setDeleteTemplateDialogOpen(true)}
+              className="bg-red-700 hover:bg-red-700 focus:ring-red-500"
+              leadingIcon={<TrashIcon className="w-4" />}
+            >
+              {t("Delete")}
+            </Button>
+          )}
         </>
       }
     >
@@ -141,10 +127,8 @@ TemplateLayout.fragments = {
         #        templateVersion {
         #          id
         #        }
-        ...DownloadTemplateVersion_version
       }
     }
-    ${DownloadTemplateVersion.fragments.version}
   `,
 };
 

@@ -20,6 +20,11 @@ type Props = {
   workspaceSlug: string;
 };
 
+// TODO : update is working
+// TODO : delete is working
+// TODO : beautiful card
+// TODO : beatufil form
+
 const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   const { templateCode, workspaceSlug } = props;
   const { t } = useTranslation();
