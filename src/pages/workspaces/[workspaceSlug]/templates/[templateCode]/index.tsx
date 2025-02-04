@@ -20,6 +20,8 @@ type Props = {
 
 // TODO : beautiful card
 // TODO : beautiful form
+// TODO : show versions
+// TODO : cards in the pipeline view
 
 const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   const { templateCode, workspaceSlug } = props;
