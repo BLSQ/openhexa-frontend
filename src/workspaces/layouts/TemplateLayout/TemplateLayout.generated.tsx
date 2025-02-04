@@ -2,7 +2,6 @@ import * as Types from '../../../graphql/types';
 
 import { gql } from '@apollo/client';
 import { TabLayout_WorkspaceFragmentDoc } from '../TabLayout/TabLayout.generated';
-import { DownloadTemplateVersion_VersionFragmentDoc } from '../../../pipelines/features/DownloadTemplateVersion/DownloadTemplateVersion.generated';
 export type TemplateLayout_WorkspaceFragment = { __typename?: 'Workspace', name: string, slug: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> };
 
 export type TemplateLayout_TemplateFragment = { __typename?: 'PipelineTemplate', id: string, code: string, name: string, permissions: { __typename?: 'PipelineTemplatePermissions', delete: boolean }, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string } | null };
@@ -22,7 +21,6 @@ export const TemplateLayout_TemplateFragmentDoc = gql`
   }
   currentVersion {
     id
-    ...DownloadTemplateVersion_version
   }
 }
-    ${DownloadTemplateVersion_VersionFragmentDoc}`;
+    `;

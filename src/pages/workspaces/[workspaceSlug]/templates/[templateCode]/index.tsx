@@ -4,7 +4,6 @@ import Page from "core/components/Page";
 import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
 import {
   useWorkspaceTemplatePageQuery,
   WorkspaceTemplatePageDocument,
@@ -28,9 +27,6 @@ type Props = {
 const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   const { templateCode, workspaceSlug } = props;
   const { t } = useTranslation();
-
-  const [isVersionConfigDialogOpen, setVersionConfigDialogOpen] =
-    useState(false);
 
   const { data, refetch } = useWorkspaceTemplatePageQuery({
     variables: {
