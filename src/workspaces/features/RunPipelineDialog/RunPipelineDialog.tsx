@@ -218,10 +218,6 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       </ErrorAlert>
     );
   }
-  const dependentWidgets: Record<string, string> = {
-    organisation_units_picker: "organisation_unit_groups_picker",
-  };
-
   return (
     <>
       {children(onClick)}

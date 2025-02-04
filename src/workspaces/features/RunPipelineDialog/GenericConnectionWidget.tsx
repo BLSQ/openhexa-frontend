@@ -76,6 +76,8 @@ const GenericConnectionWidget = <T,>({
 
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
+  const [perPage, setPerPage] = useState(10);
+
   const currentValue =
     form.formData[parameter.code] || (parameter.multiple ? [] : null);
 
@@ -91,7 +93,7 @@ const GenericConnectionWidget = <T,>({
         connectionSlug: form.formData[parameter.connection],
         type: widgetToQueryType[parameter.widget],
         search: debouncedQuery,
-        limit: 10,
+        limit: perPage,
         offset: 0,
       },
     }).catch((err) =>
@@ -162,7 +164,11 @@ const GenericConnectionWidget = <T,>({
     },
     [form, parameter.code, parameter.multiple],
   );
-
+  const onScrollBottom = () => {
+    if (options.totalItems > options.items.length && !loading) {
+      setPerPage(perPage + 10);
+    }
+  };
   const PickerComponent = parameter.multiple ? MultiCombobox : Combobox;
 
   return (
@@ -176,15 +182,13 @@ const GenericConnectionWidget = <T,>({
       value={currentValue}
       disabled={loading}
       onClose={useCallback(() => setQuery(""), [])}
+      onScrollBottom={onScrollBottom}
     >
       {options.map((option) => (
         <Combobox.CheckOption key={option.id} value={option}>
           {option.name}
         </Combobox.CheckOption>
       ))}
-      <button onClick={loadMore} disabled={loading}>
-        {i18n!.t("Load more")}
-      </button>
     </PickerComponent>
   );
 };
