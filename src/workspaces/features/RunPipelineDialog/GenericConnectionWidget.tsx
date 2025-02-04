@@ -68,6 +68,7 @@ const GenericConnectionWidget = <T,>({
     widgetType: widgetToQueryType[parameter.widget],
     currentValue: form.formData[parameter.code],
     parameterCode: parameter.code,
+    form: form,
   });
 
   const [query, setQuery] = useState("");
@@ -150,7 +151,6 @@ const GenericConnectionWidget = <T,>({
 
   return (
     <PickerComponent
-      required={parameter.required}
       onChange={handleSelectionChange}
       loading={loading}
       displayValue={displayValueHandler}
@@ -162,9 +162,9 @@ const GenericConnectionWidget = <T,>({
       onClose={useCallback(() => setQuery(""), [])}
     >
       {options.map((option) => (
-        <MultiCombobox.CheckOption key={option.id} value={option}>
+        <Combobox.CheckOption key={option.id} value={option}>
           {option.name}
-        </MultiCombobox.CheckOption>
+        </Combobox.CheckOption>
       ))}
       <button onClick={loadMore} disabled={loading}>
         {i18n!.t("Load more")}
