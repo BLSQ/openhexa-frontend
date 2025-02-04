@@ -60,6 +60,7 @@ const ParameterField = (props: ParameterFieldProps) => {
       />
     );
   }
+
   if (isConnectionParameter(parameter.type)) {
     return (
       <WorkspaceConnectionPicker
