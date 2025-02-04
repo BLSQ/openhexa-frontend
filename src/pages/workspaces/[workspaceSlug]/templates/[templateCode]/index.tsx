@@ -10,7 +10,6 @@ import {
   WorkspaceTemplatePageQuery,
   WorkspaceTemplatePageQueryVariables,
 } from "workspaces/graphql/queries.generated";
-import useCacheKey from "core/hooks/useCacheKey";
 import TemplateLayout from "workspaces/layouts/TemplateLayout";
 import { updateTemplate } from "workspaces/helpers/templates";
 
@@ -26,13 +25,12 @@ const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   const { templateCode, workspaceSlug } = props;
   const { t } = useTranslation();
 
-  const { data, refetch } = useWorkspaceTemplatePageQuery({
+  const { data } = useWorkspaceTemplatePageQuery({
     variables: {
       workspaceSlug,
       templateCode,
     },
   });
-  const clearCache = useCacheKey(["templates"], refetch);
 
   if (!data?.workspace || !data?.template) {
     return null;

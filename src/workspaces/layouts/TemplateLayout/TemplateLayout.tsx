@@ -12,6 +12,7 @@ import {
   TemplateLayout_WorkspaceFragment,
 } from "./TemplateLayout.generated";
 import DeleteTemplateDialog from "../../../pipelines/features/DeleteTemplateDialog";
+import router from "next/router";
 
 type TemplateLayoutProps = {
   template: TemplateLayout_TemplateFragment;
@@ -88,7 +89,10 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
       {children}
       <DeleteTemplateDialog
         open={isDeleteTemplateDialogOpen}
-        onClose={() => setDeleteTemplateDialogOpen(false)}
+        onClose={() => {
+          setDeleteTemplateDialogOpen(false);
+          router.push(`/workspaces/${workspace.slug}/templates`).then();
+        }}
         pipelineTemplate={template}
       />
     </TabLayout>
