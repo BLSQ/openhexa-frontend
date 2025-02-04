@@ -34,6 +34,7 @@ import { CreateConnectionDialog_WorkspaceFragmentDoc } from '../features/CreateC
 import { ConnectionUsageSnippets_ConnectionFragmentDoc } from '../features/ConnectionUsageSnippets/ConnectionUsageSnippets.generated';
 import { ConnectionFieldsSection_ConnectionFragmentDoc } from '../features/ConnectionFieldsSection/ConnectionFieldsSection.generated';
 import { TemplateCard_TemplateFragmentDoc } from '../features/TemplateCard/TemplateCard.generated';
+import { TemplateLayout_TemplateFragmentDoc } from '../layouts/TemplateLayout/TemplateLayout.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type WorkspacesPageQueryVariables = Types.Exact<{ [key: string]: never; }>;
@@ -214,6 +215,14 @@ export type WorkspaceTemplatesPageQueryVariables = Types.Exact<{
 
 
 export type WorkspaceTemplatesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipelineTemplates: { __typename?: 'PipelineTemplatePage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'PipelineTemplate', id: string, code: string, name: string, description?: string | null, currentVersion?: { __typename?: 'PipelineTemplateVersion', createdAt: any } | null }> } };
+
+export type WorkspaceTemplatePageQueryVariables = Types.Exact<{
+  workspaceSlug: Types.Scalars['String']['input'];
+  templateCode: Types.Scalars['String']['input'];
+}>;
+
+
+export type WorkspaceTemplatePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, template?: { __typename?: 'PipelineTemplate', id: string, code: string, name: string, description?: string | null, permissions: { __typename?: 'PipelineTemplatePermissions', delete: boolean }, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string } | null } | null };
 
 
 export const WorkspacesPageDocument = gql`
@@ -1551,3 +1560,60 @@ export type WorkspaceTemplatesPageQueryHookResult = ReturnType<typeof useWorkspa
 export type WorkspaceTemplatesPageLazyQueryHookResult = ReturnType<typeof useWorkspaceTemplatesPageLazyQuery>;
 export type WorkspaceTemplatesPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceTemplatesPageSuspenseQuery>;
 export type WorkspaceTemplatesPageQueryResult = Apollo.QueryResult<WorkspaceTemplatesPageQuery, WorkspaceTemplatesPageQueryVariables>;
+export const WorkspaceTemplatePageDocument = gql`
+    query WorkspaceTemplatePage($workspaceSlug: String!, $templateCode: String!) {
+  workspace(slug: $workspaceSlug) {
+    slug
+    name
+    ...PipelineLayout_workspace
+  }
+  template: templateByCode(workspaceSlug: $workspaceSlug, code: $templateCode) {
+    ...TemplateLayout_template
+    permissions {
+      delete
+    }
+    id
+    code
+    name
+    description
+    currentVersion {
+      id
+    }
+  }
+}
+    ${PipelineLayout_WorkspaceFragmentDoc}
+${TemplateLayout_TemplateFragmentDoc}`;
+
+/**
+ * __useWorkspaceTemplatePageQuery__
+ *
+ * To run a query within a React component, call `useWorkspaceTemplatePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkspaceTemplatePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkspaceTemplatePageQuery({
+ *   variables: {
+ *      workspaceSlug: // value for 'workspaceSlug'
+ *      templateCode: // value for 'templateCode'
+ *   },
+ * });
+ */
+export function useWorkspaceTemplatePageQuery(baseOptions: Apollo.QueryHookOptions<WorkspaceTemplatePageQuery, WorkspaceTemplatePageQueryVariables> & ({ variables: WorkspaceTemplatePageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WorkspaceTemplatePageQuery, WorkspaceTemplatePageQueryVariables>(WorkspaceTemplatePageDocument, options);
+      }
+export function useWorkspaceTemplatePageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkspaceTemplatePageQuery, WorkspaceTemplatePageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WorkspaceTemplatePageQuery, WorkspaceTemplatePageQueryVariables>(WorkspaceTemplatePageDocument, options);
+        }
+export function useWorkspaceTemplatePageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceTemplatePageQuery, WorkspaceTemplatePageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceTemplatePageQuery, WorkspaceTemplatePageQueryVariables>(WorkspaceTemplatePageDocument, options);
+        }
+export type WorkspaceTemplatePageQueryHookResult = ReturnType<typeof useWorkspaceTemplatePageQuery>;
+export type WorkspaceTemplatePageLazyQueryHookResult = ReturnType<typeof useWorkspaceTemplatePageLazyQuery>;
+export type WorkspaceTemplatePageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceTemplatePageSuspenseQuery>;
+export type WorkspaceTemplatePageQueryResult = Apollo.QueryResult<WorkspaceTemplatePageQuery, WorkspaceTemplatePageQueryVariables>;

@@ -2752,6 +2752,8 @@ type Query {
 
   """Retrieves a pipeline by workspace slug and code."""
   pipelineByCode(workspaceSlug: String!, code: String!): Pipeline
+  """Retrieves a template by workspace slug and code."""
+  templateByCode(workspaceSlug: String!, code: String!): PipelineTemplate
 
   """Retrieves a pipeline run by ID."""
   pipelineRun(id: UUID!): PipelineRun

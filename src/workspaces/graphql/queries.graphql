@@ -602,3 +602,30 @@ query WorkspaceTemplatesPage(
     pageNumber
   }
 }
+query WorkspaceTemplatePage($workspaceSlug: String!, $templateCode: String!) {
+  workspace(slug: $workspaceSlug) {
+    slug
+    name
+    ...PipelineLayout_workspace
+  }
+  template: templateByCode(workspaceSlug: $workspaceSlug, code: $templateCode) {
+    ...TemplateLayout_template
+    permissions {
+      # update
+      delete
+    }
+    id
+    code
+    name
+    description
+    currentVersion {
+      id
+      #      versionName
+      #      description
+      #      config
+      #      externalLink
+      #      ...PipelineVersionParametersTable_version # TODO
+      #      ...PipelineVersionConfigDialog_version
+    }
+  }
+}
