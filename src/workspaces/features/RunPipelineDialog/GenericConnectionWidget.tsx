@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { i18n } from "next-i18next";
 import {
   Combobox,
@@ -65,18 +65,20 @@ const GenericConnectionWidget = <T,>({
   parameter,
   form,
   value,
-  onChange,
   workspaceSlug,
 }: GenericConnectionWidgetProps<T>) => {
-  console.log(
-    "Value of " + widgetToQueryType[parameter.widget] + " : " + value,
-  );
-  console.log("Form", form);
-  console.log("Parameter", parameter);
+  console.log("GenericConnectionWidget Debug:", {
+    widgetType: widgetToQueryType[parameter.widget],
+    value,
+    formData: form.formData,
+    parameter,
+  });
 
   // Convert API response into Select-compatible options
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
+  const currentValue =
+    form.formData[parameter.code] || (parameter.multiple ? [] : null);
 
   const { data, loading, error, fetchMore } =
     useQuery<GetConnectionBySlugQuery>(GET_CONNECTION_METADATA, {
@@ -123,22 +125,38 @@ const GenericConnectionWidget = <T,>({
       },
     });
   };
-  const displayValueHanlder = (value: any) => {
+  const displayValueHandler = (value: any) => {
     if (!value) return "";
     if (Array.isArray(value)) {
       return value.map((v: any) => v.name).join("");
     }
     return value.name || "";
-    // value?.map((v: any) => v.name).join("")
   };
+
+  useEffect(() => {
+    if (parameter.multiple && !Array.isArray(currentValue)) {
+      form.setFieldValue(parameter.code, []);
+    }
+  }, [currentValue, form, parameter.multiple, parameter.code]);
+
+  const handleSelectionChange = useCallback(
+    (selectedValue: any) => {
+      if (parameter.multiple) {
+        form.setFieldValue(parameter.code, selectedValue ?? []);
+      } else {
+        form.setFieldValue(parameter.code, selectedValue ?? null);
+      }
+    },
+    [form, parameter.code, parameter.multiple],
+  );
   const PickerComponent: any = parameter.multiple ? MultiCombobox : Combobox;
 
   return (
     <PickerComponent
       required={parameter.required}
-      onChange={onChange}
+      onChange={handleSelectionChange}
       loading={loading}
-      displayValue={(value) => displayValueHanlder(value)}
+      displayValue={(value) => displayValueHandler(value)}
       by="id"
       onInputChange={handleInputChange}
       placeholder={i18n!.t("Select options")}

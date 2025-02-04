@@ -28,9 +28,13 @@ const ParameterField = (props: ParameterFieldProps) => {
     (value: any) => {
       if (parameter.multiple && (value === null || value === undefined)) {
         return onChange([]);
+      } else if (parameter.multiple && parameter.widget !== null) {
+        onChange(value);
+        setValueState([...valueState, value]);
       } else if (parameter.multiple && !parameter.choices) {
         onChange(value.split(","));
       } else {
+        setValueState(value);
         onChange(value);
       }
     },
@@ -46,27 +50,18 @@ const ParameterField = (props: ParameterFieldProps) => {
       />
     );
   }
-  const appendValues = (newValue: any) => {
-    if (parameter.multiple) {
-      setValueState([...valueState, newValue]);
-    } else {
-      setValueState(newValue);
-    }
-  };
 
   if (parameter.widget !== null && form !== undefined) {
     return (
       <GenericConnectionWidget
         parameter={parameter}
         form={form}
-        value={valueState}
-        onChange={appendValues}
+        value={value ?? []}
         workspaceSlug={workspaceSlug || ""}
       />
     );
   }
   if (isConnectionParameter(parameter.type)) {
-    console.log(parameter.type);
     return (
       <WorkspaceConnectionPicker
         workspaceSlug={workspaceSlug || ""}
