@@ -21,7 +21,6 @@ type Props = {
 };
 
 // TODO : beautiful card
-// TODO : beautiful form
 // TODO : show versions
 // TODO : cards in the pipeline view
 // TODO : links
@@ -60,6 +59,12 @@ const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
             collapsible={false}
           >
             <TextProperty
+              id="name"
+              accessor={"name"}
+              label={t("Name")}
+              visible={(value, isEditing) => isEditing}
+            />
+            <TextProperty
               id="description"
               accessor={"description"}
               label={t("Description")}
@@ -68,21 +73,6 @@ const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
               sm
               hideLabel
               markdown
-            />
-            <TextProperty
-              id="name"
-              accessor={"name"}
-              label={t("Name")}
-              visible={(value, isEditing) => isEditing}
-            />
-            <TextProperty
-              id="code"
-              accessor={"code"}
-              label={t("Code")}
-              help={t(
-                "This is the code used to identify this template using the cli.",
-              )}
-              readonly
             />
             <RenderProperty
               id="version_name"
