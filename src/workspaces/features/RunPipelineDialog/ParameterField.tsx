@@ -56,7 +56,6 @@ const ParameterField = (props: ParameterFieldProps) => {
       <GenericConnectionWidget
         parameter={parameter}
         form={form}
-        value={value ?? []}
         workspaceSlug={workspaceSlug || ""}
       />
     );

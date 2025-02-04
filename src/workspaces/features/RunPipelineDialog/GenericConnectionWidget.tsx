@@ -11,7 +11,6 @@ import { GetConnectionBySlugQuery } from "./GenericConnectionWidget.generated";
 type GenericConnectionWidgetProps<T> = {
   disabled?: boolean;
   parameter: any;
-  value: T[] | T;
   form: any;
   onChange: (value: any) => void;
   workspaceSlug: string;
@@ -64,12 +63,10 @@ const widgetToQueryType: { [key: string]: string } = {
 const GenericConnectionWidget = <T,>({
   parameter,
   form,
-  value,
   workspaceSlug,
 }: GenericConnectionWidgetProps<T>) => {
   console.log("GenericConnectionWidget Debug:", {
     widgetType: widgetToQueryType[parameter.widget],
-    value,
     formData: form.formData,
     parameter,
   });
@@ -160,7 +157,7 @@ const GenericConnectionWidget = <T,>({
       by="id"
       onInputChange={handleInputChange}
       placeholder={i18n!.t("Select options")}
-      value={value as any}
+      value={currentValue}
       disabled={loading}
     >
       {options.map((option) => (
