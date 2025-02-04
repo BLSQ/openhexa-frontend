@@ -11,37 +11,29 @@ import {
   TemplateLayout_TemplateFragment,
   TemplateLayout_WorkspaceFragment,
 } from "./TemplateLayout.generated";
-import DeleteTemplateDialog from "../../../pipelines/features/DeleteTemplateDialog";
+import DeleteTemplateDialog from "pipelines/features/DeleteTemplateDialog";
 import router from "next/router";
+import WorkspaceLayout from "../WorkspaceLayout";
+import Title from "core/components/Title";
 
 type TemplateLayoutProps = {
   template: TemplateLayout_TemplateFragment;
   workspace: TemplateLayout_WorkspaceFragment;
   currentTab?: string;
   extraBreadcrumbs?: { href: string; title: string }[];
-  children: React.ReactNode;
+  children: React.ReactElement;
 };
 
 const TemplateLayout = (props: TemplateLayoutProps) => {
-  const {
-    children,
-    workspace,
-    template,
-    currentTab = "general",
-    extraBreadcrumbs = [],
-  } = props;
+  const { children, workspace, template, extraBreadcrumbs = [] } = props;
 
   const { t } = useTranslation();
   const [isDeleteTemplateDialogOpen, setDeleteTemplateDialogOpen] =
     useState(false);
 
   return (
-    <TabLayout
+    <WorkspaceLayout
       workspace={workspace}
-      item={template}
-      currentTab={currentTab}
-      tabs={[]}
-      title={template.name ?? t("Template")}
       header={
         <>
           <Breadcrumbs withHome={false} className="flex-1">
@@ -86,7 +78,10 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
         </>
       }
     >
-      {children}
+      <WorkspaceLayout.PageContent>
+        <Title level={2}>{template.name ?? t("Template")}</Title>
+        {children}
+      </WorkspaceLayout.PageContent>
       <DeleteTemplateDialog
         open={isDeleteTemplateDialogOpen}
         onClose={() => {
@@ -95,7 +90,7 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
         }}
         pipelineTemplate={template}
       />
-    </TabLayout>
+    </WorkspaceLayout>
   );
 };
 

@@ -12,6 +12,8 @@ import {
 } from "workspaces/graphql/queries.generated";
 import TemplateLayout from "workspaces/layouts/TemplateLayout";
 import { updateTemplate } from "workspaces/helpers/templates";
+import Link from "core/components/Link";
+import RenderProperty from "core/components/DataCard/RenderProperty";
 
 type Props = {
   templateCode: string;
@@ -51,37 +53,59 @@ const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   return (
     <Page title={template.name ?? t("Template")}>
       <TemplateLayout workspace={workspace} template={template}>
-        <DataCard.FormSection
-          title={t("Information")}
-          onSave={template.permissions.update ? onSaveTemplate : undefined}
-          collapsible={false}
-        >
-          <TextProperty
-            id="description"
-            accessor={"description"}
-            label={t("Description")}
-            defaultValue="-"
-            visible={(value, isEditing) => isEditing || value}
-            sm
-            hideLabel
-            markdown
-          />
-          <TextProperty
-            id="name"
-            accessor={"name"}
-            label={t("Name")}
-            visible={(value, isEditing) => isEditing}
-          />
-          <TextProperty
-            id="code"
-            accessor={"code"}
-            label={t("Code")}
-            help={t(
-              "This is the code used to identify this template using the cli.",
-            )}
-            readonly
-          />
-        </DataCard.FormSection>
+        <DataCard item={template} className="divide-y divide-gray-100">
+          <DataCard.FormSection
+            title={t("Information")}
+            onSave={template.permissions.update ? onSaveTemplate : undefined}
+            collapsible={false}
+          >
+            <TextProperty
+              id="description"
+              accessor={"description"}
+              label={t("Description")}
+              defaultValue="-"
+              visible={(value, isEditing) => isEditing || value}
+              sm
+              hideLabel
+              markdown
+            />
+            <TextProperty
+              id="name"
+              accessor={"name"}
+              label={t("Name")}
+              visible={(value, isEditing) => isEditing}
+            />
+            <TextProperty
+              id="code"
+              accessor={"code"}
+              label={t("Code")}
+              help={t(
+                "This is the code used to identify this template using the cli.",
+              )}
+              readonly
+            />
+            <RenderProperty
+              id="version_name"
+              accessor={"currentVersion"}
+              label={t("Version")}
+              readonly
+            >
+              {(property) => (
+                <div className="flex items-center gap-3">
+                  <Link
+                    href={`/workspaces/${encodeURIComponent(
+                      workspace.slug,
+                    )}/pipelines/${encodeURIComponent(template.code)}/versions`}
+                  >
+                    {property.displayValue
+                      ? property.displayValue.versionName
+                      : t("No version yet")}
+                  </Link>
+                </div>
+              )}
+            </RenderProperty>
+          </DataCard.FormSection>
+        </DataCard>
       </TemplateLayout>
     </Page>
   );
