@@ -20,7 +20,6 @@ type Props = {
   workspaceSlug: string;
 };
 
-// TODO : beautiful card
 // TODO : show versions
 // TODO : cards in the pipeline view
 // TODO : links

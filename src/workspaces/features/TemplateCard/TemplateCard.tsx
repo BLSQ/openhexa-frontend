@@ -6,6 +6,9 @@ import {
   TemplateCard_TemplateFragment,
   TemplateCard_WorkspaceFragment,
 } from "./TemplateCard.generated";
+import Tooltip from "core/components/Tooltip";
+import { DateTime } from "luxon";
+import UserAvatar from "identity/features/UserAvatar";
 
 interface TemplateCardProps {
   workspace: TemplateCard_WorkspaceFragment;
@@ -28,6 +31,20 @@ const TemplateCard = ({ template, workspace }: TemplateCardProps) => {
         >
           {template.description || t("No description")}
         </div>
+        {template.currentVersion?.user && (
+          <div className="flex justify-end">
+            <Tooltip
+              label={t("Last version uploaded on {{date}} by {{name}}", {
+                date: DateTime.fromISO(
+                  template.currentVersion.createdAt,
+                ).toLocaleString(DateTime.DATE_FULL),
+                name: template.currentVersion.user.displayName,
+              })}
+            >
+              <UserAvatar user={template.currentVersion.user} size="sm" />
+            </Tooltip>
+          </div>
+        )}
       </Card.Content>
     </Card>
   );
@@ -42,6 +59,9 @@ TemplateCard.fragments = {
       description
       currentVersion {
         createdAt
+        user {
+          ...User_user
+        }
       }
     }
   `,

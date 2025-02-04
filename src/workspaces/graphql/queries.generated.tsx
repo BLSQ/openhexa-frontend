@@ -214,7 +214,7 @@ export type WorkspaceTemplatesPageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspaceTemplatesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipelineTemplates: { __typename?: 'PipelineTemplatePage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'PipelineTemplate', id: string, code: string, name: string, description?: string | null, currentVersion?: { __typename?: 'PipelineTemplateVersion', createdAt: any } | null }> } };
+export type WorkspaceTemplatesPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, pipelineTemplates: { __typename?: 'PipelineTemplatePage', totalItems: number, totalPages: number, pageNumber: number, items: Array<{ __typename?: 'PipelineTemplate', id: string, code: string, name: string, description?: string | null, currentVersion?: { __typename?: 'PipelineTemplateVersion', createdAt: any, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null } | null }> } };
 
 export type WorkspaceTemplatePageQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];

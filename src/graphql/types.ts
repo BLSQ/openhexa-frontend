@@ -3042,6 +3042,7 @@ export type PipelineTemplateVersion = {
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['UUID']['output'];
   template: PipelineTemplate;
+  user?: Maybe<User>;
   versionNumber: Scalars['Int']['output'];
 };
 

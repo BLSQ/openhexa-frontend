@@ -115,17 +115,10 @@ TemplateLayout.fragments = {
       name
       permissions {
         delete
-        # update
+        update
       }
       currentVersion {
         id
-        #        name
-        #        description
-        #        config
-        #        externalLink
-        #        templateVersion {
-        #          id
-        #        }
       }
     }
   `,
