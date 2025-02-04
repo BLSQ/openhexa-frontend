@@ -22,19 +22,14 @@ type ParameterFieldProps = {
 const ParameterField = (props: ParameterFieldProps) => {
   const { t } = useTranslation();
   const { parameter, value, form, onChange, workspaceSlug } = props;
-  const [valueState, setValueState] = useState([]);
 
   const handleChange = useCallback(
     (value: any) => {
       if (parameter.multiple && (value === null || value === undefined)) {
         return onChange([]);
-      } else if (parameter.multiple && parameter.widget !== null) {
-        onChange(value);
-        setValueState([...valueState, value]);
       } else if (parameter.multiple && !parameter.choices) {
         onChange(value.split(","));
       } else {
-        setValueState(value);
         onChange(value);
       }
     },
