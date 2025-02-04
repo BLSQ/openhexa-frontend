@@ -204,8 +204,31 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
   }, [open, form, fetch, run, pipeline.code, pipeline.workspace]);
 
   useEffect(() => {
-    form.resetForm();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!activeVersion) {
+      form.resetForm();
+      return;
+    }
+
+    activeVersion.parameters.forEach((param) => {
+      const dependencyWidget = dependentWidgets[param.widget];
+
+      if (dependencyWidget) {
+        const dependencyParam = activeVersion.parameters.find(
+          (p) => p.widget === dependencyWidget,
+        );
+        const dependencyValue = dependencyParam
+          ? form.formData[dependencyParam.code]
+          : null;
+
+        const shouldReset = Array.isArray(dependencyValue)
+          ? dependencyValue.length === 0
+          : !dependencyValue;
+
+        if (shouldReset && form.formData[param.code] !== null) {
+          form.setFieldValue(param.code, null);
+        }
+      }
+    });
   }, [form, activeVersion]);
 
   if (!pipeline.permissions.run) {
@@ -219,6 +242,29 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
       </ErrorAlert>
     );
   }
+  const dependentWidgets: Record<string, string> = {
+    organisation_units_picker: "organisation_unit_groups_picker",
+  };
+  const filteredParameters = activeVersion
+    ? activeVersion.parameters.filter((param) => {
+        const dependencyWidget = dependentWidgets[param.widget];
+
+        if (dependencyWidget) {
+          const dependencyParam = activeVersion.parameters.find(
+            (p) => p.widget === dependencyWidget,
+          );
+          const dependencyValue = dependencyParam
+            ? form.formData[dependencyParam.code]
+            : null;
+
+          return Array.isArray(dependencyValue)
+            ? dependencyValue.length > 0
+            : !!dependencyValue;
+        }
+
+        return true;
+      })
+    : [];
 
   return (
     <>
@@ -247,7 +293,7 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                       "grid-cols-2 gap-x-5",
                   )}
                 >
-                  {activeVersion.parameters.map((param, i) => (
+                  {filteredParameters.map((param, i) => (
                     <Field
                       required={param.required || param.type === "bool"}
                       key={i}

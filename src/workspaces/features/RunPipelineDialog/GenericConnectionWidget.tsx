@@ -12,7 +12,6 @@ type GenericConnectionWidgetProps<T> = {
   disabled?: boolean;
   parameter: any;
   form: any;
-  onChange: (value: any) => void;
   workspaceSlug: string;
   placeholder?: string;
 };
@@ -67,11 +66,10 @@ const GenericConnectionWidget = <T,>({
 }: GenericConnectionWidgetProps<T>) => {
   console.log("GenericConnectionWidget Debug:", {
     widgetType: widgetToQueryType[parameter.widget],
-    formData: form.formData,
-    parameter,
+    currentValue: form.formData[parameter.code],
+    parameterCode: parameter.code,
   });
 
-  // Convert API response into Select-compatible options
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
   const currentValue =
@@ -95,46 +93,47 @@ const GenericConnectionWidget = <T,>({
       console.error("Error fetching connection metadata:", error);
       return [];
     }
-    const lowercaseQuery = debouncedQuery.toLowerCase();
     return (
       data?.connectionBySlug?.queryMetadata?.items?.filter((c) =>
-        c.name.toLowerCase().includes(lowercaseQuery),
+        c.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
       ) ?? []
     );
   }, [data, error, debouncedQuery]);
 
   const handleInputChange = useCallback(
     (event) => {
-      setQuery(event.target.value);
-      fetchMore({
-        variables: {
-          search: event.target.value,
-          offset: 0,
-        },
-      });
+      const newQuery = event.target.value;
+      setQuery(newQuery);
+
+      if (fetchMore) {
+        fetchMore({ variables: { search: newQuery, offset: 0 } }).catch((err) =>
+          console.error("Error fetching more results:", err),
+        );
+      }
     },
     [fetchMore],
   );
+
   const loadMore = () => {
-    fetchMore({
-      variables: {
-        offset: data?.connectionBySlug?.queryMetadata?.items?.length || 0,
-      },
-    });
+    if (!fetchMore || loading) return;
+    fetchMore({ variables: { offset: options.length } }).catch((err) =>
+      console.error("Error fetching more data:", err),
+    );
   };
+
   const displayValueHandler = (value: any) => {
     if (!value) return "";
     if (Array.isArray(value)) {
-      return value.map((v: any) => v.name).join("");
+      return value.map((v: any) => v.name).join(", ");
     }
-    return value.name || "";
+    return typeof value === "object" && value !== null ? value.name : "";
   };
 
   useEffect(() => {
     if (parameter.multiple && !Array.isArray(currentValue)) {
       form.setFieldValue(parameter.code, []);
     }
-  }, [currentValue, form, parameter.multiple, parameter.code]);
+  }, [form, parameter.multiple, parameter.code]);
 
   const handleSelectionChange = useCallback(
     (selectedValue: any) => {
@@ -146,23 +145,25 @@ const GenericConnectionWidget = <T,>({
     },
     [form, parameter.code, parameter.multiple],
   );
-  const PickerComponent: any = parameter.multiple ? MultiCombobox : Combobox;
+
+  const PickerComponent = parameter.multiple ? MultiCombobox : Combobox;
 
   return (
     <PickerComponent
       required={parameter.required}
       onChange={handleSelectionChange}
       loading={loading}
-      displayValue={(value) => displayValueHandler(value)}
+      displayValue={displayValueHandler}
       by="id"
       onInputChange={handleInputChange}
       placeholder={i18n!.t("Select options")}
       value={currentValue}
       disabled={loading}
+      onClose={useCallback(() => setQuery(""), [])}
     >
       {options.map((option) => (
         <MultiCombobox.CheckOption key={option.id} value={option}>
-          <div className="flex items-center">{option.name}</div>
+          {option.name}
         </MultiCombobox.CheckOption>
       ))}
       <button onClick={loadMore} disabled={loading}>
