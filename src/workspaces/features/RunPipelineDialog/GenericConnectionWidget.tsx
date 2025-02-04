@@ -6,7 +6,10 @@ import {
   MultiCombobox,
 } from "../../../core/components/forms/Combobox";
 import useDebounce from "../../../core/hooks/useDebounce";
-import { GetConnectionBySlugQuery } from "./GenericConnectionWidget.generated";
+import {
+  GetConnectionBySlugQuery,
+  useGetConnectionBySlugLazyQuery,
+} from "./GenericConnectionWidget.generated";
 
 type GenericConnectionWidgetProps<T> = {
   disabled?: boolean;
@@ -76,8 +79,13 @@ const GenericConnectionWidget = <T,>({
   const currentValue =
     form.formData[parameter.code] || (parameter.multiple ? [] : null);
 
-  const { data, loading, error, fetchMore } =
-    useQuery<GetConnectionBySlugQuery>(GET_CONNECTION_METADATA, {
+  const [fetchData, { data, loading, error, fetchMore }] =
+    useGetConnectionBySlugLazyQuery();
+
+  useEffect(() => {
+    if (!form.formData[parameter.connection]) return;
+
+    fetchData({
       variables: {
         workspaceSlug,
         connectionSlug: form.formData[parameter.connection],
@@ -86,8 +94,16 @@ const GenericConnectionWidget = <T,>({
         limit: 10,
         offset: 0,
       },
-      skip: !form.formData[parameter.connection],
-    });
+    }).catch((err) =>
+      console.error("Error fetching connection metadata:", err),
+    );
+  }, [
+    form.formData[parameter.connection],
+    debouncedQuery,
+    fetchData,
+    workspaceSlug,
+    parameter.widget,
+  ]);
 
   const options = useMemo(() => {
     if (error) {
