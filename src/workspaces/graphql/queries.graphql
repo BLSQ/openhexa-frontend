@@ -90,6 +90,7 @@ query WorkspacePipelinePage($workspaceSlug: String!, $pipelineCode: String!) {
     notebookPath
     sourceTemplate {
       id
+      code
       name
     }
     hasNewTemplateVersions
