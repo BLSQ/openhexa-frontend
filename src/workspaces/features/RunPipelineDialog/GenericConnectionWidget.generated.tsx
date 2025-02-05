@@ -8,24 +8,24 @@ export type GetConnectionBySlugQueryVariables = Types.Exact<{
   connectionSlug: Types.Scalars['String']['input'];
   type: Types.Scalars['String']['input'];
   search?: Types.InputMaybe<Types.Scalars['String']['input']>;
-  limit?: Types.InputMaybe<Types.Scalars['Int']['input']>;
-  offset?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  perPage?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  page?: Types.InputMaybe<Types.Scalars['Int']['input']>;
 }>;
 
 
-export type GetConnectionBySlugQuery = { __typename?: 'Query', connectionBySlug?: { __typename?: 'CustomConnection' } | { __typename?: 'DHIS2Connection', queryMetadata: { __typename?: 'DHIS2QueryResult', totalCount?: number | null, error?: Types.Dhis2ConnectionError | null, items?: Array<{ __typename?: 'DHIS2MetadataItem', id: string, name: string }> | null } } | { __typename?: 'GCSConnection' } | { __typename?: 'IASOConnection' } | { __typename?: 'PostgreSQLConnection' } | { __typename?: 'S3Connection' } | null };
+export type GetConnectionBySlugQuery = { __typename?: 'Query', connectionBySlug?: { __typename?: 'CustomConnection' } | { __typename?: 'DHIS2Connection', queryMetadata: { __typename?: 'DHIS2QueryResultPage', totalItems: number, error?: Types.Dhis2ConnectionError | null, items?: Array<{ __typename?: 'DHIS2MetadataItem', id?: string | null, name: string }> | null } } | { __typename?: 'GCSConnection' } | { __typename?: 'IASOConnection' } | { __typename?: 'PostgreSQLConnection' } | { __typename?: 'S3Connection' } | null };
 
 
 export const GetConnectionBySlugDocument = gql`
-    query getConnectionBySlug($workspaceSlug: String!, $connectionSlug: String!, $type: String!, $search: String, $limit: Int, $offset: Int) {
+    query getConnectionBySlug($workspaceSlug: String!, $connectionSlug: String!, $type: String!, $search: String, $perPage: Int, $page: Int) {
   connectionBySlug(workspaceSlug: $workspaceSlug, connectionSlug: $connectionSlug) {
     ... on DHIS2Connection {
-      queryMetadata(type: $type, search: $search, limit: $limit, offset: $offset) {
+      queryMetadata(type: $type, search: $search, perPage: $perPage, page: $page) {
         items {
           id
           name
         }
-        totalCount
+        totalItems
         error
       }
     }
@@ -49,8 +49,8 @@ export const GetConnectionBySlugDocument = gql`
  *      connectionSlug: // value for 'connectionSlug'
  *      type: // value for 'type'
  *      search: // value for 'search'
- *      limit: // value for 'limit'
- *      offset: // value for 'offset'
+ *      perPage: // value for 'perPage'
+ *      page: // value for 'page'
  *   },
  * });
  */
