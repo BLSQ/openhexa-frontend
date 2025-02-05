@@ -15,7 +15,7 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { useRouter } from "next/router";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreatePipelineDialog from "workspaces/features/CreatePipelineDialog/CreatePipelineDialog";
 import Tabs from "core/components/Tabs";
 import useFeature from "identity/hooks/useFeature";
@@ -31,10 +31,9 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const { page, perPage, workspaceSlug } = props;
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [, setTabIndex] = useState<number | null>(0);
+  const router = useRouter();
   const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
 
-  const router = useRouter();
   const { data } = useWorkspacePipelinesPageQuery({
     variables: {
       workspaceSlug,
@@ -43,10 +42,18 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
     },
   });
 
-  if (!data?.workspace) {
+  const [isMounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (!isMounted) {
+      setMounted(true);
+    }
+  }, [isMounted]);
+
+  if (!data?.workspace || !isMounted) {
     return null;
   }
-
+  const tab = window.location.hash === "#templates" ? "Templates" : "Pipelines";
   const { workspace, pipelines } = data;
 
   return (
@@ -74,11 +81,13 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
               </Breadcrumbs.Part>
               <Breadcrumbs.Part
                 isLast
-                href={`/workspaces/${encodeURIComponent(
-                  workspace.slug,
-                )}/pipelines`}
+                href={
+                  `/workspaces/${encodeURIComponent(
+                    workspace.slug,
+                  )}/pipelines` + (tab === "Templates" ? "#templates" : "")
+                }
               >
-                {t("Pipelines")}
+                {tab === "Pipelines" ? t("Pipelines") : t("Templates")}
               </Breadcrumbs.Part>
             </Breadcrumbs>
             <Button
@@ -91,7 +100,20 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
         }
       >
         <WorkspaceLayout.PageContent className="divide divide-y-2">
-          <Tabs onChange={(index) => setTabIndex(index)}>
+          <Tabs
+            onChange={(newIndex) =>
+              router.push(
+                {
+                  pathname: router.pathname,
+                  query: router.query,
+                  hash: newIndex === 1 ? "templates" : "",
+                },
+                undefined,
+                { shallow: true },
+              )
+            }
+            defaultIndex={tab === "Templates" ? 1 : 0}
+          >
             <Tabs.Tab label={t("Pipelines")} className={"space-y-2 pt-2"}>
               {pipelines.items.length === 0 ? (
                 <div className="text-center text-gray-500">
