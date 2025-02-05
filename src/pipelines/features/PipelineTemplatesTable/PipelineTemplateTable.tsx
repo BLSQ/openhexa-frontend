@@ -133,7 +133,7 @@ const PipelineTemplatesTable = ({
   };
 
   return (
-    <div className={"max-w-4xl"}>
+    <div>
       <div className={"my-5 flex justify-between"}>
         <SearchInput
           ref={searchInputRef}
