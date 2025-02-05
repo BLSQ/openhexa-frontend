@@ -20,7 +20,7 @@ type Props = {
   workspaceSlug: string;
 };
 
-// TODO : switch between list and card view
+// TODO : refactor pipeline template table
 // TODO : show versions
 // TODO : links
 // TODO : button to create
