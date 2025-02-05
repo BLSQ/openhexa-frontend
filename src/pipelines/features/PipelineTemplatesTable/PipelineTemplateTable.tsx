@@ -28,6 +28,7 @@ import { PipelineTemplateDialog_PipelineTemplateFragment } from "pipelines/featu
 import TemplateCard from "workspaces/features/TemplateCard";
 import Pagination from "core/components/Pagination";
 import clsx from "clsx";
+import Link from "core/components/Link";
 
 export enum ViewOptions {
   GRID,
@@ -235,7 +236,13 @@ const PipelineTemplatesTable = ({
             fixedLayout={false}
           >
             <BaseColumn id="name" label={t("Name")}>
-              {(value) => <span>{value.name}</span>}
+              {(template) => (
+                <Link
+                  href={`/workspaces/${encodeURIComponent(workspace.slug)}/templates/${template.code}`}
+                >
+                  {template.name}
+                </Link>
+              )}
             </BaseColumn>
             <BaseColumn id="version" label={t("Version")}>
               {({ currentVersion: { versionNumber } }) => (

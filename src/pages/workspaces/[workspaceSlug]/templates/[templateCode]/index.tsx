@@ -22,7 +22,6 @@ type Props = {
 
 // TODO : refactor pipeline template table
 // TODO : show versions
-// TODO : links
 
 const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   const { templateCode, workspaceSlug } = props;
