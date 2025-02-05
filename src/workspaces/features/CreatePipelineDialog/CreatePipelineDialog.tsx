@@ -19,6 +19,7 @@ import {
 } from "./CreatePipelineDialog.generated";
 import useFeature from "identity/hooks/useFeature";
 import PipelineTemplateTable from "pipelines/features/PipelineTemplatesTable";
+import { ViewOptions } from "../../../pipelines/features/PipelineTemplatesTable/PipelineTemplateTable";
 
 type CreatePipelineDialogProps = {
   open: boolean;
@@ -117,7 +118,10 @@ const CreatePipelineDialog = (props: CreatePipelineDialogProps) => {
         <Tabs onChange={(index) => setTabIndex(index)}>
           {pipelineTemplateFeatureEnabled && (
             <Tabs.Tab label={t("From Template")} className={"space-y-2 pt-2"}>
-              <PipelineTemplateTable workspace={workspace} />
+              <PipelineTemplateTable
+                workspace={workspace}
+                viewOptions={ViewOptions.GRID}
+              />
             </Tabs.Tab>
           )}
           <Tabs.Tab label={t("From Notebook")} className={"space-y-2 pt-2"}>

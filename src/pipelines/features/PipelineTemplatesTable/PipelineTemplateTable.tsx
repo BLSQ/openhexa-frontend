@@ -29,16 +29,27 @@ import TemplateCard from "workspaces/features/TemplateCard";
 import Pagination from "core/components/Pagination";
 import clsx from "clsx";
 
+export enum ViewOptions {
+  GRID,
+  CARD,
+  GRID_AND_CARD,
+}
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
+  viewOptions?: ViewOptions;
 };
 
-const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
+const PipelineTemplatesTable = ({
+  workspace,
+  viewOptions = ViewOptions.GRID_AND_CARD,
+}: PipelineTemplatesTableProps) => {
   const { t } = useTranslation();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [templateToDelete, setTemplateToDelete] =
     useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
-  const [view, setView] = useState<"grid" | "card">("card");
+  const [view, setView] = useState<"grid" | "card">(
+    viewOptions === ViewOptions.CARD ? "card" : "grid",
+  );
   const [page, setPage] = useState(1);
   const perPage = 10;
   const clearCache = useCacheKey(["pipelines"]);
@@ -140,38 +151,46 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
             getOptionLabel={(option) => option.label}
             className={"min-w-72"}
           />
-          <div className={"bg-gray-50 rounded"}>
-            <Button
-              variant={"custom"}
-              onClick={() => setView("card")}
-              rounded={false}
-              focusRing={false}
-              className={clsx(
-                view === "card" && "bg-white",
-                "rounded-bl rounded-tl",
-                "text-gray-800 border-transparent hover:bg-white",
-              )}
-            >
-              <Squares2X2Icon
-                className={clsx("h-4 w-4", view === "card" && "text-blue-400")}
-              />
-            </Button>
-            <Button
-              variant={"custom"}
-              onClick={() => setView("grid")}
-              rounded={false}
-              focusRing={false}
-              className={clsx(
-                view === "grid" && "bg-white",
-                "rounded-br rounded-tr",
-                "text-gray-800 border-transparent hover:bg-white",
-              )}
-            >
-              <ListBulletIcon
-                className={clsx("h-4 w-4", view === "grid" && "text-blue-400")}
-              />
-            </Button>
-          </div>
+          {viewOptions === ViewOptions.GRID_AND_CARD && (
+            <div className={"bg-gray-50 rounded"}>
+              <Button
+                variant={"custom"}
+                onClick={() => setView("card")}
+                rounded={false}
+                focusRing={false}
+                className={clsx(
+                  view === "card" && "bg-white",
+                  "rounded-bl rounded-tl",
+                  "text-gray-800 border-transparent hover:bg-white",
+                )}
+              >
+                <Squares2X2Icon
+                  className={clsx(
+                    "h-4 w-4",
+                    view === "card" && "text-blue-400",
+                  )}
+                />
+              </Button>
+              <Button
+                variant={"custom"}
+                onClick={() => setView("grid")}
+                rounded={false}
+                focusRing={false}
+                className={clsx(
+                  view === "grid" && "bg-white",
+                  "rounded-br rounded-tr",
+                  "text-gray-800 border-transparent hover:bg-white",
+                )}
+              >
+                <ListBulletIcon
+                  className={clsx(
+                    "h-4 w-4",
+                    view === "grid" && "text-blue-400",
+                  )}
+                />
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       {view === "card" ? (
