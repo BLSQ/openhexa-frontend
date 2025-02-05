@@ -20,6 +20,8 @@ import Listbox from "core/components/Listbox";
 import useDebounce from "core/hooks/useDebounce";
 import DeleteTemplateDialog from "pipelines/features/DeleteTemplateDialog";
 import { PipelineTemplateDialog_PipelineTemplateFragment } from "pipelines/features/DeleteTemplateDialog/DeleteTemplateDialog.generated";
+import TemplateCard from "workspaces/features/TemplateCard";
+import Pagination from "core/components/Pagination";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -30,6 +32,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [templateToDelete, setTemplateToDelete] =
     useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
+  const [page, setPage] = useState(1);
   const perPage = 5;
   const clearCache = useCacheKey(["pipelines"]);
 
@@ -57,7 +60,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
 
   useCacheKey("templates", () => refetch());
 
-  const fetchMoreData = (newPage: number = 1) =>
+  const fetchMoreData = (newPage: number = 1) => {
     fetchMore({
       variables: {
         page: newPage,
@@ -66,7 +69,8 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
         workspaceSlug: workspaceFilter.workspaceSlug,
       },
       updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
-    });
+    }).then(() => setPage(newPage));
+  };
 
   if (error) return <p>{t("Error loading templates")}</p>;
 
@@ -142,58 +146,87 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
         />
       </div>
       <Block className="divide divide-y divide-gray-100 mt-4">
-        <DataGrid
-          data={items}
-          defaultPageSize={perPage}
-          totalItems={totalItems}
-          fetchData={({ page }) => fetchMoreData(page)}
-          fixedLayout={false}
-        >
-          <BaseColumn id="name" label={t("Name")}>
-            {(value) => <span>{value.name}</span>}
-          </BaseColumn>
-          <BaseColumn id="version" label={t("Version")}>
-            {({ currentVersion: { versionNumber } }) => (
-              <span>{`v${versionNumber}`}</span>
-            )}
-          </BaseColumn>
-          <DateColumn
-            accessor={"currentVersion.createdAt"}
-            label={t("Created At")}
-          />
-          <BaseColumn id="actions" className={"text-right"}>
-            {(template) => {
-              const {
-                permissions: { delete: canDelete },
-                currentVersion: { id: pipelineId },
-              } = template;
-              return (
-                <div className={"space-x-1"}>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={createPipeline(pipelineId)}
-                    leadingIcon={<PlusIcon className="h-4 w-4" />}
-                  >
-                    {t("Create pipeline")}
-                  </Button>
-                  {canDelete && (
-                    <>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => setTemplateToDelete(template)}
-                        leadingIcon={<TrashIcon className="h-4 w-4" />}
-                      >
-                        {t("Delete")}
-                      </Button>
-                    </>
-                  )}
+        {1 === 1 ? (
+          <>
+            {items.length === 0 ? (
+              <div className="text-center text-gray-500">
+                <div>{t("No template to show")}</div>
+              </div>
+            ) : (
+              <>
+                <div className="mt-5 mb-3 grid grid-cols-2 gap-4 xl:grid-cols-3 xl:gap-5">
+                  {items.map((template, index) => (
+                    <TemplateCard
+                      workspace={workspace}
+                      key={index}
+                      template={template}
+                    />
+                  ))}
                 </div>
-              );
-            }}
-          </BaseColumn>
-        </DataGrid>
+                <Pagination
+                  onChange={(page) => fetchMoreData(page)}
+                  page={page}
+                  perPage={perPage}
+                  totalItems={totalItems}
+                  countItems={items.length}
+                />
+              </>
+            )}
+          </>
+        ) : (
+          <DataGrid
+            data={items}
+            defaultPageSize={perPage}
+            totalItems={totalItems}
+            fetchData={({ page }) => fetchMoreData(page)}
+            fixedLayout={false}
+          >
+            <BaseColumn id="name" label={t("Name")}>
+              {(value) => <span>{value.name}</span>}
+            </BaseColumn>
+            <BaseColumn id="version" label={t("Version")}>
+              {({ currentVersion: { versionNumber } }) => (
+                <span>{`v${versionNumber}`}</span>
+              )}
+            </BaseColumn>
+            <DateColumn
+              accessor={"currentVersion.createdAt"}
+              label={t("Created At")}
+            />
+            <BaseColumn id="actions" className={"text-right"}>
+              {(template) => {
+                const {
+                  permissions: { delete: canDelete },
+                  currentVersion: { id: pipelineId },
+                } = template;
+                return (
+                  <div className={"space-x-1"}>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={createPipeline(pipelineId)}
+                      leadingIcon={<PlusIcon className="h-4 w-4" />}
+                    >
+                      {t("Create pipeline")}
+                    </Button>
+                    {canDelete && (
+                      <>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => setTemplateToDelete(template)}
+                          leadingIcon={<TrashIcon className="h-4 w-4" />}
+                        >
+                          {t("Delete")}
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                );
+              }}
+            </BaseColumn>
+          </DataGrid>
+        )}
       </Block>
       {templateToDelete && (
         <DeleteTemplateDialog
@@ -224,6 +257,7 @@ const GET_PIPELINE_TEMPLATES = gql`
       totalItems
       items {
         id
+        code
         name
         permissions {
           delete
