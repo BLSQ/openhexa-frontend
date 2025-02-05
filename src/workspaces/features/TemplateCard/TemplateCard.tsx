@@ -9,13 +9,17 @@ import {
 import Tooltip from "core/components/Tooltip";
 import { DateTime } from "luxon";
 import UserAvatar from "identity/features/UserAvatar";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import Button from "core/components/Button";
+import React from "react";
 
 interface TemplateCardProps {
   workspace: TemplateCard_WorkspaceFragment;
   template: TemplateCard_TemplateFragment;
+  onCreate?: () => void;
 }
 
-const TemplateCard = ({ template, workspace }: TemplateCardProps) => {
+const TemplateCard = ({ template, workspace, onCreate }: TemplateCardProps) => {
   const { t } = useTranslation();
   return (
     <Card
@@ -38,6 +42,14 @@ const TemplateCard = ({ template, workspace }: TemplateCardProps) => {
         >
           {template.description || t("No description")}
         </div>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={onCreate}
+          leadingIcon={<PlusIcon className="h-4 w-4" />}
+        >
+          {t("Create pipeline")}
+        </Button>
         {template.currentVersion?.user && (
           <div className="flex justify-end">
             <Tooltip
@@ -65,6 +77,7 @@ TemplateCard.fragments = {
       name
       description
       currentVersion {
+        id
         createdAt
         user {
           ...User_user

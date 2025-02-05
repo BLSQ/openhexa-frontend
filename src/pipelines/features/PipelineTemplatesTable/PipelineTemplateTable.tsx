@@ -207,6 +207,11 @@ const PipelineTemplatesTable = ({
                     workspace={workspace}
                     key={index}
                     template={template}
+                    onCreate={
+                      template.currentVersion?.id
+                        ? createPipeline(template.currentVersion?.id)
+                        : undefined
+                    }
                   />
                 ))}
               </div>
