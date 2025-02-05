@@ -10,6 +10,7 @@ import {
   GetConnectionBySlugQuery,
   useGetConnectionBySlugLazyQuery,
 } from "./GenericConnectionWidget.generated";
+import useIntersectionObserver from "../../../core/hooks/useIntersectionObserver";
 
 type GenericConnectionWidgetProps<T> = {
   disabled?: boolean;
@@ -25,8 +26,8 @@ const GET_CONNECTION_METADATA = gql`
     $connectionSlug: String!
     $type: String!
     $search: String
-    $limit: Int
-    $offset: Int
+    $perPage: Int
+    $page: Int
   ) {
     connectionBySlug(
       workspaceSlug: $workspaceSlug
@@ -36,14 +37,14 @@ const GET_CONNECTION_METADATA = gql`
         queryMetadata(
           type: $type
           search: $search
-          limit: $limit
-          offset: $offset
+          perPage: $perPage
+          page: $page
         ) {
           items {
             id
             name
           }
-          totalCount
+          totalItems
           error
         }
       }
@@ -77,12 +78,13 @@ const GenericConnectionWidget = <T,>({
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
   const [perPage, setPerPage] = useState(10);
+  const [page, setPage] = useState(1);
 
   const currentValue =
     form.formData[parameter.code] || (parameter.multiple ? [] : null);
 
   const [fetchData, { data, loading, error, fetchMore }] =
-    useGetConnectionBySlugLazyQuery();
+    useGetConnectionBySlugLazyQuery({ cachePolicy: "no-cache" });
 
   useEffect(() => {
     if (!form.formData[parameter.connection]) return;
@@ -93,8 +95,8 @@ const GenericConnectionWidget = <T,>({
         connectionSlug: form.formData[parameter.connection],
         type: widgetToQueryType[parameter.widget],
         search: debouncedQuery,
-        limit: perPage,
-        offset: 0,
+        perPage: perPage,
+        page: page,
       },
     }).catch((err) =>
       console.error("Error fetching connection metadata:", err),
@@ -105,6 +107,7 @@ const GenericConnectionWidget = <T,>({
     fetchData,
     workspaceSlug,
     parameter.widget,
+    perPage,
   ]);
 
   const options = useMemo(() => {
@@ -112,11 +115,12 @@ const GenericConnectionWidget = <T,>({
       console.error("Error fetching connection metadata:", error);
       return [];
     }
-    return (
+    const items =
       data?.connectionBySlug?.queryMetadata?.items?.filter((c) =>
         c.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
-      ) ?? []
-    );
+      ) ?? [];
+    const totalItems = data?.connectionBySlug?.queryMetadata?.totalItems ?? 0;
+    return { items, totalItems };
   }, [data, error, debouncedQuery]);
 
   const handleInputChange = useCallback(
@@ -125,9 +129,9 @@ const GenericConnectionWidget = <T,>({
       setQuery(newQuery);
 
       if (fetchMore) {
-        fetchMore({ variables: { search: newQuery, offset: 0 } }).catch((err) =>
-          console.error("Error fetching more results:", err),
-        );
+        fetchMore({
+          variables: { search: newQuery, page: page, perPage: perPage },
+        }).catch((err) => console.error("Error fetching more results:", err));
       }
     },
     [fetchMore],
@@ -135,7 +139,7 @@ const GenericConnectionWidget = <T,>({
 
   const loadMore = () => {
     if (!fetchMore || loading) return;
-    fetchMore({ variables: { offset: options.length } }).catch((err) =>
+    fetchMore({ variables: { page: options?.items.length } }).catch((err) =>
       console.error("Error fetching more data:", err),
     );
   };
@@ -165,7 +169,8 @@ const GenericConnectionWidget = <T,>({
     [form, parameter.code, parameter.multiple],
   );
   const onScrollBottom = () => {
-    if (options.totalItems > options.items.length && !loading) {
+    console.log("onScrollBottom", { options: options, loading: loading });
+    if (options?.totalItems > (options?.items?.length || 0) && !loading) {
       setPerPage(perPage + 10);
     }
   };
@@ -182,15 +187,32 @@ const GenericConnectionWidget = <T,>({
       value={currentValue}
       disabled={loading}
       onClose={useCallback(() => setQuery(""), [])}
-      onScrollBottom={onScrollBottom}
     >
-      {options.map((option) => (
+      {options?.items.map((option) => (
         <Combobox.CheckOption key={option.id} value={option}>
           {option.name}
         </Combobox.CheckOption>
       ))}
+      {onScrollBottom && (
+        <IntersectionObserverWrapper onScrollBottom={onScrollBottom} />
+      )}
     </PickerComponent>
   );
 };
+const IntersectionObserverWrapper = ({
+  onScrollBottom,
+}: {
+  onScrollBottom: () => void;
+}) => {
+  const [lastElement, setLastElement] = useState<Element | null>(null);
+  const list = useIntersectionObserver(lastElement, {});
 
+  useEffect(() => {
+    if (lastElement && list?.isIntersecting) {
+      onScrollBottom();
+    }
+  }, [onScrollBottom, list, lastElement]);
+
+  return <div ref={setLastElement}></div>;
+};
 export default GenericConnectionWidget;

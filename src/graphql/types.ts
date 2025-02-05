@@ -1014,7 +1014,7 @@ export type Dhis2Connection = Connection & {
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
   permissions: ConnectionPermissions;
-  queryMetadata: Dhis2QueryResult;
+  queryMetadata: Dhis2QueryResultPage;
   slug: Scalars['String']['output'];
   type: ConnectionType;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -1025,8 +1025,8 @@ export type Dhis2Connection = Connection & {
 /** DHIS2 connection object */
 export type Dhis2ConnectionQueryMetadataArgs = {
   filter?: InputMaybe<Scalars['String']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
   search?: InputMaybe<Scalars['String']['input']>;
   type: Scalars['String']['input'];
 };
@@ -1039,17 +1039,20 @@ export enum Dhis2ConnectionError {
 /** DHIS2 metadata item */
 export type Dhis2MetadataItem = {
   __typename?: 'DHIS2MetadataItem';
-  id: Scalars['String']['output'];
+  id?: Maybe<Scalars['String']['output']>;
+  level?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
 };
 
-/** DHIS2 metadata query result */
-export type Dhis2QueryResult = {
-  __typename?: 'DHIS2QueryResult';
+/** DHIS2 metadata query result page */
+export type Dhis2QueryResultPage = {
+  __typename?: 'DHIS2QueryResultPage';
   error?: Maybe<Dhis2ConnectionError>;
   items?: Maybe<Array<Dhis2MetadataItem>>;
+  pageNumber: Scalars['Int']['output'];
   success: Scalars['Boolean']['output'];
-  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalItems: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
 };
 
 export type Database = {
