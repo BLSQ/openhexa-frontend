@@ -133,35 +133,35 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           className={"min-w-72"}
         />
       </div>
-      <Block className="divide divide-y divide-gray-100 mt-4">
-        {1 === 1 ? (
-          <>
-            {items.length === 0 ? (
-              <div className="text-center text-gray-500">
-                <div>{t("No template to show")}</div>
+      {1 === 1 ? (
+        <>
+          {items.length === 0 ? (
+            <div className="text-center text-gray-500 mt-20">
+              <div>{t("No template to show")}</div>
+            </div>
+          ) : (
+            <>
+              <div className="mt-5 mb-3 grid grid-cols-2 gap-4 xl:grid-cols-3 xl:gap-5">
+                {items.map((template, index) => (
+                  <TemplateCard
+                    workspace={workspace}
+                    key={index}
+                    template={template}
+                  />
+                ))}
               </div>
-            ) : (
-              <>
-                <div className="mt-5 mb-3 grid grid-cols-2 gap-4 xl:grid-cols-3 xl:gap-5">
-                  {items.map((template, index) => (
-                    <TemplateCard
-                      workspace={workspace}
-                      key={index}
-                      template={template}
-                    />
-                  ))}
-                </div>
-                <Pagination
-                  onChange={(page) => setPage(page)}
-                  page={page}
-                  perPage={perPage}
-                  totalItems={totalItems}
-                  countItems={items.length}
-                />
-              </>
-            )}
-          </>
-        ) : (
+              <Pagination
+                onChange={(page) => setPage(page)}
+                page={page}
+                perPage={perPage}
+                totalItems={totalItems}
+                countItems={items.length}
+              />
+            </>
+          )}
+        </>
+      ) : (
+        <Block className="divide divide-y divide-gray-100 mt-4">
           <DataGrid
             data={items}
             defaultPageSize={perPage}
@@ -214,8 +214,8 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
               }}
             </BaseColumn>
           </DataGrid>
-        )}
-      </Block>
+        </Block>
+      )}
       {templateToDelete && (
         <DeleteTemplateDialog
           open={true}
