@@ -23,7 +23,11 @@ const TemplateCard = ({ template, workspace }: TemplateCardProps) => {
         pathname: `/workspaces/[workspaceSlug]/templates/[templateCode]`,
         query: { workspaceSlug: workspace.slug, templateCode: template.code },
       }}
-      title={template.name}
+      title={
+        <div className="flex justify-between">
+          <span className="max-w-[80%]">{template.name}</span>
+        </div>
+      }
     >
       <Card.Content className="space-y-4" title={template.description ?? ""}>
         <div
