@@ -245,6 +245,7 @@ const GET_PIPELINE_TEMPLATES = gql`
       totalItems
       items {
         id
+        description
         code
         name
         permissions {
