@@ -1,6 +1,7 @@
 import * as Types from '../../../graphql/types';
 
 import { gql } from '@apollo/client';
+import { User_UserFragmentDoc } from '../../../core/features/User/User.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type GetPipelineTemplatesQueryVariables = Types.Exact<{
@@ -11,7 +12,7 @@ export type GetPipelineTemplatesQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetPipelineTemplatesQuery = { __typename?: 'Query', pipelineTemplates: { __typename?: 'PipelineTemplatePage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'PipelineTemplate', id: string, code: string, name: string, permissions: { __typename?: 'PipelineTemplatePermissions', delete: boolean }, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number, createdAt: any, template: { __typename?: 'PipelineTemplate', sourcePipeline?: { __typename?: 'Pipeline', name?: string | null } | null } } | null }> } };
+export type GetPipelineTemplatesQuery = { __typename?: 'Query', pipelineTemplates: { __typename?: 'PipelineTemplatePage', pageNumber: number, totalPages: number, totalItems: number, items: Array<{ __typename?: 'PipelineTemplate', id: string, code: string, name: string, permissions: { __typename?: 'PipelineTemplatePermissions', delete: boolean }, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number, createdAt: any, user?: { __typename?: 'User', id: string, email: string, displayName: string, avatar: { __typename?: 'Avatar', initials: string, color: string } } | null, template: { __typename?: 'PipelineTemplate', sourcePipeline?: { __typename?: 'Pipeline', name?: string | null } | null } } | null }> } };
 
 export type PipelineTemplateTable_WorkspaceFragment = { __typename?: 'Workspace', slug: string };
 
@@ -42,6 +43,9 @@ export const GetPipelineTemplatesDocument = gql`
         id
         versionNumber
         createdAt
+        user {
+          ...User_user
+        }
         template {
           sourcePipeline {
             name
@@ -51,7 +55,7 @@ export const GetPipelineTemplatesDocument = gql`
     }
   }
 }
-    `;
+    ${User_UserFragmentDoc}`;
 
 /**
  * __useGetPipelineTemplatesQuery__

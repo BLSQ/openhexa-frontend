@@ -33,7 +33,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const [templateToDelete, setTemplateToDelete] =
     useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
   const [page, setPage] = useState(1);
-  const perPage = 1;
+  const perPage = 2;
   const clearCache = useCacheKey(["pipelines"]);
 
   const [createPipelineFromTemplateVersion] =
@@ -254,6 +254,9 @@ const GET_PIPELINE_TEMPLATES = gql`
           id
           versionNumber
           createdAt
+          user {
+            ...User_user
+          }
           template {
             sourcePipeline {
               name
