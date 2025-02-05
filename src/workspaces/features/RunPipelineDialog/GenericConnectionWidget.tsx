@@ -54,13 +54,13 @@ const GET_CONNECTION_METADATA = gql`
 
 const widgetToQueryType: { [key: string]: string } = {
   organisation_units_picker: "ORGANISATION_UNITS",
-  organisation_unit_groups_picker: "ORGANISATION_UNIT_GROUPS",
-  organisation_unit_levels_picker: "ORGANISATION_UNIT_LEVELS",
+  "organisation_units_picker.group": "ORGANISATION_UNIT_GROUPS",
+  "organisation_units_picker.levels": "ORGANISATION_UNIT_LEVELS",
   datasets_picker: "DATASETS",
   data_elements_picker: "DATA_ELEMENTS",
-  data_element_groups_picker: "DATA_ELEMENT_GROUPS",
+  "data_elements_picker.group": "DATA_ELEMENT_GROUPS",
   indicators_picker: "INDICATORS",
-  indicator_groups_picker: "INDICATOR_GROUPS",
+  "indicators_picker.group": "INDICATOR_GROUPS",
 };
 
 const GenericConnectionWidget = <T,>({
@@ -95,8 +95,8 @@ const GenericConnectionWidget = <T,>({
         connectionSlug: form.formData[parameter.connection],
         type: widgetToQueryType[parameter.widget],
         search: debouncedQuery,
-        perPage: perPage,
-        page: page,
+        perPage: 10, // Default perPage
+        page: 1, // Start from page 1
       },
     }).catch((err) =>
       console.error("Error fetching connection metadata:", err),
@@ -107,8 +107,23 @@ const GenericConnectionWidget = <T,>({
     fetchData,
     workspaceSlug,
     parameter.widget,
-    perPage,
   ]);
+
+  useEffect(() => {
+    if (perPage === 10) return; // Skip if it's the initial load
+
+    fetchMore({
+      variables: {
+        workspaceSlug,
+        connectionSlug: form.formData[parameter.connection],
+        type: widgetToQueryType[parameter.widget],
+        search: debouncedQuery,
+        perPage,
+        page: 1, // Always load from the start with the new perPage
+      },
+      updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
+    }).catch((err) => console.error("Error fetching more data:", err));
+  }, [perPage]);
 
   const options = useMemo(() => {
     if (error) {
@@ -137,13 +152,6 @@ const GenericConnectionWidget = <T,>({
     [fetchMore],
   );
 
-  const loadMore = () => {
-    if (!fetchMore || loading) return;
-    fetchMore({ variables: { page: options?.items.length } }).catch((err) =>
-      console.error("Error fetching more data:", err),
-    );
-  };
-
   const displayValueHandler = (value: any) => {
     if (!value) return "";
     if (Array.isArray(value)) {
@@ -168,12 +176,13 @@ const GenericConnectionWidget = <T,>({
     },
     [form, parameter.code, parameter.multiple],
   );
-  const onScrollBottom = () => {
-    console.log("onScrollBottom", { options: options, loading: loading });
+
+  const onScrollBottom = useCallback(() => {
+    console.log("onScrollBottom", { options, loading });
     if (options?.totalItems > (options?.items?.length || 0) && !loading) {
-      setPerPage(perPage + 10);
+      setPerPage((prevPerPage) => prevPerPage + 10);
     }
-  };
+  }, [options, loading]);
   const PickerComponent = parameter.multiple ? MultiCombobox : Combobox;
 
   return (
