@@ -48,7 +48,7 @@ const PipelineTemplatesTable = ({
   const [templateToDelete, setTemplateToDelete] =
     useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
   const [view, setView] = useState<"grid" | "card">(
-    viewOptions === ViewOptions.CARD ? "card" : "grid",
+    viewOptions === ViewOptions.GRID ? "grid" : "card",
   );
   const [page, setPage] = useState(1);
   const perPage = 10;
