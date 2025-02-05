@@ -15,7 +15,11 @@ import { toast } from "react-toastify";
 import router from "next/router";
 import { CreatePipelineFromTemplateVersionError } from "graphql/types";
 import SearchInput from "core/features/SearchInput";
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  ListBulletIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import Listbox from "core/components/Listbox";
 import useDebounce from "core/hooks/useDebounce";
 import DeleteTemplateDialog from "pipelines/features/DeleteTemplateDialog";
@@ -32,8 +36,9 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [templateToDelete, setTemplateToDelete] =
     useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
+  const [view, setView] = useState<"grid" | "card">("card");
   const [page, setPage] = useState(1);
-  const perPage = 2;
+  const perPage = 10;
   const clearCache = useCacheKey(["pipelines"]);
 
   const [createPipelineFromTemplateVersion] =
@@ -132,8 +137,15 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           getOptionLabel={(option) => option.label}
           className={"min-w-72"}
         />
+        <Button onClick={() => setView(view === "card" ? "grid" : "card")}>
+          {view === "card" ? (
+            <ListBulletIcon className="h-5 w-5" />
+          ) : (
+            <ListBulletIcon className="h-5 w-5" />
+          )}
+        </Button>
       </div>
-      {1 === 1 ? (
+      {view === "card" ? (
         <>
           {items.length === 0 ? (
             <div className="text-center text-gray-500 mt-20">
