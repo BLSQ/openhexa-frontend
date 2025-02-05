@@ -44,7 +44,7 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
               {workspace.name}
             </Breadcrumbs.Part>
             <Breadcrumbs.Part
-              href={`/workspaces/${encodeURIComponent(workspace.slug)}/templates`}
+              href={`/workspaces/${encodeURIComponent(workspace.slug)}/pipelines#templates`}
             >
               {t("Templates")}
             </Breadcrumbs.Part>

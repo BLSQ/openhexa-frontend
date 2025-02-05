@@ -20,8 +20,8 @@ type Props = {
   workspaceSlug: string;
 };
 
+// TODO : switch between list and card view
 // TODO : show versions
-// TODO : cards in the pipeline view
 // TODO : links
 
 const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {

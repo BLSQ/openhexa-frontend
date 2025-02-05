@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 import {
-  BeakerIcon,
   BoltIcon,
   BookOpenIcon,
   ChevronLeftIcon,
@@ -22,7 +21,6 @@ import { useContext, useMemo } from "react";
 import SidebarMenu from "workspaces/features/SidebarMenu";
 import { Sidebar_WorkspaceFragment } from "./Sidebar.generated";
 import { LayoutContext } from "./WorkspaceLayout";
-import useFeature from "identity/hooks/useFeature";
 
 type SidebarProps = {
   workspace: Sidebar_WorkspaceFragment;
@@ -85,7 +83,6 @@ const Sidebar = (props: SidebarProps) => {
   const { workspace, className } = props;
   const { t } = useTranslation();
   const { isSidebarOpen, setSidebarOpen } = useContext(LayoutContext);
-  const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
 
   const { slug } = workspace;
 
@@ -133,14 +130,6 @@ const Sidebar = (props: SidebarProps) => {
               label={t("Pipelines")}
               compact={!isSidebarOpen}
             />
-            {pipelineTemplateFeatureEnabled && (
-              <NavItem
-                href={`/workspaces/${encodeURIComponent(slug)}/templates`}
-                Icon={BeakerIcon}
-                label={t("Templates")}
-                compact={!isSidebarOpen}
-              />
-            )}
             {workspace.permissions.launchNotebookServer && (
               <NavItem
                 href={`/workspaces/${encodeURIComponent(slug)}/notebooks`}
