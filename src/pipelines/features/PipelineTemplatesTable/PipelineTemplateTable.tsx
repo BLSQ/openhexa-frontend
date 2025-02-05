@@ -33,7 +33,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   const [templateToDelete, setTemplateToDelete] =
     useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
   const [page, setPage] = useState(1);
-  const perPage = 5;
+  const perPage = 1;
   const clearCache = useCacheKey(["pipelines"]);
 
   const [createPipelineFromTemplateVersion] =
@@ -48,9 +48,9 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
     workspaceFilterOptions[0],
   );
 
-  const { data, error, fetchMore, refetch } = useGetPipelineTemplatesQuery({
+  const { data, error, refetch } = useGetPipelineTemplatesQuery({
     variables: {
-      page: 1,
+      page,
       perPage,
       search: debouncedSearchQuery,
       workspaceSlug: workspaceFilter.workspaceSlug,
@@ -59,18 +59,6 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
   });
 
   useCacheKey("templates", () => refetch());
-
-  const fetchMoreData = (newPage: number = 1) => {
-    fetchMore({
-      variables: {
-        page: newPage,
-        perPage,
-        search: searchQuery,
-        workspaceSlug: workspaceFilter.workspaceSlug,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
-    }).then(() => setPage(newPage));
-  };
 
   if (error) return <p>{t("Error loading templates")}</p>;
 
@@ -164,7 +152,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
                   ))}
                 </div>
                 <Pagination
-                  onChange={(page) => fetchMoreData(page)}
+                  onChange={(page) => setPage(page)}
                   page={page}
                   perPage={perPage}
                   totalItems={totalItems}
@@ -178,7 +166,7 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
             data={items}
             defaultPageSize={perPage}
             totalItems={totalItems}
-            fetchData={({ page }) => fetchMoreData(page)}
+            fetchData={({ page }) => setPage(page)}
             fixedLayout={false}
           >
             <BaseColumn id="name" label={t("Name")}>
