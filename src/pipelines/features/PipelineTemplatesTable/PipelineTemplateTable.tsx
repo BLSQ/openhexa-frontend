@@ -18,6 +18,7 @@ import SearchInput from "core/features/SearchInput";
 import {
   ListBulletIcon,
   PlusIcon,
+  Squares2X2Icon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import Listbox from "core/components/Listbox";
@@ -26,6 +27,7 @@ import DeleteTemplateDialog from "pipelines/features/DeleteTemplateDialog";
 import { PipelineTemplateDialog_PipelineTemplateFragment } from "pipelines/features/DeleteTemplateDialog/DeleteTemplateDialog.generated";
 import TemplateCard from "workspaces/features/TemplateCard";
 import Pagination from "core/components/Pagination";
+import clsx from "clsx";
 
 type PipelineTemplatesTableProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
@@ -129,21 +131,48 @@ const PipelineTemplatesTable = ({ workspace }: PipelineTemplatesTableProps) => {
           onChange={(event) => setSearchQuery(event.target.value ?? "")}
           className="shadow-xs border-gray-50 w-96"
         />
-        <Listbox
-          value={workspaceFilter}
-          onChange={setWorkspaceFilter}
-          options={workspaceFilterOptions}
-          by="id"
-          getOptionLabel={(option) => option.label}
-          className={"min-w-72"}
-        />
-        <Button onClick={() => setView(view === "card" ? "grid" : "card")}>
-          {view === "card" ? (
-            <ListBulletIcon className="h-5 w-5" />
-          ) : (
-            <ListBulletIcon className="h-5 w-5" />
-          )}
-        </Button>
+        <div className={"flex gap-5"}>
+          <Listbox
+            value={workspaceFilter}
+            onChange={setWorkspaceFilter}
+            options={workspaceFilterOptions}
+            by="id"
+            getOptionLabel={(option) => option.label}
+            className={"min-w-72"}
+          />
+          <div className={"bg-gray-50 rounded"}>
+            <Button
+              variant={"custom"}
+              onClick={() => setView("card")}
+              rounded={false}
+              focusRing={false}
+              className={clsx(
+                view === "card" && "bg-white",
+                "rounded-bl rounded-tl",
+                "text-gray-800 border-transparent hover:bg-white",
+              )}
+            >
+              <Squares2X2Icon
+                className={clsx("h-4 w-4", view === "card" && "text-blue-400")}
+              />
+            </Button>
+            <Button
+              variant={"custom"}
+              onClick={() => setView("grid")}
+              rounded={false}
+              focusRing={false}
+              className={clsx(
+                view === "grid" && "bg-white",
+                "rounded-br rounded-tr",
+                "text-gray-800 border-transparent hover:bg-white",
+              )}
+            >
+              <ListBulletIcon
+                className={clsx("h-4 w-4", view === "grid" && "text-blue-400")}
+              />
+            </Button>
+          </div>
+        </div>
       </div>
       {view === "card" ? (
         <>
