@@ -608,7 +608,7 @@ query WorkspaceTemplatePage($workspaceSlug: String!, $templateCode: String!) {
     name
     ...PipelineLayout_workspace
   }
-  template: templateByCode(workspaceSlug: $workspaceSlug, code: $templateCode) {
+  template: templateByCode(code: $templateCode) {
     ...TemplateLayout_template
     permissions {
       update

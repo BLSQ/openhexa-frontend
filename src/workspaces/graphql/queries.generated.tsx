@@ -1567,7 +1567,7 @@ export const WorkspaceTemplatePageDocument = gql`
     name
     ...PipelineLayout_workspace
   }
-  template: templateByCode(workspaceSlug: $workspaceSlug, code: $templateCode) {
+  template: templateByCode(code: $templateCode) {
     ...TemplateLayout_template
     permissions {
       update

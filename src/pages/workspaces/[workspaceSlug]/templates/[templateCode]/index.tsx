@@ -106,7 +106,6 @@ export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
   async getServerSideProps(ctx, client) {
     await TemplateLayout.prefetch(ctx, client);
-
     const { data } = await client.query<
       WorkspaceTemplatePageQuery,
       WorkspaceTemplatePageQueryVariables

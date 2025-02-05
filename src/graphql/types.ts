@@ -3298,7 +3298,7 @@ export type Query = {
   pipelines: PipelinesPage;
   team?: Maybe<Team>;
   teams: TeamPage;
-  /** Retrieves a template by workspace slug and code. */
+  /** Retrieves a template by code. */
   templateByCode?: Maybe<PipelineTemplate>;
   workspace?: Maybe<Workspace>;
   workspaces: WorkspacePage;
@@ -3496,7 +3496,6 @@ export type QueryTeamsArgs = {
 
 export type QueryTemplateByCodeArgs = {
   code: Scalars['String']['input'];
-  workspaceSlug: Scalars['String']['input'];
 };
 
 
