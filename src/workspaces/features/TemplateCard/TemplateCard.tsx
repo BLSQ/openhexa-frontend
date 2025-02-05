@@ -29,7 +29,10 @@ const TemplateCard = ({ template, workspace }: TemplateCardProps) => {
         </div>
       }
     >
-      <Card.Content className="space-y-4" title={template.description ?? ""}>
+      <Card.Content
+        className="space-y-4 min-h-20 min-w-30"
+        title={template.description ?? ""}
+      >
         <div
           className={clsx("line-clamp-3", !template.description && "italic")}
         >
