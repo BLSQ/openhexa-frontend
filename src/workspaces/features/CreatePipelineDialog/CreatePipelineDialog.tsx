@@ -19,7 +19,7 @@ import {
 } from "./CreatePipelineDialog.generated";
 import useFeature from "identity/hooks/useFeature";
 import PipelineTemplateTable from "pipelines/features/PipelineTemplatesTable";
-import { ViewOptions } from "../../../pipelines/features/PipelineTemplatesTable/PipelineTemplateTable";
+import { ViewOptions } from "pipelines/features/PipelineTemplatesTable/PipelineTemplateTable";
 
 type CreatePipelineDialogProps = {
   open: boolean;

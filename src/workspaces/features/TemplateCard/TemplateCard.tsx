@@ -9,9 +9,9 @@ import {
 import Tooltip from "core/components/Tooltip";
 import { DateTime } from "luxon";
 import UserAvatar from "identity/features/UserAvatar";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import Button from "core/components/Button";
 import React from "react";
+import Button from "core/components/Button";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 interface TemplateCardProps {
   workspace: TemplateCard_WorkspaceFragment;
@@ -22,50 +22,59 @@ interface TemplateCardProps {
 const TemplateCard = ({ template, workspace, onCreate }: TemplateCardProps) => {
   const { t } = useTranslation();
   return (
-    <Card
-      href={{
-        pathname: `/workspaces/[workspaceSlug]/templates/[templateCode]`,
-        query: { workspaceSlug: workspace.slug, templateCode: template.code },
-      }}
-      title={
-        <div className="flex justify-between">
-          <span className="max-w-[80%]">{template.name}</span>
-        </div>
-      }
-    >
-      <Card.Content
-        className="space-y-4 min-h-20 min-w-30"
-        title={template.description ?? ""}
+    <div className={"relative group"}>
+      <Card
+        href={{
+          pathname: `/workspaces/[workspaceSlug]/templates/[templateCode]`,
+          query: { workspaceSlug: workspace.slug, templateCode: template.code },
+        }}
+        title={
+          <div className="flex justify-between">
+            <span className="max-w-[80%]">{template.name}</span>
+          </div>
+        }
+        className={"group-hover:blur-xs"}
       >
-        <div
-          className={clsx("line-clamp-3", !template.description && "italic")}
+        <Card.Content
+          className="space-y-4 min-h-20 min-w-30"
+          title={template.description ?? ""}
         >
-          {template.description || t("No description")}
-        </div>
+          <div
+            className={clsx("line-clamp-3", !template.description && "italic")}
+          >
+            {template.description || t("No description")}
+          </div>
+          {template.currentVersion?.user && (
+            <div className="flex justify-end">
+              <Tooltip
+                label={t("Last version uploaded on {{date}} by {{name}}", {
+                  date: DateTime.fromISO(
+                    template.currentVersion.createdAt,
+                  ).toLocaleString(DateTime.DATE_FULL),
+                  name: template.currentVersion.user.displayName,
+                })}
+              >
+                <UserAvatar user={template.currentVersion.user} size="sm" />
+              </Tooltip>
+            </div>
+          )}
+        </Card.Content>
+      </Card>
+      <div
+        className={
+          "hidden group-hover:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        }
+      >
         <Button
           variant="primary"
-          size="sm"
+          size="md"
           onClick={onCreate}
           leadingIcon={<PlusIcon className="h-4 w-4" />}
         >
           {t("Create pipeline")}
         </Button>
-        {template.currentVersion?.user && (
-          <div className="flex justify-end">
-            <Tooltip
-              label={t("Last version uploaded on {{date}} by {{name}}", {
-                date: DateTime.fromISO(
-                  template.currentVersion.createdAt,
-                ).toLocaleString(DateTime.DATE_FULL),
-                name: template.currentVersion.user.displayName,
-              })}
-            >
-              <UserAvatar user={template.currentVersion.user} size="sm" />
-            </Tooltip>
-          </div>
-        )}
-      </Card.Content>
-    </Card>
+      </div>
+    </div>
   );
 };
 
