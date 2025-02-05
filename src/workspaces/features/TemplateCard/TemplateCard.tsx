@@ -11,7 +11,7 @@ import { DateTime } from "luxon";
 import UserAvatar from "identity/features/UserAvatar";
 import React from "react";
 import Button from "core/components/Button";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import router from "next/router";
 
 interface TemplateCardProps {
   workspace: TemplateCard_WorkspaceFragment;
@@ -62,16 +62,22 @@ const TemplateCard = ({ template, workspace, onCreate }: TemplateCardProps) => {
       </Card>
       <div
         className={
-          "hidden group-hover:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          "hidden group-hover:flex flex-col gap-2 items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         }
       >
-        <Button
-          variant="primary"
-          size="md"
-          onClick={onCreate}
-          leadingIcon={<PlusIcon className="h-4 w-4" />}
-        >
+        <Button variant="secondary" size="md" onClick={onCreate}>
           {t("Create pipeline")}
+        </Button>
+        <Button
+          variant="secondary"
+          size="md"
+          onClick={() =>
+            router.push(
+              `/workspaces/${workspace.slug}/templates/${template.code}`,
+            )
+          }
+        >
+          {t("Details")}
         </Button>
       </div>
     </div>
