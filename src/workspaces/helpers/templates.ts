@@ -46,3 +46,28 @@ export async function updateTemplate(
 
   throw new Error("Failed to update template");
 }
+
+export async function deleteTemplateVersion(versionId: string) {
+  const client = getApolloClient();
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation DeleteTemplateVersion($input: DeleteTemplateVersionInput!) {
+        deleteTemplateVersion(input: $input) {
+          success
+          errors
+        }
+      }
+    `,
+    variables: { input: { id: versionId } },
+  });
+
+  if (data.deleteTemplateVersion.success) {
+    return true;
+  }
+
+  if (data.deleteTemplateVersion.errors.includes("PERMISSION_DENIED")) {
+    throw new Error("You are not authorized to perform this action");
+  }
+
+  throw new Error("Failed to delete template version");
+}

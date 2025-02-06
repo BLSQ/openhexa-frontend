@@ -2224,6 +2224,9 @@ type Mutation {
 
   """Updates an existing template."""
   updatePipelineTemplate(input: UpdateTemplateInput!): UpdateTemplateResult!
+
+  updateTemplateVersion(input: UpdateTemplateVersionInput!): UpdateTemplateVersionResult!
+  deleteTemplateVersion(input: DeleteTemplateVersionInput!): DeleteTemplateVersionResult!
 }
 
 type NotebookServer {
@@ -2508,7 +2511,7 @@ type PipelineTemplate {
   code: String!
   description: String
   config: String
-  versions: [PipelineTemplateVersion!]
+  versions(page: Int, perPage: Int): TemplateVersionPage!
   currentVersion: PipelineTemplateVersion
   sourcePipeline: Pipeline
   permissions: PipelineTemplatePermissions!
@@ -2528,6 +2531,16 @@ type PipelineTemplatePermissions {
   update: Boolean!
 }
 
+"""
+Represents a page of template versions.
+"""
+type TemplateVersionPage {
+  items: [PipelineTemplateVersion!]!
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+}
+
 """Represents a version of a pipeline template."""
 type PipelineTemplateVersion {
   id: UUID!
@@ -2536,6 +2549,8 @@ type PipelineTemplateVersion {
   createdAt: DateTime!
   template: PipelineTemplate!
   user: User
+  permissions: PipelineTemplateVersionPermissions!
+  isLatestVersion: Boolean!
 }
 
 """Represents the permissions for a pipeline template version."""
@@ -3802,5 +3817,52 @@ type WorkspacePermissions {
 
   """Permissions to create a dataset in the workspace"""
   createDataset: Boolean!
+}
+
+
+"""
+Represents the input for deleting a template version.
+"""
+input DeleteTemplateVersionInput {
+  id: UUID!
+}
+
+"""
+Represents the result of deleting a template version.
+"""
+type DeleteTemplateVersionResult {
+  success: Boolean!
+  errors: [DeleteTemplateVersionError!]!
+}
+
+enum DeleteTemplateVersionError {
+  TEMPLATE_VERSION_NOT_FOUND
+  PERMISSION_DENIED
+  TEMPLATE_NOT_FOUND
+}
+
+"""
+Represents the input for updating a template version.
+"""
+input UpdateTemplateVersionInput {
+  id: UUID!
+  changelog: String
+}
+
+"""
+Enum representing the possible errors that can occur when updating a template version.
+"""
+enum UpdateTemplateVersionError {
+  NOT_FOUND
+  PERMISSION_DENIED
+}
+
+"""
+Represents the result of updating a template version.
+"""
+type UpdateTemplateVersionResult {
+  success: Boolean!
+  errors: [UpdateTemplateVersionError!]!
+  templateVersion: PipelineTemplateVersion
 }
 

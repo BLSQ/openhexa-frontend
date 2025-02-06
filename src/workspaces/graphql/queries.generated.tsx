@@ -35,6 +35,7 @@ import { ConnectionUsageSnippets_ConnectionFragmentDoc } from '../features/Conne
 import { ConnectionFieldsSection_ConnectionFragmentDoc } from '../features/ConnectionFieldsSection/ConnectionFieldsSection.generated';
 import { TemplateCard_TemplateFragmentDoc } from '../features/TemplateCard/TemplateCard.generated';
 import { TemplateLayout_TemplateFragmentDoc } from '../layouts/TemplateLayout/TemplateLayout.generated';
+import { TemplateVersionCard_VersionFragmentDoc } from '../../pipelines/features/TemplateVersionCard/TemplateVersionCard.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type WorkspacesPageQueryVariables = Types.Exact<{ [key: string]: never; }>;
@@ -223,6 +224,16 @@ export type WorkspaceTemplatePageQueryVariables = Types.Exact<{
 
 
 export type WorkspaceTemplatePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, template?: { __typename?: 'PipelineTemplate', id: string, code: string, name: string, description?: string | null, permissions: { __typename?: 'PipelineTemplatePermissions', update: boolean, delete: boolean }, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number } | null } | null };
+
+export type WorkspaceTemplateVersionsPageQueryVariables = Types.Exact<{
+  workspaceSlug: Types.Scalars['String']['input'];
+  templateCode: Types.Scalars['String']['input'];
+  page: Types.Scalars['Int']['input'];
+  perPage: Types.Scalars['Int']['input'];
+}>;
+
+
+export type WorkspaceTemplateVersionsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, template?: { __typename?: 'PipelineTemplate', id: string, code: string, name: string, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string } | null, versions: { __typename?: 'TemplateVersionPage', totalItems: number, totalPages: number, items: Array<{ __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number, changelog?: string | null, createdAt: any, isLatestVersion: boolean, user?: { __typename?: 'User', displayName: string } | null, permissions: { __typename?: 'PipelineTemplateVersionPermissions', update: boolean, delete: boolean }, template: { __typename?: 'PipelineTemplate', id: string, code: string } }> } } | null };
 
 
 export const WorkspacesPageDocument = gql`
@@ -1620,3 +1631,65 @@ export type WorkspaceTemplatePageQueryHookResult = ReturnType<typeof useWorkspac
 export type WorkspaceTemplatePageLazyQueryHookResult = ReturnType<typeof useWorkspaceTemplatePageLazyQuery>;
 export type WorkspaceTemplatePageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceTemplatePageSuspenseQuery>;
 export type WorkspaceTemplatePageQueryResult = Apollo.QueryResult<WorkspaceTemplatePageQuery, WorkspaceTemplatePageQueryVariables>;
+export const WorkspaceTemplateVersionsPageDocument = gql`
+    query WorkspaceTemplateVersionsPage($workspaceSlug: String!, $templateCode: String!, $page: Int!, $perPage: Int!) {
+  workspace(slug: $workspaceSlug) {
+    slug
+    name
+    ...WorkspaceLayout_workspace
+  }
+  template: templateByCode(code: $templateCode) {
+    id
+    code
+    name
+    currentVersion {
+      id
+    }
+    versions(page: $page, perPage: $perPage) {
+      items {
+        ...TemplateVersionCard_version
+        id
+      }
+      totalItems
+      totalPages
+    }
+  }
+}
+    ${WorkspaceLayout_WorkspaceFragmentDoc}
+${TemplateVersionCard_VersionFragmentDoc}`;
+
+/**
+ * __useWorkspaceTemplateVersionsPageQuery__
+ *
+ * To run a query within a React component, call `useWorkspaceTemplateVersionsPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkspaceTemplateVersionsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkspaceTemplateVersionsPageQuery({
+ *   variables: {
+ *      workspaceSlug: // value for 'workspaceSlug'
+ *      templateCode: // value for 'templateCode'
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useWorkspaceTemplateVersionsPageQuery(baseOptions: Apollo.QueryHookOptions<WorkspaceTemplateVersionsPageQuery, WorkspaceTemplateVersionsPageQueryVariables> & ({ variables: WorkspaceTemplateVersionsPageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WorkspaceTemplateVersionsPageQuery, WorkspaceTemplateVersionsPageQueryVariables>(WorkspaceTemplateVersionsPageDocument, options);
+      }
+export function useWorkspaceTemplateVersionsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkspaceTemplateVersionsPageQuery, WorkspaceTemplateVersionsPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WorkspaceTemplateVersionsPageQuery, WorkspaceTemplateVersionsPageQueryVariables>(WorkspaceTemplateVersionsPageDocument, options);
+        }
+export function useWorkspaceTemplateVersionsPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceTemplateVersionsPageQuery, WorkspaceTemplateVersionsPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceTemplateVersionsPageQuery, WorkspaceTemplateVersionsPageQueryVariables>(WorkspaceTemplateVersionsPageDocument, options);
+        }
+export type WorkspaceTemplateVersionsPageQueryHookResult = ReturnType<typeof useWorkspaceTemplateVersionsPageQuery>;
+export type WorkspaceTemplateVersionsPageLazyQueryHookResult = ReturnType<typeof useWorkspaceTemplateVersionsPageLazyQuery>;
+export type WorkspaceTemplateVersionsPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceTemplateVersionsPageSuspenseQuery>;
+export type WorkspaceTemplateVersionsPageQueryResult = Apollo.QueryResult<WorkspaceTemplateVersionsPageQuery, WorkspaceTemplateVersionsPageQueryVariables>;
