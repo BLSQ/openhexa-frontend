@@ -621,6 +621,7 @@ query WorkspaceTemplatePage($workspaceSlug: String!, $templateCode: String!) {
     description
     currentVersion {
       id
+      versionNumber
     }
   }
 }

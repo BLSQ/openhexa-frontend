@@ -222,7 +222,7 @@ export type WorkspaceTemplatePageQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorkspaceTemplatePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, template?: { __typename?: 'PipelineTemplate', id: string, code: string, name: string, description?: string | null, permissions: { __typename?: 'PipelineTemplatePermissions', update: boolean, delete: boolean }, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string } | null } | null };
+export type WorkspaceTemplatePageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, template?: { __typename?: 'PipelineTemplate', id: string, code: string, name: string, description?: string | null, permissions: { __typename?: 'PipelineTemplatePermissions', update: boolean, delete: boolean }, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number } | null } | null };
 
 
 export const WorkspacesPageDocument = gql`
@@ -1580,6 +1580,7 @@ export const WorkspaceTemplatePageDocument = gql`
     description
     currentVersion {
       id
+      versionNumber
     }
   }
 }

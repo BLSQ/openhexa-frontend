@@ -83,10 +83,10 @@ const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
                   <Link
                     href={`/workspaces/${encodeURIComponent(
                       workspace.slug,
-                    )}/pipelines/${encodeURIComponent(template.code)}/versions`}
+                    )}/templates/${encodeURIComponent(template.code)}/versions`}
                   >
                     {property.displayValue
-                      ? property.displayValue.versionName
+                      ? property.displayValue.versionNumber
                       : t("No version yet")}
                   </Link>
                 </div>
