@@ -26,7 +26,7 @@ import Pagination from "core/components/Pagination";
 import clsx from "clsx";
 import Link from "core/components/Link";
 import {
-  PipelineTemplateTable_WorkspaceFragment,
+  PipelineTemplates_WorkspaceFragment,
   useGetPipelineTemplatesQuery,
 } from "./PipelineTemplates.generated";
 
@@ -36,7 +36,7 @@ export enum ViewOptions {
   GRID_AND_CARD,
 }
 type PipelineTemplatesProps = {
-  workspace: PipelineTemplateTable_WorkspaceFragment;
+  workspace: PipelineTemplates_WorkspaceFragment;
   viewOptions?: ViewOptions;
 };
 
@@ -343,7 +343,7 @@ const GET_PIPELINE_TEMPLATES = gql`
 
 PipelineTemplates.fragments = {
   workspace: gql`
-    fragment PipelineTemplateTable_workspace on Workspace {
+    fragment PipelineTemplates_workspace on Workspace {
       slug
     }
   `,

@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import CreatePipelineDialog from "workspaces/features/CreatePipelineDialog/CreatePipelineDialog";
 import Tabs from "core/components/Tabs";
 import useFeature from "identity/hooks/useFeature";
-import PipelineTemplateTable from "pipelines/features/PipelineTemplatesTable";
+import PipelineTemplates from "pipelines/features/PipelineTemplates";
 
 type Props = {
   page: number;
@@ -161,7 +161,7 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
                 label={t("Available Templates")}
                 className={"space-y-2 pt-2"}
               >
-                <PipelineTemplateTable workspace={workspace} />
+                <PipelineTemplates workspace={workspace} />
               </Tabs.Tab>
             )}
           </Tabs>
