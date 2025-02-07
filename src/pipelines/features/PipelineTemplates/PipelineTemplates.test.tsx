@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useMutation, useQuery } from "@apollo/client";
-import PipelineTemplatesTable from "./PipelineTemplateTable";
+import PipelineTemplates from "./PipelineTemplates";
 
 jest.mock("@apollo/client", () => ({
   __esModule: true,
@@ -44,7 +44,7 @@ const mockPipelineTemplates = {
   }),
 };
 
-describe("PipelineTemplatesTable", () => {
+describe("PipelineTemplates", () => {
   it("renders data after loading", async () => {
     useQueryMock.mockReturnValue({
       loading: false,
@@ -52,7 +52,7 @@ describe("PipelineTemplatesTable", () => {
       error: null,
     });
 
-    render(<PipelineTemplatesTable workspace={mockWorkspace} />);
+    render(<PipelineTemplates workspace={mockWorkspace} />);
 
     await waitFor(() => {
       expect(screen.getByText("Template 1")).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe("PipelineTemplatesTable", () => {
       fetchMore,
     });
 
-    render(<PipelineTemplatesTable workspace={mockWorkspace} />);
+    render(<PipelineTemplates workspace={mockWorkspace} />);
 
     const previousButton = screen.getByRole("button", { name: /Previous/i });
     const nextButton = previousButton.nextElementSibling as HTMLButtonElement;
@@ -93,7 +93,7 @@ describe("PipelineTemplatesTable", () => {
       error: null,
     });
 
-    render(<PipelineTemplatesTable workspace={mockWorkspace} />);
+    render(<PipelineTemplates workspace={mockWorkspace} />);
 
     const searchInput = screen.getByRole("textbox");
 
@@ -119,7 +119,7 @@ describe("PipelineTemplatesTable", () => {
       error: new Error("An error occurred"),
     });
 
-    render(<PipelineTemplatesTable workspace={mockWorkspace} />);
+    render(<PipelineTemplates workspace={mockWorkspace} />);
 
     await waitFor(() => {
       expect(screen.getByText("Error loading templates")).toBeInTheDocument();

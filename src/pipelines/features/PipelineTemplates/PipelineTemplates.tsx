@@ -7,10 +7,6 @@ import Block from "core/components/Block";
 import { gql } from "@apollo/client";
 import useCacheKey from "core/hooks/useCacheKey";
 import { useCreatePipelineFromTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
-import {
-  PipelineTemplateTable_WorkspaceFragment,
-  useGetPipelineTemplatesQuery,
-} from "./PipelineTemplateTable.generated";
 import { toast } from "react-toastify";
 import router from "next/router";
 import { CreatePipelineFromTemplateVersionError } from "graphql/types";
@@ -29,21 +25,25 @@ import TemplateCard from "workspaces/features/TemplateCard";
 import Pagination from "core/components/Pagination";
 import clsx from "clsx";
 import Link from "core/components/Link";
+import {
+  PipelineTemplateTable_WorkspaceFragment,
+  useGetPipelineTemplatesQuery,
+} from "./PipelineTemplates.generated";
 
 export enum ViewOptions {
   GRID,
   CARD,
   GRID_AND_CARD,
 }
-type PipelineTemplatesTableProps = {
+type PipelineTemplatesProps = {
   workspace: PipelineTemplateTable_WorkspaceFragment;
   viewOptions?: ViewOptions;
 };
 
-const PipelineTemplatesTable = ({
+const PipelineTemplates = ({
   workspace,
   viewOptions = ViewOptions.GRID_AND_CARD,
-}: PipelineTemplatesTableProps) => {
+}: PipelineTemplatesProps) => {
   const { t } = useTranslation();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [templateToDelete, setTemplateToDelete] =
@@ -341,7 +341,7 @@ const GET_PIPELINE_TEMPLATES = gql`
   }
 `;
 
-PipelineTemplatesTable.fragments = {
+PipelineTemplates.fragments = {
   workspace: gql`
     fragment PipelineTemplateTable_workspace on Workspace {
       slug
@@ -349,4 +349,4 @@ PipelineTemplatesTable.fragments = {
   `,
 };
 
-export default PipelineTemplatesTable;
+export default PipelineTemplates;
