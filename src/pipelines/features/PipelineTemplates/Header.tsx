@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "next-i18next";
 import clsx from "clsx";
 import Button from "core/components/Button";
 import SearchInput from "core/features/SearchInput";
@@ -30,8 +29,6 @@ const Header = ({
   setView,
   viewOptions,
 }: HeaderProps) => {
-  const { t } = useTranslation();
-
   return (
     <div className={"my-5 flex justify-between"}>
       <SearchInput
