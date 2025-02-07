@@ -78,7 +78,9 @@ const PublishPipelineDialog = ({
       if (data.createPipelineTemplateVersion.success) {
         toast.success(successMessage);
         onClose();
-        await router.push(`/workspaces/${workspace.slug}/pipelines/`);
+        await router.push(
+          `/workspaces/${workspace.slug}/templates/${data.createPipelineTemplateVersion.pipelineTemplate?.code}`,
+        );
       } else if (
         data.createPipelineTemplateVersion.errors?.includes(
           CreatePipelineTemplateVersionError.PermissionDenied,
