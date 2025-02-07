@@ -3,11 +3,6 @@ import { useTranslation } from "next-i18next";
 import { gql } from "@apollo/client";
 import { toast } from "react-toastify";
 import router from "next/router";
-import clsx from "clsx";
-import Button from "core/components/Button";
-import SearchInput from "core/features/SearchInput";
-import Listbox from "core/components/Listbox";
-import { ListBulletIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
 import useDebounce from "core/hooks/useDebounce";
 import useCacheKey from "core/hooks/useCacheKey";
 import {
@@ -18,6 +13,7 @@ import { useCreatePipelineFromTemplateVersionMutation } from "pipelines/graphql/
 import { CreatePipelineFromTemplateVersionError } from "graphql/types";
 import CardView from "./CardView";
 import GridView from "./GridView";
+import Header from "./Header";
 
 export enum ViewOptions {
   GRID,
@@ -122,65 +118,17 @@ const PipelineTemplates = ({
 
   return (
     <div>
-      <div className={"my-5 flex justify-between"}>
-        <SearchInput
-          ref={searchInputRef}
-          onSubmit={(event) => event.preventDefault()}
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value ?? "")}
-          className="shadow-xs border-gray-50 w-96"
-        />
-        <div className={"flex gap-5"}>
-          <Listbox
-            value={workspaceFilter}
-            onChange={setWorkspaceFilter}
-            options={workspaceFilterOptions}
-            by="id"
-            getOptionLabel={(option) => option.label}
-            className={"min-w-72"}
-          />
-          {viewOptions === ViewOptions.GRID_AND_CARD && (
-            <div className={"bg-gray-50 rounded"}>
-              <Button
-                variant={"custom"}
-                onClick={() => setView("card")}
-                rounded={false}
-                focusRing={false}
-                className={clsx(
-                  view === "card" && "bg-white",
-                  "rounded-bl rounded-tl",
-                  "text-gray-800 border-transparent hover:bg-white",
-                )}
-              >
-                <Squares2X2Icon
-                  className={clsx(
-                    "h-4 w-4",
-                    view === "card" && "text-blue-400",
-                  )}
-                />
-              </Button>
-              <Button
-                variant={"custom"}
-                onClick={() => setView("grid")}
-                rounded={false}
-                focusRing={false}
-                className={clsx(
-                  view === "grid" && "bg-white",
-                  "rounded-br rounded-tr",
-                  "text-gray-800 border-transparent hover:bg-white",
-                )}
-              >
-                <ListBulletIcon
-                  className={clsx(
-                    "h-4 w-4",
-                    view === "grid" && "text-blue-400",
-                  )}
-                />
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
+      <Header
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        searchInputRef={searchInputRef}
+        workspaceFilter={workspaceFilter}
+        setWorkspaceFilter={setWorkspaceFilter}
+        workspaceFilterOptions={workspaceFilterOptions}
+        view={view}
+        setView={setView}
+        viewOptions={viewOptions}
+      />
       {view === "card" ? (
         <CardView
           items={items}
