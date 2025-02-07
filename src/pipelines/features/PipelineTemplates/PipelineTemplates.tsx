@@ -109,6 +109,16 @@ const PipelineTemplates = ({
           )
         ) {
           toast.error(t("A pipeline with the same name already exists."));
+        } else if (
+          errors?.includes(
+            CreatePipelineFromTemplateVersionError.PipelineTemplateVersionHasNoSourcePipelineVersion,
+          )
+        ) {
+          toast.error(
+            t(
+              "The last version of this template is based on a deleted pipeline version",
+            ),
+          );
         } else {
           toast.error(t("Unknown error : Failed to create pipeline"));
         }

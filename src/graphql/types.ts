@@ -773,6 +773,7 @@ export type CreateMembershipResult = {
 export enum CreatePipelineFromTemplateVersionError {
   PermissionDenied = 'PERMISSION_DENIED',
   PipelineAlreadyExists = 'PIPELINE_ALREADY_EXISTS',
+  PipelineTemplateVersionHasNoSourcePipelineVersion = 'PIPELINE_TEMPLATE_VERSION_HAS_NO_SOURCE_PIPELINE_VERSION',
   PipelineTemplateVersionNotFound = 'PIPELINE_TEMPLATE_VERSION_NOT_FOUND',
   WorkspaceNotFound = 'WORKSPACE_NOT_FOUND'
 }
