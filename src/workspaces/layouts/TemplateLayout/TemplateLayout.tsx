@@ -86,7 +86,9 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
         open={isDeleteTemplateDialogOpen}
         onClose={() => {
           setDeleteTemplateDialogOpen(false);
-          router.push(`/workspaces/${workspace.slug}/templates`).then();
+          router
+            .push(`/workspaces/${workspace.slug}/pipelines#templates`)
+            .then();
         }}
         pipelineTemplate={template}
       />
