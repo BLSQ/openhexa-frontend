@@ -85,16 +85,18 @@ const PipelineTemplates = ({
           result.data?.createPipelineFromTemplateVersion?.pipeline;
         if (success && pipeline) {
           clearCache();
-          router.push(
-            `/workspaces/${encodeURIComponent(
-              workspace.slug,
-            )}/pipelines/${encodeURIComponent(pipeline.code)}`,
-          );
           toast.success(
             t("Successfully created pipeline {{pipelineName}}", {
               pipelineName: pipeline.name,
             }),
           );
+          router
+            .push(
+              `/workspaces/${encodeURIComponent(
+                workspace.slug,
+              )}/pipelines/${encodeURIComponent(pipeline.code)}`,
+            )
+            .then();
         } else if (
           errors?.includes(
             CreatePipelineFromTemplateVersionError.PermissionDenied,
@@ -116,6 +118,7 @@ const PipelineTemplates = ({
       });
   };
 
+  const ViewTemplates = view === "card" ? CardView : GridView;
   return (
     <div>
       <Header
@@ -129,27 +132,15 @@ const PipelineTemplates = ({
         setView={setView}
         viewOptions={viewOptions}
       />
-      {view === "card" ? (
-        <CardView
-          items={items}
-          workspace={workspace}
-          page={page}
-          perPage={perPage}
-          totalItems={totalItems}
-          createPipeline={createPipeline}
-          setPage={setPage}
-        />
-      ) : (
-        <GridView
-          items={items}
-          workspace={workspace}
-          page={page}
-          perPage={perPage}
-          totalItems={totalItems}
-          createPipeline={createPipeline}
-          setPage={setPage}
-        />
-      )}
+      <ViewTemplates
+        items={items}
+        workspace={workspace}
+        page={page}
+        perPage={perPage}
+        totalItems={totalItems}
+        createPipeline={createPipeline}
+        setPage={setPage}
+      />
     </div>
   );
 };
