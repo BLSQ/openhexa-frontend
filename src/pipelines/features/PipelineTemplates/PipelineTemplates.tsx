@@ -1,34 +1,23 @@
-import DataGrid, { BaseColumn } from "core/components/DataGrid";
-import Button from "core/components/Button";
-import { useTranslation } from "next-i18next";
 import React, { useRef, useState } from "react";
-import DateColumn from "core/components/DataGrid/DateColumn";
-import Block from "core/components/Block";
+import { useTranslation } from "next-i18next";
 import { gql } from "@apollo/client";
-import useCacheKey from "core/hooks/useCacheKey";
-import { useCreatePipelineFromTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
 import { toast } from "react-toastify";
 import router from "next/router";
-import { CreatePipelineFromTemplateVersionError } from "graphql/types";
-import SearchInput from "core/features/SearchInput";
-import {
-  ListBulletIcon,
-  PlusIcon,
-  Squares2X2Icon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
-import Listbox from "core/components/Listbox";
-import useDebounce from "core/hooks/useDebounce";
-import DeleteTemplateDialog from "pipelines/features/DeleteTemplateDialog";
-import { PipelineTemplateDialog_PipelineTemplateFragment } from "pipelines/features/DeleteTemplateDialog/DeleteTemplateDialog.generated";
-import TemplateCard from "workspaces/features/TemplateCard";
-import Pagination from "core/components/Pagination";
 import clsx from "clsx";
-import Link from "core/components/Link";
+import Button from "core/components/Button";
+import SearchInput from "core/features/SearchInput";
+import Listbox from "core/components/Listbox";
+import { ListBulletIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
+import useDebounce from "core/hooks/useDebounce";
+import useCacheKey from "core/hooks/useCacheKey";
 import {
   PipelineTemplates_WorkspaceFragment,
   useGetPipelineTemplatesQuery,
 } from "./PipelineTemplates.generated";
+import { useCreatePipelineFromTemplateVersionMutation } from "pipelines/graphql/mutations.generated";
+import { CreatePipelineFromTemplateVersionError } from "graphql/types";
+import CardView from "./CardView";
+import GridView from "./GridView";
 
 export enum ViewOptions {
   GRID,
@@ -46,8 +35,6 @@ const PipelineTemplates = ({
 }: PipelineTemplatesProps) => {
   const { t } = useTranslation();
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [templateToDelete, setTemplateToDelete] =
-    useState<PipelineTemplateDialog_PipelineTemplateFragment | null>(null);
   const [view, setView] = useState<"grid" | "card">(
     viewOptions === ViewOptions.GRID ? "grid" : "card",
   );
@@ -195,104 +182,24 @@ const PipelineTemplates = ({
         </div>
       </div>
       {view === "card" ? (
-        <>
-          {items.length === 0 ? (
-            <div className="text-center text-gray-500 mt-20">
-              <div>{t("No template to show")}</div>
-            </div>
-          ) : (
-            <>
-              <div className="mt-5 mb-3 grid grid-cols-2 gap-4 xl:grid-cols-3 xl:gap-5">
-                {items.map((template, index) => (
-                  <TemplateCard
-                    workspace={workspace}
-                    key={index}
-                    template={template}
-                    onCreate={
-                      template.currentVersion?.id
-                        ? createPipeline(template.currentVersion?.id)
-                        : undefined
-                    }
-                  />
-                ))}
-              </div>
-              <Pagination
-                onChange={(page) => setPage(page)}
-                page={page}
-                perPage={perPage}
-                totalItems={totalItems}
-                countItems={items.length}
-              />
-            </>
-          )}
-        </>
+        <CardView
+          items={items}
+          workspace={workspace}
+          page={page}
+          perPage={perPage}
+          totalItems={totalItems}
+          createPipeline={createPipeline}
+          setPage={setPage}
+        />
       ) : (
-        <Block className="divide divide-y divide-gray-100 mt-4">
-          <DataGrid
-            data={items}
-            defaultPageSize={perPage}
-            totalItems={totalItems}
-            fetchData={({ page }) => setPage(page)}
-            fixedLayout={false}
-          >
-            <BaseColumn id="name" label={t("Name")}>
-              {(template) => (
-                <Link
-                  href={`/workspaces/${encodeURIComponent(workspace.slug)}/templates/${template.code}`}
-                >
-                  {template.name}
-                </Link>
-              )}
-            </BaseColumn>
-            <BaseColumn id="version" label={t("Version")}>
-              {({ currentVersion: { versionNumber } }) => (
-                <span>{`v${versionNumber}`}</span>
-              )}
-            </BaseColumn>
-            <DateColumn
-              accessor={"currentVersion.createdAt"}
-              label={t("Created At")}
-            />
-            <BaseColumn id="actions" className={"text-right"}>
-              {(template) => {
-                const {
-                  permissions: { delete: canDelete },
-                  currentVersion: { id: pipelineId },
-                } = template;
-                return (
-                  <div className={"space-x-1"}>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={createPipeline(pipelineId)}
-                      leadingIcon={<PlusIcon className="h-4 w-4" />}
-                    >
-                      {t("Create pipeline")}
-                    </Button>
-                    {canDelete && (
-                      <>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => setTemplateToDelete(template)}
-                          leadingIcon={<TrashIcon className="h-4 w-4" />}
-                        >
-                          {t("Delete")}
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                );
-              }}
-            </BaseColumn>
-          </DataGrid>
-        </Block>
-      )}
-      {templateToDelete && (
-        <DeleteTemplateDialog
-          open={true}
-          pipelineTemplate={templateToDelete}
-          onClose={() => setTemplateToDelete(null)}
+        <GridView
+          items={items}
+          workspace={workspace}
+          page={page}
+          perPage={perPage}
+          totalItems={totalItems}
+          createPipeline={createPipeline}
+          setPage={setPage}
         />
       )}
     </div>
