@@ -217,7 +217,7 @@
   "Home": "Accueil",
   "Host": "Hôte",
   "How to create a pipeline": "Comment créer un pipeline",
-  "I confirm that I want to publish this Pipeline code as a Template with all OpenHexa users.": "Je confirme que je veux publier ce code de pipeline en tant que modèle avec tous les utilisateurs d'OpenHexa.",
+  "I confirm that I want to publish this code and make it available <1>to all users of the OpenHEXA platform</1>": "Je confirme que je veux publier ce code et le rendre disponible <1>à tous les utilisateurs de la plateforme OpenHEXA</1>",
   "Iaso Instance URL": "URL de l'instance Iaso",
   "Identifier": "Identifiant",
   "Image": "Image",

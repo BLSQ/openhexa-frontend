@@ -17,6 +17,7 @@ import {
   PipelinePublish_PipelineFragment,
   PipelinePublish_WorkspaceFragment,
 } from "./PublishPipelineDialog.generated";
+import { Trans } from "next-i18next";
 
 type PublishPipelineDialogProps = {
   open: boolean;
@@ -182,9 +183,12 @@ const PublishPipelineDialog = ({
               name="confirmPublishing"
               checked={form.formData.confirmPublishing}
               onChange={form.handleInputChange}
-              label={t(
-                "I confirm that I want to publish this Pipeline code as a Template with all OpenHexa users.",
-              )}
+              label={
+                <Trans>
+                  I confirm that I want to publish this code and make it
+                  available <b>to all users of the OpenHEXA platform</b>
+                </Trans>
+              }
             />
           </Field>
           {form.submitError && (
