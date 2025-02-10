@@ -48,8 +48,10 @@ const GridView = ({
           )}
         </BaseColumn>
         <BaseColumn id="version" label={t("Version")}>
-          {({ currentVersion: { versionNumber } }) => (
-            <span>{`v${versionNumber}`}</span>
+          {({ currentVersion }) => (
+            <span>
+              {currentVersion ? `v${currentVersion.versionNumber}` : ""}
+            </span>
           )}
         </BaseColumn>
         <DateColumn
@@ -60,18 +62,20 @@ const GridView = ({
           {(template) => {
             const {
               permissions: { delete: canDelete },
-              currentVersion: { id: pipelineId },
+              currentVersion,
             } = template;
             return (
               <div className={"space-x-1"}>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={createPipeline(pipelineId)}
-                  leadingIcon={<PlusIcon className="h-4 w-4" />}
-                >
-                  {t("Create pipeline")}
-                </Button>
+                {currentVersion && (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={createPipeline(currentVersion.id)}
+                    leadingIcon={<PlusIcon className="h-4 w-4" />}
+                  >
+                    {t("Create pipeline")}
+                  </Button>
+                )}
                 {canDelete && (
                   <>
                     <Button

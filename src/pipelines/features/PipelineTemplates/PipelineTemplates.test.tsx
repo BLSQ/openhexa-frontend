@@ -27,6 +27,7 @@ const mockPipelineTemplates = {
     return {
       id: indexAsString,
       name: `Template ${indexAsString}`,
+      description: `Description ${indexAsString}`,
       permissions: {
         delete: true,
       },
@@ -56,9 +57,14 @@ describe("PipelineTemplates", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Template 1")).toBeInTheDocument();
-      expect(screen.getByText("v1")).toBeInTheDocument();
-      expect(screen.getByText("1/1/2023, 1:01 AM")).toBeInTheDocument();
+      expect(screen.getByText("Description 1")).toBeInTheDocument();
     });
+
+    fireEvent.click(screen.getByTestId("grid-view"));
+
+    expect(screen.getByText("Template 1")).toBeInTheDocument();
+    expect(screen.getByText("v1")).toBeInTheDocument();
+    expect(screen.getByText("1/1/2023, 1:01 AM")).toBeInTheDocument();
   });
 
   it("handles pagination", async () => {

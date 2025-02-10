@@ -50,6 +50,7 @@ const Header = ({
         {viewOptions === ViewOptions.GRID_AND_CARD && (
           <div className={"bg-gray-50 rounded"}>
             <Button
+              data-testid={"card-view"}
               variant={"custom"}
               onClick={() => setView("card")}
               rounded={false}
@@ -65,6 +66,7 @@ const Header = ({
               />
             </Button>
             <Button
+              data-testid={"grid-view"}
               variant={"custom"}
               onClick={() => setView("grid")}
               rounded={false}
