@@ -46,8 +46,8 @@ const PublishPipelineDialog = ({
     changelog: string;
   }>({
     initialState: {
-      name: "",
-      description: "",
+      name: pipeline.name ?? "",
+      description: pipeline.description ?? "",
       confirmPublishing: false,
       changelog: "",
     },
@@ -213,6 +213,8 @@ PublishPipelineDialog.fragment = {
   pipeline: gql`
     fragment PipelinePublish_pipeline on Pipeline {
       id
+      name
+      description
       currentVersion {
         id
         versionName
