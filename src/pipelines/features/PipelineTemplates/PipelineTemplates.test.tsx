@@ -18,31 +18,31 @@ const mockWorkspace = {
   slug: "test-workspace",
 };
 
+const template = (id: string) => ({
+  id: id,
+  name: `Template ${id}`,
+  description: `Description ${id}`,
+  permissions: {
+    delete: true,
+  },
+  currentVersion: {
+    id: id,
+    versionNumber: id,
+    createdAt: `2023-01-01T00:0${id}:00Z`,
+    template: {
+      sourcePipeline: {
+        name: `Pipeline ${id}`,
+      },
+    },
+  },
+});
 const mockPipelineTemplates = {
   pageNumber: 1,
   totalPages: 2,
-  totalItems: 6,
-  items: Array.from({ length: 6 }, (_, index) => {
-    const indexAsString = (index + 1).toString();
-    return {
-      id: indexAsString,
-      name: `Template ${indexAsString}`,
-      description: `Description ${indexAsString}`,
-      permissions: {
-        delete: true,
-      },
-      currentVersion: {
-        id: indexAsString,
-        versionNumber: indexAsString,
-        createdAt: `2023-01-01T00:0${indexAsString}:00Z`,
-        template: {
-          sourcePipeline: {
-            name: `Pipeline ${indexAsString}`,
-          },
-        },
-      },
-    };
-  }),
+  totalItems: 11,
+  items: Array.from({ length: 10 }, (_, index) =>
+    template((index + 1).toString()),
+  ),
 };
 
 describe("PipelineTemplates", () => {
@@ -68,12 +68,10 @@ describe("PipelineTemplates", () => {
   });
 
   it("handles pagination", async () => {
-    const fetchMore = jest.fn();
     useQueryMock.mockReturnValue({
       loading: false,
       data: { pipelineTemplates: mockPipelineTemplates },
       error: null,
-      fetchMore,
     });
 
     render(<PipelineTemplates workspace={mockWorkspace} />);
@@ -83,12 +81,22 @@ describe("PipelineTemplates", () => {
     await waitFor(() => {
       expect(nextButton).toBeInTheDocument();
     });
-    expect(fetchMore).not.toHaveBeenCalled();
+
+    useQueryMock.mockReturnValue({
+      loading: false,
+      data: {
+        pipelineTemplates: {
+          ...mockPipelineTemplates,
+          items: [template("11")],
+        },
+      },
+      error: null,
+    });
 
     fireEvent.click(nextButton);
 
     await waitFor(() => {
-      expect(fetchMore).toHaveBeenCalled();
+      expect(screen.getByText("Template 11")).toBeInTheDocument();
     });
   });
 
