@@ -20,8 +20,6 @@ type Props = {
   workspaceSlug: string;
 };
 
-// TODO : refactor pipeline template table
-
 const WorkspaceTemplatePage: NextPageWithLayout = (props: Props) => {
   const { templateCode, workspaceSlug } = props;
   const { t } = useTranslation();
