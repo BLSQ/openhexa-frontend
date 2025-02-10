@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import Button from "core/components/Button";
 import Spinner from "core/components/Spinner";
 import React, { useEffect, useState } from "react";
@@ -17,7 +17,6 @@ import {
   PipelinePublish_PipelineFragment,
   PipelinePublish_WorkspaceFragment,
 } from "./PublishPipelineDialog.generated";
-import { Trans } from "next-i18next";
 
 type PublishPipelineDialogProps = {
   open: boolean;
