@@ -725,8 +725,8 @@ export type CreateDatasetVersionFileResult = {
 
 /** Input for creating a dataset version. */
 export type CreateDatasetVersionInput = {
+  changelog?: InputMaybe<Scalars['String']['input']>;
   datasetId: Scalars['ID']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
 };
 
@@ -1214,9 +1214,11 @@ export type DatasetPermissions = {
 export type DatasetVersion = MetadataObject & {
   __typename?: 'DatasetVersion';
   attributes: Array<MetadataAttribute>;
+  changelog?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   createdBy?: Maybe<User>;
   dataset: Dataset;
+  /** @deprecated use changelog instead */
   description?: Maybe<Scalars['String']['output']>;
   fileByName?: Maybe<DatasetVersionFile>;
   files: DatasetVersionFilePage;
@@ -2242,6 +2244,8 @@ export type Mutation = {
   updateDAG: UpdateDagResult;
   /** Update a dataset. */
   updateDataset: UpdateDatasetResult;
+  /** Update a dataset version. */
+  updateDatasetVersion: UpdateDatasetVersionResult;
   updateMembership: UpdateMembershipResult;
   /** Updates an existing pipeline. */
   updatePipeline: UpdatePipelineResult;
@@ -2685,6 +2689,11 @@ export type MutationUpdateDagArgs = {
 
 export type MutationUpdateDatasetArgs = {
   input: UpdateDatasetInput;
+};
+
+
+export type MutationUpdateDatasetVersionArgs = {
+  input: UpdateDatasetVersionInput;
 };
 
 
@@ -4058,6 +4067,27 @@ export type UpdateDatasetResult = {
   dataset?: Maybe<Dataset>;
   errors: Array<UpdateDatasetError>;
   success: Scalars['Boolean']['output'];
+};
+
+/** Errors that can occur when updating a dataset version. */
+export enum UpdateDatasetVersionError {
+  PermissionDenied = 'PERMISSION_DENIED',
+  VersionNotFound = 'VERSION_NOT_FOUND'
+}
+
+/** Input for updating a dataset version. */
+export type UpdateDatasetVersionInput = {
+  changelog?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  versionId: Scalars['ID']['input'];
+};
+
+/** Result of updating a dataset version. */
+export type UpdateDatasetVersionResult = {
+  __typename?: 'UpdateDatasetVersionResult';
+  errors: Array<UpdateDatasetVersionError>;
+  success: Scalars['Boolean']['output'];
+  version?: Maybe<DatasetVersion>;
 };
 
 /** The UpdateMembershipError enum represents the possible errors that can occur during the updateMembership mutation. */
