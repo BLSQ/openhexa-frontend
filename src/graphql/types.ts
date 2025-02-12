@@ -1031,16 +1031,34 @@ export type Dhis2ConnectionQueryMetadataArgs = {
   type: Scalars['String']['input'];
 };
 
+/** DHIS2 connection error */
 export enum Dhis2ConnectionError {
-  ConnectionError = 'CONNECTION_ERROR',
+  RequestError = 'REQUEST_ERROR',
   UnknownError = 'UNKNOWN_ERROR'
+}
+
+/** DHIS2 connection status */
+export enum Dhis2ConnectionStatus {
+  Down = 'DOWN',
+  Unknown = 'UNKNOWN',
+  Up = 'UP'
 }
 
 /** DHIS2 metadata item */
 export type Dhis2MetadataItem = {
   __typename?: 'DHIS2MetadataItem';
   id?: Maybe<Scalars['String']['output']>;
-  level?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+};
+
+/** DHIS2 metadata item union */
+export type Dhis2MetadataItemUnion = Dhis2MetadataItem | Dhis2OrganisationUnitLevel;
+
+/** DHIS2 metadata level */
+export type Dhis2OrganisationUnitLevel = {
+  __typename?: 'DHIS2OrganisationUnitLevel';
+  id?: Maybe<Scalars['String']['output']>;
+  level?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
 };
 
@@ -1048,7 +1066,7 @@ export type Dhis2MetadataItem = {
 export type Dhis2QueryResultPage = {
   __typename?: 'DHIS2QueryResultPage';
   error?: Maybe<Dhis2ConnectionError>;
-  items?: Maybe<Array<Dhis2MetadataItem>>;
+  items?: Maybe<Array<Dhis2MetadataItemUnion>>;
   pageNumber: Scalars['Int']['output'];
   success: Scalars['Boolean']['output'];
   totalItems: Scalars['Int']['output'];
