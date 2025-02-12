@@ -41,8 +41,15 @@ const GET_CONNECTION_METADATA = gql`
           page: $page
         ) {
           items {
-            id
-            name
+            ... on DHIS2MetadataItem {
+              id
+              name
+            }
+            ... on DHIS2OrganisationUnitLevel {
+              id
+              name
+              level # Additional field specific to this type
+            }
           }
           totalItems
           error
@@ -54,13 +61,13 @@ const GET_CONNECTION_METADATA = gql`
 
 const widgetToQueryType: { [key: string]: string } = {
   organisation_units_picker: "ORGANISATION_UNITS",
-  "organisation_units_picker.group": "ORGANISATION_UNIT_GROUPS",
+  "organisation_units_picker.groups": "ORGANISATION_UNIT_GROUPS",
   "organisation_units_picker.levels": "ORGANISATION_UNIT_LEVELS",
   datasets_picker: "DATASETS",
   data_elements_picker: "DATA_ELEMENTS",
-  "data_elements_picker.group": "DATA_ELEMENT_GROUPS",
+  "data_elements_picker.groups": "DATA_ELEMENT_GROUPS",
   indicators_picker: "INDICATORS",
-  "indicators_picker.group": "INDICATOR_GROUPS",
+  "indicators_picker.groups": "INDICATOR_GROUPS",
 };
 
 const GenericConnectionWidget = <T,>({
@@ -95,8 +102,8 @@ const GenericConnectionWidget = <T,>({
         connectionSlug: form.formData[parameter.connection],
         type: widgetToQueryType[parameter.widget],
         search: debouncedQuery,
-        perPage: 10, // Default perPage
-        page: 1, // Start from page 1
+        perPage: 10,
+        page: 1,
       },
     }).catch((err) =>
       console.error("Error fetching connection metadata:", err),
@@ -110,7 +117,7 @@ const GenericConnectionWidget = <T,>({
   ]);
 
   useEffect(() => {
-    if (perPage === 10) return; // Skip if it's the initial load
+    if (perPage === 10) return;
 
     fetchMore({
       variables: {
@@ -119,7 +126,7 @@ const GenericConnectionWidget = <T,>({
         type: widgetToQueryType[parameter.widget],
         search: debouncedQuery,
         perPage,
-        page: 1, // Always load from the start with the new perPage
+        page: 1,
       },
       updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
     }).catch((err) => console.error("Error fetching more data:", err));
@@ -178,7 +185,6 @@ const GenericConnectionWidget = <T,>({
   );
 
   const onScrollBottom = useCallback(() => {
-    console.log("onScrollBottom", { options, loading });
     if (options?.totalItems > (options?.items?.length || 0) && !loading) {
       setPerPage((prevPerPage) => prevPerPage + 10);
     }
