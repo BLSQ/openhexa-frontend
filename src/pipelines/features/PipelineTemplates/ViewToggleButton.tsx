@@ -18,14 +18,12 @@ const ViewToggleButton = ({ view, setView }: ViewToggleButtonProps) => {
         rounded={false}
         focusRing={false}
         className={clsx(
-          view === "card" && "bg-white",
+          view === "card" ? "bg-white text-blue-400" : "text-gray-800",
           "rounded-bl rounded-tl",
-          "text-gray-800 border-transparent hover:bg-white",
+          "border-transparent hover:bg-white",
         )}
       >
-        <Squares2X2Icon
-          className={clsx("h-4 w-4", view === "card" && "text-blue-400")}
-        />
+        <Squares2X2Icon className="h-4 w-4" />
       </Button>
       <Button
         data-testid={"grid-view"}
@@ -34,14 +32,12 @@ const ViewToggleButton = ({ view, setView }: ViewToggleButtonProps) => {
         rounded={false}
         focusRing={false}
         className={clsx(
-          view === "grid" && "bg-white",
+          view === "grid" ? "bg-white text-blue-400" : "text-gray-800",
           "rounded-br rounded-tr",
-          "text-gray-800 border-transparent hover:bg-white",
+          "border-transparent hover:bg-white",
         )}
       >
-        <ListBulletIcon
-          className={clsx("h-4 w-4", view === "grid" && "text-blue-400")}
-        />
+        <ListBulletIcon className="h-4 w-4" />
       </Button>
     </div>
   );
