@@ -47,7 +47,7 @@ const TemplateVersionsPage: NextPageWithLayout<Props> = ({
 
   const { workspace, template } = data;
   return (
-    <Page title={t("")}>
+    <Page title={t("Versions of {{template}}", { template: template.name })}>
       <WorkspaceLayout
         workspace={workspace}
         header={

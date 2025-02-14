@@ -8,10 +8,10 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import PipelineVersionCard from "pipelines/features/PipelineVersionCard";
 import {
+  useWorkspacePipelineVersionsPageQuery,
   WorkspacePipelineVersionsPageDocument,
   WorkspacePipelineVersionsPageQuery,
   WorkspacePipelineVersionsPageQueryVariables,
-  useWorkspacePipelineVersionsPageQuery,
 } from "workspaces/graphql/queries.generated";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
@@ -47,7 +47,7 @@ const PipelineVersionsPage: NextPageWithLayout<Props> = ({
 
   const { workspace, pipeline } = data;
   return (
-    <Page title={t("")}>
+    <Page title={t("Versions of {{pipeline}}", { pipeline: pipeline.name })}>
       <WorkspaceLayout
         workspace={workspace}
         helpLinks={[

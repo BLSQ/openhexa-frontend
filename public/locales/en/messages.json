@@ -515,6 +515,8 @@
   "Version {{version}}": "Version {{version}}",
   "Version name. ex: v2": "Version name. ex: v2",
   "Versions": "Versions",
+  "Versions of {{pipeline}}": "Versions of {{pipeline}}",
+  "Versions of {{template}}": "Versions of {{template}}",
   "View": "View",
   "View all": "View all",
   "Viewer": "Viewer",
