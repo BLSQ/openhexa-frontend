@@ -62,7 +62,7 @@ const TemplateVersionsPage: NextPageWithLayout<Props> = ({
               <Breadcrumbs.Part
                 href={`/workspaces/${encodeURIComponent(
                   workspace.slug,
-                )}/pipelines#templates`}
+                )}/pipelines/?tab=Templates`}
               >
                 {t("Templates")}
               </Breadcrumbs.Part>

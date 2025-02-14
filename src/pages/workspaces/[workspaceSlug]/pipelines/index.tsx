@@ -15,7 +15,7 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { useRouter } from "next/router";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreatePipelineDialog from "workspaces/features/CreatePipelineDialog/CreatePipelineDialog";
 import Tabs from "core/components/Tabs";
 import useFeature from "identity/hooks/useFeature";
@@ -42,18 +42,10 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
     },
   });
 
-  const [isMounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    if (!isMounted) {
-      setMounted(true);
-    }
-  }, [isMounted]);
-
-  if (!data?.workspace || !isMounted) {
+  if (!data?.workspace) {
     return null;
   }
-  const tab = window.location.hash === "#templates" ? "Templates" : "Pipelines";
+  const tab = router.query.tab ?? "Pipelines";
   const { workspace, pipelines } = data;
 
   return (
@@ -81,13 +73,11 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
               </Breadcrumbs.Part>
               <Breadcrumbs.Part
                 isLast
-                href={
-                  `/workspaces/${encodeURIComponent(
-                    workspace.slug,
-                  )}/pipelines` + (tab === "Templates" ? "#templates" : "")
-                }
+                href={`/workspaces/${encodeURIComponent(
+                  workspace.slug,
+                )}/pipelines/?tab=${tab}`}
               >
-                {tab === "Pipelines" ? t("Pipelines") : t("Templates")}
+                {t(tab)}
               </Breadcrumbs.Part>
             </Breadcrumbs>
             <Button
@@ -105,8 +95,10 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
               router.push(
                 {
                   pathname: router.pathname,
-                  query: router.query,
-                  hash: newIndex === 1 ? "templates" : "",
+                  query: {
+                    ...router.query,
+                    tab: newIndex === 1 ? "Templates" : "Pipelines",
+                  },
                 },
                 undefined,
                 { shallow: true },
