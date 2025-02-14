@@ -39,7 +39,10 @@ let config = {
 
     // this will just update topLevelAwait property of config.experiments
     config.experiments = { ...config.experiments, topLevelAwait: true };
-
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false, // Required for cron parser that is using fs in some parts of the library
+    };
     // return the modified config
     return config;
   },
