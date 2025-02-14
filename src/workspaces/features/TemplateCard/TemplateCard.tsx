@@ -23,65 +23,66 @@ interface TemplateCardProps {
 const TemplateCard = ({ template, workspace, onCreate }: TemplateCardProps) => {
   const { t } = useTranslation();
   return (
-    <div className={"relative group"}>
-      <Card
-        href={{
-          pathname: `/workspaces/[workspaceSlug]/templates/[templateCode]`,
-          query: { workspaceSlug: workspace.slug, templateCode: template.code },
-        }}
-        title={
-          <div className="flex justify-between">
-            <span className="max-w-[80%]">{template.name}</span>
-          </div>
-        }
-        className={"group-hover:blur-xs"}
+    <Card
+      href={{
+        pathname: `/workspaces/[workspaceSlug]/templates/[templateCode]`,
+        query: { workspaceSlug: workspace.slug, templateCode: template.code },
+      }}
+      title={
+        <div className="flex justify-between">
+          <span className="max-w-[80%]">{template.name}</span>
+        </div>
+      }
+    >
+      <Card.Content
+        className="space-y-4 min-h-20 min-w-20"
+        title={template.description ?? ""}
       >
-        <Card.Content
-          className="space-y-4 min-h-20 min-w-30"
-          title={template.description ?? ""}
+        <div
+          className={clsx("line-clamp-3", !template.description && "italic")}
         >
-          <div
-            className={clsx("line-clamp-3", !template.description && "italic")}
-          >
-            {template.description || t("No description")}
+          {template.description || t("No description")}
+        </div>
+        {template.currentVersion?.user && (
+          <div className="flex justify-end">
+            <Tooltip
+              label={t("Last version uploaded on {{date}} by {{name}}", {
+                date: DateTime.fromISO(
+                  template.currentVersion.createdAt,
+                ).toLocaleString(DateTime.DATE_FULL),
+                name: template.currentVersion.user.displayName,
+              })}
+            >
+              <UserAvatar user={template.currentVersion.user} size="sm" />
+            </Tooltip>
           </div>
-          {template.currentVersion?.user && (
-            <div className="flex justify-end">
-              <Tooltip
-                label={t("Last version uploaded on {{date}} by {{name}}", {
-                  date: DateTime.fromISO(
-                    template.currentVersion.createdAt,
-                  ).toLocaleString(DateTime.DATE_FULL),
-                  name: template.currentVersion.user.displayName,
-                })}
-              >
-                <UserAvatar user={template.currentVersion.user} size="sm" />
-              </Tooltip>
-            </div>
-          )}
-        </Card.Content>
-      </Card>
-      <div
-        className={
-          "hidden group-hover:flex flex-col gap-2 items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        }
-      >
-        <Button variant="secondary" size="md" onClick={onCreate}>
+        )}
+      </Card.Content>
+      <Card.Actions>
+        <Button
+          variant="secondary"
+          size="md"
+          onClick={(event) => {
+            event.preventDefault();
+            onCreate?.();
+          }}
+        >
           {t("Create pipeline")}
         </Button>
         <Button
           variant="secondary"
           size="md"
-          onClick={() =>
+          onClick={(event) => {
+            event.preventDefault();
             router.push(
               `/workspaces/${workspace.slug}/templates/${template.code}`,
-            )
-          }
+            );
+          }}
         >
           {t("Details")}
         </Button>
-      </div>
-    </div>
+      </Card.Actions>
+    </Card>
   );
 };
 
