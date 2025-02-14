@@ -62,7 +62,7 @@
   "Are you sure you want to delete the access to \"{{name}}\" for this workspace?": "Are you sure you want to delete the access to \"{{name}}\" for this workspace?",
   "Are you sure you want to delete the connection \"{{name}}\"?": "Are you sure you want to delete the connection \"{{name}}\"?",
   "Are you sure you want to delete the dataset \"{{name}}\"? It will make it unavailable for all workspaces.": "Are you sure you want to delete the dataset \"{{name}}\"? It will make it unavailable for all workspaces.",
-  "Are you sure you want to delete the template {name} ?": "Are you sure you want to delete the template {name} ?",
+  "Are you sure you want to delete the template {name}?": "Are you sure you want to delete the template {name}?",
   "Are you sure you want to delete the version \"{{name}}\"?": "Are you sure you want to delete the version \"{{name}}\"?",
   "Are you sure you want to delete the version \"{{versionNumber}}\"?": "Are you sure you want to delete the version \"{{versionNumber}}\"?",
   "Attribute": "Attribute",

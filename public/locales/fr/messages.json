@@ -64,7 +64,7 @@
   "Are you sure you want to delete the access to \"{{name}}\" for this workspace?": "Êtes-vous sûr de vouloir supprimer l'accès à \"{{name}}\" pour ce workspace ?",
   "Are you sure you want to delete the connection \"{{name}}\"?": "Êtes-vous sûr de vouloir supprimer la connexion \"{{name}}\" ?",
   "Are you sure you want to delete the dataset \"{{name}}\"? It will make it unavailable for all workspaces.": "Êtes-vous sûr de vouloir supprimer le jeu de données \"{{name}}\" ? Cela le rendra indisponible pour tous les workspaces.",
-  "Are you sure you want to delete the template {name} ?": "Etes-vous sûr de vouloir supprimer le modèle {name} ?",
+  "Are you sure you want to delete the template {name}?": "Etes-vous sûr de vouloir supprimer le modèle {name}?",
   "Are you sure you want to delete the version \"{{name}}\"?": "Êtes-vous sûr de vouloir supprimer la version \"{{name}}\" ?",
   "Are you sure you want to delete the version \"{{versionNumber}}\"?": "Êtes vous sûr de vouloir supprimer la version \"{{versionNumber}}\" ?",
   "Attribute": "Attribut",
