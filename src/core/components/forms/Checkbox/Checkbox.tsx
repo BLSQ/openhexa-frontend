@@ -4,7 +4,7 @@ import Tooltip from "core/components/Tooltip/Tooltip";
 import { InputHTMLAttributes, ReactNode } from "react";
 
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string | ReactNode;
+  label?: ReactNode;
   description?: string;
   help?: string;
 }
