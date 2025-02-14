@@ -25,7 +25,6 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     return (
       <form onSubmit={onSubmit}>
         <Input
-          id={"search-input"}
           ref={ref}
           data-testid="search-input"
           leading={<MagnifyingGlassIcon className="h-5 text-gray-500" />}
