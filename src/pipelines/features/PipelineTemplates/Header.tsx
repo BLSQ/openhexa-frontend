@@ -1,7 +1,6 @@
 import React from "react";
 import SearchInput from "core/features/SearchInput";
 import Listbox from "core/components/Listbox";
-import { ViewOptions } from "./PipelineTemplates";
 import ViewToggleButton from "./ViewToggleButton";
 
 type HeaderProps = {
@@ -13,7 +12,7 @@ type HeaderProps = {
   workspaceFilterOptions: any[];
   view: "grid" | "card";
   setView: (view: "grid" | "card") => void;
-  viewOptions: ViewOptions;
+  showCard: boolean;
 };
 
 const Header = ({
@@ -25,7 +24,7 @@ const Header = ({
   workspaceFilterOptions,
   view,
   setView,
-  viewOptions,
+  showCard,
 }: HeaderProps) => {
   return (
     <div className={"my-5 flex justify-between"}>
@@ -45,9 +44,7 @@ const Header = ({
           getOptionLabel={(option) => option.label}
           className={"min-w-72"}
         />
-        {viewOptions === ViewOptions.GRID_AND_CARD && (
-          <ViewToggleButton view={view} setView={setView} />
-        )}
+        {showCard && <ViewToggleButton view={view} setView={setView} />}
       </div>
     </div>
   );

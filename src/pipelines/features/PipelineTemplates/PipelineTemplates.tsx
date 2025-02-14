@@ -15,25 +15,18 @@ import CardView from "./CardView";
 import GridView from "./GridView";
 import Header from "./Header";
 
-export enum ViewOptions {
-  GRID,
-  CARD,
-  GRID_AND_CARD,
-}
 type PipelineTemplatesProps = {
   workspace: PipelineTemplates_WorkspaceFragment;
-  viewOptions?: ViewOptions;
+  showCard?: boolean;
 };
 
 const PipelineTemplates = ({
   workspace,
-  viewOptions = ViewOptions.GRID_AND_CARD,
+  showCard = true,
 }: PipelineTemplatesProps) => {
   const { t } = useTranslation();
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [view, setView] = useState<"grid" | "card">(
-    viewOptions === ViewOptions.GRID ? "grid" : "card",
-  );
+  const [view, setView] = useState<"grid" | "card">(showCard ? "card" : "grid");
   const [page, setPage] = useState(1);
   const perPage = 10;
   const clearCache = useCacheKey(["pipelines"]);
@@ -130,7 +123,7 @@ const PipelineTemplates = ({
         workspaceFilterOptions={workspaceFilterOptions}
         view={view}
         setView={setView}
-        viewOptions={viewOptions}
+        showCard={showCard}
       />
       <ViewTemplates
         items={items}
