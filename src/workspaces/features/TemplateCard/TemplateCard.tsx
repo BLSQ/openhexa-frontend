@@ -12,6 +12,7 @@ import UserAvatar from "identity/features/UserAvatar";
 import React from "react";
 import Button from "core/components/Button";
 import router from "next/router";
+import User from "core/features/User";
 
 interface TemplateCardProps {
   workspace: TemplateCard_WorkspaceFragment;
@@ -99,6 +100,7 @@ TemplateCard.fragments = {
         }
       }
     }
+    ${User.fragments.user}
   `,
   workspace: gql`
     fragment TemplateCard_workspace on Workspace {
