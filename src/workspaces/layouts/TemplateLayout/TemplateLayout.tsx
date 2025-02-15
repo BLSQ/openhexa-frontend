@@ -44,7 +44,7 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
               {workspace.name}
             </Breadcrumbs.Part>
             <Breadcrumbs.Part
-              href={`/workspaces/${encodeURIComponent(workspace.slug)}/pipelines/?tab=Templates`}
+              href={`/workspaces/${encodeURIComponent(workspace.slug)}/pipelines/?tab=templates`}
             >
               {t("Templates")}
             </Breadcrumbs.Part>
@@ -87,7 +87,7 @@ const TemplateLayout = (props: TemplateLayoutProps) => {
         onClose={() => {
           setDeleteTemplateDialogOpen(false);
           router
-            .push(`/workspaces/${workspace.slug}/pipelines/?tab=Templates`)
+            .push(`/workspaces/${workspace.slug}/pipelines/?tab=templates`)
             .then();
         }}
         pipelineTemplate={template}

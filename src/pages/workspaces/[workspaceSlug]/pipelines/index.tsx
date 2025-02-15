@@ -45,7 +45,7 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
   if (!data?.workspace) {
     return null;
   }
-  const tab = router.query.tab ?? "Pipelines";
+  const tab = router.query.tab ?? "pipelines";
   const { workspace, pipelines } = data;
 
   return (
@@ -77,7 +77,7 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
                   workspace.slug,
                 )}/pipelines/?tab=${tab}`}
               >
-                {t(tab)}
+                {tab === "pipelines" ? t("Pipelines") : t("Templates")}
               </Breadcrumbs.Part>
             </Breadcrumbs>
             <Button
@@ -97,14 +97,14 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
                   pathname: router.pathname,
                   query: {
                     ...router.query,
-                    tab: newIndex === 1 ? "Templates" : "Pipelines",
+                    tab: newIndex === 1 ? "templates" : "pipelines",
                   },
                 },
                 undefined,
                 { shallow: true },
               )
             }
-            defaultIndex={tab === "Templates" ? 1 : 0}
+            defaultIndex={tab === "templates" ? 1 : 0}
           >
             <Tabs.Tab label={t("Pipelines")} className={"space-y-2 pt-2"}>
               {pipelines.items.length === 0 ? (
