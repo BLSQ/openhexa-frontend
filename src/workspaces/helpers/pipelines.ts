@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { getApolloClient } from "core/helpers/apollo";
-import { CronExpressionParser } from "cron-parser";
 import cronstrue from "cronstrue";
+import CronParser from "cron-parser";
 import "cronstrue/locales/en";
 import "cronstrue/locales/fr";
 import {
@@ -75,7 +75,7 @@ export async function updatePipeline(
 
 export function validateCronExpression(cronExpression: string) {
   try {
-    CronExpressionParser.parse(cronExpression);
+    CronParser.parseExpression(cronExpression);
     return true;
   } catch (err) {
     return false;
