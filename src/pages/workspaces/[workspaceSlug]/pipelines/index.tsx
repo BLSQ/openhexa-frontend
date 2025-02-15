@@ -45,7 +45,7 @@ const WorkspacePipelinesPage: NextPageWithLayout = (props: Props) => {
   if (!data?.workspace) {
     return null;
   }
-  const tab = router.query.tab ?? "pipelines";
+  const tab = router.query.tab === "templates" ? "templates" : "pipelines";
   const { workspace, pipelines } = data;
 
   return (
