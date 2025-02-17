@@ -28,7 +28,7 @@ const ParameterField = (props: ParameterFieldProps) => {
       if (parameter.multiple && (value === null || value === undefined)) {
         return onChange([]);
       } else if (parameter.multiple && !parameter.choices) {
-        onChange(value.split(","));
+        onChange(value.split("\n"));
       } else {
         onChange(value);
       }
