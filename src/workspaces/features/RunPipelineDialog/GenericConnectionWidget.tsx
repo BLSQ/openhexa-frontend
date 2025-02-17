@@ -20,7 +20,7 @@ type GenericConnectionWidgetProps<T> = {
   placeholder?: string;
 };
 
-const GET_CONNECTION_METADATA = gql`
+export const GET_CONNECTION_METADATA = gql`
   query getConnectionBySlug(
     $workspaceSlug: String!
     $connectionSlug: String!
@@ -75,13 +75,6 @@ const GenericConnectionWidget = <T,>({
   form,
   workspaceSlug,
 }: GenericConnectionWidgetProps<T>) => {
-  console.log("GenericConnectionWidget Debug:", {
-    widgetType: widgetToQueryType[parameter.widget],
-    currentValue: form.formData[parameter.code],
-    parameterCode: parameter.code,
-    form: form,
-  });
-
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
   const [perPage, setPerPage] = useState(10);

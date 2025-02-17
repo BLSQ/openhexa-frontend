@@ -258,7 +258,10 @@ const RunPipelineDialog = (props: RunPipelineDialogProps) => {
                     >
                       <ParameterField
                         parameter={param}
-                        value={form.formData[param.code]}
+                        value={
+                          form.formData[param.code] ??
+                          (param.multiple ? [] : "")
+                        }
                         onChange={(value: any) => {
                           form.setFieldValue(param.code, value);
                         }}
