@@ -1048,7 +1048,7 @@ export enum Dhis2ConnectionStatus {
 export type Dhis2MetadataItem = {
   __typename?: 'DHIS2MetadataItem';
   id?: Maybe<Scalars['String']['output']>;
-  name: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
 };
 
 /** DHIS2 metadata item union */
@@ -1058,8 +1058,8 @@ export type Dhis2MetadataItemUnion = Dhis2MetadataItem | Dhis2OrganisationUnitLe
 export type Dhis2OrganisationUnitLevel = {
   __typename?: 'DHIS2OrganisationUnitLevel';
   id?: Maybe<Scalars['String']['output']>;
-  level?: Maybe<Scalars['Int']['output']>;
-  name: Scalars['String']['output'];
+  level: Scalars['Int']['output'];
+  name?: Maybe<Scalars['String']['output']>;
 };
 
 /** DHIS2 metadata query result page */

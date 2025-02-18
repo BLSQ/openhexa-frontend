@@ -1559,7 +1559,7 @@ DHIS2 metadata item
 """
 type DHIS2MetadataItem {
     id: String     # Unique identifier
-    name: String!   # Name of the metadata item
+    name: String   # Name of the metadata item
 }
 
 """
@@ -1567,8 +1567,8 @@ DHIS2 metadata level
 """
 type DHIS2OrganisationUnitLevel {
     id: String     # Unique identifier
-    name: String!   # Name of the metadata level
-    level: Int     # Level of the metadata
+    name: String   # Name of the metadata level
+    level: Int!     # Level of the metadata
 }
 
 """
