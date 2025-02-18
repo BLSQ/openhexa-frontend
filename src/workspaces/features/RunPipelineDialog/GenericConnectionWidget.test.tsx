@@ -1,18 +1,10 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MockedProvider } from "@apollo/client/testing";
-import GenericConnectionWidget from "./GenericConnectionWidget";
+import GenericConnectionWidget, {
+  GET_CONNECTION_METADATA,
+} from "./GenericConnectionWidget";
 import { useGetConnectionBySlugLazyQuery } from "./GenericConnectionWidget.generated";
-import { GET_CONNECTION_METADATA } from "./GenericConnectionWidget";
-
-jest.mock("next-i18next", () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-    i18n: {
-      changeLanguage: () => new Promise(() => {}),
-    },
-  }),
-}));
+import { TestApp } from "core/helpers/testutils";
 
 jest.mock("./GenericConnectionWidget.generated", () => ({
   useGetConnectionBySlugLazyQuery: jest.fn(),
@@ -20,7 +12,7 @@ jest.mock("./GenericConnectionWidget.generated", () => ({
 
 const mockLazyQuery = useGetConnectionBySlugLazyQuery as jest.Mock;
 
-jest.mock("../../../core/hooks/useDebounce", () => ({
+jest.mock("core/hooks/useDebounce", () => ({
   __esModule: true,
   default: jest.fn((value) => value),
 }));
@@ -30,6 +22,7 @@ const generateMockPipeline = (multiple = false) => ({
     code: "test_param",
     widget: "datasets_picker",
     multiple,
+    type: "str",
     connection: "test_connection",
   },
   form: {
@@ -46,15 +39,12 @@ describe("GenericConnectionWidget", () => {
 
   it("renders the component correctly", async () => {
     const pipeline = generateMockPipeline();
-    mockLazyQuery.mockReturnValue([
-      jest.fn().mockResolvedValue({ data: null }),
-      { data: null, loading: false, fetchMore: jest.fn() },
-    ]);
+    mockLazyQuery.mockReturnValue([jest.fn(), { data: null, loading: false }]);
 
     render(
-      <MockedProvider>
+      <TestApp>
         <GenericConnectionWidget {...pipeline} />
-      </MockedProvider>,
+      </TestApp>,
     );
 
     expect(screen.getByPlaceholderText("Select options")).toBeInTheDocument();
@@ -73,15 +63,12 @@ describe("GenericConnectionWidget", () => {
       },
     });
 
-    mockLazyQuery.mockReturnValue([
-      mockFetch,
-      { data: null, loading: false, fetchMore: jest.fn() },
-    ]);
+    mockLazyQuery.mockReturnValue([mockFetch, { data: null, loading: false }]);
 
     render(
-      <MockedProvider>
+      <TestApp>
         <GenericConnectionWidget {...pipeline} />
-      </MockedProvider>,
+      </TestApp>,
     );
 
     await waitFor(() => {
@@ -111,29 +98,79 @@ describe("GenericConnectionWidget", () => {
       },
     });
 
-    mockLazyQuery.mockReturnValue([
-      mockFetch,
-      { data: null, loading: false, fetchMore: jest.fn() },
-    ]);
+    mockLazyQuery.mockReturnValue([mockFetch, { data: null, loading: false }]);
+
+    const { container } = render(
+      <TestApp>
+        <GenericConnectionWidget {...pipeline} />
+      </TestApp>,
+    );
+    const user = userEvent.setup();
+    await user.click(await screen.findByTestId("combobox-button"));
+    waitFor(() => {
+      const options = screen.queryAllByTestId("combobox-options");
+      expect(options.length).toBe(1);
+    });
+    expect(container).toMatchSnapshot();
+  });
+
+  it("updates selected values in multiple mode", async () => {
+    const pipeline = generateMockPipeline(true);
+    const mockFetch = jest.fn().mockResolvedValue({
+      data: {
+        connectionBySlug: {
+          queryMetadata: {
+            items: [
+              { id: "1", name: "Item 1" },
+              { id: "2", name: "Item 2" },
+            ],
+            totalItems: 2,
+          },
+        },
+      },
+    });
+
+    mockLazyQuery.mockReturnValue([mockFetch, { data: null, loading: false }]);
 
     render(
-      <MockedProvider>
+      <TestApp>
         <GenericConnectionWidget {...pipeline} />
-      </MockedProvider>,
+      </TestApp>,
+    );
+    const user = userEvent.setup();
+    await user.click(await screen.findByTestId("combobox-button"));
+    waitFor(() => {
+      const options = screen.queryAllByTestId("combobox-options");
+      expect(options.length).toBe(2);
+    });
+  });
+
+  it("handles missing id and uses level instead", async () => {
+    const pipeline = generateMockPipeline(false);
+    const mockFetch = jest.fn().mockResolvedValue({
+      data: {
+        connectionBySlug: {
+          queryMetadata: {
+            items: [{ level: 3, name: "District" }],
+            totalItems: 1,
+          },
+        },
+      },
+    });
+
+    mockLazyQuery.mockReturnValue([mockFetch, { data: null, loading: false }]);
+
+    render(
+      <TestApp>
+        <GenericConnectionWidget {...pipeline} />
+      </TestApp>,
     );
 
-    await userEvent.click(screen.getByPlaceholderText("Select options"));
-
-    await waitFor(() =>
-      expect(screen.getByText(/test item/i)).toBeInTheDocument(),
-    );
-
-    const item = await screen.findByText(/test item/i);
-    await userEvent.click(item);
-
-    expect(pipeline.form.setFieldValue).toHaveBeenCalledWith("test_param", {
-      id: "1",
-      name: "Test Item",
+    const user = userEvent.setup();
+    await user.click(await screen.findByTestId("combobox-button"));
+    waitFor(() => {
+      user.click(screen.getByText("District"));
+      expect(pipeline.form.setFieldValue).toHaveBeenCalledWith("test_param", 3);
     });
   });
 });

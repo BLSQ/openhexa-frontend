@@ -1,6 +1,6 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { i18n } from "next-i18next";
+import { useTranslation } from "next-i18next";
 import {
   Combobox,
   MultiCombobox,
@@ -13,11 +13,9 @@ import {
 import useIntersectionObserver from "../../../core/hooks/useIntersectionObserver";
 
 type GenericConnectionWidgetProps<T> = {
-  disabled?: boolean;
   parameter: any;
   form: any;
   workspaceSlug: string;
-  placeholder?: string;
 };
 
 export const GET_CONNECTION_METADATA = gql`
@@ -79,6 +77,8 @@ const GenericConnectionWidget = <T,>({
   const debouncedQuery = useDebounce(query, 150);
   const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
+  const [isFetched, setIsFetched] = useState(false);
+  const { t } = useTranslation();
 
   const currentValue =
     form.formData[parameter.code] || (parameter.multiple ? [] : null);
@@ -87,6 +87,7 @@ const GenericConnectionWidget = <T,>({
     useGetConnectionBySlugLazyQuery({ cachePolicy: "no-cache" });
 
   useEffect(() => {
+    setIsFetched(true);
     if (!form.formData[parameter.connection]) return;
 
     fetchData({
@@ -98,9 +99,7 @@ const GenericConnectionWidget = <T,>({
         perPage: 10,
         page: 1,
       },
-    }).catch((err) =>
-      console.error("Error fetching connection metadata:", err),
-    );
+    });
   }, [
     form.formData[parameter.connection],
     debouncedQuery,
@@ -154,10 +153,40 @@ const GenericConnectionWidget = <T,>({
 
   const displayValueHandler = (value: any) => {
     if (!value) return "";
+
     if (Array.isArray(value)) {
-      return value.map((v: any) => v.name).join(", ");
+      const displayedNames = value
+        .map((item) => {
+          if (typeof item === "object" && item !== null) {
+            return (
+              item.name ??
+              (item.level ? `Level ${item.level}` : `(Unknown ID: ${item.id})`)
+            );
+          }
+          const foundItem = options.items.find(
+            (opt) => opt.id === item || opt.level === item,
+          );
+          return foundItem
+            ? (foundItem.name ?? `Level ${foundItem.level}`)
+            : `(Unknown ID: ${item})`;
+        })
+        .filter(Boolean);
+      return displayedNames.join(", ");
     }
-    return typeof value === "object" && value !== null ? value.name : "";
+
+    if (typeof value === "object" && value !== null) {
+      return (
+        value.name ??
+        (value.level ? `Level ${value.level}` : `(Unknown ID: ${value.id})`)
+      );
+    }
+
+    const selectedItem = options.items.find(
+      (item) => item.id === value || item.level === value,
+    );
+    return selectedItem
+      ? (selectedItem.name ?? `Level ${selectedItem.level}`)
+      : `(Unknown ID: ${value})`;
   };
 
   useEffect(() => {
@@ -169,13 +198,41 @@ const GenericConnectionWidget = <T,>({
   const handleSelectionChange = useCallback(
     (selectedValue: any) => {
       if (parameter.multiple) {
-        form.setFieldValue(parameter.code, selectedValue ?? []);
+        const selectedIds = Array.isArray(selectedValue)
+          ? selectedValue.map((item) => item.id ?? item.level).filter(Boolean)
+          : [];
+
+        form.setFieldValue(parameter.code, selectedIds);
       } else {
-        form.setFieldValue(parameter.code, selectedValue ?? null);
+        const newValue = selectedValue?.id ?? selectedValue?.level ?? null;
+        form.setFieldValue(parameter.code, newValue);
       }
     },
     [form, parameter.code, parameter.multiple],
   );
+
+  const selectedObjects = useMemo(() => {
+    if (!form.formData[parameter.code]) return parameter.multiple ? [] : null;
+
+    if (Array.isArray(form.formData[parameter.code])) {
+      return form.formData[parameter.code].map(
+        (id) =>
+          options.items.find((item) => item.id === id) || {
+            id,
+            name: `(Unknown ID: ${id})`,
+          },
+      );
+    }
+
+    return (
+      options.items.find(
+        (item) => item.id === form.formData[parameter.code],
+      ) || {
+        id: form.formData[parameter.code],
+        name: `(Unknown ID: ${form.formData[parameter.code]})`,
+      }
+    );
+  }, [form.formData[parameter.code], options.items]);
 
   const onScrollBottom = useCallback(() => {
     if (options?.totalItems > (options?.items?.length || 0) && !loading) {
@@ -191,9 +248,9 @@ const GenericConnectionWidget = <T,>({
       displayValue={displayValueHandler}
       by="id"
       onInputChange={handleInputChange}
-      placeholder={i18n!.t("Select options")}
-      value={currentValue}
-      disabled={loading}
+      placeholder={t("Select options")}
+      value={selectedObjects}
+      disabled={!form.formData[parameter.connection] || !isFetched || loading}
       onClose={useCallback(() => setQuery(""), [])}
     >
       {options?.items.map((option) => (
