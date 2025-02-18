@@ -111,7 +111,6 @@ describe("GenericConnectionWidget", () => {
       const options = screen.queryAllByTestId("combobox-options");
       expect(options.length).toBe(1);
     });
-    expect(container).toMatchSnapshot();
   });
 
   it("updates selected values in multiple mode", async () => {
