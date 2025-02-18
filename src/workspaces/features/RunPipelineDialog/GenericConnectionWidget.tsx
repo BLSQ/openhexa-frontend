@@ -1,5 +1,5 @@
 import React from "react";
-import DHIS2Widget from "./DHIS2Widget";
+import { DHIS2Widget, dhis2WidgetToQuery } from "./DHIS2Widget";
 
 type GenericConnectionWidgetProps<T> = {
   parameter: any;
@@ -12,13 +12,15 @@ const GenericConnectionWidget = <T,>({
   form,
   workspaceSlug,
 }: GenericConnectionWidgetProps<T>) => {
-  return (
-    <DHIS2Widget
-      parameter={parameter}
-      form={form}
-      workspaceSlug={workspaceSlug}
-    />
-  );
+  if (parameter.widget in dhis2WidgetToQuery) {
+    return (
+      <DHIS2Widget
+        parameter={parameter}
+        form={form}
+        workspaceSlug={workspaceSlug}
+      />
+    );
+  }
 };
 
 export default GenericConnectionWidget;

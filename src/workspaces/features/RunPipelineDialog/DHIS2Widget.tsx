@@ -52,7 +52,7 @@ export const GET_CONNECTION_METADATA = gql`
   }
 `;
 
-const widgetToQueryType: { [key: string]: string } = {
+const dhis2WidgetToQuery: { [key: string]: string } = {
   organisation_units_picker: "ORGANISATION_UNITS",
   "organisation_units_picker.groups": "ORGANISATION_UNIT_GROUPS",
   "organisation_units_picker.levels": "ORGANISATION_UNIT_LEVELS",
@@ -89,7 +89,7 @@ const DHIS2Widget = <T,>({
       variables: {
         workspaceSlug,
         connectionSlug: form.formData[parameter.connection],
-        type: widgetToQueryType[parameter.widget],
+        type: dhis2WidgetToQuery[parameter.widget],
         search: debouncedQuery,
         perPage: 10,
         page: 1,
@@ -110,7 +110,7 @@ const DHIS2Widget = <T,>({
       variables: {
         workspaceSlug,
         connectionSlug: form.formData[parameter.connection],
-        type: widgetToQueryType[parameter.widget],
+        type: dhis2WidgetToQuery[parameter.widget],
         search: debouncedQuery,
         perPage,
         page: 1,
@@ -285,4 +285,5 @@ const IntersectionObserverWrapper = ({
 
   return <div ref={setLastElement}></div>;
 };
-export default DHIS2Widget;
+
+export { DHIS2Widget, dhis2WidgetToQuery };
