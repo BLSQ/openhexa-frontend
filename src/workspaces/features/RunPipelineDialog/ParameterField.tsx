@@ -46,7 +46,7 @@ const ParameterField = (props: ParameterFieldProps) => {
     );
   }
 
-  if (parameter.widget !== null && form !== undefined) {
+  if (parameter.widget !== null) {
     return (
       <GenericConnectionWidget
         parameter={parameter}

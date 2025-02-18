@@ -1,16 +1,10 @@
 import { gql } from "@apollo/client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
-import {
-  Combobox,
-  MultiCombobox,
-} from "../../../core/components/forms/Combobox";
-import useDebounce from "../../../core/hooks/useDebounce";
-import {
-  GetConnectionBySlugQuery,
-  useGetConnectionBySlugLazyQuery,
-} from "./GenericConnectionWidget.generated";
-import useIntersectionObserver from "../../../core/hooks/useIntersectionObserver";
+import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
+import useDebounce from "core/hooks/useDebounce";
+import { useGetConnectionBySlugLazyQuery } from "./GenericConnectionWidget.generated";
+import useIntersectionObserver from "core/hooks/useIntersectionObserver";
 
 type GenericConnectionWidgetProps<T> = {
   parameter: any;
@@ -31,6 +25,7 @@ export const GET_CONNECTION_METADATA = gql`
       workspaceSlug: $workspaceSlug
       connectionSlug: $connectionSlug
     ) {
+      __typename
       ... on DHIS2Connection {
         queryMetadata(
           type: $type
@@ -39,6 +34,7 @@ export const GET_CONNECTION_METADATA = gql`
           page: $page
         ) {
           items {
+            __typename
             ... on DHIS2MetadataItem {
               id
               name
@@ -46,7 +42,7 @@ export const GET_CONNECTION_METADATA = gql`
             ... on DHIS2OrganisationUnitLevel {
               id
               name
-              level # Additional field specific to this type
+              level
             }
           }
           totalItems
@@ -90,7 +86,7 @@ const GenericConnectionWidget = <T,>({
     setIsFetched(true);
     if (!form.formData[parameter.connection]) return;
 
-    fetchData({
+    void fetchData({
       variables: {
         workspaceSlug,
         connectionSlug: form.formData[parameter.connection],
@@ -127,18 +123,28 @@ const GenericConnectionWidget = <T,>({
   const options = useMemo(() => {
     if (error) {
       console.error("Error fetching connection metadata:", error);
-      return [];
+      return { items: [], totalItems: 0 };
     }
+
+    const connection = data?.connectionBySlug;
+
+    if (
+      connection?.__typename !== "DHIS2Connection" ||
+      !connection.queryMetadata
+    ) {
+      return { items: [], totalItems: 0 };
+    }
+
     const items =
-      data?.connectionBySlug?.queryMetadata?.items?.filter((c) =>
+      connection.queryMetadata.items?.filter((c) =>
         c.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
       ) ?? [];
-    const totalItems = data?.connectionBySlug?.queryMetadata?.totalItems ?? 0;
-    return { items, totalItems };
+
+    return { items, totalItems: connection.queryMetadata.totalItems ?? 0 };
   }, [data, error, debouncedQuery]);
 
   const handleInputChange = useCallback(
-    (event) => {
+    (event: any) => {
       const newQuery = event.target.value;
       setQuery(newQuery);
 
