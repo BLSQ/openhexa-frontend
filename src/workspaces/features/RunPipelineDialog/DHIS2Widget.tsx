@@ -5,6 +5,10 @@ import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
 import useDebounce from "core/hooks/useDebounce";
 import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
 import useIntersectionObserver from "core/hooks/useIntersectionObserver";
+import {
+  Dhis2MetadataItem,
+  Dhis2MetadataItemUnion,
+} from "../../../graphql/types";
 
 type DHIS2WidgetProps<T> = {
   parameter: any;
@@ -133,12 +137,15 @@ const DHIS2Widget = <T,>({
     ) {
       return { items: [], totalItems: 0 };
     }
+    const items = connection.queryMetadata.items ?? [];
 
-    const items =
-      connection.queryMetadata.items?.filter((c) =>
-        c.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
-      ) ?? [];
-
+    items?.filter((c) => {
+      if (c.__typename === "DHIS2MetadataItem") {
+        return c.name?.toLowerCase().includes(debouncedQuery.toLowerCase());
+      } else if (c.__typename === "DHIS2OrganisationUnitLevel") {
+        return c.name?.toLowerCase().includes(debouncedQuery.toLowerCase());
+      }
+    });
     return { items, totalItems: connection.queryMetadata.totalItems ?? 0 };
   }, [data, error, debouncedQuery]);
 
@@ -163,35 +170,51 @@ const DHIS2Widget = <T,>({
       const displayedNames = value
         .map((item) => {
           if (typeof item === "object" && item !== null) {
-            return (
-              item.name ??
-              (item.level ? `Level ${item.level}` : `(Unknown ID: ${item.id})`)
-            );
+            if (item.__typename === "DHIS2OrganisationUnitLevel") {
+              return item.name ?? `Level ${item.level}`;
+            }
           }
-          const foundItem = options.items.find(
-            (opt) => opt.id === item || opt.level === item,
-          );
-          return foundItem
-            ? (foundItem.name ?? `Level ${foundItem.level}`)
-            : `(Unknown ID: ${item})`;
+
+          const foundItem = options.items.find((opt) => {
+            if (opt.__typename === "DHIS2OrganisationUnitLevel") {
+              return opt.level === item;
+            } else {
+              return opt.id === item;
+            }
+          });
+          if (foundItem?.__typename === "DHIS2OrganisationUnitLevel") {
+            return foundItem.name ?? `Level ${foundItem.level}`;
+          } else {
+            return foundItem?.name ?? `Unknown ID: ${item}`;
+          }
         })
         .filter(Boolean);
       return displayedNames.join(", ");
     }
 
     if (typeof value === "object" && value !== null) {
+      if (value.__typename === "DHIS2OrganisationUnitLevel") {
+        return value.name ?? `Level ${value.level}`;
+      }
+
       return (
         value.name ??
         (value.level ? `Level ${value.level}` : `(Unknown ID: ${value.id})`)
       );
     }
 
-    const selectedItem = options.items.find(
-      (item) => item.id === value || item.level === value,
-    );
-    return selectedItem
-      ? (selectedItem.name ?? `Level ${selectedItem.level}`)
-      : `(Unknown ID: ${value})`;
+    const selectedItem = options.items.find((item) => {
+      if (item.__typename === "DHIS2OrganisationUnitLevel") {
+        return item.level === value;
+      } else {
+        return item.id === value;
+      }
+    });
+    if (selectedItem?.__typename === "DHIS2OrganisationUnitLevel") {
+      return selectedItem.name ?? `Level ${selectedItem.level}`;
+    } else {
+      return selectedItem?.name ?? `Unknown ID: ${value}`;
+    }
   };
 
   useEffect(() => {
@@ -221,7 +244,7 @@ const DHIS2Widget = <T,>({
 
     if (Array.isArray(form.formData[parameter.code])) {
       return form.formData[parameter.code].map(
-        (id) =>
+        (id: string) =>
           options.items.find((item) => item.id === id) || {
             id,
             name: `(Unknown ID: ${id})`,
