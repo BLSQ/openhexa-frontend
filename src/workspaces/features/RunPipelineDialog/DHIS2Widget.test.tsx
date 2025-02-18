@@ -2,8 +2,8 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import GenericConnectionWidget, {
   GET_CONNECTION_METADATA,
-} from "./GenericConnectionWidget";
-import { useGetConnectionBySlugLazyQuery } from "./GenericConnectionWidget.generated";
+} from "./DHIS2Widget";
+import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
 import { TestApp } from "core/helpers/testutils";
 
 jest.mock("./GenericConnectionWidget.generated", () => ({
