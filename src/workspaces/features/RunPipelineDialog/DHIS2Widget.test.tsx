@@ -1,12 +1,10 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import GenericConnectionWidget, {
-  GET_CONNECTION_METADATA,
-} from "./DHIS2Widget";
+import { DHIS2Widget, GET_CONNECTION_METADATA } from "./DHIS2Widget";
 import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
 import { TestApp } from "core/helpers/testutils";
 
-jest.mock("./GenericConnectionWidget.generated", () => ({
+jest.mock("./DHIS2Widget.generated", () => ({
   useGetConnectionBySlugLazyQuery: jest.fn(),
 }));
 
@@ -43,7 +41,7 @@ describe("GenericConnectionWidget", () => {
 
     render(
       <TestApp>
-        <GenericConnectionWidget {...pipeline} />
+        <DHIS2Widget {...pipeline} />
       </TestApp>,
     );
 
@@ -67,7 +65,7 @@ describe("GenericConnectionWidget", () => {
 
     render(
       <TestApp>
-        <GenericConnectionWidget {...pipeline} />
+        <DHIS2Widget {...pipeline} />
       </TestApp>,
     );
 
@@ -102,7 +100,7 @@ describe("GenericConnectionWidget", () => {
 
     const { container } = render(
       <TestApp>
-        <GenericConnectionWidget {...pipeline} />
+        <DHIS2Widget {...pipeline} />
       </TestApp>,
     );
     const user = userEvent.setup();
@@ -133,7 +131,7 @@ describe("GenericConnectionWidget", () => {
 
     render(
       <TestApp>
-        <GenericConnectionWidget {...pipeline} />
+        <DHIS2Widget {...pipeline} />
       </TestApp>,
     );
     const user = userEvent.setup();
@@ -161,7 +159,7 @@ describe("GenericConnectionWidget", () => {
 
     render(
       <TestApp>
-        <GenericConnectionWidget {...pipeline} />
+        <DHIS2Widget {...pipeline} />
       </TestApp>,
     );
 
