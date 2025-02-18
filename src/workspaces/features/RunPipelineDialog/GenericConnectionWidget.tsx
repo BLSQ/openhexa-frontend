@@ -84,7 +84,7 @@ const GenericConnectionWidget = <T,>({
     form.formData[parameter.code] || (parameter.multiple ? [] : null);
 
   const [fetchData, { data, loading, error, fetchMore }] =
-    useGetConnectionBySlugLazyQuery({ cachePolicy: "no-cache" });
+    useGetConnectionBySlugLazyQuery();
 
   useEffect(() => {
     setIsFetched(true);
