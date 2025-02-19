@@ -482,6 +482,7 @@
   "Unknown error : Failed to create pipeline": "Unknown error : Failed to create pipeline",
   "Unknown error upgrading pipeline": "Unknown error upgrading pipeline",
   "Unknown error.": "Unknown error.",
+  "Unknown ID: {{id}}": "Unknown ID: {{id}}",
   "Unknown workspace": "Unknown workspace",
   "Update connection fields for {{name}}": "Update connection fields for {{name}}",
   "Update connection parameters in 3rd-party tools (visualization & BI tools, other data systems...)": "Update connection parameters in 3rd-party tools (visualization & BI tools, other data systems...)",
