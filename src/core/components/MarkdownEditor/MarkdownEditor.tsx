@@ -3,27 +3,29 @@ import {
   BoldItalicUnderlineToggles,
   ChangeAdmonitionType,
   ChangeCodeMirrorLanguage,
+  codeBlockPlugin,
+  codeMirrorPlugin,
   CodeToggle,
   ConditionalContents,
   EditorInFocus,
-  InsertCodeBlock,
-  InsertThematicBreak,
-  ListsToggle,
-  MDXEditor,
-  MDXEditorProps,
-  Separator,
-  StrikeThroughSupSubToggles,
-  UndoRedo,
-  codeBlockPlugin,
-  codeMirrorPlugin,
   headingsPlugin,
+  imagePlugin,
+  InsertCodeBlock,
+  InsertImage,
+  InsertThematicBreak,
   linkDialogPlugin,
   linkPlugin,
   listsPlugin,
+  ListsToggle,
   markdownShortcutPlugin,
+  MDXEditor,
+  MDXEditorProps,
   quotePlugin,
+  Separator,
+  StrikeThroughSupSubToggles,
   thematicBreakPlugin,
   toolbarPlugin,
+  UndoRedo,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 import clsx from "clsx";
@@ -106,6 +108,7 @@ const MarkdownEditor = ({
 
                         <Separator />
                         <InsertCodeBlock />
+                        <InsertImage />
                       </>
                     ),
                   },
@@ -129,6 +132,7 @@ const MarkdownEditor = ({
           linkPlugin(),
           linkDialogPlugin(),
           markdownShortcutPlugin(),
+          imagePlugin(),
         ]}
         {...delegated}
       />

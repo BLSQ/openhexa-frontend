@@ -9,7 +9,7 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import useCacheKey from "core/hooks/useCacheKey";
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUpdateWorkspaceMutation } from "workspaces/graphql/mutations.generated";
 import {
   useWorkspacePageQuery,
@@ -37,6 +37,11 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
   const [description, setDescription] = useState(
     data?.workspace?.description || "",
   );
+
+  useEffect(() => {
+    setIsEditing(false);
+    setDescription(data?.workspace?.description || "");
+  }, [data?.workspace?.description]);
 
   const onSave = async () => {
     await mutate({
