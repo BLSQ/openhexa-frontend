@@ -5,10 +5,6 @@ import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
 import useDebounce from "core/hooks/useDebounce";
 import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
 import useIntersectionObserver from "core/hooks/useIntersectionObserver";
-import {
-  Dhis2MetadataItem,
-  Dhis2MetadataItemUnion,
-} from "../../../graphql/types";
 
 type DHIS2WidgetProps<T> = {
   parameter: any;
@@ -171,7 +167,7 @@ const DHIS2Widget = <T,>({
         .map((item) => {
           if (typeof item === "object" && item !== null) {
             if (item.__typename === "DHIS2OrganisationUnitLevel") {
-              return item.name ?? `Level ${item.level}`;
+              return item.name ?? `${item.level}`;
             }
           }
 
@@ -183,9 +179,9 @@ const DHIS2Widget = <T,>({
             }
           });
           if (foundItem?.__typename === "DHIS2OrganisationUnitLevel") {
-            return foundItem.name ?? `Level ${foundItem.level}`;
+            return foundItem.name ?? `${foundItem.level}`;
           } else {
-            return foundItem?.name ?? `Unknown ID: ${item}`;
+            return foundItem?.name ?? t("Unknown ID: {{id}}", { id: item });
           }
         })
         .filter(Boolean);
@@ -194,12 +190,14 @@ const DHIS2Widget = <T,>({
 
     if (typeof value === "object" && value !== null) {
       if (value.__typename === "DHIS2OrganisationUnitLevel") {
-        return value.name ?? `Level ${value.level}`;
+        return value.name ?? `${value.level}`;
       }
 
       return (
         value.name ??
-        (value.level ? `Level ${value.level}` : `(Unknown ID: ${value.id})`)
+        (value.level
+          ? `${value.level}`
+          : t("Unknown ID: {{id}}", { id: value.id }))
       );
     }
 
@@ -211,9 +209,9 @@ const DHIS2Widget = <T,>({
       }
     });
     if (selectedItem?.__typename === "DHIS2OrganisationUnitLevel") {
-      return selectedItem.name ?? `Level ${selectedItem.level}`;
+      return selectedItem.name ?? `${selectedItem.level}`;
     } else {
-      return selectedItem?.name ?? `Unknown ID: ${value}`;
+      return selectedItem?.name ?? t("Unknown ID: {{id}}", { id: value });
     }
   };
 
@@ -247,7 +245,7 @@ const DHIS2Widget = <T,>({
         (id: string) =>
           options.items.find((item) => item.id === id) || {
             id,
-            name: `(Unknown ID: ${id})`,
+            name: t("Unknown ID: {{id}}", { id }),
           },
       );
     }
@@ -257,7 +255,7 @@ const DHIS2Widget = <T,>({
         (item) => item.id === form.formData[parameter.code],
       ) || {
         id: form.formData[parameter.code],
-        name: `(Unknown ID: ${form.formData[parameter.code]})`,
+        name: t("Unknown ID: {{id}}", { id: form.formData[parameter.code] }),
       }
     );
   }, [form.formData[parameter.code], options.items]);
