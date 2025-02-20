@@ -117,7 +117,6 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
                 onChange={(markdown) => {
                   setDescription(markdown);
                 }}
-                readOnly={!isEditing}
               />
             ) : (
               <MarkdownViewer markdown={workspace.description || ""} />
