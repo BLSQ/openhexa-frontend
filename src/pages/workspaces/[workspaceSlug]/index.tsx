@@ -123,7 +123,9 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
           ) : (
             <Block>
               <Block.Content>
-                <MarkdownViewer>{workspace.description || ""}</MarkdownViewer>
+                <MarkdownViewer
+                  markdown={workspace.description || ""}
+                ></MarkdownViewer>
               </Block.Content>
             </Block>
           )}

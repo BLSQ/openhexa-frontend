@@ -72,7 +72,10 @@ const UpgradePipelineFromTemplateDialog = ({
             </div>
             {version.changelog && (
               <div className="text-sm">
-                <MarkdownViewer sm={true}>{version.changelog}</MarkdownViewer>
+                <MarkdownViewer
+                  sm={true}
+                  markdown={version.changelog}
+                ></MarkdownViewer>
               </div>
             )}
           </div>
