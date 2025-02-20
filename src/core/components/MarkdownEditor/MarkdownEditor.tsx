@@ -30,6 +30,7 @@ import {
 import "@mdxeditor/editor/style.css";
 import clsx from "clsx";
 import styles from "./MarkdownEditor.module.css";
+import { useMemo } from "react";
 
 export type MarkdownEditorProps = MDXEditorProps & {
   sm?: boolean;
@@ -51,75 +52,75 @@ const MarkdownEditor = ({
   readOnly,
   ...delegated
 }: MarkdownEditorProps) => {
-  const plugins = [
-    headingsPlugin(),
-    quotePlugin(),
-    listsPlugin(),
-    codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
-    codeMirrorPlugin({
-      codeBlockLanguages: {
-        python: "Python",
-        js: "JavaScript",
-        css: "CSS",
-        txt: "text",
-      },
-    }),
-    thematicBreakPlugin(),
-    linkPlugin(),
-    linkDialogPlugin(),
-    markdownShortcutPlugin(),
-    imagePlugin({ disableImageResize: readOnly }),
-  ];
-  if (!readOnly) {
-    plugins.push(
-      toolbarPlugin({
-        toolbarClassName: styles.toolbar,
-        toolbarContents: () => (
-          <ConditionalContents
-            options={[
-              {
-                when: (editor) => editor?.editorType === "codeblock",
-                contents: () => <ChangeCodeMirrorLanguage />,
-              },
-              {
-                fallback: () => (
-                  <>
-                    <UndoRedo />
-                    <Separator />
-                    <BoldItalicUnderlineToggles />
-                    <CodeToggle />
-                    <Separator />
-                    <StrikeThroughSupSubToggles />
-                    <Separator />
-                    <ListsToggle options={["bullet", "number"]} />
-                    <Separator />
-
-                    <ConditionalContents
-                      options={[
-                        {
-                          when: whenInAdmonition,
-                          contents: () => <ChangeAdmonitionType />,
-                        },
-                        { fallback: () => <BlockTypeSelect /> },
-                      ]}
-                    />
-
-                    <Separator />
-
-                    <InsertThematicBreak />
-
-                    <Separator />
-                    <InsertCodeBlock />
-                    <InsertImage />
-                  </>
-                ),
-              },
-            ]}
-          />
-        ),
+  const plugins = useMemo(() => {
+    const basePlugins = [
+      headingsPlugin(),
+      quotePlugin(),
+      listsPlugin(),
+      codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
+      codeMirrorPlugin({
+        codeBlockLanguages: {
+          python: "Python",
+          js: "JavaScript",
+          css: "CSS",
+          txt: "text",
+        },
       }),
-    );
-  }
+      thematicBreakPlugin(),
+      linkPlugin(),
+      linkDialogPlugin(),
+      markdownShortcutPlugin(),
+      imagePlugin({ disableImageResize: readOnly }),
+    ];
+
+    if (!readOnly) {
+      basePlugins.push(
+        toolbarPlugin({
+          toolbarClassName: styles.toolbar,
+          toolbarContents: () => (
+            <ConditionalContents
+              options={[
+                {
+                  when: (editor) => editor?.editorType === "codeblock",
+                  contents: () => <ChangeCodeMirrorLanguage />,
+                },
+                {
+                  fallback: () => (
+                    <>
+                      <UndoRedo />
+                      <Separator />
+                      <BoldItalicUnderlineToggles />
+                      <CodeToggle />
+                      <Separator />
+                      <StrikeThroughSupSubToggles />
+                      <Separator />
+                      <ListsToggle options={["bullet", "number"]} />
+                      <Separator />
+                      <ConditionalContents
+                        options={[
+                          {
+                            when: whenInAdmonition,
+                            contents: () => <ChangeAdmonitionType />,
+                          },
+                          { fallback: () => <BlockTypeSelect /> },
+                        ]}
+                      />
+                      <Separator />
+                      <InsertThematicBreak />
+                      <Separator />
+                      <InsertCodeBlock />
+                      <InsertImage />
+                    </>
+                  ),
+                },
+              ]}
+            />
+          ),
+        }),
+      );
+    }
+    return basePlugins;
+  }, [readOnly]);
 
   return (
     <div

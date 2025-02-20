@@ -123,7 +123,10 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
           ) : (
             <Block>
               <Block.Content>
-                <MarkdownViewer markdown={workspace.description || ""} />
+                <MarkdownViewer
+                  key={data.workspace.slug} // Force re-render when slug changes, the markdown props is only read once and not triggering a re-render
+                  markdown={workspace.description || ""}
+                />
               </Block.Content>
             </Block>
           )}
