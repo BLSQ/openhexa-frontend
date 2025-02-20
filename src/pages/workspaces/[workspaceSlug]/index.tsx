@@ -1,3 +1,4 @@
+import Block from "core/components/Block";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import MarkdownEditor from "core/components/MarkdownEditor/MarkdownEditor";
@@ -110,21 +111,22 @@ const WorkspaceHome: NextPageWithLayout = (props: Props) => {
         }
       >
         <WorkspaceLayout.PageContent>
-          <div className="bg-white rounded-lg shadow">
-            {isEditing ? (
+          {isEditing ? (
+            <div className="bg-white">
               <MarkdownEditor
                 markdown={description || ""}
                 onChange={(markdown) => {
                   setDescription(markdown);
                 }}
               />
-            ) : (
-              <MarkdownViewer
-                markdown={workspace.description || ""}
-                className={"p-6"}
-              />
-            )}
-          </div>
+            </div>
+          ) : (
+            <Block>
+              <Block.Content>
+                <MarkdownViewer markdown={workspace.description || ""} />
+              </Block.Content>
+            </Block>
+          )}
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
     </Page>
