@@ -124,7 +124,8 @@ const MarkdownEditor = ({
   return (
     <div
       className={clsx(
-        "rounded-md border border-gray-300 overflow-y-auto",
+        "rounded-md overflow-y-auto",
+        !readOnly && "border border-gray-300",
         className,
       )}
     >
