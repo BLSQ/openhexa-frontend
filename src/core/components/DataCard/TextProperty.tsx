@@ -50,10 +50,7 @@ const TextProperty = (props: TextPropertyProps) => {
     return (
       <DataCard.Property property={property}>
         {markdown && property.displayValue ? (
-          <MarkdownViewer
-            sm={sm}
-            markdown={property.displayValue}
-          ></MarkdownViewer>
+          <MarkdownViewer sm={sm} markdown={property.displayValue} />
         ) : (
           <div className={clsx("prose text-sm text-gray-900", className)}>
             {property.displayValue ?? property.defaultValue}
