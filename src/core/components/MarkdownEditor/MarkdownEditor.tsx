@@ -33,7 +33,6 @@ import styles from "./MarkdownEditor.module.css";
 
 export type MarkdownEditorProps = MDXEditorProps & {
   sm?: boolean;
-  readonly?: boolean;
 };
 
 function whenInAdmonition(editorInFocus: EditorInFocus | null) {
