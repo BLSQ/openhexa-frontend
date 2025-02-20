@@ -122,7 +122,12 @@ const MarkdownEditor = ({
   }
 
   return (
-    <div className={clsx("rounded-md overflow-y-auto", className)}>
+    <div
+      className={clsx(
+        "rounded-md border border-gray-300 overflow-y-auto",
+        className,
+      )}
+    >
       <MDXEditor
         data-testid="markdown-editor"
         markdown={markdown}
