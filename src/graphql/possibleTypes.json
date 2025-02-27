@@ -24,10 +24,6 @@
       "PostgreSQLConnection",
       "S3Connection"
     ],
-    "DHIS2MetadataItemUnion": [
-      "DHIS2MetadataItem",
-      "DHIS2OrganisationUnitLevel"
-    ],
     "MetadataObject": [
       "Dataset",
       "DatasetVersion",

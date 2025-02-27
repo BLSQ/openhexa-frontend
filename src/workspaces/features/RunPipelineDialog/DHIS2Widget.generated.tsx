@@ -13,7 +13,7 @@ export type GetConnectionBySlugQueryVariables = Types.Exact<{
 }>;
 
 
-export type GetConnectionBySlugQuery = { __typename?: 'Query', connectionBySlug?: { __typename?: 'CustomConnection' } | { __typename?: 'DHIS2Connection', queryMetadata: { __typename?: 'DHIS2QueryResultPage', totalItems: number, error?: Types.Dhis2ConnectionError | null, items?: Array<{ __typename: 'DHIS2MetadataItem', id?: string | null, name?: string | null } | { __typename: 'DHIS2OrganisationUnitLevel', id?: string | null, name?: string | null, level: number }> | null } } | { __typename?: 'GCSConnection' } | { __typename?: 'IASOConnection' } | { __typename?: 'PostgreSQLConnection' } | { __typename?: 'S3Connection' } | null };
+export type GetConnectionBySlugQuery = { __typename?: 'Query', connectionBySlug?: { __typename?: 'CustomConnection' } | { __typename?: 'DHIS2Connection', queryMetadata: { __typename?: 'DHIS2QueryResultPage', totalItems: number, error?: Types.Dhis2ConnectionError | null, items?: Array<{ __typename?: 'DHIS2MetadataItem', id?: string | null, label?: string | null }> | null } } | { __typename?: 'GCSConnection' } | { __typename?: 'IASOConnection' } | { __typename?: 'PostgreSQLConnection' } | { __typename?: 'S3Connection' } | null };
 
 
 export const GetConnectionBySlugDocument = gql`
@@ -22,16 +22,8 @@ export const GetConnectionBySlugDocument = gql`
     ... on DHIS2Connection {
       queryMetadata(type: $type, search: $search, perPage: $perPage, page: $page) {
         items {
-          __typename
-          ... on DHIS2MetadataItem {
-            id
-            name
-          }
-          ... on DHIS2OrganisationUnitLevel {
-            id
-            name
-            level
-          }
+          id
+          label
         }
         totalItems
         error
