@@ -1048,25 +1048,14 @@ export enum Dhis2ConnectionStatus {
 export type Dhis2MetadataItem = {
   __typename?: 'DHIS2MetadataItem';
   id?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-};
-
-/** DHIS2 metadata item union */
-export type Dhis2MetadataItemUnion = Dhis2MetadataItem | Dhis2OrganisationUnitLevel;
-
-/** DHIS2 metadata level */
-export type Dhis2OrganisationUnitLevel = {
-  __typename?: 'DHIS2OrganisationUnitLevel';
-  id?: Maybe<Scalars['String']['output']>;
-  level: Scalars['Int']['output'];
-  name?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
 };
 
 /** DHIS2 metadata query result page */
 export type Dhis2QueryResultPage = {
   __typename?: 'DHIS2QueryResultPage';
   error?: Maybe<Dhis2ConnectionError>;
-  items?: Maybe<Array<Dhis2MetadataItemUnion>>;
+  items?: Maybe<Array<Dhis2MetadataItem>>;
   pageNumber: Scalars['Int']['output'];
   success: Scalars['Boolean']['output'];
   totalItems: Scalars['Int']['output'];

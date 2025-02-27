@@ -5,10 +5,11 @@ import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
 import useDebounce from "core/hooks/useDebounce";
 import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
 import useIntersectionObserver from "core/hooks/useIntersectionObserver";
+import { FormInstance } from "../../../core/hooks/useForm";
 
-type DHIS2WidgetProps<T> = {
+type DHIS2WidgetProps = {
   parameter: any;
-  form: any;
+  form: FormInstance<any>;
   workspaceSlug: string;
 };
 
@@ -33,16 +34,8 @@ export const GET_CONNECTION_METADATA = gql`
           page: $page
         ) {
           items {
-            __typename
-            ... on DHIS2MetadataItem {
-              id
-              name
-            }
-            ... on DHIS2OrganisationUnitLevel {
-              id
-              name
-              level
-            }
+            id
+            label
           }
           totalItems
           error
@@ -63,15 +56,10 @@ const dhis2WidgetToQuery: { [key: string]: string } = {
   "indicators_picker.groups": "INDICATOR_GROUPS",
 };
 
-const DHIS2Widget = <T,>({
-  parameter,
-  form,
-  workspaceSlug,
-}: DHIS2WidgetProps<T>) => {
+const DHIS2Widget = ({ parameter, form, workspaceSlug }: DHIS2WidgetProps) => {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
   const [perPage, setPerPage] = useState(10);
-  const [page, setPage] = useState(1);
   const [isFetched, setIsFetched] = useState(false);
   const { t } = useTranslation();
 
@@ -83,8 +71,7 @@ const DHIS2Widget = <T,>({
 
   useEffect(() => {
     setIsFetched(true);
-    if (!form.formData[parameter.connection]) return;
-
+    if (!form.formData[parameter?.connection]) return;
     void fetchData({
       variables: {
         workspaceSlug,
@@ -136,11 +123,7 @@ const DHIS2Widget = <T,>({
     const items = connection.queryMetadata.items ?? [];
 
     items?.filter((c) => {
-      if (c.__typename === "DHIS2MetadataItem") {
-        return c.name?.toLowerCase().includes(debouncedQuery.toLowerCase());
-      } else if (c.__typename === "DHIS2OrganisationUnitLevel") {
-        return c.name?.toLowerCase().includes(debouncedQuery.toLowerCase());
-      }
+      c.label?.toLowerCase().includes(debouncedQuery.toLowerCase());
     });
     return { items, totalItems: connection.queryMetadata.totalItems ?? 0 };
   }, [data, error, debouncedQuery]);
@@ -152,7 +135,7 @@ const DHIS2Widget = <T,>({
 
       if (fetchMore) {
         fetchMore({
-          variables: { search: newQuery, page: page, perPage: perPage },
+          variables: { search: newQuery, page: 1, perPage: perPage },
         }).catch((err) => console.error("Error fetching more results:", err));
       }
     },
@@ -162,57 +145,17 @@ const DHIS2Widget = <T,>({
   const displayValueHandler = (value: any) => {
     if (!value) return "";
 
+    const getLabel = (item: any) => {
+      if (typeof item === "object" && item !== null) return item.label;
+      const foundItem = options.items.find((opt) => opt.id === item);
+      return foundItem?.label ?? t("Unknown ID: {{id}}", { id: item });
+    };
+
     if (Array.isArray(value)) {
-      const displayedNames = value
-        .map((item) => {
-          if (typeof item === "object" && item !== null) {
-            if (item.__typename === "DHIS2OrganisationUnitLevel") {
-              return item.name ?? `${item.level}`;
-            }
-          }
-
-          const foundItem = options.items.find((opt) => {
-            if (opt.__typename === "DHIS2OrganisationUnitLevel") {
-              return opt.level === item;
-            } else {
-              return opt.id === item;
-            }
-          });
-          if (foundItem?.__typename === "DHIS2OrganisationUnitLevel") {
-            return foundItem.name ?? `${foundItem.level}`;
-          } else {
-            return foundItem?.name ?? t("Unknown ID: {{id}}", { id: item });
-          }
-        })
-        .filter(Boolean);
-      return displayedNames.join(", ");
+      return value.map(getLabel).filter(Boolean).join(", ");
     }
 
-    if (typeof value === "object" && value !== null) {
-      if (value.__typename === "DHIS2OrganisationUnitLevel") {
-        return value.name ?? `${value.level}`;
-      }
-
-      return (
-        value.name ??
-        (value.level
-          ? `${value.level}`
-          : t("Unknown ID: {{id}}", { id: value.id }))
-      );
-    }
-
-    const selectedItem = options.items.find((item) => {
-      if (item.__typename === "DHIS2OrganisationUnitLevel") {
-        return item.level === value;
-      } else {
-        return item.id === value;
-      }
-    });
-    if (selectedItem?.__typename === "DHIS2OrganisationUnitLevel") {
-      return selectedItem.name ?? `${selectedItem.level}`;
-    } else {
-      return selectedItem?.name ?? t("Unknown ID: {{id}}", { id: value });
-    }
+    return getLabel(value);
   };
 
   useEffect(() => {
@@ -225,12 +168,12 @@ const DHIS2Widget = <T,>({
     (selectedValue: any) => {
       if (parameter.multiple) {
         const selectedIds = Array.isArray(selectedValue)
-          ? selectedValue.map((item) => item.id ?? item.level).filter(Boolean)
+          ? selectedValue.map((item) => item.id).filter(Boolean)
           : [];
 
         form.setFieldValue(parameter.code, selectedIds);
       } else {
-        const newValue = selectedValue?.id ?? selectedValue?.level ?? null;
+        const newValue = selectedValue?.id;
         form.setFieldValue(parameter.code, newValue);
       }
     },
@@ -245,7 +188,7 @@ const DHIS2Widget = <T,>({
         (id: string) =>
           options.items.find((item) => item.id === id) || {
             id,
-            name: t("Unknown ID: {{id}}", { id }),
+            label: t("Unknown ID: {{id}}", { id }),
           },
       );
     }
@@ -255,7 +198,7 @@ const DHIS2Widget = <T,>({
         (item) => item.id === form.formData[parameter.code],
       ) || {
         id: form.formData[parameter.code],
-        name: t("Unknown ID: {{id}}", { id: form.formData[parameter.code] }),
+        label: t("Unknown ID: {{id}}", { id: form.formData[parameter.code] }),
       }
     );
   }, [form.formData[parameter.code], options.items]);
@@ -281,7 +224,7 @@ const DHIS2Widget = <T,>({
     >
       {options?.items.map((option) => (
         <Combobox.CheckOption key={option.id} value={option}>
-          {option.name}
+          {option.label}
         </Combobox.CheckOption>
       ))}
       {onScrollBottom && (
