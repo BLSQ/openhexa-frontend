@@ -75,7 +75,7 @@ const Sidebar = (props: SidebarProps) => {
   const { slug } = workspace;
 
   const homeLink = {
-    href: `/workspaces/${encodeURIComponent(slug)}/`,
+    href: `/workspaces/${encodeURIComponent(slug)}`,
     label: t("Home"),
     Icon: HomeIcon,
   };
@@ -140,7 +140,7 @@ const Sidebar = (props: SidebarProps) => {
     ) {
       return pipelineLink.href;
     }
-    if (router.asPath === homeLink.href) {
+    if (router.asPath.startsWith(homeLink.href)) {
       return homeLink.href;
     }
   }, [router.asPath]);
@@ -152,13 +152,13 @@ const Sidebar = (props: SidebarProps) => {
 
         <div className="mt-5 flex grow flex-col">
           <nav className="flex-1 space-y-1 px-0 pb-4">
-            {[homeLink].concat(links).map((link) => (
+            {[homeLink].concat(links).map(({ href, Icon, label }) => (
               <NavItem
-                key={link.href}
-                href={link.href}
-                Icon={link.Icon}
-                label={link.label}
-                isCurrent={currentLink === link.href}
+                key={href}
+                href={href}
+                Icon={Icon}
+                label={label}
+                isCurrent={currentLink === href}
                 compact={!isSidebarOpen}
               />
             ))}
