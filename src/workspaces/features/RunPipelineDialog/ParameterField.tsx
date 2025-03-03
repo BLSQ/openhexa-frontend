@@ -46,10 +46,12 @@ const ParameterField = (props: ParameterFieldProps) => {
     );
   }
 
-  if (parameter.widget !== null) {
+  if (parameter.widget !== null && parameter.connection !== null) {
     return (
       <GenericConnectionWidget
         parameter={parameter}
+        connection={parameter.connection}
+        widget={parameter.widget}
         form={form}
         workspaceSlug={workspaceSlug || ""}
       />

@@ -4,11 +4,14 @@ import { useTranslation } from "next-i18next";
 import { Combobox, MultiCombobox } from "core/components/forms/Combobox";
 import useDebounce from "core/hooks/useDebounce";
 import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
+import { ParameterField_ParameterFragment } from "./ParameterField.generated";
 import useIntersectionObserver from "core/hooks/useIntersectionObserver";
 import { FormInstance } from "../../../core/hooks/useForm";
 
 type DHIS2WidgetProps = {
-  parameter: any;
+  parameter: ParameterField_ParameterFragment;
+  connection: string;
+  widget: string;
   form: FormInstance<any>;
   workspaceSlug: string;
 };
@@ -56,7 +59,13 @@ const dhis2WidgetToQuery: { [key: string]: string } = {
   "indicators_picker.groups": "INDICATOR_GROUPS",
 };
 
-const DHIS2Widget = ({ parameter, form, workspaceSlug }: DHIS2WidgetProps) => {
+const DHIS2Widget = ({
+  parameter,
+  connection,
+  widget,
+  form,
+  workspaceSlug,
+}: DHIS2WidgetProps) => {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 150);
   const [perPage, setPerPage] = useState(10);
@@ -71,23 +80,23 @@ const DHIS2Widget = ({ parameter, form, workspaceSlug }: DHIS2WidgetProps) => {
 
   useEffect(() => {
     setIsFetched(true);
-    if (!form.formData[parameter?.connection]) return;
+    if (!form.formData[connection]) return;
     void fetchData({
       variables: {
         workspaceSlug,
-        connectionSlug: form.formData[parameter.connection],
-        type: dhis2WidgetToQuery[parameter.widget],
+        connectionSlug: form.formData[connection],
+        type: dhis2WidgetToQuery[widget],
         search: debouncedQuery,
         perPage: 10,
         page: 1,
       },
     });
   }, [
-    form.formData[parameter.connection],
+    form.formData[connection],
     debouncedQuery,
     fetchData,
     workspaceSlug,
-    parameter.widget,
+    widget,
   ]);
 
   useEffect(() => {
@@ -96,8 +105,8 @@ const DHIS2Widget = ({ parameter, form, workspaceSlug }: DHIS2WidgetProps) => {
     fetchMore({
       variables: {
         workspaceSlug,
-        connectionSlug: form.formData[parameter.connection],
-        type: dhis2WidgetToQuery[parameter.widget],
+        connectionSlug: form.formData[connection],
+        type: dhis2WidgetToQuery[widget],
         search: debouncedQuery,
         perPage,
         page: 1,
@@ -208,6 +217,7 @@ const DHIS2Widget = ({ parameter, form, workspaceSlug }: DHIS2WidgetProps) => {
       setPerPage((prevPerPage) => prevPerPage + 10);
     }
   }, [options, loading]);
+
   const PickerComponent = parameter.multiple ? MultiCombobox : Combobox;
 
   return (
@@ -219,7 +229,7 @@ const DHIS2Widget = ({ parameter, form, workspaceSlug }: DHIS2WidgetProps) => {
       onInputChange={handleInputChange}
       placeholder={t("Select options")}
       value={selectedObjects}
-      disabled={!form.formData[parameter.connection] || !isFetched || loading}
+      disabled={!form.formData[connection] || !isFetched || loading}
       onClose={useCallback(() => setQuery(""), [])}
     >
       {options?.items.map((option) => (
