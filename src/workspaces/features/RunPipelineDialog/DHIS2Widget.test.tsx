@@ -15,14 +15,16 @@ jest.mock("core/hooks/useDebounce", () => ({
   default: jest.fn((value) => value),
 }));
 
-const generateMockPipeline = (multiple = false) => ({
+const generateMockedParameterField = (multiple = false) => ({
   parameter: {
     code: "test_param",
     widget: "datasets_picker",
-    multiple,
+    multiple: true,
     type: "str",
     connection: "test_connection",
   },
+  connection: "test_connection",
+  widget: "datasets_picker",
   form: {
     formData: { test_connection: "mock_connection_slug", test_param: null },
     setFieldValue: jest.fn(),
@@ -36,12 +38,12 @@ describe("GenericConnectionWidget", () => {
   });
 
   it("renders the component correctly", async () => {
-    const pipeline = generateMockPipeline();
+    const parameterField = generateMockedParameterField();
     mockLazyQuery.mockReturnValue([jest.fn(), { data: null, loading: false }]);
 
     render(
       <TestApp>
-        <DHIS2Widget {...pipeline} />
+        <DHIS2Widget {...parameterField} />
       </TestApp>,
     );
 
@@ -49,7 +51,7 @@ describe("GenericConnectionWidget", () => {
   });
 
   it("fetches data when connection is provided", async () => {
-    const pipeline = generateMockPipeline();
+    const pipeline = generateMockedParameterField();
     const mockFetch = jest.fn().mockResolvedValue({
       data: {
         connectionBySlug: {
@@ -84,7 +86,7 @@ describe("GenericConnectionWidget", () => {
   });
 
   it("updates selected value in single select mode", async () => {
-    const pipeline = generateMockPipeline(false);
+    const pipeline = generateMockedParameterField(false);
     const mockFetch = jest.fn().mockResolvedValue({
       data: {
         connectionBySlug: {
@@ -112,7 +114,7 @@ describe("GenericConnectionWidget", () => {
   });
 
   it("updates selected values in multiple mode", async () => {
-    const pipeline = generateMockPipeline(true);
+    const pipeline = generateMockedParameterField(true);
     const mockFetch = jest.fn().mockResolvedValue({
       data: {
         connectionBySlug: {
@@ -143,7 +145,7 @@ describe("GenericConnectionWidget", () => {
   });
 
   it("handles missing id and uses level instead", async () => {
-    const pipeline = generateMockPipeline(false);
+    const pipeline = generateMockedParameterField(false);
     const mockFetch = jest.fn().mockResolvedValue({
       data: {
         connectionBySlug: {

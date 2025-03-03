@@ -80,7 +80,6 @@ const DHIS2Widget = ({
 
   useEffect(() => {
     setIsFetched(true);
-    if (!form.formData[connection]) return;
     void fetchData({
       variables: {
         workspaceSlug,
@@ -96,7 +95,7 @@ const DHIS2Widget = ({
     debouncedQuery,
     fetchData,
     workspaceSlug,
-    widget,
+    parameter.widget,
   ]);
 
   useEffect(() => {
