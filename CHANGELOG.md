@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.60.5](https://github.com/BLSQ/openhexa-frontend/compare/0.60.4...0.60.5) (2025-03-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cronstrue to v2.56.0 ([#1144](https://github.com/BLSQ/openhexa-frontend/issues/1144)) ([3de30a0](https://github.com/BLSQ/openhexa-frontend/commit/3de30a0161fd3c1138bd99712c171f12b891fe1e))
+
 ## [0.60.4](https://github.com/BLSQ/openhexa-frontend/compare/0.60.3...0.60.4) (2025-03-03)
 
 
