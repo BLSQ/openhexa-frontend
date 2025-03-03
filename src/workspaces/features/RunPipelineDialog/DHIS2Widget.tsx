@@ -80,6 +80,7 @@ const DHIS2Widget = ({
 
   useEffect(() => {
     setIsFetched(true);
+    if (!form.formData[connection]) return;
     void fetchData({
       variables: {
         workspaceSlug,
@@ -114,12 +115,31 @@ const DHIS2Widget = ({
     }).catch((err) => console.error("Error fetching more data:", err));
   }, [perPage]);
 
-  const options = useMemo(() => {
+  const errorMessage = useMemo(() => {
     if (error) {
-      console.error("Error fetching connection metadata:", error);
-      return { items: [], totalItems: 0 };
+      console.error("GraphQL Error:", error);
+      return error.message || t("An unexpected error occurred.");
+    }
+    const connection = data?.connectionBySlug;
+    if (
+      connection?.__typename !== "DHIS2Connection" ||
+      !connection.queryMetadata
+    ) {
+      return "";
+    }
+    const apiError = connection.queryMetadata.error;
+    if (apiError) {
+      console.error("API Error:", apiError);
+      return t("Failed connect to DHIS2");
     }
 
+    return "";
+  }, [error, data, t]);
+
+  const options = useMemo(() => {
+    if (errorMessage) {
+      return { items: [], totalItems: 0 };
+    }
     const connection = data?.connectionBySlug;
 
     if (
@@ -134,7 +154,7 @@ const DHIS2Widget = ({
       c.label?.toLowerCase().includes(debouncedQuery.toLowerCase());
     });
     return { items, totalItems: connection.queryMetadata.totalItems ?? 0 };
-  }, [data, error, debouncedQuery]);
+  }, [data, errorMessage, debouncedQuery]);
 
   const handleInputChange = useCallback(
     (event: any) => {
@@ -230,6 +250,7 @@ const DHIS2Widget = ({
       value={selectedObjects}
       disabled={!form.formData[connection] || !isFetched || loading}
       onClose={useCallback(() => setQuery(""), [])}
+      error={errorMessage}
     >
       {options?.items.map((option) => (
         <Combobox.CheckOption key={option.id} value={option}>
