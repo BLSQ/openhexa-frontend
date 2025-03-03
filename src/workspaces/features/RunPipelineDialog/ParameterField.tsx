@@ -3,23 +3,25 @@ import Switch from "core/components/Switch/Switch";
 import Input from "core/components/forms/Input/Input";
 import Select from "core/components/forms/Select";
 import Textarea from "core/components/forms/Textarea/Textarea";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useTranslation } from "next-i18next";
 import WorkspaceConnectionPicker from "../WorkspaceConnectionPicker/WorkspaceConnectionPicker";
 import { isConnectionParameter } from "workspaces/helpers/pipelines";
 import DatasetPicker from "datasets/features/DatasetPicker";
 import { ensureArray } from "core/helpers/array";
+import GenericConnectionWidget from "./GenericConnectionWidget";
 
 type ParameterFieldProps = {
   parameter: any;
   value: any;
+  form: any;
   onChange(value: any): void;
   workspaceSlug?: string;
 };
 
 const ParameterField = (props: ParameterFieldProps) => {
   const { t } = useTranslation();
-  const { parameter, value, onChange, workspaceSlug } = props;
+  const { parameter, value, form, onChange, workspaceSlug } = props;
 
   const handleChange = useCallback(
     (value: any) => {
@@ -40,6 +42,18 @@ const ParameterField = (props: ParameterFieldProps) => {
         name={parameter.code}
         checked={value ?? false}
         onChange={onChange}
+      />
+    );
+  }
+
+  if (parameter.widget !== null && parameter.connection !== null) {
+    return (
+      <GenericConnectionWidget
+        parameter={parameter}
+        connection={parameter.connection}
+        widget={parameter.widget}
+        form={form}
+        workspaceSlug={workspaceSlug || ""}
       />
     );
   }
@@ -155,6 +169,8 @@ ParameterField.fragments = {
       default
       required
       choices
+      connection
+      widget
       multiple
     }
   `,

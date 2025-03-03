@@ -1550,25 +1550,41 @@ type DHIS2Connection implements Connection {
   user: User
   fields: [ConnectionField!]!
   permissions: ConnectionPermissions!
-  queryMetadata(type: String!, filter: String): DHIS2QueryResult!
+  queryMetadata(type: String!, filter: String, search: String, perPage: Int, page: Int ): DHIS2QueryResultPage!
 }
 
-enum DHIS2ConnectionError {
-  CONNECTION_ERROR
-  UNKNOWN_ERROR
-}
 
-"""DHIS2 metadata item"""
+"""
+DHIS2 metadata item
+"""
 type DHIS2MetadataItem {
-  id: String!
-  name: String!
+    id: String     # Unique identifier
+    label: String   # Label of the metadata item
+}
+"""
+DHIS2 connection error
+"""
+enum DHIS2ConnectionError {
+    REQUEST_ERROR
+    UNKNOWN_ERROR
+}
+"""
+DHIS2 connection status
+"""
+enum DHIS2ConnectionStatus {
+    UP
+    DOWN
+    UNKNOWN
 }
 
-"""DHIS2 metadata query result"""
-type DHIS2QueryResult {
-  items: [DHIS2MetadataItem!]
-  success: Boolean!
-  error: DHIS2ConnectionError
+"""DHIS2 metadata query result page"""
+type DHIS2QueryResultPage {
+    items: [DHIS2MetadataItem!]  # List of metadata items
+    pageNumber: Int!                   # Current page number
+    totalPages: Int!                # Number of items per page
+    totalItems: Int!             # Total number of items
+    success: Boolean!           # Query success status
+    error: DHIS2ConnectionError # Connection error
 }
 
 """
@@ -2405,6 +2421,8 @@ type PipelineParameter {
   multiple: Boolean!
   required: Boolean!
   default: Generic
+  connection: String
+  widget: String
   help: String
   choices: [Generic!]
 }
