@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.60.5](https://github.com/BLSQ/openhexa-frontend/compare/0.60.4...0.60.5) (2025-03-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/nextjs to v9.4.0 ([#1150](https://github.com/BLSQ/openhexa-frontend/issues/1150)) ([6ed9a69](https://github.com/BLSQ/openhexa-frontend/commit/6ed9a69e7ba7c2b946d457bdacbafe35e04f8413))
+* **deps:** update dependency @types/node to v22.13.9 ([#1146](https://github.com/BLSQ/openhexa-frontend/issues/1146)) ([570a0d0](https://github.com/BLSQ/openhexa-frontend/commit/570a0d09843dcba0fb76c14b4352e3c3ff5d337b))
+* **deps:** update dependency @uiw/react-codemirror to v4.23.10 ([#1148](https://github.com/BLSQ/openhexa-frontend/issues/1148)) ([2e3cd81](https://github.com/BLSQ/openhexa-frontend/commit/2e3cd812f7c9d984043e39b84e71e2637eb601eb))
+* **deps:** update dependency cronstrue to v2.56.0 ([#1144](https://github.com/BLSQ/openhexa-frontend/issues/1144)) ([3de30a0](https://github.com/BLSQ/openhexa-frontend/commit/3de30a0161fd3c1138bd99712c171f12b891fe1e))
+* **deps:** update nextjs monorepo to v15.2.1 ([#1147](https://github.com/BLSQ/openhexa-frontend/issues/1147)) ([2da9780](https://github.com/BLSQ/openhexa-frontend/commit/2da978036166415fcb4cf2e2b2a0086a34ea1436))
+
 ## [0.60.4](https://github.com/BLSQ/openhexa-frontend/compare/0.60.3...0.60.4) (2025-03-03)
 
 
