@@ -1,4 +1,10 @@
-query WebappsPage($workspaceSlug: String, $page: Int, $perPage: Int = 15) {
+query WebappsPage($workspaceSlug: String!, $page: Int, $perPage: Int = 15) {
+  workspace(slug: $workspaceSlug) {
+    slug
+    name
+    ...WorkspaceLayout_workspace
+  }
+
   webapps(workspaceSlug: $workspaceSlug, page: $page, perPage: $perPage) {
     totalPages
     totalItems
