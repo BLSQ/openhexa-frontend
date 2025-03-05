@@ -7,6 +7,7 @@ import {
   CircleStackIcon,
   Cog6ToothIcon,
   FolderOpenIcon,
+  GlobeAltIcon,
   HomeIcon,
   Square2StackIcon,
   SwatchIcon,
@@ -21,6 +22,7 @@ import SidebarMenu from "workspaces/features/SidebarMenu";
 import { Sidebar_WorkspaceFragment } from "./Sidebar.generated";
 import { LayoutContext } from "./WorkspaceLayout";
 import { useRouter } from "next/router";
+import useFeature from "identity/hooks/useFeature";
 
 type SidebarProps = {
   workspace: Sidebar_WorkspaceFragment;
@@ -70,6 +72,8 @@ const Sidebar = (props: SidebarProps) => {
   const { workspace, className } = props;
   const { t } = useTranslation();
   const { isSidebarOpen, setSidebarOpen } = useContext(LayoutContext);
+  const [webappsFeatureEnabled] = useFeature("webapps");
+
   const router = useRouter();
 
   const { slug } = workspace;
@@ -106,12 +110,6 @@ const Sidebar = (props: SidebarProps) => {
       label: t("Connections"),
       Icon: SwatchIcon,
     },
-    {
-      // TODO : feature flag
-      href: `/workspaces/${encodeURIComponent(slug)}/webapps`,
-      label: t("Webapps"),
-      Icon: SwatchIcon,
-    },
     pipelineLink,
     ...(workspace.permissions.launchNotebookServer
       ? [
@@ -128,6 +126,15 @@ const Sidebar = (props: SidebarProps) => {
             href: `/workspaces/${encodeURIComponent(slug)}/settings`,
             label: t("Settings"),
             Icon: Cog6ToothIcon,
+          },
+        ]
+      : []),
+    ...(webappsFeatureEnabled
+      ? [
+          {
+            href: `/workspaces/${encodeURIComponent(slug)}/webapps`,
+            label: t("Apps"),
+            Icon: GlobeAltIcon,
           },
         ]
       : []),
