@@ -894,6 +894,7 @@ export enum CreateWebappError {
 /** Represents the input for creating a web app. */
 export type CreateWebappInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   url: Scalars['String']['input'];
   workspaceSlug: Scalars['String']['input'];
