@@ -130,7 +130,6 @@ const WebappsPage = (props: Props) => {
   );
 };
 
-// TODO : query to get one by id
 // TODO : update/delete page
 // TODO : create page
 // TODO : finish list

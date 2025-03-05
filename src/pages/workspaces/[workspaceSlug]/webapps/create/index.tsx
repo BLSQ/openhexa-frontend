@@ -8,22 +8,14 @@ import Breadcrumbs from "core/components/Breadcrumbs";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Page from "core/components/Page";
 import { useTranslation } from "next-i18next";
-import { useRouter } from "next/router";
 
 const WebappCreatePage = ({ workspace }: any) => {
   const { t } = useTranslation();
-  const router = useRouter();
 
   return (
     <Page title={t("Web Apps")}>
       <WorkspaceLayout
         workspace={workspace}
-        helpLinks={[
-          {
-            label: t("About webapps"),
-            href: "https://github.com/BLSQ/openhexa/wiki/User-manual#using-webapps",
-          },
-        ]}
         header={
           <>
             <Breadcrumbs withHome={false} className="flex-1">
@@ -43,7 +35,7 @@ const WebappCreatePage = ({ workspace }: any) => {
               <Breadcrumbs.Part
                 href={`/workspaces/${encodeURIComponent(
                   workspace.slug,
-                )}/create`}
+                )}/webapps/create`}
                 isLast
               >
                 {t("Create")}

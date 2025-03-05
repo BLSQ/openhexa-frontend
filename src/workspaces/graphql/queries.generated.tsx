@@ -35,6 +35,7 @@ import { ConnectionFieldsSection_ConnectionFragmentDoc } from '../features/Conne
 import { TemplateCard_TemplateFragmentDoc } from '../features/TemplateCard/TemplateCard.generated';
 import { TemplateLayout_TemplateFragmentDoc } from '../layouts/TemplateLayout/TemplateLayout.generated';
 import { TemplateVersionCard_VersionFragmentDoc } from '../../pipelines/features/TemplateVersionCard/TemplateVersionCard.generated';
+import { WebappForm_WorkspaceFragmentDoc, WebappForm_WebappFragmentDoc } from '../../webapps/features/WebappForm/WebappForm.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type WorkspacesPageQueryVariables = Types.Exact<{ [key: string]: never; }>;
@@ -242,6 +243,14 @@ export type WorkspaceWebappsPageQueryVariables = Types.Exact<{
 
 
 export type WorkspaceWebappsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, webapps: { __typename?: 'WebappsPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'Webapp', id: string, name: string, description?: string | null, url: string, isFavorite: boolean, permissions: { __typename?: 'WebappPermissions', update: boolean, delete: boolean } }> } };
+
+export type WorkspaceWebappPageQueryVariables = Types.Exact<{
+  workspaceSlug: Types.Scalars['String']['input'];
+  webappId: Types.Scalars['UUID']['input'];
+}>;
+
+
+export type WorkspaceWebappPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, webapp?: { __typename?: 'Webapp', id: string, name: string, description?: string | null, url: string, icon?: string | null, permissions: { __typename?: 'WebappPermissions', update: boolean, delete: boolean } } | null };
 
 
 export const WorkspacesPageDocument = gql`
@@ -1766,3 +1775,48 @@ export type WorkspaceWebappsPageQueryHookResult = ReturnType<typeof useWorkspace
 export type WorkspaceWebappsPageLazyQueryHookResult = ReturnType<typeof useWorkspaceWebappsPageLazyQuery>;
 export type WorkspaceWebappsPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceWebappsPageSuspenseQuery>;
 export type WorkspaceWebappsPageQueryResult = Apollo.QueryResult<WorkspaceWebappsPageQuery, WorkspaceWebappsPageQueryVariables>;
+export const WorkspaceWebappPageDocument = gql`
+    query WorkspaceWebappPage($workspaceSlug: String!, $webappId: UUID!) {
+  workspace(slug: $workspaceSlug) {
+    ...WebappForm_workspace
+  }
+  webapp: webapp(id: $webappId) {
+    ...WebappForm_webapp
+  }
+}
+    ${WebappForm_WorkspaceFragmentDoc}
+${WebappForm_WebappFragmentDoc}`;
+
+/**
+ * __useWorkspaceWebappPageQuery__
+ *
+ * To run a query within a React component, call `useWorkspaceWebappPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkspaceWebappPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkspaceWebappPageQuery({
+ *   variables: {
+ *      workspaceSlug: // value for 'workspaceSlug'
+ *      webappId: // value for 'webappId'
+ *   },
+ * });
+ */
+export function useWorkspaceWebappPageQuery(baseOptions: Apollo.QueryHookOptions<WorkspaceWebappPageQuery, WorkspaceWebappPageQueryVariables> & ({ variables: WorkspaceWebappPageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WorkspaceWebappPageQuery, WorkspaceWebappPageQueryVariables>(WorkspaceWebappPageDocument, options);
+      }
+export function useWorkspaceWebappPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkspaceWebappPageQuery, WorkspaceWebappPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WorkspaceWebappPageQuery, WorkspaceWebappPageQueryVariables>(WorkspaceWebappPageDocument, options);
+        }
+export function useWorkspaceWebappPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceWebappPageQuery, WorkspaceWebappPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceWebappPageQuery, WorkspaceWebappPageQueryVariables>(WorkspaceWebappPageDocument, options);
+        }
+export type WorkspaceWebappPageQueryHookResult = ReturnType<typeof useWorkspaceWebappPageQuery>;
+export type WorkspaceWebappPageLazyQueryHookResult = ReturnType<typeof useWorkspaceWebappPageLazyQuery>;
+export type WorkspaceWebappPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceWebappPageSuspenseQuery>;
+export type WorkspaceWebappPageQueryResult = Apollo.QueryResult<WorkspaceWebappPageQuery, WorkspaceWebappPageQueryVariables>;

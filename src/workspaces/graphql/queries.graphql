@@ -689,3 +689,12 @@ query WorkspaceWebappsPage(
     }
   }
 }
+
+query WorkspaceWebappPage($workspaceSlug: String!, $webappId: UUID!) {
+  workspace(slug: $workspaceSlug) {
+    ...WebappForm_workspace
+  }
+  webapp: webapp(id: $webappId) {
+    ...WebappForm_webapp
+  }
+}
