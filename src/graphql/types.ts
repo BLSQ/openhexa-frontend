@@ -3459,6 +3459,7 @@ export type Query = {
   teams: TeamPage;
   /** Retrieves a template by workspace slug and code. */
   templateByCode?: Maybe<PipelineTemplate>;
+  webapp?: Maybe<Webapp>;
   webapps: WebappsPage;
   workspace?: Maybe<Workspace>;
   workspaces: WorkspacePage;
@@ -3657,6 +3658,11 @@ export type QueryTeamsArgs = {
 
 export type QueryTemplateByCodeArgs = {
   code: Scalars['String']['input'];
+};
+
+
+export type QueryWebappArgs = {
+  id: Scalars['UUID']['input'];
 };
 
 
