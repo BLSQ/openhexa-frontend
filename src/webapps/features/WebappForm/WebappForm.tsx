@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
-import Page from "core/components/Page";
 import Button from "core/components/Button";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
@@ -69,47 +68,43 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
   }, [form.formData]);
 
   return (
-    <Page title={webapp ? t("Edit Web App") : t("Create Web App")}>
-      <WorkspaceLayout workspace={workspace}>
-        <WorkspaceLayout.PageContent>
-          <form onSubmit={form.handleSubmit} className="space-y-4">
-            <Field
-              label={t("Name")}
-              name="name"
-              value={form.formData.name}
-              onChange={form.handleInputChange}
-              required
-            />
-            <Field
-              label={t("URL")}
-              name="url"
-              value={form.formData.url}
-              onChange={form.handleInputChange}
-              required
-            />
-            <Field
-              label={t("Icon")}
-              name="icon"
-              value={form.formData.icon}
-              onChange={form.handleInputChange}
-            />
-            <Button type="submit" disabled={form.isSubmitting || !isFormValid}>
-              {form.isSubmitting
-                ? t("Saving...")
-                : webapp
-                  ? t("Update")
-                  : t("Create")}
-            </Button>
-          </form>
-          {form.formData.url && (
-            <div className="mt-4">
-              <h2 className="text-lg font-medium">{t("Preview")}</h2>
-              <iframe src={form.formData.url} className="w-full h-64 border" />
-            </div>
-          )}
-        </WorkspaceLayout.PageContent>
-      </WorkspaceLayout>
-    </Page>
+    <div>
+      <form onSubmit={form.handleSubmit} className="space-y-4">
+        <Field
+          label={t("Name")}
+          name="name"
+          value={form.formData.name}
+          onChange={form.handleInputChange}
+          required
+        />
+        <Field
+          label={t("URL")}
+          name="url"
+          value={form.formData.url}
+          onChange={form.handleInputChange}
+          required
+        />
+        <Field
+          label={t("Icon")}
+          name="icon"
+          value={form.formData.icon}
+          onChange={form.handleInputChange}
+        />
+        <Button type="submit" disabled={form.isSubmitting || !isFormValid}>
+          {form.isSubmitting
+            ? t("Saving...")
+            : webapp
+              ? t("Update")
+              : t("Create")}
+        </Button>
+      </form>
+      {form.formData.url && (
+        <div className="mt-4">
+          <h2 className="text-lg font-medium">{t("Preview")}</h2>
+          <iframe src={form.formData.url} className="w-full h-64 border" />
+        </div>
+      )}
+    </div>
   );
 };
 
