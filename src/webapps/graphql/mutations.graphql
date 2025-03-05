@@ -1,0 +1,12 @@
+mutation UpdateWebapp($input: UpdateWebappInput!) {
+  updateWebapp(input: $input) {
+    success
+    errors
+  }
+}
+mutation CreateWebapp($input: CreateWebappInput!) {
+  createWebapp(input: $input) {
+    success
+    errors
+  }
+}
