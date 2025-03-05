@@ -37,7 +37,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
     initialState: {
       name: webapp?.name || "",
       url: webapp?.url || "",
-      //icon: webapp?.icon || "", TODO
+      icon: webapp?.icon || "",
     },
     async onSubmit(values) {
       try {
@@ -94,9 +94,9 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
               required
             />
             <Field
-              label={t("Icon URL")}
+              label={t("Icon")}
               name="icon"
-              value={form.formData.url} // TODO
+              value={form.formData.icon}
               onChange={form.handleInputChange}
             />
             <Button type="submit" disabled={form.isSubmitting || !isFormValid}>
@@ -126,7 +126,7 @@ WebappForm.fragment = {
       name
       description
       url
-      #icon # TODO
+      icon
       isFavorite
       permissions {
         update
