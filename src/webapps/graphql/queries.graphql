@@ -1,5 +1,4 @@
 query WebappsPage($workspaceSlug: String!, $page: Int, $perPage: Int = 15) {
-  # TODO : rename with Workspace
   workspace(slug: $workspaceSlug) {
     slug
     name
@@ -22,7 +21,6 @@ query WebappsPage($workspaceSlug: String!, $page: Int, $perPage: Int = 15) {
     }
   }
 }
-# TODO
 #query WebappPage($id: UUID!) {
 #  webapp(id: $id) {
 #    id
