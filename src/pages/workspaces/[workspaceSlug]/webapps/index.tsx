@@ -9,16 +9,16 @@ import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import Button from "core/components/Button";
-import {
-  useWebappsPageQuery,
-  WebappsPageDocument,
-  WebappsPageQuery,
-  WebappsPageQueryVariables,
-} from "webapps/graphql/queries.generated";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import CreatePipelineDialog from "workspaces/features/CreatePipelineDialog";
+import {
+  useWorkspaceWebappsPageQuery,
+  WorkspaceWebappsPageDocument,
+  WorkspaceWebappsPageQuery,
+  WorkspaceWebappsPageQueryVariables,
+} from "workspaces/graphql/queries.generated";
 
 type Props = {
   page: number;
@@ -30,7 +30,7 @@ const WebappsPage = (props: Props) => {
   const router = useRouter();
   const [isDialogOpen, setDialogOpen] = useState(false);
 
-  const { data } = useWebappsPageQuery({
+  const { data } = useWorkspaceWebappsPageQuery({
     variables: {
       workspaceSlug: router.query.workspaceSlug as string,
       page: props.page,
@@ -133,7 +133,6 @@ const WebappsPage = (props: Props) => {
   );
 };
 
-// TODO : rename graphql query with Workspace
 // TODO : query to get one by id
 // TODO : update/delete page
 // TODO : create page
@@ -149,8 +148,11 @@ export const getServerSideProps = createGetServerSideProps({
       : 1;
     const perPage = 15;
 
-    await client.query<WebappsPageQuery, WebappsPageQueryVariables>({
-      query: WebappsPageDocument,
+    await client.query<
+      WorkspaceWebappsPageQuery,
+      WorkspaceWebappsPageQueryVariables
+    >({
+      query: WorkspaceWebappsPageDocument,
       variables: {
         workspaceSlug: ctx.query.workspaceSlug as string,
         page,

@@ -1,26 +1,3 @@
-query WebappsPage($workspaceSlug: String!, $page: Int, $perPage: Int = 15) {
-  workspace(slug: $workspaceSlug) {
-    slug
-    name
-    ...WorkspaceLayout_workspace
-  }
-
-  webapps(workspaceSlug: $workspaceSlug, page: $page, perPage: $perPage) {
-    totalPages
-    totalItems
-    items {
-      id
-      name
-      description
-      url
-      isFavorite
-      permissions {
-        update
-        delete
-      }
-    }
-  }
-}
 #query WebappPage($id: UUID!) {
 #  webapp(id: $id) {
 #    id
