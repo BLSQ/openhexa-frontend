@@ -20,9 +20,7 @@ import { isEmpty } from "lodash";
 import Field from "core/components/forms/Field";
 
 type WebappFormProps = {
-  open: boolean;
-  onClose: () => void;
-  webapp: WebappForm_WebappFragment;
+  webapp?: WebappForm_WebappFragment;
   workspace: WebappForm_WorkspaceFragment;
 };
 
@@ -69,10 +67,6 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
   useEffect(() => {
     form.validate();
   }, [form.formData]);
-
-  useEffect(() => {
-    form.resetForm();
-  }, [open, form]);
 
   return (
     <Page title={webapp ? t("Edit Web App") : t("Create Web App")}>
