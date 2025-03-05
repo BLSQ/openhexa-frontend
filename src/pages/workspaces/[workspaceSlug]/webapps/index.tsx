@@ -7,12 +7,11 @@ import Link from "core/components/Link";
 import { createGetServerSideProps } from "core/helpers/page";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import Button from "core/components/Button";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import CreatePipelineDialog from "workspaces/features/CreatePipelineDialog";
 import {
   useWorkspaceWebappsPageQuery,
   WorkspaceWebappsPageDocument,
@@ -28,7 +27,6 @@ type Props = {
 const WebappsPage = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [isDialogOpen, setDialogOpen] = useState(false);
 
   const { data } = useWorkspaceWebappsPageQuery({
     variables: {
@@ -82,7 +80,11 @@ const WebappsPage = (props: Props) => {
             </Breadcrumbs>
             <Button
               leadingIcon={<PlusIcon className="h-4 w-4" />}
-              onClick={() => setDialogOpen(true)}
+              onClick={() =>
+                router.push(
+                  `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/create`,
+                )
+              }
             >
               {t("Create")}
             </Button>
@@ -124,11 +126,6 @@ const WebappsPage = (props: Props) => {
           </Block>
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
-      <CreatePipelineDialog
-        workspace={workspace}
-        open={isDialogOpen}
-        onClose={() => setDialogOpen(false)}
-      />
     </Page>
   );
 };
