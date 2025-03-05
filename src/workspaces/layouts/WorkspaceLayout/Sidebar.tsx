@@ -106,6 +106,12 @@ const Sidebar = (props: SidebarProps) => {
       label: t("Connections"),
       Icon: SwatchIcon,
     },
+    {
+      // TODO : feature flag
+      href: `/workspaces/${encodeURIComponent(slug)}/webapps`,
+      label: t("Webapps"),
+      Icon: SwatchIcon,
+    },
     pipelineLink,
     ...(workspace.permissions.launchNotebookServer
       ? [

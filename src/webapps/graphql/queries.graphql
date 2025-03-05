@@ -1,0 +1,39 @@
+query WebappsPage($workspaceSlug: String, $page: Int, $perPage: Int = 15) {
+  webapps(workspaceSlug: $workspaceSlug, page: $page, perPage: $perPage) {
+    totalPages
+    totalItems
+    items {
+      id
+      name
+      description
+      url
+      isFavorite
+      permissions {
+        update
+        delete
+      }
+    }
+  }
+}
+# TODO
+#query WebappPage($id: UUID!) {
+#  webapp(id: $id) {
+#    id
+#    name
+#    description
+#    url
+#    isFavorite
+#    createdBy {
+#      id
+#      displayName
+#    }
+#    workspace {
+#      id
+#      name
+#    }
+#    permissions {
+#      update
+#      delete
+#    }
+#  }
+#}
