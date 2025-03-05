@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
-import Button from "core/components/Button";
-import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-
-import useForm from "core/hooks/useForm";
 import { toast } from "react-toastify";
 import {
   useCreateWebappMutation,
@@ -16,7 +12,10 @@ import {
   WebappForm_WorkspaceFragment,
 } from "./WebappForm.generated";
 import { isEmpty } from "lodash";
-import Field from "core/components/forms/Field";
+import useForm from "core/hooks/useForm";
+import DataCard from "core/components/DataCard";
+import TextProperty from "core/components/DataCard/TextProperty";
+import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 
 type WebappFormProps = {
   webapp?: WebappForm_WebappFragment;
@@ -68,43 +67,39 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
   }, [form.formData]);
 
   return (
-    <div>
-      <form onSubmit={form.handleSubmit} className="space-y-4">
-        <Field
-          label={t("Name")}
-          name="name"
-          value={form.formData.name}
-          onChange={form.handleInputChange}
-          required
-        />
-        <Field
-          label={t("URL")}
-          name="url"
-          value={form.formData.url}
-          onChange={form.handleInputChange}
-          required
-        />
-        <Field
-          label={t("Icon")}
-          name="icon"
-          value={form.formData.icon}
-          onChange={form.handleInputChange}
-        />
-        <Button type="submit" disabled={form.isSubmitting || !isFormValid}>
-          {form.isSubmitting
-            ? t("Saving...")
-            : webapp
-              ? t("Update")
-              : t("Create")}
-        </Button>
-      </form>
+    <DataCard item={form.formData}>
+      <DataCard.Heading<typeof form.formData>
+        titleAccessor={(item) => item.name || t("New Webapp")}
+      />
+      <DataCard.FormSection
+        title={t("Webapp Details")}
+        onSave={(values) => {
+          form.setFormData(values);
+          form.handleSubmit();
+          router.push(`/workspaces/${workspace.slug}/webapps`);
+        }}
+        collapsible={false}
+        confirmButtonLabel={webapp ? t("Save") : t("Create")}
+        onCancel={
+          webapp
+            ? undefined
+            : () => router.push(`/workspaces/${workspace.slug}/webapps`)
+        }
+        editMode
+      >
+        <TextProperty id="name" accessor="name" label={t("Name")} required />
+        <TextProperty id="url" accessor="url" label={t("URL")} required />
+        <TextProperty id="icon" accessor="icon" label={t("Icon")} />
+      </DataCard.FormSection>
       {form.formData.url && (
-        <div className="mt-4">
-          <h2 className="text-lg font-medium">{t("Preview")}</h2>
-          <iframe src={form.formData.url} className="w-full h-64 border" />
-        </div>
+        <DataCard.Section>
+          <div className="mt-4">
+            <h2 className="text-lg font-medium">{t("Preview")}</h2>
+            <iframe src={form.formData.url} className="w-full h-64 border" />
+          </div>
+        </DataCard.Section>
       )}
-    </div>
+    </DataCard>
   );
 };
 
@@ -116,7 +111,6 @@ WebappForm.fragment = {
       description
       url
       icon
-      isFavorite
       permissions {
         update
         delete
