@@ -234,6 +234,15 @@ export type WorkspaceTemplateVersionsPageQueryVariables = Types.Exact<{
 
 export type WorkspaceTemplateVersionsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, template?: { __typename?: 'PipelineTemplate', id: string, code: string, name: string, currentVersion?: { __typename?: 'PipelineTemplateVersion', id: string } | null, versions: { __typename?: 'TemplateVersionPage', totalItems: number, totalPages: number, items: Array<{ __typename?: 'PipelineTemplateVersion', id: string, versionNumber: number, changelog?: string | null, createdAt: any, isLatestVersion: boolean, user?: { __typename?: 'User', displayName: string } | null, permissions: { __typename?: 'PipelineTemplateVersionPermissions', update: boolean, delete: boolean }, template: { __typename?: 'PipelineTemplate', id: string, code: string } }> } } | null };
 
+export type WorkspaceWebappsPageQueryVariables = Types.Exact<{
+  workspaceSlug: Types.Scalars['String']['input'];
+  page?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+  perPage?: Types.InputMaybe<Types.Scalars['Int']['input']>;
+}>;
+
+
+export type WorkspaceWebappsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, webapps: { __typename?: 'WebappsPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'Webapp', id: string, name: string, description?: string | null, url: string, isFavorite: boolean, permissions: { __typename?: 'WebappPermissions', update: boolean, delete: boolean } }> } };
+
 
 export const WorkspacesPageDocument = gql`
     query WorkspacesPage {
@@ -1698,3 +1707,62 @@ export type WorkspaceTemplateVersionsPageQueryHookResult = ReturnType<typeof use
 export type WorkspaceTemplateVersionsPageLazyQueryHookResult = ReturnType<typeof useWorkspaceTemplateVersionsPageLazyQuery>;
 export type WorkspaceTemplateVersionsPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceTemplateVersionsPageSuspenseQuery>;
 export type WorkspaceTemplateVersionsPageQueryResult = Apollo.QueryResult<WorkspaceTemplateVersionsPageQuery, WorkspaceTemplateVersionsPageQueryVariables>;
+export const WorkspaceWebappsPageDocument = gql`
+    query WorkspaceWebappsPage($workspaceSlug: String!, $page: Int, $perPage: Int = 15) {
+  workspace(slug: $workspaceSlug) {
+    slug
+    name
+    ...WorkspaceLayout_workspace
+  }
+  webapps(workspaceSlug: $workspaceSlug, page: $page, perPage: $perPage) {
+    totalPages
+    totalItems
+    items {
+      id
+      name
+      description
+      url
+      isFavorite
+      permissions {
+        update
+        delete
+      }
+    }
+  }
+}
+    ${WorkspaceLayout_WorkspaceFragmentDoc}`;
+
+/**
+ * __useWorkspaceWebappsPageQuery__
+ *
+ * To run a query within a React component, call `useWorkspaceWebappsPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWorkspaceWebappsPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWorkspaceWebappsPageQuery({
+ *   variables: {
+ *      workspaceSlug: // value for 'workspaceSlug'
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useWorkspaceWebappsPageQuery(baseOptions: Apollo.QueryHookOptions<WorkspaceWebappsPageQuery, WorkspaceWebappsPageQueryVariables> & ({ variables: WorkspaceWebappsPageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<WorkspaceWebappsPageQuery, WorkspaceWebappsPageQueryVariables>(WorkspaceWebappsPageDocument, options);
+      }
+export function useWorkspaceWebappsPageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<WorkspaceWebappsPageQuery, WorkspaceWebappsPageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<WorkspaceWebappsPageQuery, WorkspaceWebappsPageQueryVariables>(WorkspaceWebappsPageDocument, options);
+        }
+export function useWorkspaceWebappsPageSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<WorkspaceWebappsPageQuery, WorkspaceWebappsPageQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<WorkspaceWebappsPageQuery, WorkspaceWebappsPageQueryVariables>(WorkspaceWebappsPageDocument, options);
+        }
+export type WorkspaceWebappsPageQueryHookResult = ReturnType<typeof useWorkspaceWebappsPageQuery>;
+export type WorkspaceWebappsPageLazyQueryHookResult = ReturnType<typeof useWorkspaceWebappsPageLazyQuery>;
+export type WorkspaceWebappsPageSuspenseQueryHookResult = ReturnType<typeof useWorkspaceWebappsPageSuspenseQuery>;
+export type WorkspaceWebappsPageQueryResult = Apollo.QueryResult<WorkspaceWebappsPageQuery, WorkspaceWebappsPageQueryVariables>;
