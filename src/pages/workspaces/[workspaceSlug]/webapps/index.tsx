@@ -16,6 +16,9 @@ import {
   WebappsPageQuery,
   WebappsPageQueryVariables,
 } from "webapps/graphql/queries.generated";
+import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
+import Breadcrumbs from "core/components/Breadcrumbs";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   page: number;
@@ -41,54 +44,92 @@ const WebappsPage = (props: Props) => {
     return data?.webapps.items ?? [];
   }, [data]);
 
-  if (!data) {
+  if (!data?.workspace) {
     return null;
   }
 
+  const { workspace } = data;
+
   return (
     <Page title={t("Web Apps")}>
-      <BackLayout
-        title={
-          <div className="flex gap-2">
-            <Button onClick={() => router.push("/webapps")} size="sm">
-              {t("Web Apps")}
+      <WorkspaceLayout
+        workspace={workspace}
+        helpLinks={[
+          {
+            label: t("About webapps"),
+            href: "https://github.com/BLSQ/openhexa/wiki/User-manual#using-webapps",
+          },
+        ]}
+        header={
+          <>
+            <Breadcrumbs withHome={false} className="flex-1">
+              <Breadcrumbs.Part
+                isFirst
+                href={`/workspaces/${encodeURIComponent(workspace.slug)}`}
+              >
+                {workspace.name}
+              </Breadcrumbs.Part>
+              <Breadcrumbs.Part
+                isLast
+                href={`/workspaces/${encodeURIComponent(
+                  workspace.slug,
+                )}/webapps`}
+              >
+                {t("Web Apps")}
+              </Breadcrumbs.Part>
+            </Breadcrumbs>
+            <Button
+              leadingIcon={<PlusIcon className="h-4 w-4" />}
+              onClick={() => router.push("/webapps/create")}
+            >
+              {t("Create")}
             </Button>
-          </div>
+          </>
         }
       >
-        <Block>
-          <DataGrid
-            defaultPageSize={props.perPage}
-            data={items}
-            totalItems={data.webapps.totalItems}
-            fetchData={onChangePage}
-          >
-            <BaseColumn id="name" label={t("Name")} minWidth={240}>
-              {(item) => (
-                <Link
-                  customStyle="text-gray-700 font-medium"
-                  href={{
-                    pathname: "/webapps/[webappId]",
-                    query: { webappId: item.id },
-                  }}
-                >
-                  {item.name}
-                </Link>
-              )}
-            </BaseColumn>
-            <TextColumn label={t("Description")} accessor="description" />
-            <TextColumn label={t("URL")} accessor="url" />
-            <ChevronLinkColumn
-              maxWidth="100"
-              accessor="id"
-              url={(value: any) => ({
-                pathname: "/webapps/[webappId]",
-                query: { webappId: value },
-              })}
-            />
-          </DataGrid>
-        </Block>
-      </BackLayout>
+        <BackLayout
+          title={
+            <div className="flex gap-2">
+              <Button onClick={() => router.push("/webapps")} size="sm">
+                {t("Web Apps")}
+              </Button>
+            </div>
+          }
+        >
+          <Block>
+            <DataGrid
+              defaultPageSize={props.perPage}
+              data={items}
+              totalItems={data.webapps.totalItems}
+              fetchData={onChangePage}
+            >
+              <BaseColumn id="name" label={t("Name")} minWidth={240}>
+                {(item) => (
+                  <Link
+                    customStyle="text-gray-700 font-medium"
+                    href={{
+                      pathname: "/webapps/[webappId]",
+                      query: { webappId: item.id },
+                    }}
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </BaseColumn>
+              <TextColumn label={t("Description")} accessor="description" />
+              <TextColumn label={t("URL")} accessor="url" />
+              <ChevronLinkColumn
+                maxWidth="100"
+                accessor="id"
+                url={(value: any) => ({
+                  pathname: "/webapps/[webappId]",
+                  query: { webappId: value },
+                })}
+              />
+            </DataGrid>
+          </Block>
+        </BackLayout>
+      </WorkspaceLayout>
     </Page>
   );
 };

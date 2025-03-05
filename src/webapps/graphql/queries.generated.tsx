@@ -1,20 +1,26 @@
 import * as Types from '../../graphql/types';
 
 import { gql } from '@apollo/client';
+import { WorkspaceLayout_WorkspaceFragmentDoc } from '../../workspaces/layouts/WorkspaceLayout/WorkspaceLayout.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
 export type WebappsPageQueryVariables = Types.Exact<{
-  workspaceSlug?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  workspaceSlug: Types.Scalars['String']['input'];
   page?: Types.InputMaybe<Types.Scalars['Int']['input']>;
   perPage?: Types.InputMaybe<Types.Scalars['Int']['input']>;
 }>;
 
 
-export type WebappsPageQuery = { __typename?: 'Query', webapps: { __typename?: 'WebappsPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'Webapp', id: string, name: string, description?: string | null, url: string, isFavorite: boolean, permissions: { __typename?: 'WebappPermissions', update: boolean, delete: boolean } }> } };
+export type WebappsPageQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, name: string, permissions: { __typename?: 'WorkspacePermissions', manageMembers: boolean, update: boolean, launchNotebookServer: boolean }, countries: Array<{ __typename?: 'Country', flag: string, code: string }> } | null, webapps: { __typename?: 'WebappsPage', totalPages: number, totalItems: number, items: Array<{ __typename?: 'Webapp', id: string, name: string, description?: string | null, url: string, isFavorite: boolean, permissions: { __typename?: 'WebappPermissions', update: boolean, delete: boolean } }> } };
 
 
 export const WebappsPageDocument = gql`
-    query WebappsPage($workspaceSlug: String, $page: Int, $perPage: Int = 15) {
+    query WebappsPage($workspaceSlug: String!, $page: Int, $perPage: Int = 15) {
+  workspace(slug: $workspaceSlug) {
+    slug
+    name
+    ...WorkspaceLayout_workspace
+  }
   webapps(workspaceSlug: $workspaceSlug, page: $page, perPage: $perPage) {
     totalPages
     totalItems
@@ -31,7 +37,7 @@ export const WebappsPageDocument = gql`
     }
   }
 }
-    `;
+    ${WorkspaceLayout_WorkspaceFragmentDoc}`;
 
 /**
  * __useWebappsPageQuery__
@@ -51,7 +57,7 @@ export const WebappsPageDocument = gql`
  *   },
  * });
  */
-export function useWebappsPageQuery(baseOptions?: Apollo.QueryHookOptions<WebappsPageQuery, WebappsPageQueryVariables>) {
+export function useWebappsPageQuery(baseOptions: Apollo.QueryHookOptions<WebappsPageQuery, WebappsPageQueryVariables> & ({ variables: WebappsPageQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<WebappsPageQuery, WebappsPageQueryVariables>(WebappsPageDocument, options);
       }
