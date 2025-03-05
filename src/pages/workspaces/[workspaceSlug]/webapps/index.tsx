@@ -8,7 +8,6 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import BackLayout from "core/layouts/back/BackLayout";
 import Button from "core/components/Button";
 import {
   useWebappsPageQuery,
@@ -87,15 +86,7 @@ const WebappsPage = (props: Props) => {
           </>
         }
       >
-        <BackLayout
-          title={
-            <div className="flex gap-2">
-              <Button onClick={() => router.push("/webapps")} size="sm">
-                {t("Web Apps")}
-              </Button>
-            </div>
-          }
-        >
+        <WorkspaceLayout.PageContent>
           <Block>
             <DataGrid
               defaultPageSize={props.perPage}
@@ -128,7 +119,7 @@ const WebappsPage = (props: Props) => {
               />
             </DataGrid>
           </Block>
-        </BackLayout>
+        </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
     </Page>
   );
