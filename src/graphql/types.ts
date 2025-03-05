@@ -4603,6 +4603,7 @@ export type Webapp = {
   __typename?: 'Webapp';
   createdBy: User;
   description?: Maybe<Scalars['String']['output']>;
+  icon?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   isFavorite: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
