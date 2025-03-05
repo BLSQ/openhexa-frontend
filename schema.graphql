@@ -3893,6 +3893,7 @@ type Webapp {
   name: String!
   description: String
   url: String!
+  icon: String
   workspace: Workspace!
   createdBy: User!
   isFavorite: Boolean!
