@@ -54,12 +54,6 @@ const WebappsPage = (props: Props) => {
     <Page title={t("Web Apps")}>
       <WorkspaceLayout
         workspace={workspace}
-        helpLinks={[
-          {
-            label: t("About webapps"),
-            href: "https://github.com/BLSQ/openhexa/wiki/User-manual#using-webapps",
-          },
-        ]}
         header={
           <>
             <Breadcrumbs withHome={false} className="flex-1">
@@ -129,11 +123,10 @@ const WebappsPage = (props: Props) => {
   );
 };
 
-// TODO : update/delete page
-// TODO : create page
-// TODO : finish list
+// TODO : delete button
+// TODO : icon
+// TODO : polish pages
 // TODO : unit test
-// TODO : review index.tsx
 
 export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
