@@ -118,8 +118,7 @@ const WebappsPage = (props: Props) => {
                 maxWidth="100"
                 accessor="id"
                 url={(value: any) => ({
-                  pathname: "/webapps/[webappId]",
-                  query: { webappId: value },
+                  pathname: `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/${value}`,
                 })}
               />
             </DataGrid>
