@@ -18,6 +18,7 @@ import {
   WorkspaceWebappsPageQuery,
   WorkspaceWebappsPageQueryVariables,
 } from "workspaces/graphql/queries.generated";
+import useCacheKey from "../../../../core/hooks/useCacheKey";
 
 type Props = {
   page: number;
@@ -28,13 +29,14 @@ const WebappsPage = (props: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { data } = useWorkspaceWebappsPageQuery({
+  const { data, refetch } = useWorkspaceWebappsPageQuery({
     variables: {
       workspaceSlug: router.query.workspaceSlug as string,
       page: props.page,
       perPage: props.perPage,
     },
   });
+  useCacheKey("webapps", refetch);
 
   const onChangePage = ({ page }: { page: number }) => {
     router.push({ pathname: router.pathname, query: { page } });
@@ -123,7 +125,8 @@ const WebappsPage = (props: Props) => {
 };
 
 // TODO : icon
-// TODO : polish pages + clear cache on update/create/delete
+// TODO : polish pages
+// TODO : view only mode
 // TODO : unit test
 
 export const getServerSideProps = createGetServerSideProps({

@@ -15,6 +15,7 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import Button from "core/components/Button";
 import { useState } from "react";
 import DeleteWebappDialog from "workspaces/features/DeleteWebappDialog/DeleteWebappDialog";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type Props = {
   webappId: string;
@@ -26,12 +27,13 @@ const WorkspaceWebappPage: NextPageWithLayout = (props: Props) => {
   const { t } = useTranslation();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const { data } = useWorkspaceWebappPageQuery({
+  const { data, refetch } = useWorkspaceWebappPageQuery({
     variables: {
       workspaceSlug,
       webappId,
     },
   });
+  useCacheKey("webapps", refetch);
 
   if (!data?.workspace || !data?.webapp) {
     return null;
