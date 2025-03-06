@@ -11,6 +11,10 @@ import {
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import WebappForm from "webapps/features/WebappForm";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import Button from "core/components/Button";
+import { useState } from "react";
+import DeleteWebappDialog from "workspaces/features/DeleteWebappDialog/DeleteWebappDialog";
 
 type Props = {
   webappId: string;
@@ -20,6 +24,7 @@ type Props = {
 const WorkspaceWebappPage: NextPageWithLayout = (props: Props) => {
   const { webappId, workspaceSlug } = props;
   const { t } = useTranslation();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const { data } = useWorkspaceWebappPageQuery({
     variables: {
@@ -63,6 +68,13 @@ const WorkspaceWebappPage: NextPageWithLayout = (props: Props) => {
                 {webapp.name}
               </Breadcrumbs.Part>
             </Breadcrumbs>
+            <Button
+              variant={"danger"}
+              leadingIcon={<TrashIcon className="h-4 w-4" />}
+              onClick={() => setIsDeleteDialogOpen(true)}
+            >
+              {t("Delete")}
+            </Button>
           </>
         }
       >
@@ -70,6 +82,12 @@ const WorkspaceWebappPage: NextPageWithLayout = (props: Props) => {
           <WebappForm workspace={workspace} webapp={webapp} />
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
+      <DeleteWebappDialog
+        open={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        webapp={webapp}
+        workspace={workspace}
+      />
     </Page>
   );
 };
