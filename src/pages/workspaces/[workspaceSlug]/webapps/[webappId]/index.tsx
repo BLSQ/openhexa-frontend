@@ -70,13 +70,15 @@ const WorkspaceWebappPage: NextPageWithLayout = (props: Props) => {
                 {webapp.name}
               </Breadcrumbs.Part>
             </Breadcrumbs>
-            <Button
-              variant={"danger"}
-              leadingIcon={<TrashIcon className="h-4 w-4" />}
-              onClick={() => setIsDeleteDialogOpen(true)}
-            >
-              {t("Delete")}
-            </Button>
+            {webapp?.permissions.delete && (
+              <Button
+                variant={"danger"}
+                leadingIcon={<TrashIcon className="h-4 w-4" />}
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                {t("Delete")}
+              </Button>
+            )}
           </>
         }
       >

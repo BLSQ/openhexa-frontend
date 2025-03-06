@@ -126,7 +126,6 @@ const WebappsPage = (props: Props) => {
 
 // TODO : icon
 // TODO : polish pages
-// TODO : view only mode
 // TODO : unit test
 
 export const getServerSideProps = createGetServerSideProps({

@@ -62,7 +62,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
       />
       <DataCard.FormSection
         title={t("Webapp Details")}
-        onSave={onSave}
+        onSave={webapp?.permissions.update ? onSave : undefined}
         collapsible={false}
         confirmButtonLabel={webapp ? t("Save") : t("Create")}
         onCancel={
@@ -70,7 +70,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
             ? undefined
             : () => router.push(`/workspaces/${workspace.slug}/webapps`)
         }
-        editMode={!webapp}
+        forceEditMode={!webapp}
       >
         <TextProperty id="name" accessor="name" label={t("Name")} required />
         <TextProperty id="url" accessor="url" label={t("URL")} required />
