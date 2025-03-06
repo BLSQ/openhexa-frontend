@@ -98,8 +98,7 @@ const WebappsPage = (props: Props) => {
                   <Link
                     customStyle="text-gray-700 font-medium"
                     href={{
-                      pathname: "/webapps/[webappId]",
-                      query: { webappId: item.id },
+                      pathname: `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/${item.id}`,
                     }}
                   >
                     {item.name}
