@@ -11,6 +11,7 @@ import {
   WebappDelete_WebappFragment,
   WebappDelete_WorkspaceFragment,
 } from "./DeleteWebappDialog.generated";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type DeleteWebappDialogProps = {
   open: boolean;
@@ -24,6 +25,7 @@ const DeleteWebappDialog = (props: DeleteWebappDialogProps) => {
   const { open, onClose, webapp, workspace } = props;
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const clearCache = useCacheKey("webapps");
 
   const [deleteWebapp] = useDeleteWebappMutation();
 
@@ -43,11 +45,11 @@ const DeleteWebappDialog = (props: DeleteWebappDialogProps) => {
 
     if (data.deleteWebapp.success) {
       setIsSubmitting(false);
+      clearCache();
       router.push({
         pathname: "/workspaces/[workspaceSlug]/webapps",
         query: { workspaceSlug: workspace.slug },
       });
-      //clearCache(); TODO
     }
     if (data.deleteWebapp.errors.includes(DeleteWebappError.PermissionDenied)) {
       setIsSubmitting(false);

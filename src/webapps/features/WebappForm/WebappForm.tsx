@@ -13,6 +13,7 @@ import {
 import DataCard from "core/components/DataCard";
 import TextProperty from "core/components/DataCard/TextProperty";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type WebappFormProps = {
   webapp?: WebappForm_WebappFragment;
@@ -25,13 +26,16 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
   const [createWebapp] = useCreateWebappMutation();
   const [updateWebapp] = useUpdateWebappMutation();
 
-  const submit = async (values: any) => {
+  const clearCache = useCacheKey("webapps");
+
+  const onSave = async (values: any) => {
     try {
       if (webapp) {
         await updateWebapp({
           variables: { input: { id: webapp.id, ...values } },
         }).then(() => {
           toast.success(t("Webapp updated successfully"));
+          clearCache();
         });
       } else {
         await createWebapp({
@@ -58,7 +62,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
       />
       <DataCard.FormSection
         title={t("Webapp Details")}
-        onSave={submit}
+        onSave={onSave}
         collapsible={false}
         confirmButtonLabel={webapp ? t("Save") : t("Create")}
         onCancel={
