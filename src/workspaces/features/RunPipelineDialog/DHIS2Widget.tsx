@@ -7,6 +7,7 @@ import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
 import { ParameterField_ParameterFragment } from "./ParameterField.generated";
 import useIntersectionObserver from "core/hooks/useIntersectionObserver";
 import { FormInstance } from "../../../core/hooks/useForm";
+import { Dhis2MetadataType } from "../../../graphql/types";
 
 type DHIS2WidgetProps = {
   parameter: ParameterField_ParameterFragment;
@@ -48,15 +49,15 @@ export const GET_CONNECTION_METADATA = gql`
   }
 `;
 
-const dhis2WidgetToQuery: { [key: string]: string } = {
-  DHIS2_ORG_UNITS: "ORG_UNITS",
-  DHIS2_ORG_UNIT_GROUPS: "ORG_UNIT_GROUPS",
-  DHIS2_ORG_UNIT_LEVELS: "ORG_UNIT_LEVELS",
-  DHIS2_DATASET: "DATASETS",
-  DHIS2_DATA_ELEMENTS: "DATA_ELEMENTS",
-  DHIS2_DATA_ELEMENT_GROUPS: "DATA_ELEMENT_GROUPS",
-  DHIS2_INDICATORS: "INDICATORS",
-  DHIS2_INDICATOR_GROUPS: "INDICATOR_GROUPS",
+const dhis2WidgetToQuery: { [key: string]: Dhis2MetadataType } = {
+  DHIS2_ORG_UNITS: Dhis2MetadataType.OrgUnits,
+  DHIS2_ORG_UNIT_GROUPS: Dhis2MetadataType.OrgUnitGroups,
+  DHIS2_ORG_UNIT_LEVELS: Dhis2MetadataType.OrgUnitLevels,
+  DHIS2_DATASET: Dhis2MetadataType.OrgUnitLevels,
+  DHIS2_DATA_ELEMENTS: Dhis2MetadataType.DataElements,
+  DHIS2_DATA_ELEMENT_GROUPS: Dhis2MetadataType.DataElementGroups,
+  DHIS2_INDICATORS: Dhis2MetadataType.Indicators,
+  DHIS2_INDICATOR_GROUPS: Dhis2MetadataType.IndicatorGroups,
 };
 
 const DHIS2Widget = ({
@@ -78,7 +79,7 @@ const DHIS2Widget = ({
   const [fetchData, { data, loading, error, fetchMore }] =
     useGetConnectionBySlugLazyQuery();
 
-  const constructFilters = (query) => {
+  const constructFilters = (query: string) => {
     if (query === "") return [];
     return ["name:token:" + query];
   };

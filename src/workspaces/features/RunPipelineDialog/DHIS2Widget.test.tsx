@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { DHIS2Widget, GET_CONNECTION_METADATA } from "./DHIS2Widget";
 import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
 import { TestApp } from "core/helpers/testutils";
+import { Dhis2MetadataType } from "../../../graphql/types";
 
 jest.mock("./DHIS2Widget.generated", () => ({
   useGetConnectionBySlugLazyQuery: jest.fn(),
@@ -76,7 +77,7 @@ describe("GenericConnectionWidget", () => {
         variables: {
           workspaceSlug: "mock_workspace",
           connectionSlug: "mock_connection_slug",
-          type: "DATASETS",
+          type: Dhis2MetadataType.OrgUnitLevels,
           filters: [],
           perPage: 10,
           page: 1,
