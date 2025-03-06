@@ -30,25 +30,25 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
       if (webapp) {
         await updateWebapp({
           variables: { input: { id: webapp.id, ...values } },
+        }).then(() => {
+          toast.success(t("Webapp updated successfully"));
         });
-        toast.success(t("Webapp updated successfully"));
       } else {
         await createWebapp({
           variables: { input: { workspaceSlug: workspace.slug, ...values } },
+        }).then(({ data }) => {
+          if (!data?.createWebapp?.webapp) {
+            throw new Error("Webapp creation failed");
+          }
+          toast.success(t("Webapp created successfully"));
+          router.push(
+            `/workspaces/${workspace.slug}/webapps/${data.createWebapp.webapp.id}`,
+          );
         });
-        toast.success(t("Webapp created successfully"));
       }
-      router.push(`/workspaces/${workspace.slug}/webapps`);
     } catch (error) {
       toast.error(t("An error occurred while saving the webapp"));
     }
-  };
-
-  const onSave = (values: {}) => {
-    console.log("values", values);
-    submit(values).then((r) =>
-      router.push(`/workspaces/${workspace.slug}/webapps`),
-    );
   };
 
   return (
@@ -58,7 +58,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
       />
       <DataCard.FormSection
         title={t("Webapp Details")}
-        onSave={onSave}
+        onSave={submit}
         collapsible={false}
         confirmButtonLabel={webapp ? t("Save") : t("Create")}
         onCancel={
@@ -66,7 +66,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
             ? undefined
             : () => router.push(`/workspaces/${workspace.slug}/webapps`)
         }
-        editMode
+        editMode={!webapp}
       >
         <TextProperty id="name" accessor="name" label={t("Name")} required />
         <TextProperty id="url" accessor="url" label={t("URL")} required />

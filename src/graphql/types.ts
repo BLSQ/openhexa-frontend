@@ -4454,6 +4454,7 @@ export enum UpdateWebappError {
 /** Represents the input for updating a web app. */
 export type UpdateWebappInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['UUID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   url?: InputMaybe<Scalars['String']['input']>;

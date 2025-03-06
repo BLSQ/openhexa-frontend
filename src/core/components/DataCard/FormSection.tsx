@@ -103,7 +103,8 @@ function FormSection<F extends { [key: string]: any }>(
   } = props;
   const { item } = useItemContext();
 
-  const [isEdited, setEdited] = useState<boolean>(!!editMode);
+  const [isEditedState, setEdited] = useState<boolean>(false);
+  const isEdited = editMode || isEditedState;
 
   const definitions = useRef<PropertyDefinition[]>([]);
   const properties = useRef<{ [key: Property["id"]]: Property }>({});
