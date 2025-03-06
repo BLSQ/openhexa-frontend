@@ -20,8 +20,8 @@ export const GET_CONNECTION_METADATA = gql`
   query getConnectionBySlug(
     $workspaceSlug: String!
     $connectionSlug: String!
-    $type: String!
-    $search: String
+    $type: DHIS2MetadataType!
+    $filters: [String!]
     $perPage: Int
     $page: Int
   ) {
@@ -32,7 +32,7 @@ export const GET_CONNECTION_METADATA = gql`
       ... on DHIS2Connection {
         queryMetadata(
           type: $type
-          search: $search
+          filters: $filters
           perPage: $perPage
           page: $page
         ) {
@@ -49,14 +49,14 @@ export const GET_CONNECTION_METADATA = gql`
 `;
 
 const dhis2WidgetToQuery: { [key: string]: string } = {
-  organisation_units_picker: "ORGANISATION_UNITS",
-  "organisation_units_picker.groups": "ORGANISATION_UNIT_GROUPS",
-  "organisation_units_picker.levels": "ORGANISATION_UNIT_LEVELS",
-  datasets_picker: "DATASETS",
-  data_elements_picker: "DATA_ELEMENTS",
-  "data_elements_picker.groups": "DATA_ELEMENT_GROUPS",
-  indicators_picker: "INDICATORS",
-  "indicators_picker.groups": "INDICATOR_GROUPS",
+  DHIS2_ORG_UNITS: "ORG_UNITS",
+  DHIS2_ORG_UNIT_GROUPS: "ORG_UNIT_GROUPS",
+  DHIS2_ORG_UNIT_LEVELS: "ORG_UNIT_LEVELS",
+  DHIS2_DATASET: "DATASETS",
+  DHIS2_DATA_ELEMENTS: "DATA_ELEMENTS",
+  DHIS2_DATA_ELEMENT_GROUPS: "DATA_ELEMENT_GROUPS",
+  DHIS2_INDICATORS: "INDICATORS",
+  DHIS2_INDICATOR_GROUPS: "INDICATOR_GROUPS",
 };
 
 const DHIS2Widget = ({
@@ -78,6 +78,11 @@ const DHIS2Widget = ({
   const [fetchData, { data, loading, error, fetchMore }] =
     useGetConnectionBySlugLazyQuery();
 
+  const constructFilters = (query) => {
+    if (query === "") return [];
+    return ["name:token:" + query];
+  };
+
   useEffect(() => {
     setIsFetched(true);
     if (!form.formData[connection]) return;
@@ -86,7 +91,7 @@ const DHIS2Widget = ({
         workspaceSlug,
         connectionSlug: form.formData[connection],
         type: dhis2WidgetToQuery[widget],
-        search: debouncedQuery,
+        filters: constructFilters(debouncedQuery),
         perPage: 10,
         page: 1,
       },
@@ -107,7 +112,7 @@ const DHIS2Widget = ({
         workspaceSlug,
         connectionSlug: form.formData[connection],
         type: dhis2WidgetToQuery[widget],
-        search: debouncedQuery,
+        filters: constructFilters(debouncedQuery),
         perPage,
         page: 1,
       },
@@ -163,7 +168,11 @@ const DHIS2Widget = ({
 
       if (fetchMore) {
         fetchMore({
-          variables: { search: newQuery, page: 1, perPage: perPage },
+          variables: {
+            filters: constructFilters(newQuery),
+            page: 1,
+            perPage: perPage,
+          },
         }).catch((err) => console.error("Error fetching more results:", err));
       }
     },

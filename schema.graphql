@@ -1538,6 +1538,20 @@ type DenyAccessmodAccessRequestResult {
   errors: [DenyAccessmodAccessRequestError!]!
 }
 
+"""
+Enum representing the type of a DHIS2 metadata item.
+"""
+enum DHIS2MetadataType {
+    ORG_UNITS
+    ORG_UNIT_GROUPS
+    ORG_UNIT_LEVELS
+    DATASETS
+    DATA_ELEMENTS
+    DATA_ELEMENT_GROUPS
+    INDICATORS
+    INDICATOR_GROUPS
+}
+
 """DHIS2 connection object"""
 type DHIS2Connection implements Connection {
   id: String!
@@ -1550,7 +1564,7 @@ type DHIS2Connection implements Connection {
   user: User
   fields: [ConnectionField!]!
   permissions: ConnectionPermissions!
-  queryMetadata(type: String!, filter: String, search: String, perPage: Int, page: Int ): DHIS2QueryResultPage!
+  queryMetadata(type: DHIS2MetadataType!, filters: [String], perPage: Int, page: Int ): DHIS2QueryResultPage!
 }
 
 

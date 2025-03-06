@@ -1,5 +1,7 @@
 import React from "react";
 import { DHIS2Widget, dhis2WidgetToQuery } from "./DHIS2Widget";
+import { Description, Field, Label, Textarea } from "@headlessui/react";
+import { useTranslation } from "next-i18next";
 
 type GenericConnectionWidgetProps = {
   parameter: any;
@@ -16,6 +18,7 @@ const GenericConnectionWidget = ({
   form,
   workspaceSlug,
 }: GenericConnectionWidgetProps) => {
+  const { t } = useTranslation();
   if (parameter.widget in dhis2WidgetToQuery) {
     return (
       <DHIS2Widget
@@ -27,6 +30,15 @@ const GenericConnectionWidget = ({
       />
     );
   }
+  return (
+    <div className="w-full max-w-md px-4">
+      <Field>
+        <Description className="text-sm/6  text-red-400">
+          {t("Widget {{widget}} was not found", { widget: widget })}
+        </Description>
+      </Field>
+    </div>
+  );
 };
 
 export default GenericConnectionWidget;

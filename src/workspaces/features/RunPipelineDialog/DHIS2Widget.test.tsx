@@ -18,13 +18,13 @@ jest.mock("core/hooks/useDebounce", () => ({
 const generateMockedParameterField = (multiple = false) => ({
   parameter: {
     code: "test_param",
-    widget: "datasets_picker",
+    widget: "DHIS2_DATASET",
     multiple: true,
     type: "str",
     connection: "test_connection",
   },
   connection: "test_connection",
-  widget: "datasets_picker",
+  widget: "DHIS2_DATASET",
   form: {
     formData: { test_connection: "mock_connection_slug", test_param: null },
     setFieldValue: jest.fn(),
@@ -56,7 +56,7 @@ describe("GenericConnectionWidget", () => {
       data: {
         connectionBySlug: {
           queryMetadata: {
-            items: [{ id: "1", name: "Test Item" }],
+            items: [{ id: "1", label: "Test Item" }],
             totalItems: 1,
           },
         },
@@ -77,7 +77,7 @@ describe("GenericConnectionWidget", () => {
           workspaceSlug: "mock_workspace",
           connectionSlug: "mock_connection_slug",
           type: "DATASETS",
-          search: "",
+          filters: [],
           perPage: 10,
           page: 1,
         },

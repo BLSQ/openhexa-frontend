@@ -6,8 +6,8 @@ const defaultOptions = {} as const;
 export type GetConnectionBySlugQueryVariables = Types.Exact<{
   workspaceSlug: Types.Scalars['String']['input'];
   connectionSlug: Types.Scalars['String']['input'];
-  type: Types.Scalars['String']['input'];
-  search?: Types.InputMaybe<Types.Scalars['String']['input']>;
+  type: Types.Dhis2MetadataType;
+  filters?: Types.InputMaybe<Array<Types.Scalars['String']['input']> | Types.Scalars['String']['input']>;
   perPage?: Types.InputMaybe<Types.Scalars['Int']['input']>;
   page?: Types.InputMaybe<Types.Scalars['Int']['input']>;
 }>;
@@ -17,10 +17,10 @@ export type GetConnectionBySlugQuery = { __typename?: 'Query', connectionBySlug?
 
 
 export const GetConnectionBySlugDocument = gql`
-    query getConnectionBySlug($workspaceSlug: String!, $connectionSlug: String!, $type: String!, $search: String, $perPage: Int, $page: Int) {
+    query getConnectionBySlug($workspaceSlug: String!, $connectionSlug: String!, $type: DHIS2MetadataType!, $filters: [String!], $perPage: Int, $page: Int) {
   connectionBySlug(workspaceSlug: $workspaceSlug, connectionSlug: $connectionSlug) {
     ... on DHIS2Connection {
-      queryMetadata(type: $type, search: $search, perPage: $perPage, page: $page) {
+      queryMetadata(type: $type, filters: $filters, perPage: $perPage, page: $page) {
         items {
           id
           label
@@ -48,7 +48,7 @@ export const GetConnectionBySlugDocument = gql`
  *      workspaceSlug: // value for 'workspaceSlug'
  *      connectionSlug: // value for 'connectionSlug'
  *      type: // value for 'type'
- *      search: // value for 'search'
+ *      filters: // value for 'filters'
  *      perPage: // value for 'perPage'
  *      page: // value for 'page'
  *   },

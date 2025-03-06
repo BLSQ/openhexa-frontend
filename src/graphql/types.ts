@@ -1024,11 +1024,10 @@ export type Dhis2Connection = Connection & {
 
 /** DHIS2 connection object */
 export type Dhis2ConnectionQueryMetadataArgs = {
-  filter?: InputMaybe<Scalars['String']['input']>;
+  filters?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   page?: InputMaybe<Scalars['Int']['input']>;
   perPage?: InputMaybe<Scalars['Int']['input']>;
-  search?: InputMaybe<Scalars['String']['input']>;
-  type: Scalars['String']['input'];
+  type: Dhis2MetadataType;
 };
 
 /** DHIS2 connection error */
@@ -1050,6 +1049,18 @@ export type Dhis2MetadataItem = {
   id?: Maybe<Scalars['String']['output']>;
   label?: Maybe<Scalars['String']['output']>;
 };
+
+/** Enum representing the type of a DHIS2 metadata item. */
+export enum Dhis2MetadataType {
+  Datasets = 'DATASETS',
+  DataElements = 'DATA_ELEMENTS',
+  DataElementGroups = 'DATA_ELEMENT_GROUPS',
+  Indicators = 'INDICATORS',
+  IndicatorGroups = 'INDICATOR_GROUPS',
+  OrgUnits = 'ORG_UNITS',
+  OrgUnitGroups = 'ORG_UNIT_GROUPS',
+  OrgUnitLevels = 'ORG_UNIT_LEVELS'
+}
 
 /** DHIS2 metadata query result page */
 export type Dhis2QueryResultPage = {

@@ -535,6 +535,7 @@
   "We were not able to remove it from your favorites": "Nous n'avons pas pu le supprimer de vos favoris.",
   "We were unable to create a link for this output.": "Nous n'avons pas pu créer de lien pour cette sortie.",
   "Webhook": "Webhook",
+  "Widget {{widget}} was not found": "Le widget {{widget}} n'a pas été trouvé",
   "Workspace": "Workspace",
   "Workspace invitations": "Invitations au workspace",
   "Workspace name": "Nom du workspace",

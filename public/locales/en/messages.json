@@ -533,6 +533,7 @@
   "We were not able to remove it from your favorites": "We were not able to remove it from your favorites",
   "We were unable to create a link for this output.": "We were unable to create a link for this output.",
   "Webhook": "Webhook",
+  "Widget {{widget}} was not found": "Widget {{widget}} was not found",
   "Workspace": "Workspace",
   "Workspace invitations": "Workspace invitations",
   "Workspace name": "Workspace name",
