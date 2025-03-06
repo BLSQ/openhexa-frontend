@@ -28,7 +28,7 @@ export type OnSaveFn = (
 ) => Promise<void> | void;
 
 type FormSectionProps = {
-  editMode?: boolean;
+  forceEditMode?: boolean;
   confirmButtonLabel?: string;
   editLabel?: string;
   editIcon?: ReactElement;
@@ -87,7 +87,7 @@ function FormSection<F extends { [key: string]: any }>(
 ) {
   const { t } = useTranslation();
   const {
-    editMode,
+    forceEditMode,
     confirmButtonLabel,
     title,
     editLabel,
@@ -104,7 +104,7 @@ function FormSection<F extends { [key: string]: any }>(
   const { item } = useItemContext();
 
   const [isEditedState, setEdited] = useState<boolean>(false);
-  const isEdited = editMode || isEditedState;
+  const isEdited = forceEditMode || isEditedState;
 
   const definitions = useRef<PropertyDefinition[]>([]);
   const properties = useRef<{ [key: Property["id"]]: Property }>({});
