@@ -79,8 +79,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           id="icon"
           accessor="icon"
           label={""}
-          placeholder={"/images/placeholder.svg"}
-          editLabel={t("Change Icon")}
+          editButtonLabel={t("Change Icon")}
         />
         <TextProperty id="url" accessor="url" label={t("URL")} required />
       </DataCard.FormSection>
