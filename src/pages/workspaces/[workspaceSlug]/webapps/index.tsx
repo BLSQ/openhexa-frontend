@@ -124,7 +124,6 @@ const WebappsPage = (props: Props) => {
   );
 };
 
-// TODO : live preview
 // TODO : polish list page
 // TODO : unit test
 
