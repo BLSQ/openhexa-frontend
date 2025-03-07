@@ -682,6 +682,13 @@ query WorkspaceWebappsPage(
       description
       url
       isFavorite
+      createdBy {
+        ...User_user
+      }
+      workspace {
+        slug
+        name
+      }
       permissions {
         update
         delete
