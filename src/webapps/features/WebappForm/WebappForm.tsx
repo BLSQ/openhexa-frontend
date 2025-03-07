@@ -16,6 +16,8 @@ import TextProperty from "core/components/DataCard/TextProperty";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import useCacheKey from "core/hooks/useCacheKey";
 import ImageProperty from "core/components/DataCard/ImageProperty";
+import Spinner from "../../../core/components/Spinner";
+import clsx from "clsx";
 
 type WebappFormProps = {
   webapp?: WebappForm_WebappFragment;
@@ -29,6 +31,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
   const [updateWebapp] = useUpdateWebappMutation();
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState(webapp?.url || "");
+  const [iframeLoading, setIframeLoading] = useState(false);
 
   const clearCache = useCacheKey("webapps");
 
@@ -108,7 +111,10 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           accessor="url"
           label={t("URL")}
           required
-          onChange={(e) => setUrl(e.target.value)}
+          onChange={(e) => {
+            setUrl(e.target.value);
+            setIframeLoading(true);
+          }}
         />
       </DataCard.FormSection>
       {url && (
@@ -117,7 +123,18 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           collapsible={false}
           loading={loading}
         >
-          <iframe src={url} className="w-full" style={{ height: "50vh" }} />
+          <div
+            className={"flex justify-center items-center"}
+            style={{ height: "50vh" }}
+          >
+            {iframeLoading && <Spinner size="md" />}{" "}
+            <iframe
+              src={url}
+              className={clsx("w-full h-full", iframeLoading && "hidden")}
+              onLoad={() => setIframeLoading(false)}
+              onError={() => setIframeLoading(false)}
+            />
+          </div>
         </DataCard.Section>
       )}
     </DataCard>
