@@ -82,12 +82,6 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           editButtonLabel={t("Change Icon")}
         />
         <TextProperty id="url" accessor="url" label={t("URL")} required />
-        <TextProperty
-          id="description"
-          accessor="description"
-          label={t("Description")}
-          markdown
-        />
       </DataCard.FormSection>
       {webapp?.url && (
         <DataCard.Section>
