@@ -1,3 +1,4 @@
+import React from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
@@ -14,6 +15,7 @@ import DataCard from "core/components/DataCard";
 import TextProperty from "core/components/DataCard/TextProperty";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import useCacheKey from "core/hooks/useCacheKey";
+import ImageProperty from "core/components/DataCard/ImageProperty";
 
 type WebappFormProps = {
   webapp?: WebappForm_WebappFragment;
@@ -73,8 +75,14 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
         forceEditMode={!webapp}
       >
         <TextProperty id="name" accessor="name" label={t("Name")} required />
+        <ImageProperty
+          id="icon"
+          accessor="icon"
+          label={""}
+          placeholder={"/images/placeholder.svg"}
+          editLabel={t("Change Icon")}
+        />
         <TextProperty id="url" accessor="url" label={t("URL")} required />
-        <TextProperty id="icon" accessor="icon" label={t("Icon")} />
       </DataCard.FormSection>
       {webapp?.url && (
         <DataCard.Section>
