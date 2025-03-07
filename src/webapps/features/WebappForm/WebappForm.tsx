@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
@@ -28,6 +28,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
   const [createWebapp] = useCreateWebappMutation();
   const [updateWebapp] = useUpdateWebappMutation();
   const [loading, setLoading] = useState(false);
+  const [url, setUrl] = useState(webapp?.url || "");
 
   const clearCache = useCacheKey("webapps");
 
@@ -68,6 +69,10 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
     }
   };
 
+  useEffect(() => {
+    setUrl(webapp?.url || "");
+  }, [webapp]);
+
   return (
     <DataCard item={webapp}>
       <DataCard.Heading
@@ -98,19 +103,21 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           label={""}
           editButtonLabel={t("Change Icon")}
         />
-        <TextProperty id="url" accessor="url" label={t("URL")} required />
+        <TextProperty
+          id="url"
+          accessor="url"
+          label={t("URL")}
+          required
+          onChange={(e) => setUrl(e.target.value)}
+        />
       </DataCard.FormSection>
-      {webapp?.url && (
+      {url && (
         <DataCard.Section
           title={t("Preview")}
           collapsible={false}
           loading={loading}
         >
-          <iframe
-            src={webapp.url}
-            className="w-full"
-            style={{ height: "50vh" }}
-          />
+          <iframe src={url} className="w-full" style={{ height: "50vh" }} />
         </DataCard.Section>
       )}
     </DataCard>
