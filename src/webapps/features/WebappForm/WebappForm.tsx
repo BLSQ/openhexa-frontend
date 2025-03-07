@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import { toast } from "react-toastify";
@@ -27,10 +27,12 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
   const router = useRouter();
   const [createWebapp] = useCreateWebappMutation();
   const [updateWebapp] = useUpdateWebappMutation();
+  const [loading, setLoading] = useState(false);
 
   const clearCache = useCacheKey("webapps");
 
   const updateExistingWebapp = async (values: any) => {
+    setLoading(true);
     try {
       await updateWebapp({
         variables: { input: { id: webapp?.id, ...values } },
@@ -40,10 +42,13 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
       });
     } catch (error) {
       toast.error(t("An error occurred while updating the webapp"));
+    } finally {
+      setLoading(false);
     }
   };
 
   const createNewWebapp = async (values: any) => {
+    setLoading(true);
     try {
       await createWebapp({
         variables: { input: { workspaceSlug: workspace.slug, ...values } },
@@ -58,6 +63,8 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
       });
     } catch (error) {
       toast.error(t("An error occurred while creating the webapp"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,11 +101,12 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
         <TextProperty id="url" accessor="url" label={t("URL")} required />
       </DataCard.FormSection>
       {webapp?.url && (
-        <DataCard.Section>
-          <div className="mt-4">
-            <h2 className="text-lg font-medium">{t("Preview")}</h2>
-            <iframe src={webapp?.url} className="w-full h-64 border" />
-          </div>
+        <DataCard.Section
+          title={t("Preview")}
+          collapsible={false}
+          loading={loading}
+        >
+          <iframe src={webapp.url} className="w-full h-screen border" />
         </DataCard.Section>
       )}
     </DataCard>
