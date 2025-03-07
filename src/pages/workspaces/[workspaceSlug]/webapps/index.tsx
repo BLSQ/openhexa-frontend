@@ -18,7 +18,7 @@ import {
   WorkspaceWebappsPageQuery,
   WorkspaceWebappsPageQueryVariables,
 } from "workspaces/graphql/queries.generated";
-import useCacheKey from "../../../../core/hooks/useCacheKey";
+import useCacheKey from "core/hooks/useCacheKey";
 
 type Props = {
   page: number;
