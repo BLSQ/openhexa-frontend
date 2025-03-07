@@ -107,7 +107,7 @@ const WebappsPage = (props: Props) => {
                       src={item.icon}
                       className={clsx(
                         "h-4 w-4 rounded",
-                        !item.icon && "opacity-0",
+                        !item.icon && "invisible",
                       )}
                       alt={"Icon"}
                     />
