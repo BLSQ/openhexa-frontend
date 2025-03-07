@@ -121,8 +121,8 @@ describe("GenericConnectionWidget", () => {
         connectionBySlug: {
           queryMetadata: {
             items: [
-              { id: "1", name: "Item 1" },
-              { id: "2", name: "Item 2" },
+              { id: "1", label: "Item 1" },
+              { id: "2", label: "Item 2" },
             ],
             totalItems: 2,
           },
@@ -151,7 +151,7 @@ describe("GenericConnectionWidget", () => {
       data: {
         connectionBySlug: {
           queryMetadata: {
-            items: [{ level: 3, name: "District" }],
+            items: [{ id: 3, label: "District" }],
             totalItems: 1,
           },
         },

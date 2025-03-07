@@ -87,17 +87,7 @@ function Select<O>(props: SelectProps<O>) {
       disabled={disabled}
       onInputChange={onInputChange}
       className={className}
-      onChange={(selectedValue) => {
-        if (multiple) {
-          onChange(Array.isArray(selectedValue) ? selectedValue : []);
-        } else {
-          onChange(
-            Array.isArray(selectedValue)
-              ? selectedValue[0] || null
-              : selectedValue,
-          );
-        }
-      }}
+      onChange={onChange}
       displayValue={displayValue as any}
       by={by as any /* Otherwise typescript is not happy */}
       loading={loading}

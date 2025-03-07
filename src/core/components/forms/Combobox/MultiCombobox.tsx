@@ -124,85 +124,81 @@ function MultiCombobox<T extends { [key: string]: any }>(
   );
 
   return (
-    <div className={clsx("relative", className)}>
-      <UICombobox<T[]>
-        onChange={onChange}
-        value={value}
-        disabled={disabled}
-        multiple={true as any}
-        name={name}
-        by={by as any}
-      >
-        {({ open }) => (
-          <>
-            <div ref={setReferenceElement}>
-              <div
-                className={clsx(
-                  "form-input flex w-full items-center rounded-md border-gray-300 shadow-xs disabled:border-gray-300",
-                  "focus-within:outline-hidden focus:ring-transparent focus-visible:border-blue-500 disabled:cursor-not-allowed ",
-                  "sm:text-sm",
-                  open ? "border-blue-500" : "hover:border-gray-400",
-                  error ? "border-red-500" : "", // Add red border if error exists
-                )}
-              >
-                <div className="mr-1 flex flex-1 flex-wrap items-center gap-2 truncate">
-                  {value?.map((val, i) => (
-                    <Badge
-                      className="bg-gray-100 py-0 hover:bg-gray-50 ring-gray-500/20"
-                      key={i}
-                    >
-                      {displayValue(val)}
-                      {!disabled && !required && (
-                        <XMarkIcon
-                          className="ml-1 h-3 w-3 cursor-pointer"
-                          onClick={() => onRemoveItem(val)}
-                        />
-                      )}
-                    </Badge>
-                  ))}
-                  <UIComboboxInput as={Fragment} onChange={onInputChange}>
-                    <input
-                      data-testid="combobox-input"
-                      className="flex-1 placeholder-gray-600/70 outline-hidden"
-                      autoComplete="off"
-                      placeholder={placeholder}
-                    />
-                  </UIComboboxInput>
-                </div>
-                <UIComboboxButton ref={btnRef} data-testid="combobox-button">
-                  <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-hidden">
-                    {(Array.isArray(value) ? value?.length > 0 : value) && (
-                      <XMarkIcon
-                        onClick={() => onChange([])}
-                        className="h-4 w-4 cursor-pointer hover:text-gray-500"
-                        aria-hidden="true"
-                      />
-                    )}
-                    {loading ? (
-                      <Spinner aria-hidden="true" size="sm" />
-                    ) : (
-                      <ChevronUpDownIcon
-                        className="h-5 w-5 hover:text-gray-500"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </div>
-                </UIComboboxButton>
-              </div>
-              {error && (
-                <p
-                  className="mt-1 text-sm text-red-500"
-                  data-testid="combobox-error"
+    <UICombobox<T[]>
+      onChange={onChange}
+      value={value}
+      disabled={disabled}
+      multiple={true as any}
+      name={name}
+      by={by as any}
+    >
+      {({ open }) => (
+        <div className={clsx("relative", className)} ref={setReferenceElement}>
+          <div
+            className={clsx(
+              "form-input flex w-full items-center rounded-md border-gray-300 shadow-xs disabled:border-gray-300",
+              "focus-within:outline-hidden focus:ring-transparent focus-visible:border-blue-500 disabled:cursor-not-allowed ",
+              "sm:text-sm",
+              open ? "border-blue-500" : "hover:border-gray-400",
+              error ? "border-red-500" : "",
+            )}
+          >
+            <div className="mr-1 flex flex-1 flex-wrap items-center gap-2 truncate">
+              {value?.map((val, i) => (
+                <Badge
+                  className="bg-gray-100 py-0 hover:bg-gray-50 ring-gray-500/20"
+                  key={i}
                 >
-                  {error}
-                </p>
-              )}
+                  {displayValue(val)}
+                  {!disabled && !required && (
+                    <XMarkIcon
+                      className="ml-1 h-3 w-3 cursor-pointer"
+                      onClick={() => onRemoveItem(val)}
+                    />
+                  )}
+                </Badge>
+              ))}
+              <UIComboboxInput as={Fragment} onChange={onInputChange}>
+                <input
+                  data-testid="combobox-input"
+                  className="flex-1 placeholder-gray-600/70 outline-hidden"
+                  autoComplete="off"
+                  placeholder={placeholder}
+                />
+              </UIComboboxInput>
             </div>
-            {withPortal ? <Portal>{optionsElement}</Portal> : optionsElement}
-          </>
-        )}
-      </UICombobox>
-    </div>
+            <UIComboboxButton ref={btnRef} data-testid="combobox-button">
+              <div className="ml-1 flex items-center gap-0.5 rounded-r-md text-gray-400 focus:outline-hidden">
+                {(Array.isArray(value) ? value?.length > 0 : value) && (
+                  <XMarkIcon
+                    onClick={() => onChange([])}
+                    className="h-4 w-4 cursor-pointer hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                )}
+                {loading ? (
+                  <Spinner aria-hidden="true" size="sm" />
+                ) : (
+                  <ChevronUpDownIcon
+                    className="h-5 w-5 hover:text-gray-500"
+                    aria-hidden="true"
+                  />
+                )}
+              </div>
+            </UIComboboxButton>
+          </div>
+          {error && (
+            <p
+              className="mt-1 text-sm text-red-500"
+              data-testid="combobox-error"
+            >
+              {error}
+            </p>
+          )}
+          {withPortal ? <Portal>{optionsElement}</Portal> : optionsElement}
+        </div>
+      )}
+    </UICombobox>
   );
 }
 
