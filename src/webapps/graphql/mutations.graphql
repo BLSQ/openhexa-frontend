@@ -13,3 +13,16 @@ mutation CreateWebapp($input: CreateWebappInput!) {
     }
   }
 }
+mutation AddToFavorites($input: AddToFavoritesInput!) {
+  addToFavorites(input: $input) {
+    success
+    errors
+  }
+}
+
+mutation RemoveFromFavorites($input: RemoveFromFavoritesInput!) {
+  removeFromFavorites(input: $input) {
+    success
+    errors
+  }
+}

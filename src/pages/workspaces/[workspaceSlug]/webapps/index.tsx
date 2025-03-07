@@ -22,6 +22,11 @@ import useCacheKey from "core/hooks/useCacheKey";
 import Title from "core/components/Title";
 import UserAvatar from "identity/features/UserAvatar";
 import clsx from "clsx";
+import {
+  useAddToFavoritesMutation,
+  useRemoveFromFavoritesMutation,
+} from "webapps/graphql/mutations.generated";
+import { toast } from "react-toastify";
 
 type Props = {
   page: number;
@@ -40,6 +45,22 @@ const WebappsPage = (props: Props) => {
     },
   });
   useCacheKey("webapps", refetch);
+
+  const [addToFavorites] = useAddToFavoritesMutation();
+  const [removeFromFavorites] = useRemoveFromFavoritesMutation();
+
+  const handleFavoriteClick = async (webappId: string, isFavorite: boolean) => {
+    try {
+      if (isFavorite) {
+        await removeFromFavorites({ variables: { input: { webappId } } });
+      } else {
+        await addToFavorites({ variables: { input: { webappId } } });
+      }
+      refetch();
+    } catch (error) {
+      toast.error(t("Error updating favorites"));
+    }
+  };
 
   const onChangePage = ({ page }: { page: number }) => {
     router.push({ pathname: router.pathname, query: { page } });
@@ -102,7 +123,15 @@ const WebappsPage = (props: Props) => {
               <BaseColumn id="name" label={t("Name")}>
                 {(item) => (
                   <div className="flex items-center space-x-1">
-                    <StarIcon className="h-4 w-4 text-yellow-500" />
+                    <StarIcon
+                      className={clsx(
+                        "h-4 w-4 cursor-pointer",
+                        item.isFavorite && "text-yellow-500",
+                      )}
+                      onClick={() =>
+                        handleFavoriteClick(item.id, item.isFavorite)
+                      }
+                    />
                     <img
                       src={item.icon}
                       className={clsx(
@@ -143,9 +172,6 @@ const WebappsPage = (props: Props) => {
     </Page>
   );
 };
-
-// TODO : add to favorites
-// TODO : unit test
 
 export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
