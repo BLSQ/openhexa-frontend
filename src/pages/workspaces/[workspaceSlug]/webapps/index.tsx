@@ -125,6 +125,7 @@ const WebappsPage = (props: Props) => {
 };
 
 // TODO : polish list page
+// TODO : add to favorites
 // TODO : unit test
 
 export const getServerSideProps = createGetServerSideProps({
