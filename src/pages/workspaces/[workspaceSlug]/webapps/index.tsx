@@ -19,7 +19,8 @@ import {
   WorkspaceWebappsPageQueryVariables,
 } from "workspaces/graphql/queries.generated";
 import useCacheKey from "core/hooks/useCacheKey";
-import Title from "../../../../core/components/Title";
+import Title from "core/components/Title";
+import UserAvatar from "identity/features/UserAvatar";
 
 type Props = {
   page: number;
@@ -89,7 +90,7 @@ const WebappsPage = (props: Props) => {
         }
       >
         <WorkspaceLayout.PageContent>
-          <Title level={2}>{t("All Apps")}</Title>
+          <Title level={2}>{t("All apps")}</Title>
           <Block>
             <DataGrid
               defaultPageSize={props.perPage}
@@ -97,7 +98,7 @@ const WebappsPage = (props: Props) => {
               totalItems={data.webapps.totalItems}
               fetchData={onChangePage}
             >
-              <BaseColumn id="name" label={t("Name")} minWidth={240}>
+              <BaseColumn id="name" label={t("Name")}>
                 {(item) => (
                   <div className="flex items-center">
                     {item.isFavorite && (
@@ -114,10 +115,14 @@ const WebappsPage = (props: Props) => {
                   </div>
                 )}
               </BaseColumn>
-              <TextColumn
-                label={t("Created by")}
-                accessor="createdBy.displayName"
-              />
+              <BaseColumn id="createdBy" label={t("Created by")}>
+                {(item) => (
+                  <div className={"flex"}>
+                    <UserAvatar user={item.createdBy} size="xs" />
+                    <p className={"ml-2"}>{item.createdBy.displayName}</p>
+                  </div>
+                )}
+              </BaseColumn>
               <TextColumn label={t("Workspace")} accessor="workspace.name" />
               <ChevronLinkColumn
                 maxWidth="100"
@@ -134,7 +139,6 @@ const WebappsPage = (props: Props) => {
   );
 };
 
-// TODO : user badge
 // TODO : icon
 // TODO : add to favorites
 // TODO : unit test

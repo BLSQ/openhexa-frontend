@@ -683,6 +683,8 @@ query WorkspaceWebappsPage(
       url
       isFavorite
       createdBy {
+        firstName
+        lastName
         ...User_user
       }
       workspace {
