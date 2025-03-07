@@ -18,6 +18,7 @@ import useCacheKey from "core/hooks/useCacheKey";
 import ImageProperty from "core/components/DataCard/ImageProperty";
 import Spinner from "core/components/Spinner";
 import clsx from "clsx";
+import useDebounce from "core/hooks/useDebounce";
 
 type WebappFormProps = {
   webapp?: WebappForm_WebappFragment;
@@ -32,6 +33,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState(webapp?.url || "");
   const [iframeLoading, setIframeLoading] = useState(false);
+  const debouncedUrl = useDebounce(url, 500);
 
   const clearCache = useCacheKey("webapps");
 
@@ -117,7 +119,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           }}
         />
       </DataCard.FormSection>
-      {url && (
+      {debouncedUrl && (
         <DataCard.Section
           title={t("Preview")}
           collapsible={false}
@@ -129,7 +131,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           >
             {iframeLoading && <Spinner size="md" />}{" "}
             <iframe
-              src={url}
+              src={debouncedUrl}
               className={clsx("w-full h-full", iframeLoading && "hidden")}
               onLoad={() => setIframeLoading(false)}
               onError={() => setIframeLoading(false)}
