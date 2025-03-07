@@ -11,7 +11,7 @@ import { useMemo } from "react";
 import Button from "core/components/Button";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, StarIcon } from "@heroicons/react/24/outline";
 import {
   useWorkspaceWebappsPageQuery,
   WorkspaceWebappsPageDocument,
@@ -19,6 +19,7 @@ import {
   WorkspaceWebappsPageQueryVariables,
 } from "workspaces/graphql/queries.generated";
 import useCacheKey from "core/hooks/useCacheKey";
+import Title from "../../../../core/components/Title";
 
 type Props = {
   page: number;
@@ -88,6 +89,7 @@ const WebappsPage = (props: Props) => {
         }
       >
         <WorkspaceLayout.PageContent>
+          <Title level={2}>{t("All Apps")}</Title>
           <Block>
             <DataGrid
               defaultPageSize={props.perPage}
@@ -97,18 +99,26 @@ const WebappsPage = (props: Props) => {
             >
               <BaseColumn id="name" label={t("Name")} minWidth={240}>
                 {(item) => (
-                  <Link
-                    customStyle="text-gray-700 font-medium"
-                    href={{
-                      pathname: `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/${item.id}`,
-                    }}
-                  >
-                    {item.name}
-                  </Link>
+                  <div className="flex items-center">
+                    {item.isFavorite && (
+                      <StarIcon className="h-4 w-4 text-yellow-500 mr-2" />
+                    )}
+                    <Link
+                      customStyle="text-gray-700 font-medium"
+                      href={{
+                        pathname: `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/${item.id}`,
+                      }}
+                    >
+                      {item.name}
+                    </Link>
+                  </div>
                 )}
               </BaseColumn>
-              <TextColumn label={t("Description")} accessor="description" />
-              <TextColumn label={t("URL")} accessor="url" />
+              <TextColumn
+                label={t("Created by")}
+                accessor="createdBy.displayName"
+              />
+              <TextColumn label={t("Workspace")} accessor="workspace.name" />
               <ChevronLinkColumn
                 maxWidth="100"
                 accessor="id"
@@ -124,7 +134,8 @@ const WebappsPage = (props: Props) => {
   );
 };
 
-// TODO : polish list page
+// TODO : user badge
+// TODO : icon
 // TODO : add to favorites
 // TODO : unit test
 
