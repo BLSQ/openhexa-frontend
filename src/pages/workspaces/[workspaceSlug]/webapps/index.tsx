@@ -7,7 +7,7 @@ import Link from "core/components/Link";
 import { createGetServerSideProps } from "core/helpers/page";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import Button from "core/components/Button";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
@@ -21,6 +21,7 @@ import {
 import useCacheKey from "core/hooks/useCacheKey";
 import Title from "core/components/Title";
 import UserAvatar from "identity/features/UserAvatar";
+import clsx from "clsx";
 
 type Props = {
   page: number;
@@ -100,12 +101,17 @@ const WebappsPage = (props: Props) => {
             >
               <BaseColumn id="name" label={t("Name")}>
                 {(item) => (
-                  <div className="flex items-center">
-                    {item.isFavorite && (
-                      <StarIcon className="h-4 w-4 text-yellow-500 mr-2" />
-                    )}
+                  <div className="flex items-center space-x-1">
+                    <StarIcon className="h-4 w-4 text-yellow-500" />
+                    <img
+                      src={item.icon}
+                      className={clsx(
+                        "h-4 w-4 rounded",
+                        !item.icon && "opacity-0",
+                      )}
+                      alt={"Icon"}
+                    />
                     <Link
-                      customStyle="text-gray-700 font-medium"
                       href={{
                         pathname: `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/${item.id}`,
                       }}
@@ -117,9 +123,9 @@ const WebappsPage = (props: Props) => {
               </BaseColumn>
               <BaseColumn id="createdBy" label={t("Created by")}>
                 {(item) => (
-                  <div className={"flex"}>
+                  <div className={"flex space-x-1"}>
                     <UserAvatar user={item.createdBy} size="xs" />
-                    <p className={"ml-2"}>{item.createdBy.displayName}</p>
+                    <p>{item.createdBy.displayName}</p>
                   </div>
                 )}
               </BaseColumn>
@@ -139,7 +145,6 @@ const WebappsPage = (props: Props) => {
   );
 };
 
-// TODO : icon
 // TODO : add to favorites
 // TODO : unit test
 

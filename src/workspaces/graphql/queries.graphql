@@ -679,6 +679,7 @@ query WorkspaceWebappsPage(
     items {
       id
       name
+      icon
       description
       url
       isFavorite
