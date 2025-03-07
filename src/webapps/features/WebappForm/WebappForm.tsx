@@ -16,7 +16,7 @@ import TextProperty from "core/components/DataCard/TextProperty";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import useCacheKey from "core/hooks/useCacheKey";
 import ImageProperty from "core/components/DataCard/ImageProperty";
-import Spinner from "../../../core/components/Spinner";
+import Spinner from "core/components/Spinner";
 import clsx from "clsx";
 
 type WebappFormProps = {
