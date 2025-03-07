@@ -30,30 +30,34 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
 
   const clearCache = useCacheKey("webapps");
 
-  const onSave = async (values: any) => {
+  const updateExistingWebapp = async (values: any) => {
     try {
-      if (webapp) {
-        await updateWebapp({
-          variables: { input: { id: webapp.id, ...values } },
-        }).then(() => {
-          toast.success(t("Webapp updated successfully"));
-          clearCache();
-        });
-      } else {
-        await createWebapp({
-          variables: { input: { workspaceSlug: workspace.slug, ...values } },
-        }).then(({ data }) => {
-          if (!data?.createWebapp?.webapp) {
-            throw new Error("Webapp creation failed");
-          }
-          toast.success(t("Webapp created successfully"));
-          router.push(
-            `/workspaces/${workspace.slug}/webapps/${data.createWebapp.webapp.id}`,
-          );
-        });
-      }
+      await updateWebapp({
+        variables: { input: { id: webapp?.id, ...values } },
+      }).then(() => {
+        toast.success(t("Webapp updated successfully"));
+        clearCache();
+      });
     } catch (error) {
-      toast.error(t("An error occurred while saving the webapp"));
+      toast.error(t("An error occurred while updating the webapp"));
+    }
+  };
+
+  const createNewWebapp = async (values: any) => {
+    try {
+      await createWebapp({
+        variables: { input: { workspaceSlug: workspace.slug, ...values } },
+      }).then(({ data }) => {
+        if (!data?.createWebapp?.webapp) {
+          throw new Error("Webapp creation failed");
+        }
+        toast.success(t("Webapp created successfully"));
+        router.push(
+          `/workspaces/${workspace.slug}/webapps/${data.createWebapp.webapp.id}`,
+        );
+      });
+    } catch (error) {
+      toast.error(t("An error occurred while creating the webapp"));
     }
   };
 
@@ -64,7 +68,13 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
       />
       <DataCard.FormSection
         title={t("Webapp Details")}
-        onSave={webapp?.permissions.update ? onSave : undefined}
+        onSave={
+          webapp
+            ? webapp.permissions.update
+              ? updateExistingWebapp
+              : undefined
+            : createNewWebapp
+        }
         collapsible={false}
         confirmButtonLabel={webapp ? t("Save") : t("Create")}
         onCancel={

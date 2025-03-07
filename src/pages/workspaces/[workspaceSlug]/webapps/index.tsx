@@ -124,8 +124,8 @@ const WebappsPage = (props: Props) => {
   );
 };
 
-// TODO : icon
-// TODO : polish pages
+// TODO : polish update/view page
+// TODO : polish list page
 // TODO : unit test
 
 export const getServerSideProps = createGetServerSideProps({
