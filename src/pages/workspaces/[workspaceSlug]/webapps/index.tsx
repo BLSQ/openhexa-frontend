@@ -131,7 +131,6 @@ const WebappsPage = (props: Props) => {
               </BaseColumn>
               <TextColumn label={t("Workspace")} accessor="workspace.name" />
               <ChevronLinkColumn
-                maxWidth="100"
                 accessor="id"
                 url={(value: any) => ({
                   pathname: `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/${value}`,
