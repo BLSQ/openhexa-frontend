@@ -106,7 +106,11 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           collapsible={false}
           loading={loading}
         >
-          <iframe src={webapp.url} className="w-full h-screen border" />
+          <iframe
+            src={webapp.url}
+            className="w-full"
+            style={{ height: "50vh" }}
+          />
         </DataCard.Section>
       )}
     </DataCard>
