@@ -7,7 +7,7 @@ import Link from "core/components/Link";
 import { createGetServerSideProps } from "core/helpers/page";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Button from "core/components/Button";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
@@ -27,6 +27,7 @@ import {
   useRemoveFromFavoritesMutation,
 } from "webapps/graphql/mutations.generated";
 import { toast } from "react-toastify";
+import Spinner from "../../../../core/components/Spinner";
 
 type Props = {
   page: number;
@@ -48,17 +49,23 @@ const WebappsPage = (props: Props) => {
 
   const [addToFavorites] = useAddToFavoritesMutation();
   const [removeFromFavorites] = useRemoveFromFavoritesMutation();
+  const [settingFavoriteOf, setSettingFavoriteOf] = useState<string | null>();
 
   const handleFavoriteClick = async (webappId: string, isFavorite: boolean) => {
     try {
+      setSettingFavoriteOf(webappId);
       if (isFavorite) {
         await removeFromFavorites({ variables: { input: { webappId } } });
+        toast.success(t("Removed from favorites"));
       } else {
         await addToFavorites({ variables: { input: { webappId } } });
+        toast.success(t("Added to favorites"));
       }
       refetch();
     } catch (error) {
       toast.error(t("Error updating favorites"));
+    } finally {
+      setSettingFavoriteOf(null);
     }
   };
 
@@ -123,15 +130,19 @@ const WebappsPage = (props: Props) => {
               <BaseColumn id="name" label={t("Name")}>
                 {(item) => (
                   <div className="flex items-center space-x-1">
-                    <StarIcon
-                      className={clsx(
-                        "h-4 w-4 cursor-pointer",
-                        item.isFavorite && "text-yellow-500",
-                      )}
-                      onClick={() =>
-                        handleFavoriteClick(item.id, item.isFavorite)
-                      }
-                    />
+                    {settingFavoriteOf === item.id ? (
+                      <Spinner size={"xs"} />
+                    ) : (
+                      <StarIcon
+                        className={clsx(
+                          "h-5 w-5 cursor-pointer text-yellow-500",
+                          item.isFavorite && "fill-yellow-500",
+                        )}
+                        onClick={() =>
+                          handleFavoriteClick(item.id, item.isFavorite)
+                        }
+                      />
+                    )}
                     <img
                       src={item.icon}
                       className={clsx(
