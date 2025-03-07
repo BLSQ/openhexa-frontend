@@ -6,12 +6,17 @@ import { useTranslation } from "next-i18next";
 
 type ImagePropertyProps = PropertyDefinition & {
   className?: string;
-  editLabel?: string;
+  editButtonLabel?: string;
   placeholder?: string;
 };
 
 const ImageProperty = (props: ImagePropertyProps) => {
-  const { className, placeholder, editLabel, ...delegated } = props;
+  const {
+    className,
+    placeholder = "/images/placeholder.svg",
+    editButtonLabel,
+    ...delegated
+  } = props;
   const { property, section } = useDataCardProperty(delegated);
   const { t } = useTranslation();
 
@@ -57,7 +62,7 @@ const ImageProperty = (props: ImagePropertyProps) => {
               onChange={handleImageChange}
               className="sr-only"
             />
-            <span>{editLabel ?? t("Edit")}</span>
+            <span>{editButtonLabel ?? t("Edit")}</span>
           </label>
         </div>
       </DataCard.Property>
