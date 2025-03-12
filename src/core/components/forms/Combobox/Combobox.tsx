@@ -47,6 +47,7 @@ export type ComboboxProps<T> = {
   withPortal?: boolean;
   className?: string;
   value?: T | null;
+  error?: string;
   onChange(value?: T | null): void;
 };
 
@@ -74,6 +75,7 @@ function Combobox<T extends { [key: string]: any }>(props: ComboboxProps<T>) {
     required,
     disabled,
     className,
+    error,
     ...delegated
   } = props;
 
@@ -121,7 +123,7 @@ function Combobox<T extends { [key: string]: any }>(props: ComboboxProps<T>) {
       value={value}
       multiple={false}
       disabled={disabled}
-      by={by as any /* Otherwise typescript is not happy */}
+      by={by as any}
       {...delegated}
     >
       {({ open }) => (
@@ -132,6 +134,7 @@ function Combobox<T extends { [key: string]: any }>(props: ComboboxProps<T>) {
               "focus-within:outline-hidden focus:ring-transparent focus-visible:border-blue-500 disabled:cursor-not-allowed ",
               "sm:text-sm",
               open ? "border-blue-500" : "hover:border-gray-400",
+              error ? "border-red-500" : "",
               className,
             )}
           >
@@ -146,6 +149,7 @@ function Combobox<T extends { [key: string]: any }>(props: ComboboxProps<T>) {
                   className="flex-1 placeholder-gray-600/70 outline-hidden"
                   autoComplete="off"
                   placeholder={placeholder}
+                  aria-describedby={error ? "combobox-error" : undefined}
                 />
               </UIComboboxInput>
             </div>
@@ -171,6 +175,15 @@ function Combobox<T extends { [key: string]: any }>(props: ComboboxProps<T>) {
             </UIComboboxButton>
           </div>
 
+          {error && (
+            <p
+              id="combobox-error"
+              className="mt-1 text-sm text-red-500"
+              data-testid="combobox-error"
+            >
+              {error}
+            </p>
+          )}
           {withPortal ? <Portal>{optionsElement}</Portal> : optionsElement}
         </div>
       )}

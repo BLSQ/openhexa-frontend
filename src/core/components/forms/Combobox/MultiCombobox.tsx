@@ -46,6 +46,7 @@ type MultiComboboxProps<T> = {
   withPortal?: boolean;
   className?: string;
   value: T[];
+  error?: string;
   onChange(value: T[]): void;
 };
 
@@ -75,6 +76,7 @@ function MultiCombobox<T extends { [key: string]: any }>(
     disabled,
     name,
     by,
+    error,
   } = props;
 
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -138,6 +140,7 @@ function MultiCombobox<T extends { [key: string]: any }>(
               "focus-within:outline-hidden focus:ring-transparent focus-visible:border-blue-500 disabled:cursor-not-allowed ",
               "sm:text-sm",
               open ? "border-blue-500" : "hover:border-gray-400",
+              error ? "border-red-500" : "",
             )}
           >
             <div className="mr-1 flex flex-1 flex-wrap items-center gap-2 truncate">
@@ -184,7 +187,14 @@ function MultiCombobox<T extends { [key: string]: any }>(
               </div>
             </UIComboboxButton>
           </div>
-
+          {error && (
+            <p
+              className="mt-1 text-sm text-red-500"
+              data-testid="combobox-error"
+            >
+              {error}
+            </p>
+          )}
           {withPortal ? <Portal>{optionsElement}</Portal> : optionsElement}
         </div>
       )}
