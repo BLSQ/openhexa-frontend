@@ -137,7 +137,11 @@ describe("WebappsPage", () => {
 
     useQueryMock.mockReturnValue({
       loading: false,
-      data: { webapps: updatedMocks },
+      data: {
+        workspace: mockWorkspace,
+        webapps: updatedMocks,
+        ...sideBarMocks,
+      },
       error: null,
     });
 
@@ -147,7 +151,7 @@ describe("WebappsPage", () => {
       expect(screen.getByText("Webapp 1")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("img", { name: /star icon/i }));
+    fireEvent.click(screen.getByTestId("star-icon-1"));
 
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith("Removed from favorites");
