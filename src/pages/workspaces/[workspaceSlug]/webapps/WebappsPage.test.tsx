@@ -196,14 +196,4 @@ describe("WebappsPage", () => {
       expect(screen.getByText("Webapp 16")).toBeInTheDocument();
     });
   });
-
-  it("can create a webapp", async () => {
-    // TODO : Implement test
-  });
-  it("can delete a webapp", async () => {
-    // TODO: Implement test
-  });
-  it("can update a webapp", async () => {
-    // TODO: Implement test
-  });
 });
