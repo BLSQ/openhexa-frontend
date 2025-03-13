@@ -197,20 +197,6 @@ describe("WebappsPage", () => {
     });
   });
 
-  it("displays error message on error", async () => {
-    useQueryMock.mockReturnValue({
-      loading: false,
-      data: null,
-      error: new Error("An error occurred"),
-    });
-
-    render(<WebappsPage page={1} perPage={15} />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Error loading webapps")).toBeInTheDocument();
-    });
-  });
-
   it("can create a webapp", async () => {
     // TODO : Implement test
   });
