@@ -1,0 +1,158 @@
+import React from "react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { useMutation, useQuery } from "@apollo/client";
+import WebappsPage from "./index";
+import { toast } from "react-toastify";
+
+jest.mock("@apollo/client", () => ({
+  __esModule: true,
+  useQuery: jest.fn(),
+  useMutation: jest.fn(),
+  gql: jest.fn(() => "GQL"),
+}));
+
+const useQueryMock = useQuery as jest.Mock;
+const useMutationMock = useMutation as jest.Mock;
+useMutationMock.mockReturnValue([jest.fn(), { loading: false }]);
+
+const mockWorkspace = {
+  slug: "test-workspace",
+};
+
+const webapp = (id: string) => ({
+  id: id,
+  name: `Webapp ${id}`,
+  isFavorite: false,
+  icon: "",
+  createdBy: {
+    displayName: `User ${id}`,
+  },
+});
+const mockWebapps = {
+  pageNumber: 1,
+  totalPages: 2,
+  totalItems: 11,
+  items: Array.from({ length: 10 }, (_, index) =>
+    webapp((index + 1).toString()),
+  ),
+};
+
+describe("WebappsPage", () => {
+  it("renders the list of webapps", async () => {
+    useQueryMock.mockReturnValue({
+      loading: false,
+      data: { webapps: mockWebapps },
+      error: null,
+    });
+
+    render(<WebappsPage page={1} perPage={15} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Webapp 1")).toBeInTheDocument();
+    });
+  });
+
+  it("adds a webapp to favorites", async () => {
+    useQueryMock.mockReturnValue({
+      loading: false,
+      data: { webapps: mockWebapps },
+      error: null,
+    });
+
+    render(<WebappsPage page={1} perPage={15} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Webapp 1")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("img", { name: /star icon/i }));
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Added to favorites");
+    });
+  });
+
+  it("removes a webapp from favorites", async () => {
+    const updatedMocks = {
+      ...mockWebapps,
+      items: mockWebapps.items.map((item) =>
+        item.id === "1" ? { ...item, isFavorite: true } : item,
+      ),
+    };
+
+    useQueryMock.mockReturnValue({
+      loading: false,
+      data: { webapps: updatedMocks },
+      error: null,
+    });
+
+    render(<WebappsPage page={1} perPage={15} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Webapp 1")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("img", { name: /star icon/i }));
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Removed from favorites");
+    });
+  });
+
+  it("handles pagination", async () => {
+    useQueryMock.mockReturnValue({
+      loading: false,
+      data: { webapps: mockWebapps },
+      error: null,
+    });
+
+    render(<WebappsPage page={1} perPage={15} />);
+
+    const previousButton = screen.getByRole("button", { name: /Previous/i });
+    const nextButton = previousButton.nextElementSibling as HTMLButtonElement;
+    await waitFor(() => {
+      expect(nextButton).toBeInTheDocument();
+    });
+
+    useQueryMock.mockReturnValue({
+      loading: false,
+      data: {
+        webapps: {
+          ...mockWebapps,
+          items: [webapp("11")],
+        },
+      },
+      error: null,
+    });
+
+    fireEvent.click(nextButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Webapp 11")).toBeInTheDocument();
+    });
+  });
+
+  it("displays error message on error", async () => {
+    useQueryMock.mockReturnValue({
+      loading: false,
+      data: null,
+      error: new Error("An error occurred"),
+    });
+
+    render(<WebappsPage page={1} perPage={15} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Error loading webapps")).toBeInTheDocument();
+    });
+  });
+
+  it("can create a webapp", async () => {
+    // TODO : Implement test
+  });
+  it("can delete a webapp", async () => {
+    // TODO: Implement test
+  });
+  it("can update a webapp", async () => {
+    // TODO: Implement test
+  });
+});
