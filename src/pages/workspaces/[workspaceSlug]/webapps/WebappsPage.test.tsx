@@ -59,8 +59,8 @@ const webapp = (id: string) => ({
 const mockWebapps = {
   pageNumber: 1,
   totalPages: 2,
-  totalItems: 11,
-  items: Array.from({ length: 10 }, (_, index) =>
+  totalItems: 16,
+  items: Array.from({ length: 15 }, (_, index) =>
     webapp((index + 1).toString()),
   ),
 };
@@ -161,12 +161,15 @@ describe("WebappsPage", () => {
   it("handles pagination", async () => {
     useQueryMock.mockReturnValue({
       loading: false,
-      data: { webapps: mockWebapps },
+      data: {
+        workspace: mockWorkspace,
+        webapps: mockWebapps,
+        ...sideBarMocks,
+      },
       error: null,
     });
 
     render(<WebappsPage page={1} perPage={15} />);
-
     const previousButton = screen.getByRole("button", { name: /Previous/i });
     const nextButton = previousButton.nextElementSibling as HTMLButtonElement;
     await waitFor(() => {
@@ -176,18 +179,21 @@ describe("WebappsPage", () => {
     useQueryMock.mockReturnValue({
       loading: false,
       data: {
+        workspace: mockWorkspace,
         webapps: {
           ...mockWebapps,
-          items: [webapp("11")],
+          items: [webapp("16")],
         },
+        ...sideBarMocks,
       },
       error: null,
     });
 
     fireEvent.click(nextButton);
 
+    screen.debug();
     await waitFor(() => {
-      expect(screen.getByText("Webapp 11")).toBeInTheDocument();
+      expect(screen.getByText("Webapp 16")).toBeInTheDocument();
     });
   });
 
