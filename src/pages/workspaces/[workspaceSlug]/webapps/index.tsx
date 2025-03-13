@@ -27,7 +27,7 @@ import {
   useRemoveFromFavoritesMutation,
 } from "webapps/graphql/mutations.generated";
 import { toast } from "react-toastify";
-import Spinner from "../../../../core/components/Spinner";
+import Spinner from "core/components/Spinner";
 
 type Props = {
   page: number;
