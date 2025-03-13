@@ -134,6 +134,7 @@ const WebappsPage = (props: Props) => {
                       <Spinner size={"xs"} />
                     ) : (
                       <StarIcon
+                        data-testid={`star-icon-${item.id}`}
                         className={clsx(
                           "h-5 w-5 cursor-pointer text-yellow-500",
                           item.isFavorite && "fill-yellow-500",
