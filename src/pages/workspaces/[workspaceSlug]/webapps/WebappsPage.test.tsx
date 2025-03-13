@@ -4,6 +4,12 @@ import { useMutation, useQuery } from "@apollo/client";
 import WebappsPage from "./index";
 import { toast } from "react-toastify";
 
+jest.mock("react-toastify", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 const mockMe = jest.fn(() => ({
   features: [{ code: "webapps", config: {} }],
   avatar: {
@@ -59,6 +65,25 @@ const mockWebapps = {
   ),
 };
 
+const sideBarMocks = {
+  pendingWorkspaceInvitations: { totalItems: 1 },
+  workspaces: {
+    totalItems: 2,
+    items: [
+      {
+        slug: "workspace-1",
+        name: "Workspace 1",
+        countries: [{ code: "US", flag: "🇺🇸" }],
+      },
+      {
+        slug: "workspace-2",
+        name: "Workspace 2",
+        countries: [{ code: "FR", flag: "🇫🇷" }],
+      },
+    ],
+  },
+};
+
 describe("WebappsPage", () => {
   it("renders the list of webapps", async () => {
     useQueryMock.mockReturnValue({
@@ -66,22 +91,7 @@ describe("WebappsPage", () => {
       data: {
         workspace: mockWorkspace,
         webapps: mockWebapps,
-        pendingWorkspaceInvitations: { totalItems: 1 },
-        workspaces: {
-          totalItems: 2,
-          items: [
-            {
-              slug: "workspace-1",
-              name: "Workspace 1",
-              countries: [{ code: "US", flag: "🇺🇸" }],
-            },
-            {
-              slug: "workspace-2",
-              name: "Workspace 2",
-              countries: [{ code: "FR", flag: "🇫🇷" }],
-            },
-          ],
-        },
+        ...sideBarMocks,
       },
       error: null,
     });
@@ -96,7 +106,11 @@ describe("WebappsPage", () => {
   it("adds a webapp to favorites", async () => {
     useQueryMock.mockReturnValue({
       loading: false,
-      data: { webapps: mockWebapps },
+      data: {
+        workspace: mockWorkspace,
+        webapps: mockWebapps,
+        ...sideBarMocks,
+      },
       error: null,
     });
 
@@ -106,7 +120,7 @@ describe("WebappsPage", () => {
       expect(screen.getByText("Webapp 1")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("img", { name: /star icon/i }));
+    fireEvent.click(screen.getByTestId("star-icon-1"));
 
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith("Added to favorites");
