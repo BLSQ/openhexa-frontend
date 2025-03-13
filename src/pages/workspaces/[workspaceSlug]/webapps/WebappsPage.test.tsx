@@ -4,6 +4,19 @@ import { useMutation, useQuery } from "@apollo/client";
 import WebappsPage from "./index";
 import { toast } from "react-toastify";
 
+const mockMe = jest.fn(() => ({
+  features: [{ code: "webapps", config: {} }],
+  avatar: {
+    initials: "TU",
+    color: "",
+  },
+  permissions: {
+    createWorkspace: false,
+  },
+}));
+
+jest.mock("identity/hooks/useMe", () => () => mockMe());
+jest.mock("identity/hooks/useFeature", () => jest.fn().mockReturnValue([true]));
 jest.mock("@apollo/client", () => ({
   __esModule: true,
   useQuery: jest.fn(),
@@ -17,6 +30,11 @@ useMutationMock.mockReturnValue([jest.fn(), { loading: false }]);
 
 const mockWorkspace = {
   slug: "test-workspace",
+  countries: [],
+  permissions: {
+    launchNotebookServer: false,
+    manageMembers: false,
+  },
 };
 
 const webapp = (id: string) => ({
@@ -26,6 +44,10 @@ const webapp = (id: string) => ({
   icon: "",
   createdBy: {
     displayName: `User ${id}`,
+    avatar: {
+      initials: "U",
+      color: "",
+    },
   },
 });
 const mockWebapps = {
@@ -41,7 +63,26 @@ describe("WebappsPage", () => {
   it("renders the list of webapps", async () => {
     useQueryMock.mockReturnValue({
       loading: false,
-      data: { webapps: mockWebapps },
+      data: {
+        workspace: mockWorkspace,
+        webapps: mockWebapps,
+        pendingWorkspaceInvitations: { totalItems: 1 },
+        workspaces: {
+          totalItems: 2,
+          items: [
+            {
+              slug: "workspace-1",
+              name: "Workspace 1",
+              countries: [{ code: "US", flag: "🇺🇸" }],
+            },
+            {
+              slug: "workspace-2",
+              name: "Workspace 2",
+              countries: [{ code: "FR", flag: "🇫🇷" }],
+            },
+          ],
+        },
+      },
       error: null,
     });
 
