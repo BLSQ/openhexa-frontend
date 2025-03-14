@@ -6,7 +6,7 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
-import WorkspaceWebappPage from "./index";
+import WorkspaceWebappPage from "pages/workspaces/[workspaceSlug]/webapps/[webappId]";
 import { useMutation, useQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import { useUpdateWebappMutation } from "webapps/graphql/mutations.generated";

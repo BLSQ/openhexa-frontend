@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useMutation, useQuery } from "@apollo/client";
-import WebappsPage from "./index";
+import WebappsPage from "pages/workspaces/[workspaceSlug]/webapps";
 import { toast } from "react-toastify";
 
 jest.mock("react-toastify", () => ({
@@ -191,7 +191,6 @@ describe("WebappsPage", () => {
 
     fireEvent.click(nextButton);
 
-    screen.debug();
     await waitFor(() => {
       expect(screen.getByText("Webapp 16")).toBeInTheDocument();
     });
