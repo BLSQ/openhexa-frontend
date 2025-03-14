@@ -12,6 +12,7 @@ import {
   WebappDelete_WorkspaceFragment,
 } from "./DeleteWebappDialog.generated";
 import useCacheKey from "core/hooks/useCacheKey";
+import { toast } from "react-toastify";
 
 type DeleteWebappDialogProps = {
   open: boolean;
@@ -43,17 +44,20 @@ const DeleteWebappDialog = (props: DeleteWebappDialogProps) => {
       throw new Error("Unknown error.");
     }
 
+    setIsSubmitting(false);
     if (data.deleteWebapp.success) {
-      setIsSubmitting(false);
+      toast.success(t("Webapp deleted successfully."));
       clearCache();
       router.push({
         pathname: "/workspaces/[workspaceSlug]/webapps",
         query: { workspaceSlug: workspace.slug },
       });
-    }
-    if (data.deleteWebapp.errors.includes(DeleteWebappError.PermissionDenied)) {
-      setIsSubmitting(false);
-      window.alert(t("Missing permissions to delete the webapp."));
+    } else if (
+      data.deleteWebapp.errors.includes(DeleteWebappError.PermissionDenied)
+    ) {
+      toast.error(t("Missing permissions to delete the webapp."));
+    } else {
+      toast.error(t("Failed to delete the webapp."));
     }
   };
 
