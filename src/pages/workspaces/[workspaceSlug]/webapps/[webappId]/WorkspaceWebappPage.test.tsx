@@ -10,6 +10,7 @@ import WorkspaceWebappPage from "./index";
 import { useMutation, useQuery } from "@apollo/client";
 import { toast } from "react-toastify";
 import { useUpdateWebappMutation } from "webapps/graphql/mutations.generated";
+import { useDeleteWebappMutation } from "workspaces/graphql/mutations.generated";
 
 jest.mock("react-toastify", () => ({
   toast: {
@@ -108,7 +109,7 @@ jest.mock("webapps/graphql/mutations.generated", () => ({
   useUpdateWebappMutation: jest.fn(),
 }));
 jest.mock("workspaces/graphql/mutations.generated", () => ({
-  useDeleteWebappMutation: () => [jest.fn(), { loading: false }],
+  useDeleteWebappMutation: jest.fn(),
 }));
 
 const mockUpdateWebapp = jest.fn();
@@ -124,6 +125,21 @@ mockUpdateWebapp.mockResolvedValue({
         id: "1",
         name: "Updated Webapp",
       },
+    },
+  },
+});
+
+const mockDeleteWebapp = jest.fn();
+(useDeleteWebappMutation as jest.Mock).mockReturnValue([
+  mockDeleteWebapp,
+  { loading: false },
+]);
+
+mockDeleteWebapp.mockResolvedValue({
+  data: {
+    deleteWebapp: {
+      success: true,
+      errors: [],
     },
   },
 });
@@ -147,7 +163,7 @@ describe("WorkspaceWebappPage", () => {
     const urlParent = screen.getByText("URL").closest("div") as HTMLDivElement;
     const urlInput = within(urlParent).getByRole("textbox");
     fireEvent.change(urlInput, {
-      target: { value: "http://updated-url.com" },
+      target: { value: "https://updated-url.com" },
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }));
@@ -161,13 +177,21 @@ describe("WorkspaceWebappPage", () => {
     render(<WorkspaceWebappPage webappId="1" workspaceSlug="test-workspace" />);
 
     await waitFor(() => {
-      expect(screen.getByText("Test Webapp")).toBeInTheDocument();
+      expect(screen.getByText("Webapp Details")).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Delete" }));
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith("Webapp deleted successfully");
+      expect(screen.getByText("Delete webapp")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Delete" }));
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith(
+        "Webapp deleted successfully.",
+      );
     });
   });
 });
