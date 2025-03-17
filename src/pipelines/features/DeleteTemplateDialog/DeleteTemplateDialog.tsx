@@ -66,7 +66,7 @@ const DeleteTemplateDialog = (props: DeleteTemplateDialogProps) => {
         <Trans>
           <p>Are you sure that you want to delete the template {name}?</p>
           <p>It will not be available anymore in other workspaces.</p>
-          <p>{t("Please enter the template name to confirm deletion:")}</p>
+          <p>Please enter the template name to confirm deletion:</p>
         </Trans>
         <input
           type="text"
