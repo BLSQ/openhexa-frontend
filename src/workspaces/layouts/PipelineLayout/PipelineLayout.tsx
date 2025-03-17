@@ -23,7 +23,7 @@ import {
 import PublishPipelineDialog from "pipelines/features/PublishPipelineDialog";
 import useFeature from "identity/hooks/useFeature";
 import Tooltip from "core/components/Tooltip";
-import { CreateTemplateVersionPermissionError } from "../../../graphql/types";
+import { CreateTemplateVersionPermissionError } from "graphql/types";
 
 type PipelineLayoutProps = {
   pipeline: PipelineLayout_PipelineFragment;
