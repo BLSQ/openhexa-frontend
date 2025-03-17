@@ -1,8 +1,12 @@
 import { gql } from "@apollo/client";
-import { PlayIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  PlayIcon,
+  QuestionMarkCircleIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
 import DownloadPipelineVersion from "pipelines/features/DownloadPipelineVersion";
 import Spinner from "core/components/Spinner";
@@ -18,6 +22,8 @@ import {
 } from "./PipelineLayout.generated";
 import PublishPipelineDialog from "pipelines/features/PublishPipelineDialog";
 import useFeature from "identity/hooks/useFeature";
+import Tooltip from "core/components/Tooltip";
+import { CreateTemplateVersionPermissionError } from "../../../graphql/types";
 
 type PipelineLayoutProps = {
   pipeline: PipelineLayout_PipelineFragment;
@@ -43,6 +49,43 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
     useState(false);
 
   const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
+
+  const createTemplateVersionErrorMessages = useMemo(() => {
+    const errors = [];
+    if (
+      pipeline.permissions.createTemplateVersion.errors.includes(
+        CreateTemplateVersionPermissionError.PermissionDenied,
+      )
+    ) {
+      errors.push(t("You lack permissions to publish a new template version."));
+    }
+    if (
+      pipeline.permissions.createTemplateVersion.errors.includes(
+        CreateTemplateVersionPermissionError.PipelineIsNotebook,
+      )
+    ) {
+      errors.push(t("Notebook pipelines cannot be published as templates."));
+    }
+    if (
+      pipeline.permissions.createTemplateVersion.errors.includes(
+        CreateTemplateVersionPermissionError.NoNewTemplateVersionAvailable,
+      )
+    ) {
+      errors.push(t("No new template version available for publishing."));
+    }
+    if (
+      pipeline.permissions.createTemplateVersion.errors.includes(
+        CreateTemplateVersionPermissionError.PipelineIsAlreadyFromTemplate,
+      )
+    ) {
+      errors.push(
+        t(
+          "It is not possible to create a template from a pipeline created from a template.",
+        ),
+      );
+    }
+    return errors;
+  }, [pipeline.permissions.createTemplateVersion.errors]);
 
   return (
     <TabLayout
@@ -110,17 +153,32 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
             ))}
           </Breadcrumbs>
           <div className="flex items-center gap-2">
-            {pipelineTemplateFeatureEnabled &&
-              pipeline.permissions.createTemplateVersion && (
+            {pipelineTemplateFeatureEnabled && (
+              <>
+                {!pipeline.permissions.createTemplateVersion.isAllowed && (
+                  <Tooltip
+                    label={createTemplateVersionErrorMessages.map(
+                      (m, index) => (
+                        <p key={index}>{m}</p>
+                      ),
+                    )}
+                  >
+                    <QuestionMarkCircleIcon className="h-5 w-5" />
+                  </Tooltip>
+                )}
                 <Button
                   onClick={() => setPublishPipelineDialogOpen(true)}
                   variant={"secondary"}
+                  disabled={
+                    !pipeline.permissions.createTemplateVersion.isAllowed
+                  }
                 >
                   {pipeline.template
                     ? t("Publish a new Template Version")
                     : t("Publish as Template")}
                 </Button>
-              )}
+              </>
+            )}
             {pipeline.currentVersion && (
               <DownloadPipelineVersion version={pipeline.currentVersion}>
                 {({ onClick, isDownloading }) => (
@@ -196,7 +254,10 @@ PipelineLayout.fragments = {
         run
         delete
         update
-        createTemplateVersion
+        createTemplateVersion {
+          isAllowed
+          errors
+        }
       }
       template {
         id
