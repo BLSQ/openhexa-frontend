@@ -62,7 +62,7 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
         "No new template version available for publishing.",
       ),
       [CreateTemplateVersionPermissionError.PipelineIsAlreadyFromTemplate]: t(
-        "It is not possible to create a template from a pipeline created from a template.",
+        "It is not possible to create a template from a pipeline created using a template.",
       ),
     };
 

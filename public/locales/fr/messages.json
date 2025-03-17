@@ -246,7 +246,7 @@
   "Invited by": "Invité par",
   "Inviting and managing users": "Inviter et gérer les utilisateurs",
   "IP Address or domain name of the PostgreSQL server": "Adresse IP ou nom de domaine du serveur PostgreSQL",
-  "It is not possible to create a template from a pipeline created from a template.": "Il n'est pas possible de créer un modèle à partir d'une pipeline créée à partir d'un modèle.",
+  "It is not possible to create a template from a pipeline created using a template.": "Il n'est pas possible de créer un modèle à partir d'une pipeline créée à l'aide d'un modèle.",
   "Joined": "Rejoint",
   "Jupyter notebook": "notebook Jupyter",
   "JupyterHub": "JupyterHub",
