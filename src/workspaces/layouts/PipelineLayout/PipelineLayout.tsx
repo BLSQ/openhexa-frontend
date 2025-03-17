@@ -51,41 +51,25 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
   const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
 
   const createTemplateVersionErrorMessages = useMemo(() => {
-    const errors = [];
-    if (
-      pipeline.permissions.createTemplateVersion.errors.includes(
-        CreateTemplateVersionPermissionError.PermissionDenied,
-      )
-    ) {
-      errors.push(t("You lack permissions to publish a new template version."));
-    }
-    if (
-      pipeline.permissions.createTemplateVersion.errors.includes(
-        CreateTemplateVersionPermissionError.PipelineIsNotebook,
-      )
-    ) {
-      errors.push(t("Notebook pipelines cannot be published as templates."));
-    }
-    if (
-      pipeline.permissions.createTemplateVersion.errors.includes(
-        CreateTemplateVersionPermissionError.NoNewTemplateVersionAvailable,
-      )
-    ) {
-      errors.push(t("No new template version available for publishing."));
-    }
-    if (
-      pipeline.permissions.createTemplateVersion.errors.includes(
-        CreateTemplateVersionPermissionError.PipelineIsAlreadyFromTemplate,
-      )
-    ) {
-      errors.push(
-        t(
-          "It is not possible to create a template from a pipeline created from a template.",
-        ),
-      );
-    }
-    return errors;
-  }, [pipeline.permissions.createTemplateVersion.errors]);
+    const errorMessages = {
+      [CreateTemplateVersionPermissionError.PermissionDenied]: t(
+        "You lack permissions to publish a new template version.",
+      ),
+      [CreateTemplateVersionPermissionError.PipelineIsNotebook]: t(
+        "Notebook pipelines cannot be published as templates.",
+      ),
+      [CreateTemplateVersionPermissionError.NoNewTemplateVersionAvailable]: t(
+        "No new template version available for publishing.",
+      ),
+      [CreateTemplateVersionPermissionError.PipelineIsAlreadyFromTemplate]: t(
+        "It is not possible to create a template from a pipeline created from a template.",
+      ),
+    };
+
+    return pipeline.permissions.createTemplateVersion.errors.map(
+      (error) => errorMessages[error],
+    );
+  }, [pipeline.permissions.createTemplateVersion.errors, t]);
 
   return (
     <TabLayout
