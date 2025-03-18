@@ -23,7 +23,7 @@ import {
 import PublishPipelineDialog from "pipelines/features/PublishPipelineDialog";
 import useFeature from "identity/hooks/useFeature";
 import Tooltip from "core/components/Tooltip";
-import { CreateTemplateVersionPermissionError } from "graphql/types";
+import { CreateTemplateVersionPermissionReason } from "graphql/types";
 
 type PipelineLayoutProps = {
   pipeline: PipelineLayout_PipelineFragment;
@@ -50,26 +50,26 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
 
   const [pipelineTemplateFeatureEnabled] = useFeature("pipeline_templates");
 
-  const createTemplateVersionErrorMessages = useMemo(() => {
-    const errorMessages = {
-      [CreateTemplateVersionPermissionError.PermissionDenied]: t(
+  const createTemplateVersionReasonMessages = useMemo(() => {
+    const reasonMessages = {
+      [CreateTemplateVersionPermissionReason.PermissionDenied]: t(
         "You lack permissions to publish a new template version.",
       ),
-      [CreateTemplateVersionPermissionError.PipelineIsNotebook]: t(
+      [CreateTemplateVersionPermissionReason.PipelineIsNotebook]: t(
         "Notebook pipelines cannot be published as templates.",
       ),
-      [CreateTemplateVersionPermissionError.NoNewTemplateVersionAvailable]: t(
+      [CreateTemplateVersionPermissionReason.NoNewTemplateVersionAvailable]: t(
         "No new template version available for publishing.",
       ),
-      [CreateTemplateVersionPermissionError.PipelineIsAlreadyFromTemplate]: t(
+      [CreateTemplateVersionPermissionReason.PipelineIsAlreadyFromTemplate]: t(
         "It is not possible to create a template from a pipeline created using a template.",
       ),
     };
 
-    return pipeline.permissions.createTemplateVersion.errors.map(
-      (error) => errorMessages[error],
+    return pipeline.permissions.createTemplateVersion.reasons.map(
+      (reason) => reasonMessages[reason],
     );
-  }, [pipeline.permissions.createTemplateVersion.errors, t]);
+  }, [pipeline.permissions.createTemplateVersion.reasons, t]);
 
   return (
     <TabLayout
@@ -141,7 +141,7 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
               <>
                 {!pipeline.permissions.createTemplateVersion.isAllowed && (
                   <Tooltip
-                    label={createTemplateVersionErrorMessages.map(
+                    label={createTemplateVersionReasonMessages.map(
                       (m, index) => (
                         <p key={index}>{m}</p>
                       ),
@@ -240,7 +240,7 @@ PipelineLayout.fragments = {
         update
         createTemplateVersion {
           isAllowed
-          errors
+          reasons
         }
       }
       template {
