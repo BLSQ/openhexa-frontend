@@ -887,18 +887,9 @@ export type CreateTeamResult = {
 /** Represents the permission details for creating a template version. */
 export type CreateTemplateVersionPermission = {
   __typename?: 'CreateTemplateVersionPermission';
-  errors: Array<CreateTemplateVersionPermissionError>;
   isAllowed: Scalars['Boolean']['output'];
   reasons: Array<CreateTemplateVersionPermissionReason>;
 };
-
-/** Enum representing the possible errors preventing the creation of a template version. */
-export enum CreateTemplateVersionPermissionError {
-  NoNewTemplateVersionAvailable = 'NO_NEW_TEMPLATE_VERSION_AVAILABLE',
-  PermissionDenied = 'PERMISSION_DENIED',
-  PipelineIsAlreadyFromTemplate = 'PIPELINE_IS_ALREADY_FROM_TEMPLATE',
-  PipelineIsNotebook = 'PIPELINE_IS_NOTEBOOK'
-}
 
 /** Enum representing the possible reasons preventing the creation of a template version. */
 export enum CreateTemplateVersionPermissionReason {
