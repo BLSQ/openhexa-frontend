@@ -23,7 +23,7 @@ describe("PipelineLayout", () => {
       update: true,
       schedule: true,
       delete: true,
-      createTemplateVersion: { isAllowed: true, errors: [] },
+      createTemplateVersion: { isAllowed: true, reasons: [] },
     },
     webhookEnabled: false,
     id: "031be3e0-faac-48ab-bfc2-621a8076b240",
