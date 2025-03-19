@@ -130,11 +130,13 @@ function Combobox<T extends { [key: string]: any }>(props: ComboboxProps<T>) {
         <div className="relative" ref={setReferenceElement}>
           <div
             className={clsx(
-              "form-input flex w-full items-center rounded-md border-gray-300 shadow-xs disabled:border-gray-300",
-              "focus-within:outline-hidden focus:ring-transparent focus-visible:border-blue-500 disabled:cursor-not-allowed ",
+              "form-input flex w-full items-center rounded-md border-gray-300 shadow-xs",
+              "focus-within:outline-hidden focus:ring-transparent focus-visible:border-blue-500 ",
               "sm:text-sm",
               open ? "border-blue-500" : "hover:border-gray-400",
-              error ? "border-red-500" : "",
+              error && "border-red-500",
+              disabled &&
+                "cursor-not-allowed border-gray-300 pointer-events-none bg-gray-100",
               className,
             )}
           >
