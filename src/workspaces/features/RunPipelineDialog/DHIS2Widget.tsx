@@ -11,11 +11,11 @@ import { Dhis2MetadataType } from "graphql/types";
 import { ensureArray } from "core/helpers/array";
 
 type DHIS2WidgetProps = {
-  parameter: ParameterField_ParameterFragment;
-  connection: string;
+  parameter: ParameterField_ParameterFragment & { connection: string };
   widget: string;
   form: FormInstance<any>;
   workspaceSlug: string;
+  name: string;
 };
 
 export const GET_CONNECTION_METADATA = gql`
@@ -64,10 +64,10 @@ const dhis2WidgetToQuery: { [key: string]: Dhis2MetadataType } = {
 
 const DHIS2Widget = ({
   parameter,
-  connection,
   widget,
   form,
   workspaceSlug,
+  ...delegated
 }: DHIS2WidgetProps) => {
   const [query, _setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 250);
@@ -75,10 +75,9 @@ const DHIS2Widget = ({
   const { t } = useTranslation();
   const [options, setOptions] = useState<any[]>([]);
   const [fetchData, { data, error }] = useGetConnectionBySlugLazyQuery();
-
   const hasConnection = useMemo(() => {
-    return form.formData[connection];
-  }, [form.formData[connection]]);
+    return form.formData[parameter.connection];
+  }, [form.formData[parameter.connection]]);
 
   // Memoize the connection to enforce the DHIS2Connection type
   const dhis2Connection = useMemo(
@@ -99,7 +98,7 @@ const DHIS2Widget = ({
     const result = await fetchData({
       variables: {
         workspaceSlug,
-        connectionSlug: form.formData[connection],
+        connectionSlug: form.formData[parameter.connection],
         type: dhis2WidgetToQuery[widget],
         filters: debouncedQuery ? ["name:token:" + debouncedQuery] : [],
         perPage: 15,
@@ -227,6 +226,7 @@ const DHIS2Widget = ({
       withPortal
       onClose={useCallback(() => setQuery(""), [])}
       error={errorMessage}
+      {...delegated}
     >
       {options.map((option) => (
         <Combobox.CheckOption key={option.id} value={option}>

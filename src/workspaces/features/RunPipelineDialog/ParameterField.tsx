@@ -50,10 +50,11 @@ const ParameterField = (props: ParameterFieldProps) => {
     return (
       <GenericConnectionWidget
         parameter={parameter}
-        connection={parameter.connection}
         widget={parameter.widget}
         form={form}
         workspaceSlug={workspaceSlug || ""}
+        aria-label={parameter.code}
+        name={parameter.code}
       />
     );
   }
@@ -77,6 +78,7 @@ const ParameterField = (props: ParameterFieldProps) => {
         value={value}
         onChange={(option) => handleChange(option?.dataset.slug)}
         withPortal
+        aria-label={parameter.code}
       />
     );
   }
@@ -89,6 +91,8 @@ const ParameterField = (props: ParameterFieldProps) => {
     return (
       <Select
         onChange={handleChange}
+        aria-label={parameter.code}
+        name={parameter.code}
         value={parameter.multiple ? ensureArray(value) : value}
         required={Boolean(parameter.required)}
         multiple={parameter.multiple}
