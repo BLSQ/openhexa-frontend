@@ -6,8 +6,9 @@ import useDebounce from "core/hooks/useDebounce";
 import { useGetConnectionBySlugLazyQuery } from "./DHIS2Widget.generated";
 import { ParameterField_ParameterFragment } from "./ParameterField.generated";
 import useIntersectionObserver from "core/hooks/useIntersectionObserver";
-import { FormInstance } from "../../../core/hooks/useForm";
-import { Dhis2MetadataType } from "../../../graphql/types";
+import { FormInstance } from "core/hooks/useForm";
+import { Dhis2MetadataType } from "graphql/types";
+import { ensureArray } from "core/helpers/array";
 
 type DHIS2WidgetProps = {
   parameter: ParameterField_ParameterFragment;
@@ -41,6 +42,7 @@ export const GET_CONNECTION_METADATA = gql`
             id
             label
           }
+          pageNumber
           totalItems
           error
         }
@@ -67,59 +69,65 @@ const DHIS2Widget = ({
   form,
   workspaceSlug,
 }: DHIS2WidgetProps) => {
-  const [query, setQuery] = useState("");
-  const debouncedQuery = useDebounce(query, 150);
-  const [perPage, setPerPage] = useState(10);
-  const [isFetched, setIsFetched] = useState(false);
+  const [query, _setQuery] = useState("");
+  const debouncedQuery = useDebounce(query, 250);
+  const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
+  const [options, setOptions] = useState<any[]>([]);
+  const [fetchData, { data, error }] = useGetConnectionBySlugLazyQuery();
 
-  const currentValue =
-    form.formData[parameter.code] || (parameter.multiple ? [] : null);
+  const hasConnection = useMemo(() => {
+    return form.formData[connection];
+  }, [form.formData[connection]]);
 
-  const [fetchData, { data, loading, error, fetchMore }] =
-    useGetConnectionBySlugLazyQuery();
+  // Memoize the connection to enforce the DHIS2Connection type
+  const dhis2Connection = useMemo(
+    () =>
+      data?.connectionBySlug?.__typename === "DHIS2Connection"
+        ? data.connectionBySlug
+        : null,
+    [data?.connectionBySlug],
+  );
 
-  const constructFilters = (query: string) => {
-    if (query === "") return [];
-    return ["name:token:" + query];
-  };
+  const setQuery = useCallback((newQuery: string) => {
+    if (newQuery === debouncedQuery) return;
+    _setQuery(newQuery);
+  }, []);
 
-  useEffect(() => {
-    setIsFetched(true);
-    if (!form.formData[connection]) return;
-    void fetchData({
+  const fetchMoreOptions = async (resetPagination: boolean = false) => {
+    setIsLoading(true);
+    const result = await fetchData({
       variables: {
         workspaceSlug,
         connectionSlug: form.formData[connection],
         type: dhis2WidgetToQuery[widget],
-        filters: constructFilters(debouncedQuery),
-        perPage: 10,
-        page: 1,
+        filters: debouncedQuery ? ["name:token:" + debouncedQuery] : [],
+        perPage: 15,
+        page: resetPagination
+          ? 1
+          : (dhis2Connection?.queryMetadata?.pageNumber || 0) + 1,
       },
     });
-  }, [
-    form.formData[connection],
-    debouncedQuery,
-    fetchData,
-    workspaceSlug,
-    parameter.widget,
-  ]);
+    setIsLoading(false);
+    if (result.data?.connectionBySlug?.__typename === "DHIS2Connection") {
+      const connection = result.data.connectionBySlug;
+      const newOptions = connection.queryMetadata?.items || [];
+      setOptions((prevOptions) => {
+        // If it's the first page, replace options
+        if (connection.queryMetadata?.pageNumber === 1) {
+          return newOptions;
+        }
+        // Otherwise append to existing options
+        return [...prevOptions, ...newOptions];
+      });
+    }
+  };
 
+  // Initial load & when connection changes
   useEffect(() => {
-    if (perPage === 10) return;
-
-    fetchMore({
-      variables: {
-        workspaceSlug,
-        connectionSlug: form.formData[connection],
-        type: dhis2WidgetToQuery[widget],
-        filters: constructFilters(debouncedQuery),
-        perPage,
-        page: 1,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => fetchMoreResult || prev,
-    }).catch((err) => console.error("Error fetching more data:", err));
-  }, [perPage]);
+    if (!hasConnection) return;
+    fetchMoreOptions(true);
+  }, [hasConnection, debouncedQuery]);
 
   const errorMessage = useMemo(() => {
     if (error) {
@@ -142,50 +150,12 @@ const DHIS2Widget = ({
     return "";
   }, [error, data, t]);
 
-  const options = useMemo(() => {
-    if (errorMessage) {
-      return { items: [], totalItems: 0 };
-    }
-    const connection = data?.connectionBySlug;
-
-    if (
-      connection?.__typename !== "DHIS2Connection" ||
-      !connection.queryMetadata
-    ) {
-      return { items: [], totalItems: 0 };
-    }
-    const items = connection.queryMetadata.items ?? [];
-
-    items?.filter((c) => {
-      c.label?.toLowerCase().includes(debouncedQuery.toLowerCase());
-    });
-    return { items, totalItems: connection.queryMetadata.totalItems ?? 0 };
-  }, [data, errorMessage, debouncedQuery]);
-
-  const handleInputChange = useCallback(
-    (event: any) => {
-      const newQuery = event.target.value;
-      setQuery(newQuery);
-
-      if (fetchMore) {
-        fetchMore({
-          variables: {
-            filters: constructFilters(newQuery),
-            page: 1,
-            perPage: perPage,
-          },
-        }).catch((err) => console.error("Error fetching more results:", err));
-      }
-    },
-    [fetchMore],
-  );
-
   const displayValueHandler = (value: any) => {
     if (!value) return "";
 
     const getLabel = (item: any) => {
       if (typeof item === "object" && item !== null) return item.label;
-      const foundItem = options.items.find((opt) => opt.id === item);
+      const foundItem = options.find((opt) => opt.id === item);
       return foundItem?.label ?? t("Unknown ID: {{id}}", { id: item });
     };
 
@@ -196,23 +166,17 @@ const DHIS2Widget = ({
     return getLabel(value);
   };
 
-  useEffect(() => {
-    if (parameter.multiple && !Array.isArray(currentValue)) {
-      form.setFieldValue(parameter.code, []);
-    }
-  }, [form, parameter.multiple, parameter.code]);
-
   const handleSelectionChange = useCallback(
     (selectedValue: any) => {
       if (parameter.multiple) {
-        const selectedIds = Array.isArray(selectedValue)
-          ? selectedValue.map((item) => item.id).filter(Boolean)
-          : [];
-
-        form.setFieldValue(parameter.code, selectedIds);
+        form.setFieldValue(
+          parameter.code,
+          ensureArray<{ id: string; label: string }>(selectedValue).map(
+            (item) => item.id,
+          ),
+        );
       } else {
-        const newValue = selectedValue?.id;
-        form.setFieldValue(parameter.code, newValue);
+        form.setFieldValue(parameter.code, selectedValue?.id);
       }
     },
     [form, parameter.code, parameter.multiple],
@@ -224,7 +188,7 @@ const DHIS2Widget = ({
     if (Array.isArray(form.formData[parameter.code])) {
       return form.formData[parameter.code].map(
         (id: string) =>
-          options.items.find((item) => item.id === id) || {
+          options.find((item) => item.id === id) || {
             id,
             label: t("Unknown ID: {{id}}", { id }),
           },
@@ -232,37 +196,39 @@ const DHIS2Widget = ({
     }
 
     return (
-      options.items.find(
-        (item) => item.id === form.formData[parameter.code],
-      ) || {
+      options.find((item) => item.id === form.formData[parameter.code]) || {
         id: form.formData[parameter.code],
         label: t("Unknown ID: {{id}}", { id: form.formData[parameter.code] }),
       }
     );
-  }, [form.formData[parameter.code], options.items]);
+  }, [form.formData[parameter.code], options]);
 
   const onScrollBottom = useCallback(() => {
-    if (options?.totalItems > (options?.items?.length || 0) && !loading) {
-      setPerPage((prevPerPage) => prevPerPage + 10);
+    if (
+      !isLoading &&
+      (dhis2Connection?.queryMetadata?.totalItems || 0) > options.length
+    ) {
+      fetchMoreOptions();
     }
-  }, [options, loading]);
+  }, [dhis2Connection, options, isLoading]);
 
   const PickerComponent = parameter.multiple ? MultiCombobox : Combobox;
 
   return (
     <PickerComponent
       onChange={handleSelectionChange}
-      loading={loading}
+      loading={isLoading}
       displayValue={displayValueHandler}
       by="id"
-      onInputChange={handleInputChange}
+      onInputChange={(e) => setQuery(e.target.value)}
       placeholder={t("Select options")}
       value={selectedObjects}
-      disabled={!form.formData[connection] || !isFetched || loading}
+      disabled={!hasConnection}
+      withPortal
       onClose={useCallback(() => setQuery(""), [])}
       error={errorMessage}
     >
-      {options?.items.map((option) => (
+      {options.map((option) => (
         <Combobox.CheckOption key={option.id} value={option}>
           {option.label}
         </Combobox.CheckOption>
