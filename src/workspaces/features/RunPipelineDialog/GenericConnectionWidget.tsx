@@ -1,7 +1,6 @@
-import React from "react";
-import { DHIS2Widget, dhis2WidgetToQuery } from "./DHIS2Widget";
-import { Description, Field, Label, Textarea } from "@headlessui/react";
+import { Description, Field } from "@headlessui/react";
 import { useTranslation } from "next-i18next";
+import { DHIS2Widget, dhis2WidgetToQuery } from "./DHIS2Widget";
 
 type GenericConnectionWidgetProps = {
   parameter: any;
