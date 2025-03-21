@@ -6,6 +6,10 @@ import { TestApp } from "core/helpers/testutils";
 import { SidebarMenuDocument } from "workspaces/features/SidebarMenu/SidebarMenu.generated";
 import { MockedResponse } from "@apollo/client/testing";
 import { WorkspaceWebappsPageDocument } from "workspaces/graphql/queries.generated";
+import {
+  AddToFavoritesDocument,
+  RemoveFromFavoritesDocument,
+} from "../graphql/mutations.generated";
 
 jest.mock("react-toastify", () => ({
   toast: {
@@ -34,7 +38,7 @@ const webapp = (id: string) => ({
   __typename: "Webapp",
   id: id,
   name: `Webapp ${id}`,
-  isFavorite: false,
+  isFavorite: id === "2",
   description: "Webapp description",
   url: `https://example${id}.com`,
   icon: "",
@@ -126,7 +130,22 @@ describe("WebappsPage", () => {
 
   it("adds a webapp to favorites", async () => {
     render(
-      <TestApp mocks={graphqlMocks} me={{ features: [{ code: "webapps" }] }}>
+      <TestApp
+        mocks={graphqlMocks.concat({
+          request: {
+            query: AddToFavoritesDocument,
+            variables: { input: { webappId: "1" } },
+          },
+          result: {
+            data: {
+              addToFavorites: {
+                success: true,
+              },
+            },
+          },
+        })}
+        me={{ features: [{ code: "webapps" }] }}
+      >
         <WebappsPage page={1} perPage={15} />
       </TestApp>,
     );
@@ -144,16 +163,31 @@ describe("WebappsPage", () => {
 
   it("removes a webapp from favorites", async () => {
     render(
-      <TestApp mocks={graphqlMocks} me={{ features: [{ code: "webapps" }] }}>
+      <TestApp
+        mocks={graphqlMocks.concat({
+          request: {
+            query: RemoveFromFavoritesDocument,
+            variables: { input: { webappId: "2" } },
+          },
+          result: {
+            data: {
+              removeFromFavorites: {
+                success: true,
+              },
+            },
+          },
+        })}
+        me={{ features: [{ code: "webapps" }] }}
+      >
         <WebappsPage page={1} perPage={15} />
       </TestApp>,
     );
 
     await waitFor(() => {
-      expect(screen.getByText("Webapp 1")).toBeInTheDocument();
+      expect(screen.getByText("Webapp 2")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId("star-icon-1"));
+    fireEvent.click(screen.getByTestId("star-icon-2"));
 
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith("Removed from favorites");
