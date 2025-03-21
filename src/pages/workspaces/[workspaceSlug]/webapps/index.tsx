@@ -32,18 +32,17 @@ import Spinner from "core/components/Spinner";
 type Props = {
   page: number;
   perPage: number;
+  workspaceSlug: string;
 };
 
 const WebappsPage = (props: Props) => {
+  const { page, perPage, workspaceSlug } = props;
+
   const { t } = useTranslation();
   const router = useRouter();
 
   const { data, refetch } = useWorkspaceWebappsPageQuery({
-    variables: {
-      workspaceSlug: router.query.workspaceSlug as string,
-      page: props.page,
-      perPage: props.perPage,
-    },
+    variables: { workspaceSlug, page, perPage },
   });
   useCacheKey("webapps", refetch);
 
@@ -70,7 +69,7 @@ const WebappsPage = (props: Props) => {
   };
 
   const onChangePage = ({ page }: { page: number }) => {
-    router.push({ pathname: router.pathname, query: { page } });
+    refetch({ page }).then();
   };
 
   const items = useMemo(() => {
@@ -122,7 +121,7 @@ const WebappsPage = (props: Props) => {
           <Title level={2}>{t("All apps")}</Title>
           <Block>
             <DataGrid
-              defaultPageSize={props.perPage}
+              defaultPageSize={perPage}
               data={items}
               totalItems={data.webapps.totalItems}
               fetchData={onChangePage}
@@ -188,6 +187,7 @@ const WebappsPage = (props: Props) => {
 export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
   getServerSideProps: async (ctx, client) => {
+    const { workspaceSlug } = ctx.params!;
     const page = (ctx.query.page as string)
       ? parseInt(ctx.query.page as string, 10)
       : 1;
@@ -199,13 +199,14 @@ export const getServerSideProps = createGetServerSideProps({
     >({
       query: WorkspaceWebappsPageDocument,
       variables: {
-        workspaceSlug: ctx.query.workspaceSlug as string,
+        workspaceSlug: workspaceSlug as string,
         page,
         perPage,
       },
     });
     return {
       props: {
+        workspaceSlug,
         page,
         perPage,
       },

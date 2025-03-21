@@ -95,6 +95,7 @@ const graphqlMocks: MockedResponse[] = [
     request: {
       query: WorkspaceWebappsPageDocument,
       variables: {
+        workspaceSlug: "test-workspace",
         page: 1,
         perPage: 15,
       },
@@ -119,7 +120,7 @@ describe("WebappsPage", () => {
   it("renders the list of webapps", async () => {
     render(
       <TestApp mocks={graphqlMocks} me={{ features: [{ code: "webapps" }] }}>
-        <WebappsPage page={1} perPage={15} />
+        <WebappsPage workspaceSlug="test-workspace" page={1} perPage={15} />
       </TestApp>,
     );
 
@@ -146,7 +147,7 @@ describe("WebappsPage", () => {
         })}
         me={{ features: [{ code: "webapps" }] }}
       >
-        <WebappsPage page={1} perPage={15} />
+        <WebappsPage workspaceSlug="test-workspace" page={1} perPage={15} />
       </TestApp>,
     );
 
@@ -179,7 +180,7 @@ describe("WebappsPage", () => {
         })}
         me={{ features: [{ code: "webapps" }] }}
       >
-        <WebappsPage page={1} perPage={15} />
+        <WebappsPage workspaceSlug="test-workspace" page={1} perPage={15} />
       </TestApp>,
     );
 
@@ -196,10 +197,37 @@ describe("WebappsPage", () => {
 
   it("handles pagination", async () => {
     render(
-      <TestApp mocks={graphqlMocks} me={{ features: [{ code: "webapps" }] }}>
-        <WebappsPage page={1} perPage={15} />
+      <TestApp
+        mocks={graphqlMocks.concat({
+          request: {
+            query: WorkspaceWebappsPageDocument,
+            variables: {
+              workspaceSlug: "test-workspace",
+              page: 2,
+              perPage: 15,
+            },
+          },
+          result: {
+            data: {
+              workspace: mockWorkspace,
+              webapps: {
+                pageNumber: 2,
+                totalPages: 2,
+                totalItems: 16,
+                items: [webapp("16")],
+              },
+            },
+          },
+        })}
+        me={{ features: [{ code: "webapps" }] }}
+      >
+        <WebappsPage workspaceSlug="test-workspace" page={1} perPage={15} />
       </TestApp>,
     );
+
+    await waitFor(() => {
+      expect(screen.getByText("Webapp 1")).toBeInTheDocument();
+    });
 
     const previousButton = screen.getByRole("button", { name: /Previous/i });
     const nextButton = previousButton.nextElementSibling as HTMLButtonElement;
