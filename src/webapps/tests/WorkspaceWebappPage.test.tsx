@@ -15,8 +15,8 @@ import {
 } from "workspaces/graphql/queries.generated";
 import { SidebarMenuDocument } from "workspaces/features/SidebarMenu/SidebarMenu.generated";
 import { MockedResponse } from "@apollo/client/testing";
-import { UpdateWebappDocument } from "../graphql/mutations.generated";
-import { DeleteWebappDocument } from "../../workspaces/graphql/mutations.generated";
+import { DeleteWebappDocument } from "workspaces/graphql/mutations.generated";
+import { UpdateWebappDocument } from "webapps/graphql/mutations.generated";
 
 jest.mock("react-toastify", () => ({
   toast: {
