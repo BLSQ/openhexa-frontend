@@ -120,21 +120,21 @@ const Sidebar = (props: SidebarProps) => {
           },
         ]
       : []),
-    ...(workspace.permissions.manageMembers
-      ? [
-          {
-            href: `/workspaces/${encodeURIComponent(slug)}/settings`,
-            label: t("Settings"),
-            Icon: Cog6ToothIcon,
-          },
-        ]
-      : []),
     ...(webappsFeatureEnabled
       ? [
           {
             href: `/workspaces/${encodeURIComponent(slug)}/webapps`,
             label: t("Apps"),
             Icon: GlobeAltIcon,
+          },
+        ]
+      : []),
+    ...(workspace.permissions.manageMembers
+      ? [
+          {
+            href: `/workspaces/${encodeURIComponent(slug)}/settings`,
+            label: t("Settings"),
+            Icon: Cog6ToothIcon,
           },
         ]
       : []),
