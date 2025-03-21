@@ -133,6 +133,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
             <iframe
               src={debouncedUrl}
               className={clsx("w-full h-full", iframeLoading && "hidden")}
+              sandbox="allow-forms allow-popups allow-downloads allow-presentation allow-modals allow-scripts"
               onLoad={() => setIframeLoading(false)}
               onError={() => setIframeLoading(false)}
             />
