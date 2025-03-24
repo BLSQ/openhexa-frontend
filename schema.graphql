@@ -841,6 +841,22 @@ type CreateTeamResult {
   errors: [CreateTeamError!]!
 }
 
+"""Represents the permission details for creating a template version."""
+type CreateTemplateVersionPermission {
+  isAllowed: Boolean!
+  reasons: [CreateTemplateVersionPermissionReason!]!
+}
+
+"""
+Enum representing the possible reasons preventing the creation of a template version.
+"""
+enum CreateTemplateVersionPermissionReason {
+  PERMISSION_DENIED
+  PIPELINE_IS_ALREADY_FROM_TEMPLATE
+  NO_NEW_TEMPLATE_VERSION_AVAILABLE
+  PIPELINE_IS_NOTEBOOK
+}
+
 """Represents the error message for a web app creation."""
 enum CreateWebappError {
   WORKSPACE_NOT_FOUND
@@ -1626,7 +1642,9 @@ type DHIS2Connection implements Connection {
   user: User
   fields: [ConnectionField!]!
   permissions: ConnectionPermissions!
-  queryMetadata(type: DHIS2MetadataType!, filters: [String], perPage: Int, page: Int ): DHIS2QueryResultPage!
+  status: DHIS2ConnectionStatus!
+  queryMetadata(type: DHIS2MetadataType!, filters: [String!], perPage: Int, page: Int): DHIS2QueryResultPage!
+
 }
 
 
@@ -1653,7 +1671,19 @@ enum DHIS2ConnectionStatus {
     UNKNOWN
 }
 
-"""DHIS2 metadata query result page"""
+"""Enum representing the type of a DHIS2 metadata item."""
+enum DHIS2MetadataType {
+  ORG_UNITS
+  ORG_UNIT_GROUPS
+  ORG_UNIT_LEVELS
+  DATASETS
+  DATA_ELEMENTS
+  DATA_ELEMENT_GROUPS
+  INDICATORS
+  INDICATOR_GROUPS
+}
+
+"""DHIS2 metadata query result"""
 type DHIS2QueryResultPage {
     items: [DHIS2MetadataItem!]  # List of metadata items
     pageNumber: Int!                   # Current page number
@@ -2397,7 +2427,7 @@ input ParameterInput {
   multiple: Boolean
   required: Boolean
   default: Generic
-  widget: String
+  widget: ParameterWidget
   connection: String
   help: String
   choices: [Generic!]
@@ -2416,6 +2446,18 @@ enum ParameterType {
   s3
   gcs
   custom
+}
+
+"""Enum representing the type of a parameter widget."""
+enum ParameterWidget {
+  DHIS2_ORG_UNITS
+  DHIS2_ORG_UNIT_GROUPS
+  DHIS2_ORG_UNIT_LEVELS
+  DHIS2_DATASETS
+  DHIS2_DATA_ELEMENTS
+  DHIS2_DATA_ELEMENT_GROUPS
+  DHIS2_INDICATORS
+  DHIS2_INDICATOR_GROUPS
 }
 
 """The PermissionMode enum represents the mode of permissions for a team."""
@@ -2511,7 +2553,7 @@ type PipelineParameter {
   connection: String
   widget: String
   help: String
-  widget: String
+  widget: ParameterWidget
   connection: String
   choices: [Generic!]
 }
@@ -2524,7 +2566,7 @@ type PipelinePermissions {
   schedule: Boolean!
   createVersion: Boolean!
   stopPipeline: Boolean!
-  createTemplateVersion: Boolean!
+  createTemplateVersion: CreateTemplateVersionPermission!
 }
 
 """Represents a recipient of a pipeline."""
