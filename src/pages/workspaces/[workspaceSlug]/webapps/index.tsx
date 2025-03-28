@@ -11,7 +11,7 @@ import React, { useMemo } from "react";
 import Button from "core/components/Button";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlayCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
 import {
   useWorkspaceWebappsPageQuery,
   WorkspaceWebappsPageDocument,
@@ -22,6 +22,7 @@ import useCacheKey from "core/hooks/useCacheKey";
 import Title from "core/components/Title";
 import UserAvatar from "identity/features/UserAvatar";
 import FavoriteWebappButton from "webapps/features/FavoriteWebappButton";
+import LinkColumn from "core/components/DataGrid/LinkColumn";
 
 type Props = {
   page: number;
@@ -121,6 +122,15 @@ const WebappsPage = (props: Props) => {
                 )}
               </BaseColumn>
               <TextColumn label={t("Workspace")} accessor="workspace.name" />
+              <LinkColumn
+                id="play"
+                url={(item) => ({
+                  pathname: `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/${item.id}/play`,
+                })}
+                className={"flex items-center justify-center"}
+              >
+                <PlayCircleIcon className="h-6 w-6 text-blue-500 hover:scale-125" />
+              </LinkColumn>
               <ChevronLinkColumn
                 accessor="id"
                 url={(value: any) => ({
