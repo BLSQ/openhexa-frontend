@@ -19,7 +19,10 @@ describe("DeleteConnectionTrigger", () => {
     };
     const Children = jest.fn().mockReturnValue(null);
     const { container } = render(
-      <DeleteConnectionTrigger workspace={{ id: "1" }} connection={CONNECTION}>
+      <DeleteConnectionTrigger
+        workspace={{ slug: "1" }}
+        connection={CONNECTION}
+      >
         {Children}
       </DeleteConnectionTrigger>,
     );
@@ -37,7 +40,7 @@ describe("DeleteConnectionTrigger", () => {
     };
     const Children = jest.fn().mockReturnValue(null);
     const { container } = render(
-      <DeleteConnectionTrigger workspace={{ id: "" }} connection={CONNECTION}>
+      <DeleteConnectionTrigger workspace={{ slug: "" }} connection={CONNECTION}>
         {Children}
       </DeleteConnectionTrigger>,
     );
@@ -56,7 +59,7 @@ describe("DeleteConnectionTrigger", () => {
     const Children = jest.fn().mockReturnValue(null);
     const { container } = render(
       <DeleteConnectionTrigger
-        workspace={{ id: "W_ID" }}
+        workspace={{ slug: "W_ID" }}
         connection={CONNECTION}
       >
         {Children}
