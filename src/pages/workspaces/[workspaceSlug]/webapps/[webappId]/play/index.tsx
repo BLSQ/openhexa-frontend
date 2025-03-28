@@ -70,7 +70,10 @@ const WorkspaceWebappPlayPage: NextPageWithLayout = (props: Props) => {
         }
       >
         <WorkspaceLayout.PageContent>
-          <div className={"flex justify-center items-center"}>
+          <div
+            className={"flex justify-center items-center"}
+            style={{ height: "80vh" }}
+          >
             {iframeLoading && <Spinner size="md" />}{" "}
             <iframe
               src={webapp.url}
