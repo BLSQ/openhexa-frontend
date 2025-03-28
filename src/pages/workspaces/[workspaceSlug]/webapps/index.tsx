@@ -121,6 +121,14 @@ const WebappsPage = (props: Props) => {
                 {(item) => (
                   <div className="flex items-center space-x-1">
                     <FavoriteWebappButton webapp={item} />
+                    <img
+                      src={item.icon}
+                      className={clsx(
+                        "h-4 w-4 rounded",
+                        !item.icon && "invisible",
+                      )}
+                      alt={"Icon"}
+                    />
                     <Link
                       href={{
                         pathname: `/workspaces/${encodeURIComponent(workspace.slug)}/webapps/${item.id}`,
