@@ -1616,20 +1616,6 @@ type DenyAccessmodAccessRequestResult {
   errors: [DenyAccessmodAccessRequestError!]!
 }
 
-"""
-Enum representing the type of a DHIS2 metadata item.
-"""
-enum DHIS2MetadataType {
-    ORG_UNITS
-    ORG_UNIT_GROUPS
-    ORG_UNIT_LEVELS
-    DATASETS
-    DATA_ELEMENTS
-    DATA_ELEMENT_GROUPS
-    INDICATORS
-    INDICATOR_GROUPS
-}
-
 """DHIS2 connection object"""
 type DHIS2Connection implements Connection {
   id: String!
@@ -1644,31 +1630,25 @@ type DHIS2Connection implements Connection {
   permissions: ConnectionPermissions!
   status: DHIS2ConnectionStatus!
   queryMetadata(type: DHIS2MetadataType!, filters: [String!], perPage: Int, page: Int): DHIS2QueryResultPage!
-
 }
 
-
-"""
-DHIS2 metadata item
-"""
-type DHIS2MetadataItem {
-    id: String     # Unique identifier
-    label: String   # Label of the metadata item
-}
-"""
-DHIS2 connection error
-"""
+"""DHIS2 connection error"""
 enum DHIS2ConnectionError {
-    REQUEST_ERROR
-    UNKNOWN_ERROR
+  REQUEST_ERROR
+  UNKNOWN_ERROR
 }
-"""
-DHIS2 connection status
-"""
+
+"""DHIS2 connection status"""
 enum DHIS2ConnectionStatus {
-    UP
-    DOWN
-    UNKNOWN
+  UP
+  DOWN
+  UNKNOWN
+}
+
+"""DHIS2 metadata item"""
+type DHIS2MetadataItem {
+  id: String
+  label: String!
 }
 
 """Enum representing the type of a DHIS2 metadata item."""
@@ -1685,12 +1665,12 @@ enum DHIS2MetadataType {
 
 """DHIS2 metadata query result"""
 type DHIS2QueryResultPage {
-    items: [DHIS2MetadataItem!]  # List of metadata items
-    pageNumber: Int!                   # Current page number
-    totalPages: Int!                # Number of items per page
-    totalItems: Int!             # Total number of items
-    success: Boolean!           # Query success status
-    error: DHIS2ConnectionError # Connection error
+  items: [DHIS2MetadataItem!]
+  pageNumber: Int!
+  totalPages: Int!
+  totalItems: Int!
+  success: Boolean!
+  error: DHIS2ConnectionError
 }
 
 """
@@ -2550,8 +2530,6 @@ type PipelineParameter {
   multiple: Boolean!
   required: Boolean!
   default: Generic
-  connection: String
-  widget: String
   help: String
   widget: ParameterWidget
   connection: String
@@ -2568,25 +2546,6 @@ type PipelinePermissions {
   stopPipeline: Boolean!
   createTemplateVersion: CreateTemplateVersionPermission!
 }
-
-"""
-Represents the permission details for creating a template version.
-"""
-type CreateTemplateVersionPermission {
-  isAllowed: Boolean!
-  reasons: [CreateTemplateVersionPermissionReason!]!
-}
-
-"""
-Enum representing the possible reasons preventing the creation of a template version.
-"""
-enum CreateTemplateVersionPermissionReason {
-  PERMISSION_DENIED
-  PIPELINE_IS_ALREADY_FROM_TEMPLATE
-  NO_NEW_TEMPLATE_VERSION_AVAILABLE
-  PIPELINE_IS_NOTEBOOK
-}
-
 
 """Represents a recipient of a pipeline."""
 type PipelineRecipient {

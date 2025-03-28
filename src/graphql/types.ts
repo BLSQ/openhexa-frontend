@@ -1102,7 +1102,7 @@ export enum Dhis2ConnectionStatus {
 export type Dhis2MetadataItem = {
   __typename?: 'DHIS2MetadataItem';
   id?: Maybe<Scalars['String']['output']>;
-  label?: Maybe<Scalars['String']['output']>;
+  label: Scalars['String']['output'];
 };
 
 /** Enum representing the type of a DHIS2 metadata item. */
