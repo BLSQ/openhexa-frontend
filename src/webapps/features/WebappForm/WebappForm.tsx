@@ -63,9 +63,7 @@ const WebappForm = ({ workspace, webapp }: WebappFormProps) => {
           throw new Error("Webapp creation failed");
         }
         toast.success(t("Webapp created successfully"));
-        router.push(
-          `/workspaces/${workspace.slug}/webapps/${data.createWebapp.webapp.id}`,
-        );
+        router.push(`/workspaces/${workspace.slug}/webapps`);
       });
     } catch (error) {
       toast.error(t("An error occurred while creating the webapp"));

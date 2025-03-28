@@ -11,7 +11,7 @@ import React, { useMemo } from "react";
 import Button from "core/components/Button";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import { PlayCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { PlayIcon, PlusIcon } from "@heroicons/react/24/outline";
 import {
   useWorkspaceWebappsPageQuery,
   WorkspaceWebappsPageDocument,
@@ -98,9 +98,7 @@ const WebappsPage = (props: Props) => {
               <div
                 className={clsx(
                   "grid gap-4 mb-6",
-                  data.favoriteWebapps.items.length < 3
-                    ? "grid-cols-3"
-                    : "grid-cols-6",
+                  `grid-cols-${data.favoriteWebapps.items.length}`,
                 )}
               >
                 {data.favoriteWebapps.items.map((webapp) => (
@@ -155,7 +153,13 @@ const WebappsPage = (props: Props) => {
                 })}
                 className={"flex items-center justify-center"}
               >
-                <PlayCircleIcon className="h-6 w-6 text-blue-500 hover:scale-125" />
+                <div
+                  className={
+                    "flex items-center justify-center bg-blue-500 rounded-full h-6 w-6 hover:bg-blue-600 cursor-pointer hover:scale-110"
+                  }
+                >
+                  <PlayIcon className="h-3 w-3 text-white fill-white" />
+                </div>
               </LinkColumn>
               <ChevronLinkColumn
                 accessor="id"

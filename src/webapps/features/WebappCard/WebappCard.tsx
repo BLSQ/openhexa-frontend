@@ -3,7 +3,7 @@ import Card from "core/components/Card";
 import { WebappCard_WebappFragment } from "./WebappCard.generated";
 import React from "react";
 import Link from "core/components/Link";
-import { PlayCircleIcon } from "@heroicons/react/24/outline";
+import { PlayIcon } from "@heroicons/react/24/outline";
 
 type WebappCardProps = {
   webapp: WebappCard_WebappFragment;
@@ -32,13 +32,17 @@ const WebappCard = ({ webapp }: WebappCardProps) => {
         }}
         className={"flex items-center justify-end"}
       >
-        <PlayCircleIcon className="h-10 w-10 text-blue-500 hover:scale-125" />
+        <div
+          className={
+            "flex items-center justify-center bg-blue-500 rounded-full h-8 w-8 hover:bg-blue-600 cursor-pointer hover:scale-110"
+          }
+        >
+          <PlayIcon className="h-4 w-4 text-white fill-white translate-x-0.25" />
+        </div>
       </Link>
     </Card>
   );
 };
-
-// TODO : why grey
 
 WebappCard.fragments = {
   webapp: gql`
