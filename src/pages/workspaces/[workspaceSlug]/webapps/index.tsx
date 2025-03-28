@@ -138,6 +138,7 @@ const WebappsPage = (props: Props) => {
 export const getServerSideProps = createGetServerSideProps({
   requireAuth: true,
   getServerSideProps: async (ctx, client) => {
+    await WorkspaceLayout.prefetch(ctx, client);
     const { workspaceSlug } = ctx.params!;
     const page = (ctx.query.page as string)
       ? parseInt(ctx.query.page as string, 10)
