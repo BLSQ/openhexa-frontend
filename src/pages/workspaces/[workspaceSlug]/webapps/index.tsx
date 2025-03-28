@@ -23,6 +23,8 @@ import Title from "core/components/Title";
 import UserAvatar from "identity/features/UserAvatar";
 import FavoriteWebappButton from "webapps/features/FavoriteWebappButton";
 import LinkColumn from "core/components/DataGrid/LinkColumn";
+import clsx from "clsx";
+import WebappCard from "webapps/features/WebappCard";
 
 type Props = {
   page: number;
@@ -91,7 +93,23 @@ const WebappsPage = (props: Props) => {
         }
       >
         <WorkspaceLayout.PageContent>
-          <Title level={2}>{t("All apps")}</Title>
+          {data.favoriteWebapps.items.length > 0 && (
+            <>
+              <div
+                className={clsx(
+                  "grid gap-4 mb-6",
+                  data.favoriteWebapps.items.length < 3
+                    ? "grid-cols-3"
+                    : "grid-cols-6",
+                )}
+              >
+                {data.favoriteWebapps.items.map((webapp) => (
+                  <WebappCard key={webapp.id} webapp={webapp} />
+                ))}
+              </div>
+              <Title level={2}>{t("All apps")}</Title>
+            </>
+          )}
           <Block>
             <DataGrid
               defaultPageSize={perPage}

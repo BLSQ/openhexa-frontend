@@ -2951,7 +2951,7 @@ type Query {
   """Retrieves a template by workspace slug and code."""
   templateByCode(code: String!): PipelineTemplate
   webapp(id: UUID!): Webapp
-  webapps(workspaceSlug: String, page: Int, perPage: Int): WebappsPage!
+  webapps(workspaceSlug: String, favorite: Boolean, page: Int, perPage: Int): WebappsPage!
   workspace(slug: String!): Workspace
   workspaces(query: String, page: Int, perPage: Int): WorkspacePage!
   pendingWorkspaceInvitations(page: Int! = 1, perPage: Int = 10): WorkspaceInvitationPage!

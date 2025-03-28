@@ -11,7 +11,7 @@ const WebappCard = ({ webapp }: WebappCardProps) => {
   return (
     <Card
       href={{
-        pathname: "/workspaces/[workspaceSlug]/webapps/[webappId]",
+        pathname: "/workspaces/[workspaceSlug]/webapps/[webappId]/play",
         query: { workspaceSlug: workspace.slug, webappId: id },
       }}
       title={name}
@@ -21,6 +21,9 @@ const WebappCard = ({ webapp }: WebappCardProps) => {
     </Card>
   );
 };
+
+// TODO : play button
+// TODO : why grey
 
 WebappCard.fragments = {
   webapp: gql`
