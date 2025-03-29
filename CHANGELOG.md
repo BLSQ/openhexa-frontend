@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.61.1](https://github.com/BLSQ/openhexa-frontend/compare/0.61.0...0.61.1) (2025-03-29)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/nextjs to v9.10.1 ([#1209](https://github.com/BLSQ/openhexa-frontend/issues/1209)) ([41789d2](https://github.com/BLSQ/openhexa-frontend/commit/41789d27d4de0a3f7c2afab52d0330d57a3225fe))
+* **deps:** update dependency @sentry/nextjs to v9.9.0 ([#1200](https://github.com/BLSQ/openhexa-frontend/issues/1200)) ([475900d](https://github.com/BLSQ/openhexa-frontend/commit/475900d6df640b1a734961e08e3a4f51d8788aa8))
+* **deps:** update dependency @types/node to v22.13.13 ([#1198](https://github.com/BLSQ/openhexa-frontend/issues/1198)) ([4b33047](https://github.com/BLSQ/openhexa-frontend/commit/4b33047b235e279db134a9504860da53415b842d))
+* **deps:** update dependency @types/node to v22.13.14 ([#1207](https://github.com/BLSQ/openhexa-frontend/issues/1207)) ([c838a55](https://github.com/BLSQ/openhexa-frontend/commit/c838a55014b5ce6b47ee80f641e3c8946dd7ef15))
+* **deps:** update dependency cronstrue to v2.57.0 ([#1206](https://github.com/BLSQ/openhexa-frontend/issues/1206)) ([802a143](https://github.com/BLSQ/openhexa-frontend/commit/802a1437f14633a23c01d90cac6228aecbbed2fd))
+* **deps:** update dependency luxon to v3.6.0 ([#1204](https://github.com/BLSQ/openhexa-frontend/issues/1204)) ([c872aee](https://github.com/BLSQ/openhexa-frontend/commit/c872aee7b051167f4833efa0f76400bd7ff42501))
+* **deps:** update nextjs monorepo to v15.2.4 ([#1201](https://github.com/BLSQ/openhexa-frontend/issues/1201)) ([f1e3544](https://github.com/BLSQ/openhexa-frontend/commit/f1e3544644fe15f18b1a5e1302c8b7e679704519))
+
 ## [0.61.0](https://github.com/BLSQ/openhexa-frontend/compare/0.60.5...0.61.0) (2025-03-24)
 
 
