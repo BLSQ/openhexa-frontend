@@ -158,7 +158,7 @@ const WebappsPage = (props: Props) => {
                     "flex items-center justify-center bg-blue-500 rounded-full h-6 w-6 hover:bg-blue-600 cursor-pointer hover:scale-110"
                   }
                 >
-                  <PlayIcon className="h-3 w-3 text-white fill-white" />
+                  <PlayIcon className="h-3 w-3 text-white fill-white translate-x-0.25" />
                 </div>
               </LinkColumn>
               <ChevronLinkColumn
