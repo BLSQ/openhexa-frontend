@@ -52,6 +52,7 @@ const FavoriteWebappButton = ({
         "cursor-pointer w-8 h-8 group/pin hover:p-1 transition-all flex items-center justify-center rounded-full"
       }
       onClick={handleFavoriteClick}
+      data-testid={`favorite-button-${webappId}`}
     >
       {icon}
     </button>
