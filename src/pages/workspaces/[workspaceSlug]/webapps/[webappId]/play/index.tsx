@@ -10,9 +10,7 @@ import {
 } from "workspaces/graphql/queries.generated";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import Breadcrumbs from "core/components/Breadcrumbs";
-import { useState } from "react";
-import Spinner from "core/components/Spinner";
-import clsx from "clsx";
+import WebappIframe from "webapps/features/WebappIframe";
 
 type Props = {
   webappId: string;
@@ -22,7 +20,6 @@ type Props = {
 const WorkspaceWebappPlayPage: NextPageWithLayout = (props: Props) => {
   const { webappId, workspaceSlug } = props;
   const { t } = useTranslation();
-  const [iframeLoading, setIframeLoading] = useState(true);
 
   const { data } = useWorkspaceWebappPageQuery({
     variables: {
@@ -70,19 +67,7 @@ const WorkspaceWebappPlayPage: NextPageWithLayout = (props: Props) => {
         }
       >
         <WorkspaceLayout.PageContent>
-          <div
-            className={"flex justify-center items-center"}
-            style={{ height: "80vh" }}
-          >
-            {iframeLoading && <Spinner size="md" />}{" "}
-            <iframe
-              src={webapp.url}
-              className={clsx("w-full h-full", iframeLoading && "hidden")}
-              sandbox="allow-forms allow-popups allow-downloads allow-presentation allow-modals allow-scripts"
-              onLoad={() => setIframeLoading(false)}
-              onError={() => setIframeLoading(false)}
-            />
-          </div>
+          <WebappIframe url={webapp.url} />
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
     </Page>

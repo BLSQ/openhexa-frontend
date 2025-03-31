@@ -7,7 +7,6 @@ import { PlayIcon } from "@heroicons/react/24/outline";
 type WebappCardProps = {
   webapp: WebappCard_WebappFragment;
 };
-// TODO : CORS iframe
 
 const WebappCard = ({ webapp }: WebappCardProps) => {
   const { workspace, id, name, icon } = webapp;
