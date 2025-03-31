@@ -42,6 +42,7 @@ const WebappIframe = ({ url, className, style }: WebappIframeProps) => {
         sandbox={sandboxPermissions}
         onLoad={() => setIframeLoading(false)}
         onError={() => setIframeLoading(false)}
+        data-testid="webapp-iframe"
       />
     </div>
   );
