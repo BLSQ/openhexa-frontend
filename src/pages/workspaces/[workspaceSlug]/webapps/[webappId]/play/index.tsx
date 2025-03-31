@@ -22,7 +22,7 @@ type Props = {
 const WorkspaceWebappPlayPage: NextPageWithLayout = (props: Props) => {
   const { webappId, workspaceSlug } = props;
   const { t } = useTranslation();
-  const [iframeLoading, setIframeLoading] = useState(false);
+  const [iframeLoading, setIframeLoading] = useState(true);
 
   const { data } = useWorkspaceWebappPageQuery({
     variables: {
