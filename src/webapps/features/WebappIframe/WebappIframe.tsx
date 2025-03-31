@@ -9,7 +9,7 @@ type WebappIframeProps = {
 };
 
 const WebappIframe = ({ url, className, style }: WebappIframeProps) => {
-  const [iframeLoading, setIframeLoading] = useState(false);
+  const [iframeLoading, setIframeLoading] = useState(true);
 
   useEffect(() => {
     setIframeLoading(true);
