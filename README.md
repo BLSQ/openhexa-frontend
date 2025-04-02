@@ -10,6 +10,8 @@
    </a>
 </p>
 
+# ⚠️ This repository is deprecated. OpenHexa Frontend has been moved inside [openhexa-app](https://github.com/BLSQ/openhexa-app).
+
 # OpenHEXA Frontend Component
 
 OpenHEXA is an open-source data integration platform developed by [Bluesquare](https://bluesquarehub.com).
